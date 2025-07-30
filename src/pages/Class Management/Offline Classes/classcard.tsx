@@ -13,7 +13,7 @@ interface Instructor {
   avatar: string;
 }
 
-const ClassManagement: React.FC = () => {
+const ClassBatch: React.FC = () => {
   const [searchStudent, setSearchStudent] = useState('');
 
   const instructors: Instructor[] = [
@@ -103,4 +103,4 @@ const ClassManagement: React.FC = () => {
   );
 };
 
-export default ClassManagement;
+export default ClassBatch;

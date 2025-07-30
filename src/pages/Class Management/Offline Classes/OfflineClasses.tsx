@@ -1,11 +1,11 @@
-import React from 'react';
-import ClassManagement from './classcard';
+
+import ClassBatch from './classcard';
 
 const OfflineClasses = () => {
 	return <div>
 		<h1>OfflineClasses</h1>
 
-		<div><ClassManagement/></div>
+		<div><ClassBatch/></div>
 	</div>;
 };
 
