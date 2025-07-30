@@ -10,7 +10,7 @@ export const MainLayout = () => {
 	const sidebarWidth = isSidebarOpen ? 250 : 75;
 
 	return (
-		<div className='w-full h-screen flex flex-col'>
+		<div className='w-screen h-screen flex flex-col'>
 			<div className='fixed top-0 left-0 w-full z-50'>
 				<Navbar />
 			</div>

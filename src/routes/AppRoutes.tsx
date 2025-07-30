@@ -39,6 +39,7 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -101,6 +102,7 @@ const AppRoutes = () => {
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
+				<Route path='staffs-attendance/view/:id' element={<AddAttendance />} />
 
 				{/* Refund Management */}
 				<Route path='refund-fees' element={<RefundFees />} />
