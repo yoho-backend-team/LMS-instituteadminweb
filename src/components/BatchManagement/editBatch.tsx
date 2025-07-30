@@ -2,7 +2,7 @@ import React from "react";
 import { X } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FONTS } from "../../constants/uiConstants";
+import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Button } from "../ui/button";
 
 interface EditBatchModalProps {
@@ -50,13 +50,13 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-lg">
         <div className="bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6">
-          <h2 className="text-center" style={{ ...FONTS.heading_03 }}>Edit Batch</h2>
+          <h2 className="text-center" style={{ ...FONTS.heading_04_bold}}>Edit Batch</h2>
         </div>
 
         <form onSubmit={formik.handleSubmit} className="mt-6 px-6 space-y-4">
           {/* Batch Name */}
           <div>
-            <label className="block mb-1" style={{ ...FONTS.heading_03 }}>Batch Name</label>
+            <label className="block mb-1" style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Batch Name</label>
             <input
               type="text"
               name="batchName"
@@ -74,7 +74,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
           {/* Dates */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <label className="block mb-1" style={{ ...FONTS.heading_03 }}>Start Date</label>
+              <label className="block mb-1" style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Start Date</label>
               <input
                 type="date"
                 name="startDate"
@@ -89,7 +89,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="flex-1">
-              <label className="block mb-1" style={{ ...FONTS.heading_03 }}>End Date</label>
+              <label className="block mb-1" style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>End Date</label>
               <input
                 type="date"
                 name="endDate"
@@ -106,7 +106,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 
           {/* Students Display */}
           <div>
-            <label className="block mb-1" style={{ ...FONTS.heading_03 }}>Students</label>
+            <label className="block mb-1" style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Students</label>
             <div className="w-full border rounded-md px-4 py-2 flex flex-wrap gap-2 min-h-[44px]">
               {selectedStudents.map((student, idx) => (
                 <div
@@ -121,20 +121,20 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end items-center gap-4 mt-6 mb-4">
+          <div className="flex justify-end items-center gap-4 mt-6 mb-8">
             <Button
               type="button"
               onClick={onClose}
               variant="outline"
-              className="!border-[#0400FF] !text-[#0400FF]"
-              style={{ ...FONTS.heading_03 }}
+              className="!border-[#1BBFCA] bg-[#1bbeca15] !text-[#1BBFCA]"
+               style={{ ...FONTS.heading_07_bold }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]"
-              style={{ ...FONTS.heading_03 }}
+              style={{ ...FONTS.heading_07_bold }}
             >
               Update
             </Button>
