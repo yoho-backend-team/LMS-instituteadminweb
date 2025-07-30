@@ -1,14 +1,38 @@
 import { FiBell } from 'react-icons/fi';
 import titleIcon from '../../assets/navbar/titleIcon.png';
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { FaRegUser } from 'react-icons/fa';
 import { TbLogout } from 'react-icons/tb';
+import NotificationPopup from '../Notification/NotificationPopup';
 const Navbar = () => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [activeTab, setActiveTab] = useState<string | null>(null);
 	const dropdownRef = useRef(null);
+	const [showNotifications, setShowNotifications] = useState(false);
+	const navigate = useNavigate();
+
+	const notifications = [
+		{
+			id: 1,
+			title: 'Branch Management',
+			date: '05 nov 2022',
+			time: '10:32 am',
+		},
+		{
+			id: 2,
+			title: 'Student Management',
+			date: '20 aug 2025',
+			time: '05:34 pm',
+		},
+		{
+			id: 3,
+			title: 'Content Management',
+			date: '17 mar 2025',
+			time: '06:09 pm',
+		},
+	];
 
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
@@ -17,6 +41,7 @@ const Navbar = () => {
 				!(dropdownRef.current as HTMLElement).contains(event.target as Node)
 			) {
 				setDropdownOpen(false);
+				setShowNotifications(false);
 			}
 		}
 
@@ -33,9 +58,38 @@ const Navbar = () => {
 				</div>
 
 				<div className='flex items-center gap-4 relative'>
-					<button className='px-1 text-white bg-blue-800 rounded-2xl h-[35px] w-[35px]'>
-						<FiBell size={28} className='p-1' />
-					</button>
+					{/* Notification Bell Icon */}
+					<div className="relative">
+						<button
+							onClick={() => setShowNotifications(!showNotifications)}
+							className="relative p-2 text-gray-700 hover:text-black"
+						>
+							<FiBell size={24} />
+						</button>
+
+						{showNotifications && (
+							<div className="absolute right-0 top-10 z-50">
+								<NotificationPopup
+									notifications={notifications}
+									onClose={() => setShowNotifications(false)} // 👈 close on link click
+								/>
+							</div>
+						)}
+					</div>
+
+					{/* View All Notifications as a Link */}
+					{/* <Link
+						to="/notifications"
+						onClick={() => {
+							setActiveTab('notifications');
+							setShowNotifications(false);
+						}}
+						className={`block rounded px-3 py-1 text-sm text-red-600 hover:underline ${
+							activeTab === 'notifications' ? 'font-semibold text-red-700' : ''
+						}`}
+					>
+						View All Notifications
+					</Link> */}
 
 					<div className='relative' ref={dropdownRef}>
 						<button
@@ -71,11 +125,10 @@ const Navbar = () => {
 												setActiveTab('profile');
 												setDropdownOpen(false);
 											}}
-											className={`block rounded-lg px-4 py-2 text-sm text-left hover:bg-gray-200 hover:text-black ${
-												activeTab === 'profile'
-													? 'bg-[#1BBFCA] font-semibold text-white'
-													: ''
-											}`}
+											className={`block rounded-lg px-4 py-2 text-sm text-left hover:bg-gray-200 hover:text-black ${activeTab === 'profile'
+												? 'bg-[#1BBFCA] font-semibold text-white'
+												: ''
+												}`}
 										>
 											<div className='flex items-center gap-2'>
 												<FaRegUser />
@@ -90,11 +143,10 @@ const Navbar = () => {
 												setActiveTab('settings');
 												setDropdownOpen(false);
 											}}
-											className={`block rounded-lg px-4 py-2 text-sm text-left hover:bg-gray-200 hover:text-black ${
-												activeTab === 'settings'
-													? 'bg-[#1BBFCA] font-semibold text-white'
-													: ''
-											}`}
+											className={`block rounded-lg px-4 py-2 text-sm text-left hover:bg-gray-200 hover:text-black ${activeTab === 'settings'
+												? 'bg-[#1BBFCA] font-semibold text-white'
+												: ''
+												}`}
 										>
 											<div className='flex items-center gap-2'>
 												<IoSettingsOutline />
@@ -109,11 +161,10 @@ const Navbar = () => {
 												setActiveTab('logout');
 												setDropdownOpen(false);
 											}}
-											className={`block rounded-lg px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-200 hover:text-red-700 ${
-												activeTab === 'logout'
-													? 'bg-[#1BBFCA] font-semibold text-white'
-													: ''
-											}`}
+											className={`block rounded-lg px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-200 hover:text-red-700 ${activeTab === 'logout'
+												? 'bg-[#1BBFCA] font-semibold text-white'
+												: ''
+												}`}
 										>
 											<div className='flex items-center gap-2'>
 												<TbLogout />
