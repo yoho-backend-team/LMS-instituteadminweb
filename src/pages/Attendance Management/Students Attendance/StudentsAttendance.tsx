@@ -1,7 +1,10 @@
-import React from 'react';
+import StudentHeaderBar from "../../../features/Attendance_Managemenet/Student_Attendance/components/StudentHeaderBar";
+
 
 const StudentsAttendance = () => {
-	return <div>StudentsAttendance</div>;
+	return (
+		<><StudentHeaderBar/></>
+	)
 };
 
 export default StudentsAttendance;
