@@ -73,7 +73,7 @@ const SideBar = ({
 				/>
 				<SidebarDropdown
 					icon={<Building2 />}
-					label='Branch-management'
+					label='Branch Management'
 					isOpen={isOpen}
 					childRoutes={['/branch']}
 					activeDropdown={activeDropdown}
@@ -512,7 +512,7 @@ const SidebarLink = ({
 					{icon}
 				</div>
 				{!isOpen && (
-					<span className='absolute top-1/2 -translate-y-4 ml-10 whitespace-nowrap rounded-3xl bg-[#1BBFCA] text-white text-sm px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100'>
+					<span className='absolute top-1/2 -translate-y-4 ml-10 whitespace-nowrap rounded-3xl bg-[#1BBFCA] text-white text-sm px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 z-99'>
 						{label}
 					</span>
 				)}

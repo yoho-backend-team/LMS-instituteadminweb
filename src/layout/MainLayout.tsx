@@ -6,7 +6,6 @@ import SideBar from '../components/shared/SideBar';
 
 export const MainLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
 	const sidebarWidth = isSidebarOpen ? 250 : 75;
 
 	return (
