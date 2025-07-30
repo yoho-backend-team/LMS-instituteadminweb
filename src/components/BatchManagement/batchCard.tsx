@@ -7,7 +7,7 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import EditBatchModal from "./editBatch";
 import { useNavigate } from "react-router-dom";
-import wave from '../../assets/wave.png'
+import wave from '../../assets/wave (2).png'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { Card, CardContent } from "../ui/card";
