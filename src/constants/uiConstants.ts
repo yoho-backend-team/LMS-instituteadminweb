@@ -47,7 +47,7 @@ export const FONTS = {
 	},
 	heading_07: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 500,
 		fontSize: '16px',
 	},
 };
