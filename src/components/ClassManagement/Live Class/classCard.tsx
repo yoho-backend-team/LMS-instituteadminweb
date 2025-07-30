@@ -17,8 +17,8 @@ import {
 import { Card, CardContent } from '../../ui/card';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
-import EditLiveClassModal from '../../BatchManagement/editBatch';
 import { Button } from '../../ui/button';
+import EditLiveClass from './editLiveClass';
 
 interface BatchCardProps {
 	title: string;
@@ -175,7 +175,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClassModal isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClass isOpen={isEditModalOpen} onClose={closeEditModal} />
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}
