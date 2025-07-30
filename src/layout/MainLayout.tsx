@@ -25,7 +25,7 @@ export const MainLayout = () => {
                 </div>
 
                 <div
-                    className='flex-1 overflow-auto p-6 bg-white rounded-tl-[35px]'
+                    className='flex-1 overflow-auto p-6 bg-white rounded-tl-[35px] h-[calc(100vh-64px)]'
                 >
                     <Outlet />
                 </div>
