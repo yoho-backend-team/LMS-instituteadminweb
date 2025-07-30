@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import tick from "../../assets/tick.png"
 import warning from "../../assets/warning.png"
-import { Dialog, DialogContent } from "@radix-ui/react-dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { FONTS } from "../../constants/uiConstants";
 import { Button } from "../ui/button";
 

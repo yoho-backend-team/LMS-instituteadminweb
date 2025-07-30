@@ -4,7 +4,6 @@ import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Avatar, AvatarImage } from "../../../components/ui/avatar";
-import { Separator } from "../../../components/ui/separator";
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { useNavigate } from 'react-router-dom';
@@ -222,8 +221,8 @@ const TeachingStaffs: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All" />
+                  <SelectTrigger className='w-full'>
+                    <SelectValue placeholder="All"  />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
@@ -236,7 +235,7 @@ const TeachingStaffs: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="course">Course</Label>
                 <Select>
-                  <SelectTrigger>
+                  <SelectTrigger className='w-full'>
                     <SelectValue placeholder="All Courses" />
                   </SelectTrigger>
                   <SelectContent>
@@ -255,17 +254,12 @@ const TeachingStaffs: React.FC = () => {
               {staff.map((member) => (
                 <div key={member.id} className="p-4">
                   {/* Profile Section */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <Avatar>
-                      <AvatarImage src={member.avatar} alt={member.name} />
-                    </Avatar>
-                    <div className="flex-1">
-                      <h3 className="font-medium">{member.name}</h3>
+                    <div className="flex-1 ">
+                      <h3 className="font-medium text-center">{member.name}</h3>
                     </div>
-                  </div>
 
                   {/* Email Section */}
-                  <div className="flex items-center gap-2 mb-3 text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2 mb-3 text-muted-foreground">
                     <Mail size={16} />
                     <span className="text-sm">{member.email}</span>
                   </div>

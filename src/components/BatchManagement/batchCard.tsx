@@ -8,8 +8,8 @@ import { useState } from "react";
 import EditBatchModal from "./editBatch";
 import { useNavigate } from "react-router-dom";
 import wave from '../../assets/wave.png'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Card, CardContent } from "../ui/card";
 import { FONTS } from "../../constants/uiConstants";
 import DeleteConfirmationModal from "./deleteModal";
