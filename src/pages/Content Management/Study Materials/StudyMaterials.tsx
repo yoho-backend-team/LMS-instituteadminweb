@@ -1,7 +1,10 @@
 import React from 'react';
+import StudyMaterial from '../../../components/StudyMaterial/StudyMaterial';
 
 const StudyMaterials = () => {
-	return <div>StudyMaterials</div>;
+	return <div>
+		<StudyMaterial />
+	</div>;
 };
 
 export default StudyMaterials;
