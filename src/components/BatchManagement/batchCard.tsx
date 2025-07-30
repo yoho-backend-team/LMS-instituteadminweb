@@ -11,7 +11,7 @@ import wave from '../../assets/wave (2).png'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 import { Card, CardContent } from "../ui/card";
-import { FONTS } from "../../constants/uiConstants";
+import { COLORS, FONTS } from "../../constants/uiConstants";
 import DeleteConfirmationModal from "./deleteModal";
 
 
@@ -58,7 +58,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
       
         <div className="flex justify-between items-start border-b border-gray-200 pb-2">
           <div>
-            <h4 className=""style={{...FONTS.heading_03}}>{title}</h4>
+            <h4 style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{title}</h4>
             
           </div>
          <DropdownMenu>
@@ -104,17 +104,17 @@ export const BatchCard: React.FC<BatchCardProps> = ({
   </DropdownMenuContent>
 </DropdownMenu>
 </div>
-        <div><p className=" mt-4"style={{...FONTS.heading_03,fontSize:"16px"}}>{subtitle}</p></div>
+        <div><p className=" mt-4"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{subtitle}</p></div>
        <div className="flex items-center justify-between mt-4">
-          <div className="bg-[#1E1EFF]  px-6 py-[6px] rounded-md"style={{...FONTS.heading_03,fontSize:"14px"}}>
+          <div className="bg-[#1E1EFF]  px-6 py-[6px] rounded-md"style={{...FONTS.heading_08_bold,color:COLORS.white}}>
             {startDate}
           </div>
-          <div className="flex items-center justify-center w-28 relative">
-            <div className="absolute top-1/2 left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2" />
+          <div className="flex items-center justify-center w-28 relative mt-2">
+            <div className="absolute -top-[3px] left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full left-2 -translate-y-1/2 top-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full right-2 -translate-y-1/2 top-1/2" />
           </div>
-          <div className="bg-[#1E1EFF] px-6 py-[6px] rounded-md "style={{...FONTS.heading_03,fontSize:"14px"}}>
+          <div className="bg-[#1E1EFF] px-6 py-[6px] rounded-md "style={{...FONTS.heading_08_bold,color:COLORS.white}}>
             {endDate}
           </div>
         </div>
@@ -123,11 +123,11 @@ export const BatchCard: React.FC<BatchCardProps> = ({
         <div className="flex items-center justify-between text-[10px] text-gray-500 mt-3">
           <div className="flex items-center gap-1">
             <img src={humaning} className="w-3.5 h-3.5" />
-            <span style={{...FONTS.heading_03}}>{students}  Students</span>
+            <span style={{...FONTS.heading_08_bold,color:COLORS.gray_light}}>{students} Students</span>
           </div>
           <div className="flex items-center gap-1">
             <img src={clock}  className="w-3.5 h-3.5" />
-            <span style={{...FONTS.heading_03}}>Days</span>
+            <span style={{...FONTS.heading_08_bold,color:COLORS.gray_light}}>Days</span>
           </div>
         </div>
 
@@ -163,12 +163,12 @@ export const BatchCard: React.FC<BatchCardProps> = ({
         <div className="flex justify-end mt-12">
            <Select onValueChange={(value:any) => setStatus(value)}>
             <SelectTrigger
-              className={`w-[111px] h-[40px] border border-grey px-2 bg-transparent shadow-none ${
-                status && "px-0 [&>svg]:hidden"
+              className={`w-[100px] h-[40px] border border-gray px-2 bg-transparent shadow-none ${
+                status && "px-0 [&>svg]:hidden "
               }`}
             >
               {status ? (
-                <div className="w-[111px] h-[40px] bg-[#1BBFCA]  border rounded-md flex items-center justify-center" style={{...FONTS.heading_03}}>
+                <div className="w-[111px] h-[40px] bg-[#1BBFCA]  border rounded-md flex items-center justify-center relative" style={{...FONTS.heading_09,color:COLORS.white}}>
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </div>
               ) : (
@@ -177,21 +177,21 @@ export const BatchCard: React.FC<BatchCardProps> = ({
             </SelectTrigger>
 
             <SelectContent
-              className="z-20 bg-white rounded-md shadow-md p-2 space-y-2"
+              className="bg-white rounded-md shadow-md p-2 space-y-2 absolute -top-20 -left-20 z-10"
               side="bottom"
               align="start"
             >
               <SelectItem
                 value="active"
-                className="bg-[#1BBFCA]  rounded-md px-4 py-2 text-sm font-medium 
-                data-[highlighted]:bg-[#1BBFCA] hover:bg-[#1BBFCA] focus:bg-[#1BBFCA]" style={{...FONTS.heading_07}}
+                className="bg-[#1BBFCA] rounded-md px-4 py-2 text-sm font-medium 
+                data-[highlighted]:bg-[#1BBFCA] hover:bg-[#1BBFCA] focus:bg-[#1BBFCA]" style={{...FONTS.heading_09, color:COLORS.white}}
               >
                 Active
               </SelectItem>
               <SelectItem
                 value="inactive"
                 className="bg-[#1BBFCA] mt-2 rounded-md px-4 py-2 text-sm font-medium 
-                data-[highlighted]:bg-[#1BBFCA] hover:bg-[#1BBFCA] focus:bg-[#1BBFCA]" style={{...FONTS.heading_07}}
+                data-[highlighted]:bg-[#1BBFCA] hover:bg-[#1BBFCA] focus:bg-[#1BBFCA]" style={{...FONTS.heading_09, color:COLORS.white}}
               >
                 Inactive
               </SelectItem>
