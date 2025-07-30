@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import atten from '../../assets/Attendence management.png'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import close from '../../assets/close.png'
 const StaffTitleBar: React.FC = () => {
 
     const [Filter, setFilter] = useState(false)
@@ -17,7 +17,7 @@ const StaffTitleBar: React.FC = () => {
                     className="text-[#3ABE65] text-2xl font-bold rounded-md bg-white p-2 cursor-pointer"
                     onClick={() => setFilter(!Filter)}
                 >
-                    {Filter ? 'X' : 'GO'}
+                    {Filter ? <img src={close} alt="" className='w-[37px] h-[32px]' /> : 'GO'}
                 </div>
             </div>
 
