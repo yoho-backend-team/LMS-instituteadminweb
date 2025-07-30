@@ -39,6 +39,7 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -93,6 +94,7 @@ const AppRoutes = () => {
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
+				 <Route path="/view-batch" element={<StudentDashboardMain/>}/>
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
