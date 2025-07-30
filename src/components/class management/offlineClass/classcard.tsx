@@ -17,8 +17,8 @@ import {
 import { Card, CardContent } from '../../ui/card';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
-import EditLiveClassModal from '../../BatchManagement/editBatch';
 import { Button } from '../../ui/button';
+import EditOfflineClass from './editOfflineClass';
 
 interface BatchCardProps {
 	title: string;
@@ -163,7 +163,7 @@ interface BatchCardProps {
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClassModal isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditOfflineClass isOpen={isEditModalOpen} onClose={closeEditModal} />
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

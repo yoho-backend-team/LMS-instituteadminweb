@@ -94,11 +94,11 @@ const OfflineClasses = () => {
           students={1}
           startDate="Fri, August 4, 2025 | 12:00 PM - 01:00 PM"
         />
-        <OfflineClassCard
+        {/* <OfflineClassCard
           title="PYTHON"
           students={5}
           startDate="Sun, August 31, 2025 | 12:00 AM - 12:00 PM"
-        />
+        /> */}
       </div>
 
       <CreateOfflineClassModal
