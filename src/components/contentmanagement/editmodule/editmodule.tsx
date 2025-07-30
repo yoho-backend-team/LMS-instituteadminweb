@@ -7,7 +7,7 @@ interface Props {
     onClose: () => void;
 }
 
-const Addmodule = ({ onClose }: Props) => {
+const Editmodule = ({ onClose }: Props) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleUploadClick = () => {
@@ -15,10 +15,10 @@ const Addmodule = ({ onClose }: Props) => {
     };
 
     return (
-        <div className="relative text-[#716F6F] p-3 h-full ">
+        <div className="relative text-[#716F6F] p-3 h-full shadow-[4px_4px_24px_0px_#0000001A]">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold ">Add Modules</h2>
+                <h2 className="text-xl font-bold ">Edit Modules</h2>
                 <button
                     onClick={onClose}
                     className="text-white bg-gray-500 rounded-full p-1 hover:bg-red-500"
@@ -39,26 +39,6 @@ const Addmodule = ({ onClose }: Props) => {
                     <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
                     <span className="text-gray-600">Drop File Here Or Click To Upload</span>
                     <input type="file" ref={fileInputRef} className="hidden" />
-                </div>
-
-                {/* Branch Dropdown */}
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="branch">Branch</label>
-                    <select id="branch" className="border p-2 rounded h-10">
-                        <option value="">Select Branch</option>
-                        <option value="branch1">Branch 1</option>
-                        <option value="branch2">Branch 2</option>
-                    </select>
-                </div>
-
-                {/* Course Dropdown */}
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="course">Select Course</label>
-                    <select id="course" className="border p-2 rounded h-10">
-                        <option value="">Select Course</option>
-                        <option value="course1">Course 1</option>
-                        <option value="course2">Course 2</option>
-                    </select>
                 </div>
 
                 {/* Title Input */}
@@ -104,6 +84,6 @@ const Addmodule = ({ onClose }: Props) => {
     );
 };
 
-export default Addmodule;
+export default Editmodule;
 
 
