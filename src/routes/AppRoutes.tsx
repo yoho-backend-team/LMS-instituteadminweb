@@ -95,6 +95,7 @@ const AppRoutes = () => {
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
+				 <Route path="/view-batch" element={<StudentDashboardMain/>}/>
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
