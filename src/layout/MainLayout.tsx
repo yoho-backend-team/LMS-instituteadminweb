@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-// import backgroundimage from '@/assets/Backgroundimage.png';
+import backgroundimage from '@/assets/Backgroundimage.png';
 import { useState } from 'react';
 import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
@@ -10,29 +10,25 @@ export const MainLayout = () => {
 	const sidebarWidth = isSidebarOpen ? 250 : 75;
 
 	return (
-		<div className='w-full h-screen flex flex-col'>
-			<div className='fixed top-0 left-0 w-full z-50'>
+	<div className='flex flex-col h-screen w-screen overflow-hidden'>
+			<div className=''>
 				<Navbar />
 			</div>
 
-			<div className='flex flex-1 pt-[64px]'>
+			<div className='flex  '>
 				<div
-					className='fixed top-[64px] left-0 z-40 h-[calc(100vh-64px)] transition-all duration-300'
+					className=' top-[64px] left-0 z-40 h-[calc(100vh-64px)] transition-all duration-300 '
 					style={{ width: `${sidebarWidth}px` }}
 				>
 					<SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 				</div>
 
 				<div
-					className='flex-1 px-8 py-2'
-					style={{
-						marginLeft: `${sidebarWidth}px`,
-						backgroundImage: `url()`,
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat',
-						transition: 'margin-left 0.3s ease',
-					}}
+					className='flex-1 overflow-auto p-4'
+					// style={{
+					// 	marginLeft: `${sidebarWidth}px`,
+					// 	transition: 'margin-left 0.3s ease',
+					// }}
 				>
 					<Outlet />
 				</div>
