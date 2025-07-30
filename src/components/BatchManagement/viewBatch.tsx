@@ -6,7 +6,7 @@ import flower from "../../assets/flower.png"
 import location from "../../assets/location.png"
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { FONTS } from "../../constants/uiConstants";
+import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Card } from "../ui/card";
 
 
@@ -64,13 +64,12 @@ export default function StudentDashboardMain() {
     <div className="p-6  min-h-screen">
       <button
   onClick={() => navigate(-1)}
-  className="flex items-center gap-2 text-[#ca406f] hover:text-[#a2355a] transition-all mb-4"
+  className="flex items-center gap-2 text-[#1BBFCA] hover:text-[#1BBFCA] transition-all mb-4"
 >
   <ArrowLeft className="w-5 h-5" />
-  <span className="font-medium text-base">Back</span>
 </button>
 
-      <h2 className="mb-4"style={{...FONTS.heading_03,fontSize:"24px"}}>MERN 2025</h2>
+      <h2 className="mb-4"style={{...FONTS.heading_04_bold,color:COLORS.gray_dark_02}}>MERN 2025</h2>
 
 
       <Card className="p-6 bg-white shadow-lg rounded-xl mb-8 space-y-4">
@@ -99,10 +98,9 @@ export default function StudentDashboardMain() {
             {batch.startDate}
           </div>
          <div className="flex items-center justify-center w-16 relative">
-            <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-[#D43C80] rounded-full -translate-y-1/2" />
-            <div className="absolute w-2 h-2 bg-[#D43C80] rounded-full left-0 -translate-y-1/2 top-1/2" />
-            <div className="absolute w-2 h-2 bg-[#D43C80] rounded-full right-0 -translate-y-1/2 top-1/2" />
-          </div>
+            <div className="absolute -top-[3px] left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2" />
+            <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full left-2 -translate-y-1/2 top-1/2" />
+            <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full right-2 -translate-y-1/2 top-1/2" />          </div>
           <div className="bg-blue-600  px-3 py-1 rounded-md"style={{...FONTS.heading_03,fontSize:"14px"}}>
             {batch.endDate}
           </div>
@@ -119,9 +117,9 @@ export default function StudentDashboardMain() {
         <input
           type="text"
           placeholder="Search Student"
-          className="border border-pink-400 pl-10 rounded-md "style={{...FONTS.heading_03}}
+          className="border border-[#1BBFCA] pl-10 rounded-md "style={{...FONTS.heading_03}}
         />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#1BBFCA]" />
       </div>
 
     

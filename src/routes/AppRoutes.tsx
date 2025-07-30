@@ -40,6 +40,7 @@ import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
+import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 
 const AppRoutes = () => {
@@ -95,12 +96,13 @@ const AppRoutes = () => {
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
-				 <Route path="/view-batch" element={<StudentDashboardMain/>}/>
+				<Route path='/view-batch' element={<StudentDashboardMain />} />
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
 				<Route path="/view-student" element={<StudentClassBatch/>}/>
 				<Route path='live-classes' element={<LiveClasses />} />
+				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
