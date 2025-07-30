@@ -5,31 +5,32 @@ import { Button } from "../../../components/ui/button";
 import { FONTS } from "../../../constants/uiConstants";
 import plus from "../../../assets/Add.png";
 import filter from "../../../assets/Filter.png";
+import { CreateOfflineClassModal } from '../../../components/class management/offlineClass/createOfflineClass';
 
 const OfflineClasses = () => {
  const [showFilter, setShowFilter] = useState(false);
  const [showCreateModal, setShowCreateModal] = useState(false);
 
 	return <div>
-		<h1>OfflineClasses</h1>
+	
 
          <div
       className="min-h-screen bg-cover bg-no-repeat bg-center p-4"
       // style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="mb-8">
-        <h2 className=" mb-6" style={{...FONTS.heading_01}}>Student</h2>
+        <h2 className=" mb-6" style={{...FONTS.heading_01}}>Offline Class</h2>
 
         <div className="flex justify-between items-center">
           <Button
             onClick={() => setShowFilter(!showFilter)}
-            className="bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2"style={{...FONTS.heading_03}}
+            className="bg-[#1BBFCA] hover:bg-[#1BBFCA]  text-white  px-4 flex items-center gap-2"style={{...FONTS.heading_07}}
           >
             <img src={filter} className="w-4 h-4" />
             {showFilter ? "Hide Filter" : "Show Filter"}
           </Button>
 
-          <Button className="bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2" style={{...FONTS.heading_03}}
+          <Button className="bg-[#1BBFCA] hover:bg-[#1BBFCA] text-white  px-4 flex items-center gap-2" style={{...FONTS.heading_07}}
           onClick={() => setShowCreateModal(true)}>
             <img src={plus} className="w-4 h-4" />
             Add OfflineClass 
@@ -40,31 +41,30 @@ const OfflineClasses = () => {
 
       {showFilter && (
         <div className="bg-[white] p-6 rounded-2xl shadow mb-8">
-          <h3 className=" mb-4"style={{...FONTS.heading_01}}>Batches</h3>
+          <h3 className=" mb-4"style={{...FONTS.heading_04}}>Filter</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-1"style={{...FONTS.heading_01}}>Search by Status</label>
+              <label className="block mb-1"style={{...FONTS.heading_07}}>Status</label>
               <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
-                <option value="">Select Status</option>
+                <option value=""> Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-
-            <div>
-              <label className="block mb-1"style={{...FONTS.heading_01}}>Search Between Dates</label>
-              <input type="date" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
-            </div>
-
-            <div>
-              <label className="block mb-1"style={{...FONTS.heading_01}}>Search by Course</label>
+			 <div>
+              <label className="block mb-1"style={{...FONTS.heading_07}}>Batches</label>
               <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
-                <option value="">Select Course</option>
+                <option value="">Select Batchs</option>
+                <option value="active">Batch 1</option>
+                <option value="inactive">Batch 2</option>
+				 <option value="inactive">Batch 3</option>
+				  <option value="inactive">Batch 4</option>
+				   <option value="inactive">Batch 5</option>
               </select>
             </div>
 
             <div>
-              <label className="block mb-1"style={{...FONTS.heading_01}}>Search Batch</label>
+              <label className="block mb-1"style={{...FONTS.heading_07}}>Search class</label>
               <input type="text" placeholder="Undefined" className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" />
             </div>
           </div>
@@ -89,7 +89,7 @@ const OfflineClasses = () => {
           status="Active"
         />
       </div> */}
-      {/* <CreateBatchModal isOpen={showCreateModal} setIsOpen={setShowCreateModal} /> */}
+      <CreateOfflineClassModal isOpen={showCreateModal} setIsOpen={setShowCreateModal} />
       
     </div>
 
