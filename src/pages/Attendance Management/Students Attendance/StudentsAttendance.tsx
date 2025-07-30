@@ -1,9 +1,12 @@
 import StudentHeaderBar from "../../../features/Attendance_Managemenet/Student_Attendance/components/StudentHeaderBar";
 
-
 const StudentsAttendance = () => {
 	return (
-		<><StudentHeaderBar/></>
+		<>
+		<div>
+			<StudentHeaderBar/>
+		</div>
+		</>
 	)
 };
 

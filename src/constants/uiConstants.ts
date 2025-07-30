@@ -23,7 +23,7 @@ export const FONTS = {
 	},
 	heading_04: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '24px',
 	},
 	heading_05: {
@@ -33,12 +33,12 @@ export const FONTS = {
 	},
 	heading_06: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '18px',
 	},
 	heading_07: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
-		fontSize: '16px',
+		fontWeight: 600,
+		fontSize: '14px',
 	},
 };
