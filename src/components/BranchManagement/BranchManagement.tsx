@@ -10,6 +10,7 @@ interface LocationCardProps {
   address: string;
   status: string;
   onViewDetails: () => void;
+  onEdit: () => void;
 }
 
 export function LocationCard({ 
@@ -17,7 +18,8 @@ export function LocationCard({
   cityName, 
   address, 
   status: initialStatus, 
-  onViewDetails 
+  onViewDetails,
+  onEdit
 }: LocationCardProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,6 +63,7 @@ export function LocationCard({
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => {
                     setIsMenuOpen(false);
+                    onEdit();
                   }}
                 >
                   Edit
@@ -133,49 +136,74 @@ export function LocationCard({
   );
 }
 
-// ... rest of the code remains the same ...
 export function LocationCardsGrid() {
-  const locations = [
+  const [locations, setLocations] = useState([
     {
       imageSrc: TrichyImg,
       cityName: "Tiruchirappalli",
       address: "No 3, Salman Complex, Tiruchirappalli, Tamil Nadu, 621014",
       status: "Active",
+      phoneNumber: "9876543210",
+      alternateNumber: "9876543211",
+      pinCode: "621014",
+      landMark: "Near Salman Complex",
     },
     {
       imageSrc: TrichyImg,
       cityName: "Chennai",
       address: "No 5, Gandhi Nagar, Chennai, Tamil Nadu, 600001",
       status: "Active",
+      phoneNumber: "9876543220",
+      alternateNumber: "9876543221",
+      pinCode: "600001",
+      landMark: "Near Gandhi Nagar",
     },
     {
       imageSrc: TrichyImg,
       cityName: "Coimbatore",
       address: "No 10, Nehru Street, Coimbatore, Tamil Nadu, 641001",
       status: "Inactive",
+      phoneNumber: "9876543230",
+      alternateNumber: "9876543231",
+      pinCode: "641001",
+      landMark: "Near Nehru Street",
     },
     {
       imageSrc: TrichyImg,
       cityName: "Madurai",
       address: "No 7, Meenakshi Road, Madurai, Tamil Nadu, 625001",
       status: "Active",
+      phoneNumber: "9876543240",
+      alternateNumber: "9876543241",
+      pinCode: "625001",
+      landMark: "Near Meenakshi Temple",
     },
     {
       imageSrc: TrichyImg,
       cityName: "Salem",
       address: "No 15, Fort Road, Salem, Tamil Nadu, 636001",
       status: "Inactive",
+      phoneNumber: "9876543250",
+      alternateNumber: "9876543251",
+      pinCode: "636001",
+      landMark: "Near Fort Road",
     },
     {
       imageSrc: TrichyImg,
       cityName: "Erode",
       address: "No 22, Bazaar Street, Erode, Tamil Nadu, 638001",
       status: "Active",
+      phoneNumber: "9876543260",
+      alternateNumber: "9876543261",
+      pinCode: "638001",
+      landMark: "Near Bazaar Street",
     },
-  ];
+  ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  
   const [formData, setFormData] = useState({
     branchName: '',
     phoneNumber: '',
@@ -184,7 +212,7 @@ export function LocationCardsGrid() {
     pinCode: '',
     landMark: '',
     city: '',
-    state: ''
+    state: 'Tamil Nadu'
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,10 +223,63 @@ export function LocationCardsGrid() {
     }));
   };
 
+  const handleEditBranch = (index: number) => {
+    const branch = locations[index];
+    setEditingIndex(index);
+    setFormData({
+      branchName: branch.cityName,
+      phoneNumber: branch.phoneNumber,
+      alternateNumber: branch.alternateNumber,
+      address: branch.address,
+      pinCode: branch.pinCode,
+      landMark: branch.landMark,
+      city: branch.cityName.split(',')[0],
+      state: 'Tamil Nadu'
+    });
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    
+    const newBranch = {
+      imageSrc: TrichyImg,
+      cityName: formData.branchName,
+      address: formData.address,
+      status: "Active",
+      phoneNumber: formData.phoneNumber,
+      alternateNumber: formData.alternateNumber,
+      pinCode: formData.pinCode,
+      landMark: formData.landMark
+    };
+
+    if (editingIndex !== null) {
+      // Update existing branch
+      const updatedLocations = [...locations];
+      updatedLocations[editingIndex] = newBranch;
+      setLocations(updatedLocations);
+    } else {
+      // Add new branch
+      setLocations([...locations, newBranch]);
+    }
+
+    // Reset form and close modal
+    resetForm();
     setIsModalOpen(false);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      branchName: '',
+      phoneNumber: '',
+      alternateNumber: '',
+      address: '',
+      pinCode: '',
+      landMark: '',
+      city: '',
+      state: 'Tamil Nadu'
+    });
+    setEditingIndex(null);
   };
 
   const handleBackFromBranchDetails = () => {
@@ -227,7 +308,10 @@ export function LocationCardsGrid() {
         </div>
 
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            resetForm();
+            setIsModalOpen(true);
+          }}
           className="w-full md:w-[200px] h-[48px] bg-[#1BBFCA] rounded-lg flex items-center justify-center gap-2 px-4 hover:bg-[#15a9b4] transition-colors"
         >
           <Plus className="w-6 h-6 text-white" />
@@ -243,6 +327,7 @@ export function LocationCardsGrid() {
             key={index} 
             {...location} 
             onViewDetails={() => setViewingBranch(location.cityName)}
+            onEdit={() => handleEditBranch(index)}
           />
         ))}
       </div>
@@ -253,13 +338,20 @@ export function LocationCardsGrid() {
             <div className="p-6 flex flex-col gap-6">
               <div className="flex justify-between items-center">
                 <div className="flex flex-col gap-3">
-                  <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">Create a New Branch</h2>
+                  <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
+                    {editingIndex !== null ? "Edit Branch" : "Create a New Branch"}
+                  </h2>
                   <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
-                    Fill in the details below to add a new branch
+                    {editingIndex !== null 
+                      ? "Update the branch details below" 
+                      : "Fill in the details below to add a new branch"}
                   </p>
                 </div>
                 <button 
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    resetForm();
+                  }}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   <X size={24} />
@@ -279,6 +371,7 @@ export function LocationCardsGrid() {
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter branch name"
+                      required
                     />
                   </div>
                   <div className="flex-1 flex flex-col gap-2">
@@ -286,12 +379,13 @@ export function LocationCardsGrid() {
                       Phone Number
                     </label>
                     <input
-                      type="text"
+                      type="tel"
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter phone number"
+                      required
                     />
                   </div>
                 </div>
@@ -302,7 +396,7 @@ export function LocationCardsGrid() {
                       Alternate Number
                     </label>
                     <input
-                      type="text"
+                      type="tel"
                       name="alternateNumber"
                       value={formData.alternateNumber}
                       onChange={handleInputChange}
@@ -321,6 +415,7 @@ export function LocationCardsGrid() {
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter address"
+                      required
                     />
                   </div>
                 </div>
@@ -337,6 +432,7 @@ export function LocationCardsGrid() {
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter pin code"
+                      required
                     />
                   </div>
                   <div className="flex-1 flex flex-col gap-2">
@@ -366,6 +462,7 @@ export function LocationCardsGrid() {
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter city"
+                      required
                     />
                   </div>
                   <div className="flex-1 flex flex-col gap-2">
@@ -379,6 +476,7 @@ export function LocationCardsGrid() {
                       onChange={handleInputChange}
                       className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
                       placeholder="Enter state"
+                      required
                     />
                   </div>
                 </div>
@@ -386,7 +484,10 @@ export function LocationCardsGrid() {
                 <div className="flex justify-end gap-4 mt-4">
                   <button
                     type="button"
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      resetForm();
+                    }}
                     className="px-6 py-2 border border-[#1BBFCA] text-[#1BBFCA] font-poppins font-medium rounded-lg bg-[rgba(27,191,202,0.1)]"
                   >
                     Cancel
@@ -395,7 +496,7 @@ export function LocationCardsGrid() {
                     type="submit"
                     className="px-6 py-2 bg-[#1BBFCA] text-white font-poppins font-medium rounded-lg"
                   >
-                    Create Branch
+                    {editingIndex !== null ? "Update Branch" : "Create Branch"}
                   </button>
                 </div>
               </form>

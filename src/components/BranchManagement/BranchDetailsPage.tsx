@@ -1,5 +1,4 @@
 "use client"
-
 import {
   ArrowLeft,
   ArrowUpFromLine,
@@ -13,17 +12,60 @@ import {
   ArrowRight,
 } from "lucide-react"
 import { useState } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
-
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
 
 interface BranchDetailsPageProps {
   locationName: string
   onBack: () => void
 }
+
+const CylinderBar = (props: any) => {
+  const { fill, x, y, width, height } = props;
+  
+  return (
+    <g>
+      {/* Main cylinder body */}
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={fill}
+        opacity={0.75}
+      />
+      
+      {/* Top adorn */}
+      <rect
+        x={x}
+        y={y - 8}
+        width={width}
+        height={16}
+        fill="#7086FD"
+      />
+      
+      {/* Top overlay */}
+      <rect
+        x={x}
+        y={y - 8}
+        width={width}
+        height={16}
+        fill="rgba(255, 255, 255, 0.5)"
+      />
+      
+      {/* Bottom adorn */}
+      <rect
+        x={x}
+        y={y + height - 8.6}
+        width={width}
+        height={16}
+        fill="#7086FD"
+      />
+    </g>
+  );
+};
 
 export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPageProps) {
   const chartData = [
@@ -44,19 +86,19 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
   const chartConfig = {
     fee: {
       label: "Fee",
-      color: "hsl(175 78% 40%)", // A shade of teal/green
+      color: "hsl(175 78% 40%)",
     },
     salary: {
       label: "Salary",
-      color: "hsl(200 78% 40%)", // A shade of blue
+      color: "hsl(200 78% 40%)",
     },
     pendings: {
       label: "Pendings",
-      color: "hsl(0 78% 60%)", // A shade of red
+      color: "hsl(0 78% 60%)",
     },
     totalIncome: {
       label: "Total Income",
-      color: "hsl(40 78% 60%)", // A shade of orange/yellow
+      color: "hsl(40 78% 60%)",
     },
   }
 
@@ -71,7 +113,6 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
         </Button>
         <h1 className="text-2xl font-bold text-[#1BBFCA]">{locationName} Dashboard</h1>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
         <div className="lg:col-span-2 flex flex-col gap-6">
@@ -101,13 +142,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                 </div>
                 <span className="text-sm font-medium text-[#716F6F]">Courses</span>
                 <span className="text-2xl font-bold text-[#716F6F]">098</span>
-                <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white/50 rounded-full">
+                <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white rounded-full">
                   <ArrowRight className="w-4 h-4 text-[#716F6F]" />
                 </Button>
               </div>
             </CardContent>
           </Card>
-
           {/* Statistics */}
           <Card className="p-4 shadow-lg rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -147,41 +187,103 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-                  <BarChart accessibilityLayer data={chartData}>
+                <div style={{ minHeight: '200px', width: '100%', flex: 1 }}>
+                  <BarChart
+                    width={768}
+                    height={300}
+                    data={chartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
                     <CartesianGrid vertical={false} strokeDasharray="4 4" />
                     <XAxis
                       dataKey="month"
                       tickLine={false}
                       tickMargin={10}
                       axisLine={false}
-                      tickFormatter={(value) => value}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
                       tickMargin={10}
-                      tickFormatter={(value) => `$${value / 1000}K`}
+                      tickFormatter={(value) => `₹${value / 1000}K`}
                     />
-                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                    <TabsContent value="fee" className="h-full w-full">
-                      <Bar dataKey="fee" fill="hsl(175 78% 40%)" radius={[4, 4, 0, 0]} />
-                    </TabsContent>
-                    <TabsContent value="salary" className="h-full w-full">
-                      <Bar dataKey="salary" fill="hsl(200 78% 40%)" radius={[4, 4, 0, 0]} />
-                    </TabsContent>
-                    <TabsContent value="pendings" className="h-full w-full">
-                      <Bar dataKey="pendings" fill="hsl(0 78% 60%)" radius={[4, 4, 0, 0]} />
-                    </TabsContent>
-                    <TabsContent value="totalIncome" className="h-full w-full">
-                      <Bar dataKey="totalIncome" fill="hsl(40 78% 60%)" radius={[4, 4, 0, 0]} />
-                    </TabsContent>
+                    
+                    {activeTab === 'fee' && (
+                      <Bar
+                        dataKey="fee"
+                        fill="#23AF62"
+                        radius={[4, 4, 0, 0]}
+                        shape={<CylinderBar />}
+                      >
+                        <LabelList 
+                          dataKey="fee" 
+                          position="top" 
+                          formatter={(value) => `₹${value / 1000}K`} 
+                          fill="#716F6F"
+                        />
+                      </Bar>
+                    )}
+                    
+                    {activeTab === 'salary' && (
+                      <Bar
+                        dataKey="salary"
+                        fill="#23AF62"
+                        radius={[4, 4, 0, 0]}
+                        shape={<CylinderBar />}
+                      >
+                        <LabelList 
+                          dataKey="salary" 
+                          position="top" 
+                          formatter={(value) => `₹${value / 1000}K`} 
+                          fill="#716F6F"
+                        />
+                      </Bar>
+                    )}
+                    
+                    {activeTab === 'pendings' && (
+                      <Bar
+                        dataKey="pendings"
+                        fill="#23AF62"
+                        radius={[4, 4, 0, 0]}
+                        shape={<CylinderBar />}
+                      >
+                        <LabelList 
+                          dataKey="pendings" 
+                          position="top" 
+                          formatter={(value) => `₹${value / 1000}K`} 
+                          fill="#716F6F"
+                        />
+                      </Bar>
+                    )}
+                    
+                    {activeTab === 'totalIncome' && (
+                      <Bar
+                        dataKey="totalIncome"
+                        fill="#23AF62"
+                        radius={[4, 4, 0, 0]}
+                        shape={<CylinderBar />}
+                      >
+                        <LabelList 
+                          dataKey="totalIncome" 
+                          position="top" 
+                          formatter={(value) => `₹${value / 1000}K`} 
+                          fill="#716F6F"
+                        />
+                      </Bar>
+                    )}
+                    
+                    <defs>
+                      <linearGradient id="cylinderGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#7086FD" />
+                        <stop offset="30%" stopColor="#23AF62" />
+                        <stop offset="100%" stopColor="#23AF62" stopOpacity={0.75} />
+                      </linearGradient>
+                    </defs>
                   </BarChart>
-                </ChartContainer>
+                </div>
               </Tabs>
             </CardContent>
           </Card>
-
           {/* Detailed Insights */}
           <Card className="p-4 shadow-lg rounded-xl">
             <CardHeader className="pb-4">
@@ -206,7 +308,6 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   <span className="ml-auto text-lg font-bold text-[#716F6F]">03</span>
                 </div>
               </div>
-
               <div className="flex flex-col items-start p-4 rounded-xl bg-[#E0F7FA]">
                 <span className="text-sm font-medium text-[#716F6F] mb-2">Classes</span>
                 <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Week Ago</span>
@@ -225,7 +326,6 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   <span className="ml-auto text-lg font-bold text-[#716F6F]">45</span>
                 </div>
               </div>
-
               <div className="flex flex-col items-start p-4 rounded-xl bg-[#FFEBEE]">
                 <span className="text-sm font-medium text-[#716F6F] mb-2">Courses</span>
                 <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Day Ago</span>
@@ -247,7 +347,6 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             </CardContent>
           </Card>
         </div>
-
         {/* Right Column */}
         <div className="lg:col-span-1 flex flex-col gap-6">
           {/* Recent Activities */}
@@ -282,7 +381,6 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
               ))}
             </CardContent>
           </Card>
-
           {/* Support Tickets */}
           <Card className="p-4 shadow-lg rounded-xl">
             <CardHeader className="pb-4">
