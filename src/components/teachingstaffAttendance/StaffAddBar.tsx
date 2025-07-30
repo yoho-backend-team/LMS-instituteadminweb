@@ -6,10 +6,12 @@ import filter from '../../assets/filter.png'
 import DashCalender from '../ui/calendarDash'
 
 interface formtype {
-    setOpen: (data: boolean) => void
+    setOpen: (data: boolean) => void;
+    setMonth: (data: number) => void;
+    setYear: (data: number) => void;
 }
 
-const StaffAddBar: React.FC<formtype> = ({ setOpen }) => {
+const StaffAddBar: React.FC<formtype> = ({ setOpen, setMonth, setYear }) => {
 
     const [callader, setcallader] = useState(false);
     const [filterDiv, setfilterDiv] = useState(false);
@@ -39,7 +41,7 @@ const StaffAddBar: React.FC<formtype> = ({ setOpen }) => {
                     <img src={cals} alt="" />
                 </div>
                 {
-                    callader && <div className='absolute ml-15'><DashCalender /></div>
+                    callader && <div className='absolute ml-15'><DashCalender setMonth={setMonth} setYear={setYear} setcals={setcallader} /></div>
                 }
                 <div
                     onClick={() => setfilterDiv(!filterDiv)}

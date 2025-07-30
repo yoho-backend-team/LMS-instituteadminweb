@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "./card";
 import prev from '../../assets/Vectorprev.png'
 import next from '../../assets/Vectornext.png'
@@ -8,7 +8,13 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-export const DashCalender = () => {
+interface propsdata {
+  setMonth: (data: number) => void;
+  setYear: (data: number) => void;
+  setcals: (data: boolean) => void;
+}
+
+export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -109,7 +115,12 @@ export const DashCalender = () => {
                 return (
                   <div
                     key={`day-${index}`}
-                    className={`h-8 w-8 flex items-center justify-center rounded-full transition ${isToday
+                    onClick={() => {
+                      setMonth(currentMonth)
+                      setYear(currentYear)
+                      setcals(false)
+                    }}
+                    className={`h-8 w-8 flex items-center justify-center rounded-full transition cursor-pointer ${isToday
                       ? "bg-[linear-gradient(135deg,rgba(123,0,255,1)_0%,rgba(178,0,255,1)_100%)] text-white font-bold"
                       : day
                         ? "text-[#706f6f] text-sm font-medium hover:bg-gray-200"
