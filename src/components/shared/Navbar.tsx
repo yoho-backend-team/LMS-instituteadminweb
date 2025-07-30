@@ -26,7 +26,7 @@ const Navbar = () => {
 
 	return (
 		<div>
-			<nav className='w-full bg-gradient-to-r from-[#1BBFCA] to-[#1BBFCA] p-3 flex items-center justify-between'>
+			<nav className='w-full p-3 flex items-center justify-between'>
 				<div className='flex items-center'>
 					<img src={titleIcon} alt='Logo' className='h-10 w-auto' />
 					<span className='ml-2 text-xl font-bold text-gray-800'></span>
@@ -66,7 +66,7 @@ const Navbar = () => {
 								<ul className='p-2 '>
 									<li>
 										<Link
-											to='/accprof'
+											to='/profile'
 											onClick={() => {
 												setActiveTab('profile');
 												setDropdownOpen(false);
