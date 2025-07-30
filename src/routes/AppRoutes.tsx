@@ -41,6 +41,7 @@ import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
+import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -99,6 +100,7 @@ const AppRoutes = () => {
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
+				<Route path="/view-student" element={<StudentClassBatch/>}/>
 				<Route path='live-classes' element={<LiveClasses />} />
 				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
 
