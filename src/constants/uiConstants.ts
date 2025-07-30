@@ -7,6 +7,16 @@ export const COLORS = {
 };
 
 export const FONTS = {
+	bold_heading:{
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '19px',
+	},
+	notes_head:{
+		fontFamily: 'Reddit Sans Condensed',
+		fontWeight: 700,
+		fontSize: '12px',
+	},
 	heading_01: {
 		fontFamily: 'Poppins',
 		fontWeight: 400,
@@ -42,4 +52,14 @@ export const FONTS = {
 		fontWeight: 400,
 		fontSize: '16px',
 	},
+	heading_08: {
+		fontFamily: 'Poppins',
+		fontWeight: 400,
+		fontSize: '12px',
+	},
+	description:{
+		fontFamily: 'Poppins',
+		fontWeight: 300,
+		fontSize: '10px',
+	}
 };
