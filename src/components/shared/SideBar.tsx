@@ -147,6 +147,12 @@ const SideBar = ({
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
+					<SidebarLink1
+						to='/modules'
+						label='modules'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
 				</SidebarDropdown>
 				<SidebarLink
 					to='/notes'
