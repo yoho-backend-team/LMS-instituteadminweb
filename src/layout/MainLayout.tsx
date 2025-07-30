@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import backgroundimage from '@/assets/Backgroundimage.png';
 import { useState } from 'react';
 import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
