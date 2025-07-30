@@ -3,6 +3,7 @@ export const COLORS = {
 	light_green: '#3ABE65',
 	gray_dark: '#716F6F',
 	gray_light: '#7D7D7D',
+	button:'#0AA2AC'
 };
 
 export const FONTS = {
