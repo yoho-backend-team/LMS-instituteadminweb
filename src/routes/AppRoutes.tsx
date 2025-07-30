@@ -39,6 +39,8 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import Acctprofile from '../pages/Dashboard/AccountProfile';
+import AccountProfile from '../pages/Dashboard/AccountProfile';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -59,7 +61,8 @@ const AppRoutes = () => {
 		<Routes>
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
-
+				
+				<Route path='accprof' element={<AccountProfile />} />
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
 				<Route path='staff-notifications' element={<StaffsNotifications />} />
