@@ -13,26 +13,26 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
   if (!isOpen) return null;
 
   const validationSchema = Yup.object({
-    batchName: Yup.string().required("Batch name is required"),
-    startDate: Yup.date().required("Start date is required"),
-    endDate: Yup.date()
+    className: Yup.string().required("Batch name is required"),
+    startTime: Yup.date().required("Start date is required"),
+    endTime: Yup.date()
       .required("End date is required")
       .min(Yup.ref("startDate"), "End date must be after start date"),
     branch: Yup.string().required("Branch selection is required"),
     course: Yup.string().required("Course selection is required"),
-    students: Yup.string().required("Student selection is required"),
-    teacher: Yup.string().required("Teacher selection is required"),
+    Instructors: Yup.string().required("Instructors selection is required"),
+   
   });
 
   const formik = useFormik({
     initialValues: {
-      batchName: "",
-      startDate: "",
-      endDate: "",
+      className: "",
+      startTime: "",
+      endTime: "",
       branch: "",
       course: "",
-      students: "",
-      teacher: "",
+      classDate:"",
+      instructors:"",
     },
     validationSchema,
     onSubmit: (values) => {
@@ -42,8 +42,8 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center bg-black/30 backdrop-blur-sm justify-center">
+      <div className="bg-white w-full max-w-4xl   rounded-2xl shadow-2xl">
         <h2
           className="!text-white text-center bg-[#1BBFCA] px-6 py-4 rounded-t-2xl mb-6"
           style={{ ...FONTS.heading_03}}
@@ -52,24 +52,24 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
         </h2>
 
         <form onSubmit={formik.handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2  px-4">
             <div className="md:col-span-2">
               <label style={{ ...FONTS.heading_07 }}>Class Name</label>
               <input
-                name="batchName"
+                name="className"
                 className="w-full border rounded-md px-4 py-2"
                 type="text"
-                value={formik.values.batchName}
+                value={formik.values.className}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.touched.batchName && formik.errors.batchName && (
-                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.batchName}</p>
+              {formik.touched.className && formik.errors.className && (
+                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.className}</p>
               )}
             </div>
 
            
-            <div>
+            <div className="md:col-span-2">
               <label style={{ ...FONTS.heading_07 }}> Branch</label>
               <select
                 name="branch"
@@ -89,11 +89,11 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
                 <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.branch}</p>
               )}
               <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_07}}>
-                Select a branch to see available courses.
+                Select a branch to see available branch.
               </p>
             </div>
 
-            <div>
+            <div className="md:col-span-2">
               <label style={{ ...FONTS.heading_07}}> Course</label>
               <select
                 name="course"
@@ -116,46 +116,77 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
                 Please select a branch first to enable course selection.
               </p>
             </div>
+            
 
-            <div>
-              <label style={{ ...FONTS.heading_07 }}>Students</label>
-              <select
-                name="students"
+        <div >
+              <label style={{ ...FONTS.heading_07 }}>Start Time</label>
+              <input
+                name="batchName"
                 className="w-full border rounded-md px-4 py-2"
-                value={formik.values.students}
+                type="time"
+                value={formik.values.startTime}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.startTime && formik.errors.startTime && (
+                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.startTime}</p>
+              )}
+            </div>
+            
+             <div >
+              <label style={{ ...FONTS.heading_07 }}>End Time</label>
+              <input
+                name="batchName"
+                type="time"
+                className="w-full border rounded-md px-4 py-2"
+                
+                value={formik.values.endTime}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.endTime && formik.errors.endTime && (
+                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.endTime}</p>
+              )}
+            </div>
+            
+         <div >
+              <label style={{ ...FONTS.heading_07 }}>Class Date </label>
+              <input
+                name="batchName"
+                className="w-full border rounded-md px-4 py-2"
+                type="text"
+                value={formik.values.classDate}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.classDate && formik.errors.classDate && (
+                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.classDate}</p>
+              )}
+            </div>
+              <div>
+              <label style={{ ...FONTS.heading_07}}> Instructors</label>
+              <select
+                name="course"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.instructors}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="">Select Students</option>
-                <option value="student1">Student 1</option>
+                <option value="">Select Instructors</option>
+                <option value="course1">Kamal</option>
+                <option value="course2">Elan Mask </option>
+                 
+                  
               </select>
-              {formik.touched.students && formik.errors.students && (
-                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.students}</p>
+              {formik.touched.instructors && formik.errors.instructors && (
+                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.instructors}
+                  Please select a branch first to enable course selection.
+                  </p>
+                
               )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_07 }}>
-                Please select a course to view and select students.
-              </p>
+            
             </div>
 
-            <div>
-              <label style={{ ...FONTS.heading_07 }}>Teacher</label>
-              <select
-                name="teacher"
-                className="w-full border rounded-md px-4 py-2"
-                value={formik.values.teacher}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">Select Teacher</option>
-                <option value="teacher1">Teacher 1</option>
-              </select>
-              {formik.touched.teacher && formik.errors.teacher && (
-                <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.teacher}</p>
-              )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_07}}>
-                Please select a course to view and select Teacher.
-              </p>
-            </div>
           </div>
 
 
@@ -163,13 +194,13 @@ export const CreateOfflineClassModal = ({ isOpen, setIsOpen }: CreateBatchModalP
             <Button
               type="button"
               variant="outline"
-              className="!border-[#0400FF] !text-[#0400FF] !bg-blue-50"
+              className=" !text-[#1BBFCA] border-[#1BBFCA] !bg-bray-250"
               onClick={() => setIsOpen(false)}
-              style={{ ...FONTS.heading_03 }}
+              style={{ ...FONTS.heading_07 }}
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]" style={{ ...FONTS.heading_03 }}>
+            <Button type="submit" className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]" style={{ ...FONTS.heading_07 }}>
               Submit
             </Button>
           </div>

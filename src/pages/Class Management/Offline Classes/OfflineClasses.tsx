@@ -6,7 +6,7 @@ import { FONTS } from "../../../constants/uiConstants";
 import plus from "../../../assets/Add.png";
 import filter from "../../../assets/Filter.png";
 import { CreateOfflineClassModal } from '../../../components/class management/offlineClass/createOfflineClass';
-
+import  {  BatchClassCard } from '../../../components/class management/offlineClass/classcard'
 const OfflineClasses = () => {
  const [showFilter, setShowFilter] = useState(false);
  const [showCreateModal, setShowCreateModal] = useState(false);
@@ -70,25 +70,25 @@ const OfflineClasses = () => {
           </div>
         </div>
       )}
-{/* 
-      <div className="flex gap-6 flex-wrap">
-        <BatchCard
-          title="MERN 2025"
-          subtitle="MERN STACK 2024"
-          students={2}
-          startDate="April 7, 2025"
-          endDate="April 7, 2025"
-          status="Active"
-        />
-        <BatchCard
-          title="MERN 2025"
-          subtitle="MERN STACK 2024"
-          students={2}
-          startDate="April 7, 2025"
-          endDate="April 7, 2025"
-          status="Active"
-        />
-      </div> */}
+
+         <div className="flex gap-6 flex-wrap">
+               <BatchClassCard
+                 title="MERN 2025"
+                 subtitle="MERN STACK 2024"
+                 students={2}
+                 startDate="April 7, 2025"
+                 endDate="April 7, 2025"
+                 status="Active"
+               />
+               <BatchClassCard
+                 title="MERN 2025"
+                 subtitle="MERN STACK 2024"
+                 students={2}
+                 startDate="April 7, 2025"
+                 endDate="April 7, 2025"
+                 status="Active"
+               />
+             </div>
       <CreateOfflineClassModal isOpen={showCreateModal} setIsOpen={setShowCreateModal} />
       
     </div>

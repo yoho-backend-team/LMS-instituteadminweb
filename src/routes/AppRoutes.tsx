@@ -40,6 +40,7 @@ import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
+import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -98,6 +99,7 @@ const AppRoutes = () => {
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
+				<Route path="/view-student" element={<StudentClassBatch/>}/>
 				<Route path='live-classes' element={<LiveClasses />} />
 
 				{/* Attendance Management */}
