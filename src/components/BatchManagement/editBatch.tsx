@@ -52,6 +52,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
         <div className="bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6">
           <h2 className="text-center" style={{ ...FONTS.heading_04_bold}}>Edit Batch</h2>
         </div>
+        <div className="space-y-4 min-h-[calc(100vh-380px)] overflow-y-auto mt-2">
 
         <form onSubmit={formik.handleSubmit} className="mt-6 px-6 space-y-4">
           {/* Batch Name */}
@@ -140,6 +141,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
             </Button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

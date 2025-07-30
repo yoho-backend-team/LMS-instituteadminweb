@@ -3,6 +3,7 @@ export const COLORS = {
 	light_green: '#3ABE65',
 	gray_dark_01: '#3B3939',
 	gray_dark_02: '#716F6F',
+	gray_dark_03: '#6C6C6C',
 	gray_light: '#7D7D7D',
 	blue: '#0400FF',
 	black: '#000',
@@ -79,6 +80,16 @@ export const FONTS = {
 		fontFamily: 'Poppins',
 		fontWeight: 300,
 		fontSize: '12px',
+	},
+	heading_11: {
+		fontFamily: 'Poppins',
+		fontWeight: 500,
+		fontSize: '18px',
+	},
+	heading_12: {
+		fontFamily: 'Poppins',
+		fontWeight: 300,
+		fontSize: '14px',
 	},
 
 
