@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import backgroundimage from '@/assets/Backgroundimage.png';
 import { useState } from 'react';
 import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
@@ -7,7 +6,7 @@ import SideBar from '../components/shared/SideBar';
 export const MainLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-	const sidebarWidth = isSidebarOpen ? 250 : 75;
+	const sidebarWidth = isSidebarOpen ? 250 : 85;
 
 	return (
 	<div className='flex flex-col h-screen w-screen overflow-hidden'>
@@ -25,10 +24,6 @@ export const MainLayout = () => {
 
 				<div
 					className='flex-1 overflow-auto p-4'
-					// style={{
-					// 	marginLeft: `${sidebarWidth}px`,
-					// 	transition: 'margin-left 0.3s ease',
-					// }}
 				>
 					<Outlet />
 				</div>
