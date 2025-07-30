@@ -4,6 +4,7 @@ import { Button } from '../../../components/ui/button';
 import filter from '../../../assets/Filter.png';
 import plus from '../../../assets/Add.png';
 import { CreateLiveClassModal } from '../../../components/ClassManagement/Live Class/createLiveClass';
+import { LiveClassCard } from '../../../components/ClassManagement/Live Class/classCard';
 
 const LiveClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
@@ -142,11 +143,27 @@ const LiveClasses = () => {
 				)}
 
 				<div className='flex gap-6 flex-wrap'>
-					<CreateLiveClassModal
-						isOpen={showCreateModal}
-						setIsOpen={setShowCreateModal}
+					<LiveClassCard
+						title='MERN'
+						students={2}
+						startDate='Thu, July 12, 2025 | 12:00 PM - 01:00 PM'
+					/>
+					<LiveClassCard
+						title='MEAN'
+						students={1}
+						startDate='Fri, August 4, 2025 | 12:00 PM - 01:00 PM'
+					/>
+					<LiveClassCard
+						title='PYTHON'
+						students={5}
+						startDate='Sun, August 31, 2025 | 12:00 AM - 12:00 PM'
 					/>
 				</div>
+
+				<CreateLiveClassModal
+					isOpen={showCreateModal}
+					setIsOpen={setShowCreateModal}
+				/>
 			</div>
 		</>
 	);

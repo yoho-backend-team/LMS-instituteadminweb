@@ -16,247 +16,337 @@ export const CreateLiveClassModal = ({
 	if (!isOpen) return null;
 
 	const validationSchema = Yup.object({
-		liveClassName: Yup.string().required('Batch name is required'),
-		startDate: Yup.date().required('Start date is required'),
-		endDate: Yup.date()
-			.required('End date is required')
-			.min(Yup.ref('startDate'), 'End date must be after start date'),
+		className: Yup.string().required('Class name is required'),
 		branch: Yup.string().required('Branch selection is required'),
 		course: Yup.string().required('Course selection is required'),
-		students: Yup.string().required('Student selection is required'),
-		teacher: Yup.string().required('Teacher selection is required'),
+		classDate: Yup.date().required('Class date is required'),
+		startTime: Yup.string().required('Start time is required'),
+		endTime: Yup.string().required('End time is required'),
+		instructors: Yup.string().required('Instructor selection is required'),
+		videoUrl: Yup.string()
+			.url('Invalid URL format')
+			.required('Video URL is required'),
 	});
 
 	const formik = useFormik({
 		initialValues: {
-			liveClassName: '',
-			startDate: '',
-			endDate: '',
+			className: '',
 			branch: '',
 			course: '',
-			students: '',
-			teacher: '',
+			classDate: '',
+			startTime: '',
+			endTime: '',
+			instructors: '',
+			videoUrl: '',
 		},
 		validationSchema,
 		onSubmit: (values) => {
-			console.log('Batch created with values:', values);
+			console.log('Live class created with values:', values);
 			setIsOpen(false);
 		},
 	});
 
 	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center'>
-			<div className='bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-y-auto'>
-				<h2
-					className='!text-white text-center bg-[#1BBFCA] px-6 py-4 rounded-t-2xl mb-6'
-					style={{ ...FONTS.heading_03 }}
-				>
-					Add Live Class
-				</h2>
+		<div className='fixed inset-0 z-50 overflow-y-auto'>
+			<div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+				{/* Background overlay */}
+				<div className='fixed inset-0 transition-opacity' aria-hidden='true'>
+					<div className='absolute inset-0 bg-gray-500 opacity-50'></div>
+				</div>
 
-				<form onSubmit={formik.handleSubmit}>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-6 px-4'>
-						<div className='md:col-span-2'>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+				{/* Modal container */}
+				<div className='inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all md:ml-65 md:my-20 sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full'>
+					<div className='bg-white p-4'>
+						<div className='bg-[#1BBFCA] rounded-md p-2'>
+							<h2
+								style={{
+									...FONTS.heading_05_bold,
+									color: COLORS.white,
+									textAlign: 'center',
+								}}
 							>
-								Class Name
-							</label>
-							<input
-								name='liveClassName'
-								className='w-full border rounded-md px-4 py-2'
-								type='text'
-								value={formik.values.liveClassName}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							/>
-							{formik.touched.liveClassName && formik.errors.liveClassName && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.liveClassName}
-								</p>
-							)}
+								Add Live Class
+							</h2>
 						</div>
 
-						<div className='md:col-span-2'>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Branch
-							</label>
-							<select
-								name='branch'
-								className='w-full border rounded-md px-4 py-2'
-								value={formik.values.branch}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							>
-								<option value=''>Select Branch</option>
-								<option value='branch1'>Branch 1</option>
-								<option value='branch2'>Branch 2</option>
-							</select>
-							{formik.touched.branch && formik.errors.branch && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.branch}
-								</p>
-							)}
-							<p
-								className='text-xs text-gray-500 mt-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Select a branch to see available courses.
-							</p>
-						</div>
+						<form onSubmit={formik.handleSubmit}>
+							<div className='space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto mt-2'>
+								<div>
+									<label
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Class Name
+									</label>
+									<input
+										name='className'
+										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+										type='text'
+										value={formik.values.className}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+									/>
+									{formik.touched.className && formik.errors.className && (
+										<p className='mt-1 text-sm text-[#1BBFCA]'>
+											{formik.errors.className}
+										</p>
+									)}
+								</div>
 
-						<div className='md:col-span-2'>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Course
-							</label>
-							<select
-								name='course'
-								className='w-full border rounded-md px-4 py-2'
-								value={formik.values.course}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							>
-								<option value=''>Select Course</option>
-								<option value='course1'>Course 1</option>
-								<option value='course2'>Course 2</option>
-							</select>
-							{formik.touched.course && formik.errors.course && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.course}
-								</p>
-							)}
-							<p
-								className='text-xs text-gray-500 mt-1'
-								style={{ ...FONTS.heading_07, color: COLORS.primary }}
-							>
-								Please select a branch first to enable course selection.
-							</p>
-						</div>
+								<div>
+									<label
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Select Branch
+									</label>
+									<select
+										name='branch'
+										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+										value={formik.values.branch}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+									>
+										<option
+											value=''
+											style={{
+												...FONTS.heading_09,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Select Branch
+										</option>
+										<option
+											value='branch1'
+											style={{
+												...FONTS.heading_09,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Branch 1
+										</option>
+										<option
+											value='branch2'
+											style={{
+												...FONTS.heading_09,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Branch 2
+										</option>
+									</select>
+									{formik.touched.branch && formik.errors.branch && (
+										<p className='mt-1 text-sm text-[#1BBFCA]'>
+											{formik.errors.branch}
+										</p>
+									)}
+								</div>
 
-						<div>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Start Date
-							</label>
-							<input
-								name='startDate'
-								className='w-full border rounded-md px-4 py-2'
-								type='date'
-								value={formik.values.startDate}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							/>
-							{formik.touched.startDate && formik.errors.startDate && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.startDate}
-								</p>
-							)}
-						</div>
+								<div>
+									<label
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Select Course
+									</label>
+									<select
+										name='course'
+										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+										value={formik.values.course}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										disabled={!formik.values.branch}
+									>
+										<option
+											value=''
+											style={{
+												...FONTS.heading_09,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Select Course
+										</option>
+										{formik.values.branch && (
+											<>
+												<option
+													value='course1'
+													style={{
+														...FONTS.heading_09,
+														color: COLORS.gray_dark_02,
+													}}
+												>
+													Course 1
+												</option>
+												<option
+													value='course2'
+													style={{
+														...FONTS.heading_09,
+														color: COLORS.gray_dark_02,
+													}}
+												>
+													Course 2
+												</option>
+											</>
+										)}
+									</select>
+									{formik.touched.course && formik.errors.course && (
+										<p className='mt-1 text-sm text-[#1BBFCA]'>
+											{formik.errors.course}
+										</p>
+									)}
+									{!formik.values.branch && (
+										<p className='mt-1 text-xs text-gray-500'>
+											Please select a branch first to enable course selection
+										</p>
+									)}
+								</div>
 
-						<div>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								End Date
-							</label>
-							<input
-								name='endDate'
-								className='w-full border rounded-md px-4 py-2'
-								type='date'
-								value={formik.values.endDate}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							/>
-							{formik.touched.endDate && formik.errors.endDate && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.endDate}
-								</p>
-							)}
-						</div>
+								<div className='grid grid-cols-3 gap-4'>
+									<div>
+										<label
+											style={{
+												...FONTS.heading_07,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Class Date
+										</label>
+										<input
+											name='classDate'
+											className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+											type='date'
+											value={formik.values.classDate}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+										/>
+										{formik.touched.classDate && formik.errors.classDate && (
+											<p className='mt-1 text-sm text-[#1BBFCA]'>
+												{formik.errors.classDate}
+											</p>
+										)}
+									</div>
+									<div>
+										<label
+											style={{
+												...FONTS.heading_07,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											Start Time
+										</label>
+										<input
+											name='startTime'
+											className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+											type='time'
+											value={formik.values.startTime}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+										/>
+										{formik.touched.startTime && formik.errors.startTime && (
+											<p className='mt-1 text-sm text-[#1BBFCA]'>
+												{formik.errors.startTime}
+											</p>
+										)}
+									</div>
+									<div>
+										<label
+											style={{
+												...FONTS.heading_07,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											End Time
+										</label>
+										<input
+											name='endTime'
+											className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+											type='time'
+											value={formik.values.endTime}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+										/>
+										{formik.touched.endTime && formik.errors.endTime && (
+											<p className='mt-1 text-sm text-[#1BBFCA]'>
+												{formik.errors.endTime}
+											</p>
+										)}
+									</div>
+								</div>
 
-						<div>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Students
-							</label>
-							<select
-								name='students'
-								className='w-full border rounded-md px-4 py-2'
-								value={formik.values.students}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							>
-								<option value=''>Select Students</option>
-								<option value='student1'>Student 1</option>
-							</select>
-							{formik.touched.students && formik.errors.students && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.students}
-								</p>
-							)}
-							<p
-								className='text-xs text-gray-500 mt-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Please select a course to view and select students.
-							</p>
-						</div>
+								<div>
+									<label
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Instructors
+									</label>
+									<select
+										name='instructors'
+										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+										value={formik.values.instructors}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										disabled={!formik.values.classDate}
+									>
+										<option value=''>Select Instructor</option>
+										{formik.values.classDate && (
+											<>
+												<option value='instructor1'>Instructor 1</option>
+												<option value='instructor2'>Instructor 2</option>
+											</>
+										)}
+									</select>
+									{formik.touched.instructors && formik.errors.instructors && (
+										<p className='mt-1 text-sm text-[#1BBFCA]'>
+											{formik.errors.instructors}
+										</p>
+									)}
+									{!formik.values.classDate && (
+										<p className='mt-1 text-xs text-gray-500'>
+											Please select a Class Date first to enable instructor
+											selection
+										</p>
+									)}
+								</div>
 
-						<div>
-							<label
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Teacher
-							</label>
-							<select
-								name='teacher'
-								className='w-full border rounded-md px-4 py-2'
-								value={formik.values.teacher}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							>
-								<option value=''>Select Teacher</option>
-								<option value='teacher1'>Teacher 1</option>
-							</select>
-							{formik.touched.teacher && formik.errors.teacher && (
-								<p className='text-[#1BBFCA] text-sm mt-1'>
-									{formik.errors.teacher}
-								</p>
-							)}
-							<p
-								className='text-xs text-gray-500 mt-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Please select a course to view and select Teacher.
-							</p>
-						</div>
+								<div>
+									<label
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Video URL
+									</label>
+									<input
+										name='videoUrl'
+										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
+										type='url'
+										placeholder='https://example.com'
+										value={formik.values.videoUrl}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+									/>
+									{formik.touched.videoUrl && formik.errors.videoUrl && (
+										<p className='mt-1 text-sm text-[#1BBFCA]'>
+											{formik.errors.videoUrl}
+										</p>
+									)}
+								</div>
+							</div>
+
+							<div className='mt-6 flex justify-end space-x-3'>
+								<Button
+									type='button'
+									variant='outline'
+									className='!border-[#1BBFCA] !text-[#1BBFCA] !bg-[#1bbeca15]'
+									onClick={() => setIsOpen(false)}
+								>
+									Cancel
+								</Button>
+								<Button
+									type='submit'
+									className='bg-[#1BBFCA] text-white hover:[#1BBFCA]'
+								>
+									Submit
+								</Button>
+							</div>
+						</form>
 					</div>
-
-					<div className='flex justify-end gap-4 mt-8 mb-4 px-4'>
-						<Button
-							type='button'
-							variant='outline'
-							className='!border-[#0400FF] !text-[#0400FF] !bg-blue-50'
-							onClick={() => setIsOpen(false)}
-							style={{ ...FONTS.heading_07_bold }}
-						>
-							Cancel
-						</Button>
-						<Button
-							type='submit'
-							className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]'
-							style={{ ...FONTS.heading_07_bold }}
-						>
-							Create Batch
-						</Button>
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	);
