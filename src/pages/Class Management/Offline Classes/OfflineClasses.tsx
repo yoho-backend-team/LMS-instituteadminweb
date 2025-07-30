@@ -3,6 +3,8 @@ import { useState } from 'react';
 import ClassBatch from '../../../components/class management/offlineClass/studentbatchcard';
 import { Button } from "../../../components/ui/button";
 import { FONTS } from "../../../constants/uiConstants";
+import plus from "../../../assets/Add.png";
+import filter from "../../../assets/Filter.png";
 
 const OfflineClasses = () => {
  const [showFilter, setShowFilter] = useState(false);
@@ -30,7 +32,7 @@ const OfflineClasses = () => {
           <Button className="bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2" style={{...FONTS.heading_03}}
           onClick={() => setShowCreateModal(true)}>
             <img src={plus} className="w-4 h-4" />
-            Add New Batch
+            Add OfflineClass 
           </Button>
         </div>
       </div>
