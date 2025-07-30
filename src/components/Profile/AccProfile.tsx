@@ -31,7 +31,7 @@ const AccountProfile: React.FC = () => {
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center space-x-4">
 						<img
-							src="https://via.placeholder.com/80"
+							src={"https://via.placeholder.com/80"}
 							alt="Profile"
 							className="w-16 h-16 rounded"
 						/>
