@@ -34,8 +34,7 @@ const SideBar = ({
 
 	return (
 		<div
-			className={`h-screen z-40 scrollbar-hide flex flex-col p-1 bg-gradient-to-b from-[#1BBFCA]  to-[#1BBFCA]
-              transform transition-all duration-500 ease-in-out origin-left  
+			className={`h-screen z-40 scrollbar-hide flex flex-col p-1 origin-left  
               ${
 								isOpen
 									? 'w-64 scale-100 opacity-100 pb-6 '
