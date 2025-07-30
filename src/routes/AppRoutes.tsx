@@ -39,6 +39,8 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import StudentDashboardMain from '../components/BatchManagement/viewBatch';
+import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -93,6 +95,7 @@ const AppRoutes = () => {
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
+				 <Route path="/view-batch" element={<StudentDashboardMain/>}/>
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
@@ -100,6 +103,7 @@ const AppRoutes = () => {
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
+				<Route path='students-attendance/details' element={<StudentDetails />} />
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
 
 				{/* Refund Management */}
