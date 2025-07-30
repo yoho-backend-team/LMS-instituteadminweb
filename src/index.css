@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
+/* :root {
 	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
@@ -88,8 +88,8 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-	/* outline: 4px auto -webkit-focus-ring-color; */
-}
+	outline: 4px auto -webkit-focus-ring-color;
+} */
 
 @media (prefers-color-scheme: light) {
 	:root {
