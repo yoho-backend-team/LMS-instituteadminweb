@@ -39,7 +39,8 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
-
+import Accountpf from '../components/Profile/AccProfile';
+import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
 	const isAuthenticated = true;
@@ -59,7 +60,8 @@ const AppRoutes = () => {
 		<Routes>
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
-
+				
+				<Route path='profile' element={<Accountpf />} />
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
 				<Route path='staff-notifications' element={<StaffsNotifications />} />
