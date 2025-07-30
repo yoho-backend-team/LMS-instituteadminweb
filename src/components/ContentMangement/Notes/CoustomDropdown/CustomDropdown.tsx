@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { RiArrowDownSLine } from "react-icons/ri";
+
+interface CustomDropdownProps {
+  options: string[];
+  value: string;
+  onChange: (value: string) => void;
+  label?: string;
+  placeholder?: string;
+  width?: string;
+}
+
+const CustomDropdown: React.FC<CustomDropdownProps> = ({
+  options,
+  value,
+  onChange,
+  label,
+  placeholder = "Select an option",
+  width = "w-full",
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const isTailwindWidth = width.startsWith("w-");
+
+  return (
+    <div
+      className={`relative inline-block text-sm ${
+        isTailwindWidth ? width : ""
+      }`}
+      style={!isTailwindWidth ? { width } : undefined}
+    >
+      {label && (
+        <label className="block mb-1 text-gray-700 font-medium bg-[#1BBFCA] px-2 py-1 rounded">
+          {label}
+        </label>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="w-full text-left bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100"
+      >
+        {value || placeholder}
+        <span className="float-right">
+          <RiArrowDownSLine size={24} />
+        </span>
+      </button>
+
+      {open && (
+        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-md max-h-60 overflow-y-auto">
+          {options.map((option) => (
+            <div
+              key={option}
+              onClick={() => {
+                onChange(option);
+                setOpen(false);
+              }}
+              className={`border border-gray-300 rounded-md mx-2 my-2 px-4 py-3 cursor-pointer hover:bg-[#1BBFCA] hover:text-white transition ${
+                value === option ? "bg-[#1BBFCA] text-white font-semibold" : ""
+              }`}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CustomDropdown;
