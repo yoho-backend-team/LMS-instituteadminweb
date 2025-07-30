@@ -52,9 +52,9 @@ const EditOfflineClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) =>
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-2xl h-[70vh] rounded-2xl shadow-lg">
+      <div className="bg-white w-full max-w-2xl h-[80vh] rounded-2xl shadow-lg">
         <div className="bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6">
-          <h2 className="text-center" style={{ ...FONTS.heading_03 }}>Edit Batch</h2>
+          <h2 className="text-center" style={{ ...FONTS.heading_03 }}>Edit Offline Class</h2>
         </div>
 
         <form onSubmit={formik.handleSubmit} className="mt-6 px-6 space-y-4">
