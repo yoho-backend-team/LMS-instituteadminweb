@@ -4,7 +4,6 @@ import clock from '../../assets/clock.png';
 
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import EditBatchModal from './editBatch';
 import { useNavigate } from 'react-router-dom';
 import wave from '../../assets/wave.png';
 import {
@@ -20,9 +19,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@radix-ui/react-select';
-import { Card, CardContent } from '../ui/card';
-import { FONTS } from '../../constants/uiConstants';
-import DeleteConfirmationModal from './deleteModal';
+import { Card, CardContent } from '../../ui/card';
+import { FONTS } from '../../../constants/uiConstants';
+import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
+import EditLiveClassModal from '../../BatchManagement/editBatch';
 
 interface BatchCardProps {
 	title: string;
@@ -226,7 +226,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 					</Select>
 				</div>
 			</CardContent>
-			<EditBatchModal isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClassModal isOpen={isEditModalOpen} onClose={closeEditModal} />
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

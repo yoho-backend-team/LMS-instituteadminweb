@@ -2,8 +2,8 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FONTS } from '../../constants/uiConstants';
-import { Button } from '../ui/button';
+import { FONTS } from '../../../constants/uiConstants';
+import { Button } from '../../ui/button';
 
 interface EditBatchModalProps {
 	isOpen: boolean;
@@ -16,10 +16,7 @@ interface FormValues {
 	endDate: string;
 }
 
-const EditLiveClassModal: React.FC<EditBatchModalProps> = ({
-	isOpen,
-	onClose,
-}) => {
+const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 	if (!isOpen) return null;
 
 	const selectedStudents = ['Elon Muck', 'John William'];
@@ -166,4 +163,4 @@ const EditLiveClassModal: React.FC<EditBatchModalProps> = ({
 	);
 };
 
-export default EditLiveClassModal;
+export default EditBatchModal;

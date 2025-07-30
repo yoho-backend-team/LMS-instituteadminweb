@@ -3,6 +3,7 @@ import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../../components/ui/button';
 import filter from '../../../assets/Filter.png';
 import plus from '../../../assets/Add.png';
+import { CreateLiveClassModal } from '../../../components/ClassManagement/Live Class/createLiveClass';
 
 const LiveClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
@@ -56,7 +57,7 @@ const LiveClasses = () => {
 								>
 									Status
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'>
+								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
 									<option value=''>Select Status</option>
 									<option value='active'>Active</option>
 									<option value='inactive'>Inactive</option>
@@ -70,7 +71,7 @@ const LiveClasses = () => {
 								>
 									Course
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'>
+								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
 									<option value=''>Select Course</option>
 									<option value='mern'>MERN STACK</option>
 									<option value='mean'>MEAN STACK</option>
@@ -86,7 +87,7 @@ const LiveClasses = () => {
 								>
 									Batches
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'>
+								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
 									<option value=''>Select Batches</option>
 									<option value='batch_1'>BATCH 1</option>
 									<option value='batch_2'>BATCH 2</option>
@@ -96,18 +97,31 @@ const LiveClasses = () => {
 								</select>
 							</div>
 
-							<div>
-								<label
-									className='block mb-1'
-									style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-								>
-									Search Batch
-								</label>
-								<input
-									type='text'
-									placeholder='Undefined'
-									className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
-								/>
+							<div className='flex justify-between w-full'>
+								<div>
+									<label
+										className='block mb-1'
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										Start Date
+									</label>
+									<input
+										type='date'
+										className='w-[220px] border border-gray-300 rounded-md px-3 py-2 text-sm'
+									/>
+								</div>
+								<div>
+									<label
+										className='block mb-1'
+										style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+									>
+										End Date
+									</label>
+									<input
+										type='date'
+										className='w-[220px] border border-gray-300 rounded-md px-3 py-2 text-sm'
+									/>
+								</div>
 							</div>
 
 							<div>
@@ -126,6 +140,13 @@ const LiveClasses = () => {
 						</div>
 					</div>
 				)}
+
+				<div className='flex gap-6 flex-wrap'>
+					<CreateLiveClassModal
+						isOpen={showCreateModal}
+						setIsOpen={setShowCreateModal}
+					/>
+				</div>
 			</div>
 		</>
 	);
