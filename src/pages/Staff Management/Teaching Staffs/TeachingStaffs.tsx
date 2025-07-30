@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
 import { Plus, Filter, Mail, ChevronDown } from 'lucide-react';
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+import { Avatar, AvatarImage } from "../../../components/ui/avatar";
+import { Separator } from "../../../components/ui/separator";
+import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
+import { useNavigate } from 'react-router-dom';
+
+// Define your theme colors in one place for easy maintenance
+const theme = {
+  primary: {
+    bg: 'bg-[#1bbfca]',
+    text: 'text-white',
+    border: 'border-[#1bbfca]',
+    hover: {
+      bg: 'hover:bg-[#1aa9b4]',
+      border: 'hover:border-[#1aa9b4]'
+    }
+  }
+};
 
 interface Staff {
   id: number;
@@ -50,156 +70,237 @@ const TeachingStaffs: React.FC = () => {
     ));
   };
 
+  // Status button style based on status
+  const getStatusButtonStyle = (status: 'Active' | 'Inactive') => {
+    if (status === 'Active') {
+      return `${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`;
+    } else {
+      return 'bg-destructive text-destructive-foreground hover:bg-destructive/90';
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleProfile = () => {
+    navigate('/staffs-details')
+  }
+
   return (
-    <div>
- 
-
-		{/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <button 
-            onClick={() => setShowFilter(!showFilter)}
-            className="flex items-center gap-2 px-3 py-1.5 !bg-[#1BBFCA] text-white rounded-md text-sm font-medium hover:bg-teal-600 transition-colors"
-          >
-            <Filter size={16} />
-            Show Filter
-          </button>
-          
-          <button 
-            onClick={() => setShowAddStaff(!showAddStaff)}
-            className="flex items-center gap-2 px-3 py-1.5 !bg-[#1BBFCA] text-white rounded-md text-sm font-medium hover:!border-none hover:bg-teal-600 transition-colors"
-          >
-            <Plus size={16} />
-            Add New Staff
-          </button>
-        </div>
-             {/* Filter Dropdowns */}
-{showFilter && (
-  <div className="grid grid-cols-2 gap-4 p-4 bg-white shadow-sm rounded-md mt-4">
-    <div className="flex flex-col w-full md:w-1/2">
-      <label className="text-sm font-medium text-gray-700 mb-1">Status</label>
-      <select className="w-full px-3 py-2 border border-gray-300 rounded-md">
-        <option value="">All</option>
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
-      </select>
-    </div>
-
-    <div className="flex flex-col w-full md:w-1/2">
-      <label className="text-sm font-medium text-gray-700 mb-1">Course</label>
-      <select className="w-full px-3 py-2 border border-gray-300 rounded-md">
-        <option value="">All Courses</option>
-        <option value="Course 1">Course 1</option>
-        <option value="Course 2">Course 2</option>
-      </select>
-    </div>
-  </div>
-)}
-      <Card className="max-w-md mx-auto bg-white rounded-lg shadow-sm">
+    <div className="space-y-4 overflow-y-auto">
+      {/* Header - Always visible */}
+      <div className="flex items-center justify-between p-4">
+        <Button
+          onClick={() => setShowFilter(!showFilter)}
+          className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+          disabled={showAddStaff} // Disable when form is open
+        >
+          <Filter size={16} />
+          Show Filter
+        </Button>
         
+        <Button 
+          onClick={() => setShowAddStaff(true)}
+          className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+          disabled={showAddStaff} // Disable when form is open
+        >
+          <Plus size={16} />
+          Add New Staff
+        </Button>
+      </div>
 
-       
+      {/* Conditional rendering - either show form or show the rest */}
+      {showAddStaff ? (
+        <Card className="p-6">
+          <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
 
-        {/* Staff List */}
-        <div className="divide-y divide-gray-200">
-          {staff.map((member) => (
-            <div key={member.id} className="p-4">
-              {/* Profile Section */}
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={member.avatar}
-                  alt={member.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{member.name}</h3>
-                </div>
-              </div>
-
-              {/* Email Section */}
-              <div className="flex items-center gap-2 mb-3 text-gray-600">
-                <Mail size={16} />
-                <span className="text-sm">{member.email}</span>
-              </div>
-
-              {/* Status Section */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-600">Status</span>
-                <div className="relative">
-                  <button
-                    onClick={() => toggleStatus(member.id)}
-                    className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                      member.status === 'Active'
-                        ? 'bg-teal-100 text-teal-700 hover:bg-teal-200'
-                        : 'bg-red-100 text-red-700 hover:bg-red-200'
-                    }`}
-                  >
-                    {member.status}
-                    <ChevronDown size={14} />
-                  </button>
-                </div>
-              </div>
-
-              {/* View Profile Button */}
-              <button className="w-full bg-blue-600 text-white py-2.5 rounded-md font-medium hover:bg-blue-700 transition-colors">
-                View Profile
-              </button>
+          {/* Profile Picture Section */}
+          <div className="flex items-center justify-between p-4 border rounded mb-6">
+            <div>
+              <p className="font-medium">Profile Picture</p>
+              <p className="text-xs text-muted-foreground">Allowed PNG or JPEG. Max size of 800k.</p>
             </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {staff.length === 0 && (
-          <div className="p-8 text-center text-gray-500">
-            <p>No staff members found.</p>
-            <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
+            <Button className="bg-green-500 hover:bg-green-600 text-white">
+              Upload Profile Picture
+            </Button>
           </div>
-        )}
-      </Card>
-       {/* Add Staff Form */}
-        {showAddStaff && (
-          <div className="p-4 border-b border-gray-200 bg-gray-50">
-            <h3 className="text-lg font-medium text-gray-900 mb-3">Add New Staff</h3>
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={newStaff.name}
-                onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={newStaff.email}
-                onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              <select
-                value={newStaff.status}
-                onChange={(e) => setNewStaff({ ...newStaff, status: e.target.value as 'Active' | 'Inactive' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleAddStaff}
-                  className="flex-1 bg-teal-500 text-white py-2 rounded-md hover:bg-teal-600 transition-colors"
-                >
-                  Add Staff
-                </button>
-                <button
-                  onClick={() => setShowAddStaff(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-400 transition-colors"
-                >
-                  Cancel
-                </button>
+
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <label htmlFor="">Full Name
+            <Input placeholder="Full Name" 
+              value={newStaff.name}
+              onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
+            />
+            </label>
+
+            <label htmlFor="">Email
+            <Input placeholder="Email" 
+              value={newStaff.email}
+              onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+            /></label>
+
+
+            <label htmlFor="">Date of Birth
+            <Input placeholder="Date Of Birth" />
+            </label>
+           
+           <label htmlFor="">Gender
+            <Select>
+              <SelectTrigger>
+                <SelectValue/>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+            </label>
+
+            <label htmlFor="">Courses
+            <Select>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Course 1">Course 1</SelectItem>
+                <SelectItem value="Course 2">Course 2</SelectItem>
+              </SelectContent>
+            </Select>
+            </label>
+
+            <label htmlFor="">Designation
+              <Input placeholder="Designation" />
+            </label>
+            
+            <label htmlFor="">Qualification
+            <Input placeholder="Qualification" /></label>
+
+            <label htmlFor="">State
+            <Input placeholder="State" /></label>
+
+            <label htmlFor="">City
+            <Input placeholder="City" /></label>
+
+            <label htmlFor="">Pin Code
+            <Input placeholder="Pin Code" /></label>
+
+            <label htmlFor="">Address Line 1
+            <Input placeholder="Address Line 1" /></label>
+
+            <label htmlFor="">Address Line 2
+            <Input placeholder="Address Line 2" /></label>
+
+            <label htmlFor="">Phone Number
+            <Input placeholder="Phone Number" /></label>
+
+            <label htmlFor="">Alt Phone Number
+            <Input placeholder="Alt Phone Number" /></label>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-4 mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAddStaff(false)}
+            >
+              Back
+            </Button>
+            <Button 
+              className="bg-teal-500 hover:bg-teal-600 text-white"
+              onClick={handleAddStaff}
+            >
+              Submit
+            </Button>
+          </div>
+        </Card>
+      ) : (
+        <>
+          {/* Filter Dropdowns */}
+          {showFilter && (
+            <Card className="grid grid-cols-2 gap-4 p-4">
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-          </div>
-        )}
 
+              <div className="space-y-2">
+                <Label htmlFor="course">Course</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Courses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Courses</SelectItem>
+                    <SelectItem value="Course 1">Course 1</SelectItem>
+                    <SelectItem value="Course 2">Course 2</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </Card>
+          )}
+
+          {/* Staff List */}
+          <Card className="max-w-md">
+            <div className="divide-y">
+              {staff.map((member) => (
+                <div key={member.id} className="p-4">
+                  {/* Profile Section */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar>
+                      <AvatarImage src={member.avatar} alt={member.name} />
+                    </Avatar>
+                    <div className="flex-1">
+                      <h3 className="font-medium">{member.name}</h3>
+                    </div>
+                  </div>
+
+                  {/* Email Section */}
+                  <div className="flex items-center gap-2 mb-3 text-muted-foreground">
+                    <Mail size={16} />
+                    <span className="text-sm">{member.email}</span>
+                  </div>
+
+                  {/* Status Section */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-muted-foreground">Status</span>
+                    <Button
+                      onClick={() => toggleStatus(member.id)}
+                      className={`gap-2 ${getStatusButtonStyle(member.status)}`}
+                      size="sm"
+                    >
+                      {member.status}
+                      <ChevronDown size={14} />
+                    </Button>
+                  </div>
+
+                  {/* View Profile Button */}
+                  <Button onClick={handleProfile} className={`w-full bg-[#0400ff] ${theme.primary.text}`} >
+                    View Profile
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {staff.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                <p>No staff members found.</p>
+                <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
+              </div>
+            )}
+          </Card>
+        </>
+      )}
     </div>
   );
 };

@@ -39,6 +39,7 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import MainPage from '../components/staff/MainPage';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -87,6 +88,7 @@ const AppRoutes = () => {
 
 				{/* Staff Management */}
 				<Route path='staffs' element={<TeachingStaffs />} />
+				<Route path='staffs-details' element={<MainPage />} />
 
 				{/* Student Management */}
 				<Route path='students' element={<Students />} />
