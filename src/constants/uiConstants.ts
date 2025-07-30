@@ -40,6 +40,11 @@ export const FONTS = {
 		fontWeight: 400,
 		fontSize: '20px',
 	},
+	heading_05_bold: {
+		fontFamily: 'Poppins',
+		fontWeight: 600,
+		fontSize: '20px',
+	},
 	heading_06: {
 		fontFamily: 'Poppins',
 		fontWeight: 400,

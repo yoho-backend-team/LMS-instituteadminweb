@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import backgroundimage from '@/assets/Backgroundimage.png';
 import { useState } from 'react';
 import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
@@ -23,7 +22,7 @@ export const MainLayout = () => {
 					<SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 				</div>
 
-				<div className='flex-1 overflow-auto p-6 bg-white rounded-tl-[35px]'>
+				<div className='flex-1 overflow-y-auto p-6 bg-white rounded-tl-[35px]'>
 					<Outlet />
 				</div>
 			</div>
