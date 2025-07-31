@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { FaPlus, FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa"
 import { Button } from "@/components/ui/button"
-import AddPlacement from "./AddPlacement"
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "../../components/ui/table"
+import PlacementForm from "./PlacementForm"
+
 
 interface Placement {
   id: number;
@@ -90,7 +91,7 @@ const Placements=()=> {
       </div>
 
       {showForm && (
-        <AddPlacement
+        <PlacementForm
           placement={editingPlacement}
           onClose={() => setShowForm(false)}
           onSubmit={handleAddPlacement}
