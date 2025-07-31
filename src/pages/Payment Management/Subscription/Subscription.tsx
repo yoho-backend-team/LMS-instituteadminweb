@@ -1,7 +1,10 @@
 import React from 'react';
+import SubscriptionPlan from '../../../components/SubscriptionPlan/SubscriptionPlan';
 
 const Subscription = () => {
-	return <div>Subscription</div>;
+	return <div>
+		<SubscriptionPlan />
+	</div>;
 };
 
 export default Subscription;
