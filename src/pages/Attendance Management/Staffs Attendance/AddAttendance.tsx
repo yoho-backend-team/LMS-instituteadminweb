@@ -57,7 +57,7 @@ const AddAttendance = () => {
 
         weeks.flat().forEach(day => {
             if (day) {
-                const finds = staffAttendace?.data?.find((item: any) => {
+                const finds = staffAttendace?.find((item: any) => {
                     const changeDate = new Date(item.date).getDate()
                     const changeDate2 = new Date(item.date).getMonth()
                     const changeDate3 = new Date(item.date).getFullYear()

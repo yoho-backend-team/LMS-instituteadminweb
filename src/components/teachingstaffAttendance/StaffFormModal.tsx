@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashCalender from '../ui/calendarDash';
 import type { StaffsAttendanceType } from '../../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
 import { GetImageUrl } from '../../utils/helper';
+import { useDispatch } from 'react-redux';
+import { UpdateAttendanceThunk } from '../../features/teachingstaffAttendance/thunk';
+import { UpdateStaffAttendance } from '../../features/teachingstaffAttendance/service';
 
 interface formtype {
     setOpen: (data: boolean) => void;
@@ -23,6 +27,8 @@ const drawerVariants = {
 
 const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen, data }) => {
 
+    const dispatch = useDispatch<any>()
+
     const [FormData, setFormData] = useState({
         status: '',
         staff: '',
@@ -38,7 +44,9 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen, data }) => {
         const date = new Date(currentYear, currentMonth, currentDate, 12).toISOString()
         FormData.date = date.split('T')[0]
         FormData.staff = data.staff
-        console.log(FormData)
+        const thunk = { date, status: FormData.status, staff: data.staff }
+        dispatch(UpdateAttendanceThunk(thunk))
+        UpdateStaffAttendance(FormData)
     }
 
     return (
@@ -56,7 +64,7 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen, data }) => {
                     />
 
                     <motion.div
-                        className="fixed top-4 right-5 h-[880px] w-full max-w-md bg-white shadow-xl p-6 rounded-lg"
+                        className="fixed top-4 right-5 h-[880px] w-full max-w-md bg-white shadow-xl p-6 rounded-lg overflow-scroll"
                         variants={drawerVariants}
                         initial="hidden"
                         animate="visible"
