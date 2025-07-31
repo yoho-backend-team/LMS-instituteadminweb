@@ -56,4 +56,19 @@ export const FONTS = {
 		fontWeight: 600,
 		fontSize: '24px',
 	},
+	heading_11: {
+		fontFamily: 'Poppins',
+		fontWeight: 600,
+		fontSize: '20px',
+	},
+		heading_12: {
+		fontFamily: 'Poppins',
+		fontWeight: 600,
+		fontSize: '16px',
+	},
+	heading_13: {
+		fontFamily: 'Poppins',
+		fontWeight: 600,
+		fontSize: '18px',
+	},
 };
