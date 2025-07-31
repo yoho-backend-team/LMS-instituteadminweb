@@ -49,6 +49,7 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 // import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
+import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -130,6 +131,7 @@ const AppRoutes = () => {
 					element={<StudentDetails />}
 				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
+				<Route path='staffs-attendance/view/:id' element={<AddAttendance />} />
 
 				{/* Refund Management */}
 				<Route path='refund-fees' element={<RefundFees />} />

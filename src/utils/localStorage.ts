@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import secureStorage from 'react-secure-storage';
 
 export const StoreLocalStorage = (key: string, data: any) => {
