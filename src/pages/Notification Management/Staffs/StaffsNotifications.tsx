@@ -11,7 +11,6 @@ import {
   SelectItem,
   SelectValue,
 } from "../../../components/ui/select";
-
 import {
   Drawer,
   DrawerClose,
@@ -19,12 +18,16 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "../../../components/ui/drawer";
-
 import purpleImg from "../../../assets/purple icon.png";
 import greenImg from "../../../assets/green icon.png";
 import classImg from "../../../assets/classimg (1).png";
 import instructorImg from "../../../assets/image 108.png";
 import { X } from "lucide-react";
+
+
+
+
+
 
 const stats = [
   {
@@ -46,6 +49,8 @@ const stats = [
     image: classImg,
   },
 ];
+
+
 
 const StaffsNotification: React.FC = () => {
   const [open, setOpen] = useState(false);
