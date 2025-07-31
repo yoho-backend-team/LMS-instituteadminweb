@@ -146,10 +146,10 @@ const TeachingStaffs: React.FC = () => {
                 <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                   <SelectValue/>
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Male">Male</SelectItem>
-                  <SelectItem value="Female">Female</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                <SelectContent className="bg-white">
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Male">Male</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Female">Female</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </label>
@@ -160,9 +160,9 @@ const TeachingStaffs: React.FC = () => {
                 <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Course 1">Course 1</SelectItem>
-                  <SelectItem value="Course 2">Course 2</SelectItem>
+                <SelectContent className="bg-white">
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Course 1">Course 1</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Course 2">Course 2</SelectItem>
                 </SelectContent>
               </Select>
             </label>
@@ -288,10 +288,10 @@ const TeachingStaffs: React.FC = () => {
                   <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                     <SelectValue placeholder=" "  />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  <SelectContent className='bg-white '>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="all">All</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Active">Active</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -303,9 +303,9 @@ const TeachingStaffs: React.FC = () => {
                     <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Course</SelectItem>
-                    <SelectItem value="Course 1">Course 1</SelectItem>
-                    <SelectItem value="Course 2">Course 2</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="all">All Course</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Course 1">Course 1</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Course 2">Course 2</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -332,18 +332,19 @@ const TeachingStaffs: React.FC = () => {
                   </div>
 
                   {/* Status Section */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4 bg-white">
                     <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
                     <Select 
                       value={member.status}
                       onValueChange={(value: 'Active' | 'Inactive') => toggleStatus(member.id)}
+                      
                     >
-                      <SelectTrigger className={`gap-2 w-[120px] ${getStatusButtonStyle(member.status)}`}>
+                      <SelectTrigger className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(member.status)}`}>
                         <SelectValue placeholder={member.status} />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Active" className="focus:bg-green-100">Active</SelectItem>
-                        <SelectItem value="Inactive" className="focus:bg-red-100">Inactive</SelectItem>
+                      <SelectContent className="bg-[#1BBFCA]">
+                        <SelectItem value="Active" className="focus:bg-white cursor-pointer">Active</SelectItem>
+                        <SelectItem value="Inactive" className="focus:bg-white cursor-pointer">Inactive</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

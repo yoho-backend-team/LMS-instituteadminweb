@@ -2,7 +2,7 @@ import { useState } from "react";
 import { addMonths, format, getDaysInMonth, getDay, subMonths, isSameMonth, isToday } from "date-fns";
 
 const Attendancepage = () => {
-    const [openModal, setopenModal] = useState(false);
+    // const [openModal, setopenModal] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
