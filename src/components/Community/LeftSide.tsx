@@ -11,7 +11,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
   const batch = "MERN 2025"; // Only one batch
 
   return (
-    <div className="w-1/4 bg-[#1BBFCA] text-white flex flex-col items-center pt-6 px-4 h-[90vh] rounded-lg overflow-hidden mt-6 ">
+    <div className="w-1/4 bg-[#1BBFCA] text-white flex flex-col items-center pt-6 px-4 h-[75vh] rounded-lg overflow-hidden mt-18 ">
       <div className="text-xl  text-[#BBFCA] font-bold  mr-47 ">Batches</div>
 
       <div

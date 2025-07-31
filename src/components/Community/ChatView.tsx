@@ -1,11 +1,13 @@
-// ChatView.tsx
-import React, { useRef, useEffect } from "react";
-import frame2 from "../../assets/navbar/frame2.png";
+import React, { useRef, useEffect, useState } from "react";
+// import frame2 from "../../assets/navbar/frame2.png";
 import chatBg from "../../assets/navbar/chatBg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
 import cancel from "../../assets/navbar/cancel.png";
 import image from "../../assets/navbar/image.png";
+import Button from "../../assets/navbar/Button.png";
+import circle from "../../assets/navbar/circle.png";
+import contact from "../../assets/navbar/contact.png";
 
 interface Message {
   sender: string;
@@ -45,28 +47,32 @@ const ChatView: React.FC<Props> = ({
   setIsEditing,
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="w-3/4 p-6 overflow-y-auto min-h-[calc(100vh-64px)] relative">
-      <div className="bg-white rounded-lg shadow px-4 md:px-6 min-h-[calc(100vh-64px)] flex flex-col relative pb-6">
-        {/* <div className="flex justify-end p-2">
-          <button onClick={onClose}>
-            <img src={cancel} alt="Close" className="w-5 h-5" />
-          </button>
-        </div> */}
-        <img
-          src={frame2}
-          alt="Batch Banner"
-          onClick={() => setShowProfile(true)}
-          className="cursor-pointer w-[900px] h-[150px] mb-4 mt-auto"
-        />
+    <div className="w-3/4 p-6 overflow-y-auto relative">
+      <div className="bg-white rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12">
+        {/* Top Bar */}
+        <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4">
+          <img
+            src={circle}
+            alt="batch"
+            className="w-12 h-12 rounded-full mr-4"
+            onClick={() => setShowProfile(true)}
+          />
+          <div>
+            <p className="text-gray-800 font-bold text-sm">MERN 2025</p>
+            <p className="text-gray-500 text-xs">MEAN STACK 2024</p>
+          </div>
+        </div>
 
+        {/* Messages */}
         <div
-          className="flex-1 p-4 overflow-y-auto mt--20"
+          className="flex-1 p-4 overflow-y-auto"
           style={{
             backgroundImage: `url(${chatBg})`,
             backgroundSize: "cover",
@@ -78,38 +84,78 @@ const ChatView: React.FC<Props> = ({
             <div
               key={index}
               className={`mb-3 flex ${
-                msg.sender === "admin" ? "justify-end" : "justify-start"
-              } group`}
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              } group items-end`}
             >
-              <div className="relative">
+              {/* 👤 Show icon on left for others */}
+              {msg.sender !== "user" && (
+                <img
+                  src={contact}
+                  alt="icon"
+                  className="w-6 h-6 rounded-full mr-2"
+                />
+              )}
+
+              <div className="relative max-w-[70%]">
                 <div
-                  className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
-                    msg.sender === "admin"
-                      ? "bg-cyan-500 text-white"
-                      : "bg-white border text-black"
+                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm ${
+                    msg.sender === "user"
+                      ? "bg-[#1BBFCA] text-white rounded-br-none"
+                      : "bg-white border text-black rounded-bl-none"
                   }`}
                 >
                   <p>{msg.text}</p>
-                  <p className="text-[10px] text-right mt-1">{msg.time}</p>
+                  <p className="text-[10px] text-right mt-1 opacity-70">
+                    {msg.time}
+                  </p>
                 </div>
+
+                {/* 📎 Show delete option only for user's messages */}
                 {msg.sender === "user" && (
-                  <button
-                    onClick={() => onDeleteMessage(index)}
-                    className="absolute -right-6 top-1 hidden group-hover:inline"
-                  >
-                    <img
-                      src={cancel}
-                      alt="delete"
-                      className="w-4 h-4 opacity-70 hover:opacity-100"
-                    />
-                  </button>
+                  <div className="absolute top-1 -left-8">
+                    <button
+                      onClick={() =>
+                        setOpenMenuIndex(openMenuIndex === index ? null : index)
+                      }
+                    >
+                      <img
+                        src={Button}
+                        alt="menu"
+                        className="w-4 h-4 opacity-70 hover:opacity-100"
+                      />
+                    </button>
+
+                    {openMenuIndex === index && (
+                      <div className="absolute top-5 left-0 bg-white border rounded shadow text-xs z-50">
+                        <button
+                          className="px-3 py-1 hover:bg-gray-100 w-full text-left"
+                          onClick={() => {
+                            onDeleteMessage(index);
+                            setOpenMenuIndex(null);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
+
+              {/* 👤 Show icon on right for your own message */}
+              {msg.sender === "user" && (
+                <img
+                  src={image}
+                  alt="You"
+                  className="w-6 h-6 rounded-full ml-2"
+                />
+              )}
             </div>
           ))}
           <div ref={chatEndRef} />
         </div>
 
+        {/* Message Input */}
         <div className="mt-2 flex items-center gap-2 px-2 relative">
           <button>
             <img src={emojiIcon} alt="emoji" className="w-5 h-5" />
@@ -133,8 +179,9 @@ const ChatView: React.FC<Props> = ({
         </div>
       </div>
 
+      {/* Profile Panel */}
       {showProfile && (
-        <div className="absolute top-7 right-0 bg-white w-[300px] h-[80%] shadow-xl rounded-lg p-4 z-50">
+        <div className="absolute top-12 right-0 bg-white w-[300px] h-[90%] shadow-xl rounded-lg p-4 z-50">
           <div className="flex justify-between items-center mb-2">
             <button onClick={() => setShowProfile(false)}>
               <img src={cancel} alt="cancel" className="w-5 h-5" />
@@ -243,6 +290,22 @@ const ChatView: React.FC<Props> = ({
               </ul>
             </div>
           </div>
+          <hr className="my-4" />
+
+          {/* Staff Section */}
+          <div>
+            <h3 className="font-semibold">Staff</h3>
+            <p className="text-gray-500">No Staffs Found</p>
+          </div>
+
+          <hr className="my-4" />
+
+          {/* Students Section */}
+          <div>
+            <h3 className="font-semibold">Students</h3>
+            <p className="text-gray-500">No Students Found</p>
+          </div>
+
           {isEditing && (
             <div className="mt-4 flex justify-end">
               <button

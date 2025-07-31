@@ -55,7 +55,7 @@ const Communitys: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] font-sans bg-white-100 items-start pt-6 mt-[10px]">
+    <div className="flex  font-sans bg-white-100 items-start ">
       <LeftSide
         batches={batches}
         selectedBatch={selectedBatch}
