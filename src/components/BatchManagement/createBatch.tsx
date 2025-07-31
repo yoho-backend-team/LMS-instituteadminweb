@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FONTS } from "../../constants/uiConstants";
+import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Button } from "../ui/button";
 
 interface CreateBatchModalProps {
@@ -45,8 +45,8 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl">
         <h2
-          className="!text-white text-center bg-[#1BBFCA] px-6 py-4 rounded-t-2xl mb-6"
-          style={{ ...FONTS.heading_03}}
+          className="!text-white  bg-[#1BBFCA] px-6 py-4 rounded-t-2xl mb-6"
+          style={{ ...FONTS.heading_04_bold}}
         >
           Create New Batch
         </h2>
@@ -54,7 +54,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
         <form onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
             <div className="md:col-span-2">
-              <label style={{ ...FONTS.heading_03 }}>Batch Name</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Batch Name</label>
               <input
                 name="batchName"
                 className="w-full border rounded-md px-4 py-2"
@@ -69,7 +69,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>Start Date</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Start Date</label>
               <input
                 name="startDate"
                 className="w-full border rounded-md px-4 py-2"
@@ -84,7 +84,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>End Date</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>End Date</label>
               <input
                 name="endDate"
                 className="w-full border rounded-md px-4 py-2"
@@ -99,7 +99,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>Branch</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Branch</label>
               <select
                 name="branch"
                 className="w-full border rounded-md px-4 py-2"
@@ -114,13 +114,13 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               {formik.touched.branch && formik.errors.branch && (
                 <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.branch}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_03 }}>
+              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_10,color:COLORS.gray_dark_02 }}>
                 Select a branch to see available courses.
               </p>
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>Course</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Course</label>
               <select
                 name="course"
                 className="w-full border rounded-md px-4 py-2"
@@ -135,13 +135,13 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               {formik.touched.course && formik.errors.course && (
                 <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.course}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_03 }}>
+              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_10,color:COLORS.gray_dark_02 }}>
                 Please select a branch first to enable course selection.
               </p>
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>Students</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Students</label>
               <select
                 name="students"
                 className="w-full border rounded-md px-4 py-2"
@@ -155,13 +155,13 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               {formik.touched.students && formik.errors.students && (
                 <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.students}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_03 }}>
+              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_10,color:COLORS.gray_dark_02 }}>
                 Please select a course to view and select students.
               </p>
             </div>
 
             <div>
-              <label style={{ ...FONTS.heading_03 }}>Teacher</label>
+              <label style={{ ...FONTS.heading_07,color:COLORS.gray_dark_02 }}>Teacher</label>
               <select
                 name="teacher"
                 className="w-full border rounded-md px-4 py-2"
@@ -175,7 +175,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               {formik.touched.teacher && formik.errors.teacher && (
                 <p className="text-[#1BBFCA] text-sm mt-1">{formik.errors.teacher}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_03 }}>
+              <p className="text-xs text-gray-500 mt-1" style={{ ...FONTS.heading_10,color:COLORS.gray_dark_02 }}>
                 Please select a course to view and select Teacher.
               </p>
             </div>
@@ -185,13 +185,13 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
             <Button
               type="button"
               variant="outline"
-              className="!border-[#0400FF] !text-[#0400FF] !bg-blue-50"
+              className="!border-[#1BBFCA] !text-[#1BBFCA] bg-[#1bbeca15] "
               onClick={() => setIsOpen(false)}
-              style={{ ...FONTS.heading_03 }}
+              style={{ ...FONTS.heading_07_bold }}
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]" style={{ ...FONTS.heading_03 }}>
+            <Button type="submit" className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]" style={{ ...FONTS.heading_07_bold }}>
               Create Batch
             </Button>
           </div>

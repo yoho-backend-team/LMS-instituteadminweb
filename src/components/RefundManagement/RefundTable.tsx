@@ -4,7 +4,7 @@ import type { RefundData } from "../../pages/Refund Management/Fees/RefundFees";
 
 const RefundTable: React.FC<{ data: RefundData[] }> = ({ data }) => {
   return (
-    <div className="p-4 bg-white rounded-xl shadow-md overflow-x-auto">
+    <div className="p-4 bg-white rounded-xl border shadow-md overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead className="bg-[#F8F8F8] text-[#716F6F] font-semibold text-sm">
           <tr>
