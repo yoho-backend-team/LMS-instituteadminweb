@@ -14,7 +14,7 @@ export const MainLayout = () => {
 				<Navbar />
 			</div>
 
-			<div className='flex  '>
+			<div className='flex overflow-y-auto'>
 				<div
 					className='flex h-[calc(100vh-64px)] transition-all duration-300 '
 					style={{ width: `${sidebarWidth}px` }}
@@ -22,7 +22,7 @@ export const MainLayout = () => {
 					<SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 				</div>
 
-				<div className='flex-1 overflow-y-auto p-6 bg-white rounded-tl-[35px]'>
+				<div className='flex-1 overflow-auto p-6 bg-white rounded-tl-[35px]'>
 					<Outlet />
 				</div>
 			</div>

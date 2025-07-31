@@ -116,6 +116,7 @@ export default function BatchManagement() {
 					status='Active'
 				/>
 			</div>
+			
 			<CreateBatchModal
 				isOpen={showCreateModal}
 				setIsOpen={setShowCreateModal}

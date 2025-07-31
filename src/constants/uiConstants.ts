@@ -8,9 +8,20 @@ export const COLORS = {
 	blue: '#0400FF',
 	black: '#000',
 	white: '#fff',
+	button: '#0AA2AC',
 };
 
 export const FONTS = {
+	bold_heading: {
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '19px',
+	},
+	notes_head: {
+		fontFamily: 'Reddit Sans Condensed',
+		fontWeight: 700,
+		fontSize: '12px',
+	},
 	heading_01: {
 		fontFamily: 'Poppins',
 		fontWeight: 400,
@@ -28,7 +39,7 @@ export const FONTS = {
 	},
 	heading_04: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '24px',
 	},
 	heading_04_bold: {
@@ -48,7 +59,7 @@ export const FONTS = {
 	},
 	heading_06: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '18px',
 	},
 	heading_06_bold: {
@@ -65,6 +76,11 @@ export const FONTS = {
 		fontFamily: 'Poppins',
 		fontWeight: 600,
 		fontSize: '16px',
+	},
+	heading_08: {
+		fontFamily: 'Poppins',
+		fontWeight: 500,
+		fontSize: '14px',
 	},
 	heading_08_bold: {
 		fontFamily: 'Poppins',
@@ -91,7 +107,9 @@ export const FONTS = {
 		fontWeight: 300,
 		fontSize: '14px',
 	},
-
-
-
-}
+	description: {
+		fontFamily: 'Poppins',
+		fontWeight: 300,
+		fontSize: '10px',
+	},
+};
