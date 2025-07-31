@@ -8,11 +8,11 @@ export const MainLayout = () => {
   const sidebarWidth = isSidebarOpen ? 250 : 87;
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#1BBFCA]">
-      <div className="h-16 w-full flex-shrink-0">
+    <div className="flex flex-col w-screen h-auto overflow-hidden bg-[#1BBFCA]">
+      <div className="flex flex-col flex-1">
         <Navbar />
       </div>
-      <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
+      <div className="flex h-screen overflow-hidden">
        
         <div
           className="transition-all duration-300	"
