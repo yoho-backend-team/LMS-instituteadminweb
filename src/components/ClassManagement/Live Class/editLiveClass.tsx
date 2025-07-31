@@ -42,11 +42,12 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 				.test(
 					'is-after-start',
 					'End Time must be after Start time',
-					function (value) {
-						if (!this.parent.startTime || !value) return true;
+					function (value: any) {
+						const { startTime } = this.parent as { startTime?: string };
+						if (!startTime || !value) return true;
 						return (
 							new Date(`1970-01-01T${value}`) >=
-							new Date(`1970-01-01T${this.parent.startTime}`)
+							new Date(`1970-01-01T${startTime}`)
 						);
 					}
 				),
