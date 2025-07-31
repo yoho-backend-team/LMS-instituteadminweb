@@ -11,6 +11,10 @@ type PlanType = {
   features: string[];
 };
 
+type SubScriptionPlanProps = {
+  onSelectPlan: (plan: PlanType) => void;
+};
+
 const plans: PlanType[] = [
   {
     id: 1,
@@ -35,24 +39,27 @@ const plans: PlanType[] = [
   },
 ];
 
-export const SubScriptionPlan = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string>("Basic Plan");
+export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
+  const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(
+  plans.find((p) => p.name === "Basic Plan") || null
+);
 
   return (
     <div className="flex flex-wrap justify-between gap-4 px-6 py-4">
       {plans.map((plan) => {
-        const isSelected = plan.name === selectedPlan;
+        const isSelected = selectedPlan?.name === plan.name;
 
         return (
           <div
             key={plan.id}
-            onClick={() => setSelectedPlan(plan.name)}
+            onClick={() => setSelectedPlan(plan)}
             className={cn(
               "w-full max-w-sm rounded-2xl border shadow-md p-6 flex flex-col justify-between cursor-pointer transition-all duration-300",
               isSelected ? "bg-[#1BBFCA] text-white" : "bg-white text-gray-700"
             )}
           >
             <div>
+              <div className={cn("w-full h-40 mb-4", isSelected ? "bg-white rounded-xl" : "bg-gray-200 rounded-xl")} />
               <h2 className="text-xl font-semibold mb-1">{plan.name}</h2>
               <p className={cn("text-sm mb-4", isSelected ? "text-white/90" : "text-gray-500")}>
                 {plan.description}
@@ -65,7 +72,7 @@ export const SubScriptionPlan = () => {
 
             <div
               className={cn(
-                "p-4 rounded-xl mb-6 text-sm",
+                "p-4 rounded-xl mb-6 text-sm " ,
                 isSelected ? "bg-[#1BBFCA]/20" : "bg-gray-100"
               )}
             >
@@ -92,24 +99,26 @@ export const SubScriptionPlan = () => {
             <div className="flex flex-col gap-2">
               <Button
                 className={cn(
-                  "w-full rounded-full text-sm",
+                  "w-full text-sm p-3.5",
                   isSelected
-                    ? "bg-white text-cyan-500 hover:bg-gray-100"
-                    : "bg-gray-200 text-gray-600 cursor-not-allowed"
+                    ? "bg-white text-[#1BBFCA] hover:bg-gray-100"
+                    : "bg-[#1BBFCA] text-white hover:bg-cyan-600 border-transparent"
                 )}
                 disabled={!isSelected}
+                onClick={() => onSelectPlan(plan)} 
               >
                 Your Plan
               </Button>
 
               <Button
                 className={cn(
-                  "w-full rounded-full text-sm border",
+                  "w-full text-sm border p-3.5",
                   isSelected
-                    ? "bg-white text-cyan-500 border-cyan-500 cursor-not-allowed"
-                    : "bg-cyan-500 text-white hover:bg-cyan-600 border-transparent"
+                    ? " bg-[#1BBFCA] text-white hover:bg-cyan-600 border-white"
+                    : "bg-gray-200 text-gray-600 cursor-not-allowed"
                 )}
                 disabled={isSelected}
+                onClick={() => onSelectPlan(plan)} 
               >
                 Upgrade Plan
               </Button>

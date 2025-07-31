@@ -10,14 +10,14 @@ import {
 
 export const Subscriptions = () => {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+    <div className="bg-white rounded-xl border shadow-md p-6 mb-8">
       <h1 style={FONTS.heading_04} className="text-center mb-4 text-gray-700">
         Subscription plans
       </h1>
       <p className="text-gray-600 text-center">All plans includes 40+ advance tools and features to boost your product.</p>
       <p className="text-gray-600 text-center mb-4">Choose the best plan to fit your plans</p>
         <Table className="border-separate border-spacing-0">
-          <TableHeader className="bg-gray-100">
+          <TableHeader className="bg-gray-100 rounded-xl">
             <TableRow className="border-none ">
               <TableHead className="w-[100px] border-none">ID</TableHead>
               <TableHead className="border-none">Plan</TableHead>
