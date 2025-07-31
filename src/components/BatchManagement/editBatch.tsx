@@ -48,6 +48,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 		},
 	});
 
+<<<<<<< HEAD
 	return (
 		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm'>
 			<div className='bg-white w-full max-w-2xl rounded-2xl shadow-lg'>
@@ -56,6 +57,15 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						Edit Batch
 					</h2>
 				</div>
+=======
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-lg">
+        <div className="bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6">
+          <h2 className="text-center" style={{ ...FONTS.heading_04_bold}}>Edit Batch</h2>
+        </div>
+        <div className="space-y-4 min-h-[calc(100vh-380px)] overflow-y-auto mt-2">
+>>>>>>> 19a44fbdbb85787e80f6d13a1a814799849171ae
 
 				<form onSubmit={formik.handleSubmit} className='mt-6 px-6 space-y-4'>
 					{/* Batch Name */}
@@ -150,6 +160,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						</div>
 					</div>
 
+<<<<<<< HEAD
 					{/* Action Buttons */}
 					<div className='flex justify-end items-center gap-4 mt-6 mb-8'>
 						<Button
@@ -173,6 +184,32 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 			</div>
 		</div>
 	);
+=======
+          {/* Action Buttons */}
+          <div className="flex justify-end items-center gap-4 mt-6 mb-8">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="outline"
+              className="!border-[#1BBFCA] bg-[#1bbeca15] !text-[#1BBFCA]"
+               style={{ ...FONTS.heading_07_bold }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]"
+              style={{ ...FONTS.heading_07_bold }}
+            >
+              Update
+            </Button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  );
+>>>>>>> 19a44fbdbb85787e80f6d13a1a814799849171ae
 };
 
 export default EditBatchModal;
