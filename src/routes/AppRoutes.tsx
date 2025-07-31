@@ -61,7 +61,7 @@ const AppRoutes = () => {
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
 				
-				<Route path="/NotificationPage" element={<NotificationPage />} />
+				<Route path="noti/msg" element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* Notifications Management */}
