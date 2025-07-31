@@ -100,7 +100,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const getDropdownClass = (error: boolean) => (error ? "border-red-500" : "");
 
   return (
-    <div className="relative text-[#716F6F] p-4 h-full">
+    <div className="relative text-[#716F6F] p-4 h-full ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">
           {editData ? "Edit Refund" : "Add Refund"}

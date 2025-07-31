@@ -155,7 +155,7 @@ const RefundFees = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto h-[60vh]">
+      <div className="flex-1 overflow-auto h-[60vh] border rounded-xl shadow-lg">
         <RefundTable
           data={filteredRefunds}
           onDelete={handleDelete}

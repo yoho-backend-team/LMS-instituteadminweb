@@ -46,7 +46,7 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
   ];
 
   return (
-    <div className="p-4 bg-white rounded-xl border shadow-md overflow-x-auto max-h-[75vh]">
+    <div className="p-4 bg-white  shadow-lg overflow-x-auto max-h-[75vh]">
       <table className="w-full text-left border-collapse table-auto">
         <thead className="bg-[#F8F8F8] text-[#716F6F] font-semibold text-sm">
           <tr>
