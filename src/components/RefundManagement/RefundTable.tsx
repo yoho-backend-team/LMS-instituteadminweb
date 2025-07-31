@@ -54,7 +54,7 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
                 key={key}
                 className={`py-3 px-4 cursor-pointer select-none ${
                   key === "studentInfo"
-                    ? "min-w-[200px] w-1/3"
+                    ? "w-[250px] "
                     : key === "refundId" || key === "studentId"
                     ? "w-[120px]"
                     : "w-[150px]"

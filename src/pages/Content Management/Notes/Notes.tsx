@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { GoPlus } from "react-icons/go";
-import { BsSliders } from "react-icons/bs";
+import { BsPlusLg, BsSliders } from "react-icons/bs";
 import CustomDropdown from "../../../components/ContentMangement/Notes/CoustomDropdown/CustomDropdown";
 import AddNotes from "../../../components/ContentMangement/Notes/AddNotes";
 import NoteCard from "../../../components/ContentMangement/Notes/NotesCards";
 import EditNotes from "../../../components/ContentMangement/Notes/EditNotes";
 import ViewNoteModal from "../../../components/ContentMangement/Notes/Viewnotes";
 
-const statusfilteroption = ["Active", "Offline"];
+const statusfilteroption = ["Active", "InActive"];
 const courseOptions = ["Course 1", "Course 2"];
 
 const Notes = () => {
@@ -140,7 +139,7 @@ const Notes = () => {
             setShowFilter(false);
           }}
         >
-          <GoPlus size={20} />
+          <BsPlusLg size={20} />
           <span>Add New Note</span>
         </div>
       </div>
@@ -191,7 +190,7 @@ const Notes = () => {
               course: viewNote.course,
               description: viewNote.description,
               file: viewNote.file,
-              fileName: viewNote.fileName,
+              fileName: viewNote.fileName, 
               status: viewNote.isActive ? "Active" : "Completed",
             }}
             onClose={() => setViewNote(null)}

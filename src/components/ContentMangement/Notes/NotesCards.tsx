@@ -50,7 +50,7 @@ const NoteCard = ({
   }, [openIndex, index, setOpenIndex]);
 
   return (
-    <div className="relative border p-4 rounded-xl bg-white shadow-md flex flex-col gap-3">
+    <div className="relative border p-4 rounded-xl bg-white shadow-lg flex flex-col gap-3">
       <div className="flex justify-end">
         <button
           onClick={() => setOpenIndex(openIndex === index ? null : index)}

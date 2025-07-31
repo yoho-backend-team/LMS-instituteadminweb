@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { GoPlus } from "react-icons/go";
 import RefundAdd from "../../../components/RefundManagement/RefundAdd";
 import RefundTable from "../../../components/RefundManagement/RefundTable";
+import { BsPlusLg } from "react-icons/bs";
 
 export interface RefundData {
   refundId: string;
@@ -150,7 +150,7 @@ const RefundFees = () => {
             setShowPanel(true);
           }}
         >
-          <GoPlus size={20} />
+          <BsPlusLg size={20} />
           <span>Add Refund</span>
         </div>
       </div>
