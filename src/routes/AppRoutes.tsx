@@ -26,7 +26,6 @@ import StudentFees from '../pages/Payment Management/Fees/StudentFees';
 import StaffSalaries from '../pages/Payment Management/Salaries/StaffSalaries';
 import Subscription from '../pages/Payment Management/Subscription/Subscription';
 import RefundFees from '../pages/Refund Management/Fees/RefundFees';
-import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import StudentIDCard from '../pages/ID Card Management/Student ID Card/StudentIDCard';
 import StaffIDCard from '../pages/ID Card Management/Staff ID Card/StaffIDCard';
 import Placement from '../pages/Placement Management/Placement';
@@ -50,6 +49,8 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
+import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
+import CertificateView from '../components/cerificateManagement/certificateView';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -138,6 +139,8 @@ const AppRoutes = () => {
 
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
+				<Route path='/certificate-view' element={<CertificateView/>} />
+
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />

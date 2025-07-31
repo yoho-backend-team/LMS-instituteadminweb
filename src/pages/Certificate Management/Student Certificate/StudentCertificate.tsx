@@ -1,7 +1,10 @@
-import React from 'react';
+import { CertificateManager } from "../../../components/cerificateManagement/certificate"
 
-const StudentCertificate = () => {
-	return <div>StudentCertificate</div>;
-};
-
-export default StudentCertificate;
+const StudentCertificate = () =>{
+    return(
+        <div>
+            <CertificateManager />
+        </div>
+    )
+}
+export default StudentCertificate
