@@ -1,7 +1,10 @@
-import React from 'react';
+import { LocationCardsGrid } from "../../components/BranchManagement/BranchManagement";
 
 const BranchManagement = () => {
-	return <div>BranchManagement</div>;
+	return <div>
+
+		<LocationCardsGrid />
+	</div>;
 };
 
 export default BranchManagement;
