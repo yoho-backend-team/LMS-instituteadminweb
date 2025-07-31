@@ -7,6 +7,7 @@ import { Avatar, AvatarImage } from "../../../components/ui/avatar";
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { COLORS, FONTS } from '../../../constants/uiConstants'
 
 // Define your theme colors in one place for easy maintenance
 const theme = {
@@ -85,7 +86,8 @@ const TeachingStaffs: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 overflow-y-auto">
+    <div className="space-y-4 min-h-screen overflow-y-auto">
+      <h1 style={{...FONTS.heading_02}}>Teaching Staff</h1>
       {/* Header - Always visible */}
       <div className="flex items-center justify-between p-4">
         <Button
@@ -108,11 +110,11 @@ const TeachingStaffs: React.FC = () => {
 
       {/* Conditional rendering - either show form or show the rest */}
       {showAddStaff ? (
-        <Card className="p-6">
+        <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
           <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
 
           {/* Profile Picture Section */}
-          <div className="flex items-center justify-between p-4 border rounded mb-6">
+          <div className="flex items-center justify-between p-4 border rounded mb-6  bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div>
               <p className="font-medium">Profile Picture</p>
               <p className="text-xs text-muted-foreground">Allowed PNG or JPEG. Max size of 800k.</p>
@@ -124,27 +126,27 @@ const TeachingStaffs: React.FC = () => {
 
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <label htmlFor="">Full Name
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">Full Name
             <Input placeholder="Full Name" 
               value={newStaff.name}
               onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
             />
             </label>
 
-            <label htmlFor="">Email
+            <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Email
             <Input placeholder="Email" 
               value={newStaff.email}
               onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
             /></label>
 
 
-            <label htmlFor="">Date of Birth
+            <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Date of Birth
             <Input placeholder="Date Of Birth" />
             </label>
            
-           <label htmlFor="">Gender
+           <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Gender
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className='w-full'>
                 <SelectValue/>
               </SelectTrigger>
               <SelectContent>
@@ -199,13 +201,14 @@ const TeachingStaffs: React.FC = () => {
           {/* Buttons */}
           <div className="flex justify-end gap-4 mt-6">
             <Button 
+              className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA]"
               variant="outline" 
               onClick={() => setShowAddStaff(false)}
             >
               Back
             </Button>
             <Button 
-              className="bg-teal-500 hover:bg-teal-600 text-white"
+              className="bg-[#1BBFCA] hover:bg-teal-600 text-white"
               onClick={handleAddStaff}
             >
               Submit
@@ -216,12 +219,12 @@ const TeachingStaffs: React.FC = () => {
         <>
           {/* Filter Dropdowns */}
           {showFilter && (
-            <Card className="grid grid-cols-2 gap-4 p-4">
+            <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                <Label style={{color:COLORS.gray_dark_02}} htmlFor="status">Status</Label>
                 <Select>
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder="All"  />
+                    <SelectValue placeholder=" "  />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
@@ -232,13 +235,13 @@ const TeachingStaffs: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="course">Course</Label>
+                <Label style={{color:COLORS.gray_dark_02}} htmlFor="course">Course</Label>
                 <Select>
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder="All Courses" />
+                    <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Courses</SelectItem>
+                    <SelectItem value="all">All Course</SelectItem>
                     <SelectItem value="Course 1">Course 1</SelectItem>
                     <SelectItem value="Course 2">Course 2</SelectItem>
                   </SelectContent>
@@ -248,27 +251,28 @@ const TeachingStaffs: React.FC = () => {
           )}
 
           {/* Staff List */}
-          <Card className="max-w-md">
+          <Card className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className="divide-y">
               {staff.map((member) => (
                 <div key={member.id} className="p-4">
                   {/* Profile Section */}
-                  <Avatar>
+                  
+                    <div className="flex items-center gap-3 ">
+                      <Avatar className='!w-[80px] !h-[80px]'> 
                       <AvatarImage src={member.avatar} alt={member.name} />
                     </Avatar>
-                    <div className="flex-1 ">
-                      <h3 className="font-medium text-center">{member.name}</h3>
+                      <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.name}</h3>
                     </div>
 
                   {/* Email Section */}
                   <div className="flex items-center gap-2 mb-3 text-muted-foreground">
                     <Mail size={16} />
-                    <span className="text-sm">{member.email}</span>
+                    <span style={{...FONTS.heading_06,color:COLORS.gray_dark_02}}>{member.email}</span>
                   </div>
 
                   {/* Status Section */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm text-muted-foreground">Status</span>
+                    <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
                     <Button
                       onClick={() => toggleStatus(member.id)}
                       className={`gap-2 ${getStatusButtonStyle(member.status)}`}
