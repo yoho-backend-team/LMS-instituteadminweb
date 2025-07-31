@@ -9,22 +9,17 @@ export const MainLayout = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#1BBFCA]">
-      {/* Navbar */}
       <div className="h-16 w-full flex-shrink-0">
         <Navbar />
       </div>
-
-      {/* Main layout with sidebar and content */}
       <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
-        {/* Sidebar */}
+       
         <div
           className="transition-all duration-300	"
           style={{ width: `${sidebarWidth}px` }}
         >
           <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         </div>
-
-        {/* Main content */}
         <div className="flex-1 overflow-y-auto p-6 bg-white rounded-tl-[35px]">
           <Outlet />
         </div>
