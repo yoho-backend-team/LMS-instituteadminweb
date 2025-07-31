@@ -171,9 +171,9 @@ class Client {
         mark_attedence: (data: any) => HttpClient.post(HTTP_END_POINTS.attedence.student_mark, data),
         mark_staff_attedence: (data: any) => HttpClient.post(HTTP_END_POINTS.attedence.staff_mark, data),
         mark_non_staff_attedence: (data: any) => HttpClient.post(HTTP_END_POINTS.attedence.non_staff_mark, data),
-        get_all_staff_attedence: (params?: string) => HttpClient.get(HTTP_END_POINTS.attedence.staff_all, params),
+        get_all_staff_attedence: (params?: any) => HttpClient.get(HTTP_END_POINTS.attedence.staff_all, params),
         get_all_non_staff_attedence: (params: string) => HttpClient.get(HTTP_END_POINTS.attedence.non_teaching_all, params),
-        get_staff_attedence_with_id: (params: any) => HttpClient.get(HTTP_END_POINTS.attedence.get_staff_attedence_with_id + params?.id, params),
+        get_staff_attedence_with_id: (params: string) => HttpClient.get(HTTP_END_POINTS.attedence.get_staff_attedence_with_id + params),
         get_non_staff_with_id: (params: any) => HttpClient.get(HTTP_END_POINTS.attedence.get_non_staff_with_id + params?.id)
     };
     notification = {

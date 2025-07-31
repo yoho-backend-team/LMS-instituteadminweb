@@ -24,7 +24,6 @@ const generateEndpoints = () => {
     const instituteId = getInstituteDetails() ?? ''
     const branchId = getSelectedBranchId() ?? ''
 
-    // console.log(branchId,"branchId",instituteId)
 
     return {
         admin: {

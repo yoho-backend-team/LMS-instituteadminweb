@@ -19,6 +19,7 @@ export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals, 
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectDate, setselectDate] = useState(0);
 
   const getDaysInMonth = (year: number, month: number) => {
     const firstDay = new Date(year, month, 1).getDay();
@@ -121,11 +122,12 @@ export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals, 
                       setYear(currentYear)
                       setDate?.(day ?? 0)
                       setcals?.(false)
+                      setselectDate(day ?? 0)
                     }}
                     className={`h-8 w-8 flex items-center justify-center rounded-full transition cursor-pointer ${isToday
                       ? "bg-[linear-gradient(135deg,rgba(123,0,255,1)_0%,rgba(178,0,255,1)_100%)] text-white font-bold"
                       : day
-                        ? "text-[#706f6f] text-sm font-medium hover:bg-gray-200"
+                        ? day == selectDate ? "text-[#706f6f] text-sm font-medium hover:bg-gray-200 border-2 border-blue-700" : "text-[#706f6f] text-sm font-medium hover:bg-gray-200"
                         : "text-transparent"
                       }`}
                   >
