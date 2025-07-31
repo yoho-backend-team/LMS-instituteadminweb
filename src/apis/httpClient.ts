@@ -12,8 +12,6 @@ const Axios = axios.create({
 
 Axios.interceptors.request.use((config) => {
     const token = GetLocalStorage("token");
-    // console.log(token,"token")
-    // console.log(config,"config")
     if (token) {
         config.headers["Authorization"] = `Token ${token ? token : ""}`;
     }
@@ -34,7 +32,6 @@ Axios.interceptors.response.use(
 class HttpClient {
 
     async get(url: string, params?: string) {
-        //   console.log(params,'params',url)
         const response = await Axios.get(url, { params })
         return response.data
     }

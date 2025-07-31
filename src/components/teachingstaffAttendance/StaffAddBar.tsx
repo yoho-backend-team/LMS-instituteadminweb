@@ -1,29 +1,31 @@
 import React, { useState } from 'react'
-import profile from '../../assets/Ellipse 18.png'
 import plus from '../../assets/plus.png'
 import cals from '../../assets/Attendence management.png'
 import filter from '../../assets/filter.png'
 import DashCalender from '../ui/calendarDash'
+import type { StaffsAttendanceType } from '../../pages/Attendance Management/Staffs Attendance/StaffsAttendance'
+import { GetImageUrl } from '../../utils/helper'
 
 interface formtype {
     setOpen: (data: boolean) => void;
     setMonth: (data: number) => void;
     setYear: (data: number) => void;
+    data: StaffsAttendanceType;
 }
 
-const StaffAddBar: React.FC<formtype> = ({ setOpen, setMonth, setYear }) => {
+const StaffAddBar: React.FC<formtype> = ({ setOpen, setMonth, setYear, data }) => {
 
     const [callader, setcallader] = useState(false);
     const [filterDiv, setfilterDiv] = useState(false);
 
     return (
-        <div className='flex flex-col w-full gap-5 p-2'>
+        <div className='flex flex-col w-full gap-4 p-2'>
             <div className='flex flex-row w-full justify-between items-center p-4 bg-white rounded-lg shadow-[0px_4px_24px_0px_#00000026]'>
                 <div className="flex flex-row items-center w-full h-max gap-5">
-                    <img src={profile} alt="" className='w-15 h-15 rounded-[50%]' />
+                    <img src={GetImageUrl(data?.img) ?? undefined} alt="" className='w-16 h-16 rounded-[50%]' />
                     <div className="flex flex-col">
-                        <p className='text-[#716F6F] font-semibold text-[20px]'>Elon Musk</p>
-                        <p className='text-[#716F6F] font-light text-[16px]'>Email: Musk@gmail.com</p>
+                        <p className='text-[#716F6F] font-semibold text-[20px]'>{data?.staff_name}</p>
+                        <p className='text-[#716F6F] font-light text-[16px]'>Email: {data?.email}</p>
                     </div>
                 </div>
 

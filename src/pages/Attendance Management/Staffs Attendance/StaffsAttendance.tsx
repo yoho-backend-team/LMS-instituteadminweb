@@ -4,8 +4,24 @@ import StaffTitleBar from '../../../components/teachingstaffAttendance/StaffTitl
 import StaffCard from '../../../components/teachingstaffAttendance/StaffCard';
 import { useDispatch } from 'react-redux';
 import { GetStaffAttendanceThunk } from '../../../features/teachingstaffAttendance/thunk';
+import { useSelector } from 'react-redux'
+
+export type StaffsAttendanceType = {
+	absentCount: number;
+	branch: string;
+	email: string;
+	img: string;
+	presentCount: number;
+	staff: string;
+	staff_id: string;
+	staff_name: string;
+}
 
 const StaffsAttendance: React.FC = () => {
+
+	const staffs: StaffsAttendanceType[] = useSelector((state: any) => state.staffAttendace.data)
+
+
 	const dispatch = useDispatch<any>()
 
 	useEffect(() => {
@@ -15,9 +31,17 @@ const StaffsAttendance: React.FC = () => {
 	return (
 		<div className='w-full h-full'>
 			<StaffTitleBar />
-			<div className='mt-10'>
-				<StaffCard />
+			<div className='w-full grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-6 mt-5'>
+				{
+					staffs.map((staff: StaffsAttendanceType) => (
+						<div>
+							<StaffCard key={staff.staff} data={staff} />
+						</div>
+					))
+
+				}
 			</div>
+
 		</div>
 	)
 };

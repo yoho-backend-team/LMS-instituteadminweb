@@ -1,6 +1,11 @@
-import { useState } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react"
 import StaffAddBar from "../../../components/teachingstaffAttendance/StaffAddBar"
 import StaffFormModal from "../../../components/teachingstaffAttendance/StaffFormModal";
+import { useDispatch, useSelector } from "react-redux";
+import type { StaffsAttendanceType } from "./StaffsAttendance";
+import { useParams } from "react-router-dom";
+import { GetAttendanceByIdThunk, GetStaffAttendanceRerender } from "../../../features/teachingstaffAttendance/thunk";
 
 const months = [
     "January", "February", "March", "April", "May", "June",
@@ -8,6 +13,23 @@ const months = [
 ];
 
 const AddAttendance = () => {
+
+    const { id } = useParams()
+    const dispatch = useDispatch<any>()
+
+    const staff: StaffsAttendanceType = useSelector((state: any) => state.staffAttendace.selectStaff)
+
+    const staffAttendace = useSelector((state: any) => state.staffAttendace.attendance)
+
+    // console.log(staffAttendace, 'staff att full')
+
+    useEffect(() => {
+        if (!staff.staff) {
+            dispatch(GetStaffAttendanceRerender(id ?? ''))
+        }
+        dispatch(GetAttendanceByIdThunk(id ?? ''))
+    }, [dispatch, id, staff.staff]);
+
     const today = new Date();
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -29,8 +51,30 @@ const AddAttendance = () => {
             }
             weeks.push(week);
         }
+        const data: { date: number | null; status: any; }[] = []
+        const dates = new Date(year, month).getMonth()
+        const dates2 = new Date(year, month).getFullYear()
 
-        return weeks;
+        weeks.flat().forEach(day => {
+            if (day) {
+                const finds = staffAttendace?.data?.find((item: any) => {
+                    const changeDate = new Date(item.date).getDate()
+                    const changeDate2 = new Date(item.date).getMonth()
+                    const changeDate3 = new Date(item.date).getFullYear()
+                    return changeDate == day && changeDate2 == dates && changeDate3 == dates2
+                })
+
+                if (finds) {
+                    data.push({ date: day, status: finds.status })
+                } else {
+                    data.push({ date: day, status: null })
+                }
+            } else {
+                data.push({ date: null, status: null })
+            }
+        })
+
+        return data;
     };
 
     const calendarData = getDaysInMonth(currentYear, currentMonth);
@@ -41,8 +85,8 @@ const AddAttendance = () => {
 
     return (
         <div className='w-full'>
-            <StaffAddBar setOpen={setopenModal} setMonth={setCurrentMonth} setYear={setCurrentYear} />
-            <StaffFormModal setOpen={setopenModal} isOpen={openModal} />
+            <StaffAddBar data={staff} setOpen={setopenModal} setMonth={setCurrentMonth} setYear={setCurrentYear} />
+            <StaffFormModal data={staff} setOpen={setopenModal} isOpen={openModal} />
 
             <div className="w-full grid grid-cols-2 mt-5">
                 <p className="col-span-1 text-center text-[#716F6F] font-semibold text-[22px]">{months[currentMonth] + ' ' + currentYear}</p>
@@ -68,11 +112,18 @@ const AddAttendance = () => {
 
             <div className="grid grid-cols-7 h-[47px] w-full gap-5 mt-5 **:w-full **:h-[80px] **:cursor-context-menu">
                 {
-                    calendarData.slice(0, 5).flat().map((items, index) => (
+                    calendarData.map((items, index) => (
                         <div key={index}
-                            className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]"
+                            className={items.status ? `border pt-2 border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]` :
+                                `border border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]`
+                            }
                         >
-                            {items}
+                            {items.date}
+                            {
+                                items.status ? <span
+                                    className={items.status == 'present' ? "text-green-600 text-center" : "text-red-600 text-center"}
+                                >{items.status}</span> : null
+                            }
                         </div>
                     ))
                 }
