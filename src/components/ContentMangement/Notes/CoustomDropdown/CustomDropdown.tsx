@@ -8,6 +8,7 @@ interface CustomDropdownProps {
   label?: string;
   placeholder?: string;
   width?: string;
+  className?: string;
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -15,6 +16,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   value,
   onChange,
   label,
+  className,
   placeholder = "Select an option",
   width = "w-full",
 }) => {
@@ -26,7 +28,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     <div
       className={`relative inline-block text-sm ${
         isTailwindWidth ? width : ""
-      }`}
+      } ${className || ""}`}
       style={!isTailwindWidth ? { width } : undefined}
     >
       {label && (
