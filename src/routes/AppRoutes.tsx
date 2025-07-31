@@ -42,6 +42,8 @@ import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/S
 import NotificationPage from '../pages/Notification/NotificationPage';
 // import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
+import EditUserInfo from '../components/Profile/EditUserInfo';
+
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -62,12 +64,14 @@ const AppRoutes = () => {
 		<Routes>
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
+				{/* Profile Management */}
 				
 				<Route path="/NotificationPage" element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}
 				<Route path='profile' element={<Accountpf />} />
+				<Route path='Editprof' element={<EditUserInfo />} />
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
 				<Route path='staff-notifications' element={<StaffsNotifications />} />
