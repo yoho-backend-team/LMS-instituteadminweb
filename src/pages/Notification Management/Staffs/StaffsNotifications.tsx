@@ -107,9 +107,9 @@ const StaffsNotification: React.FC = () => {
               <Label>Select Course</Label>
               <Select>
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Select Course" />
+                  <SelectValue  />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="course1">Course 1</SelectItem>
                   <SelectItem value="course2">Course 2</SelectItem>
                 </SelectContent>
@@ -121,9 +121,9 @@ const StaffsNotification: React.FC = () => {
               <Label>Batch</Label>
               <Select>
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Batch" />
+                  <SelectValue  />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="batch1">Batch 1</SelectItem>
                   <SelectItem value="batch2">Batch 2</SelectItem>
                 </SelectContent>
@@ -135,9 +135,9 @@ const StaffsNotification: React.FC = () => {
               <Label>Student</Label>
               <Select>
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Student" />
+                  <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="student1">Student 1</SelectItem>
                   <SelectItem value="student2">Student 2</SelectItem>
                 </SelectContent>
@@ -149,9 +149,9 @@ const StaffsNotification: React.FC = () => {
               <Label>Notification Type</Label>
               <Select >
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Notification Type"  />
+                  <SelectValue   />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="type1">Type 1</SelectItem>
                   <SelectItem value="type2">Type 2</SelectItem>
                 </SelectContent>
@@ -161,19 +161,19 @@ const StaffsNotification: React.FC = () => {
             {/* Title */}
             <div className="flex flex-col">
               <Label>Title</Label>
-              <Input placeholder="Title" className="mt-1" />
+              <Input  className="mt-1" />
             </div>
 
             {/* Body */}
             <div className="flex flex-col">
               <Label>Body</Label>
-              <Textarea placeholder="Body" className="mt-1" />
+              <Textarea  className="mt-1" />
             </div>
 
             {/* Link */}
             <div className="flex flex-col">
               <Label>Link</Label>
-              <Input placeholder="Link" className="mt-1" />
+              <Input className="mt-1" />
             </div>
 
             {/* Buttons */}
