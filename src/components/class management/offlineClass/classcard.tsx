@@ -26,7 +26,7 @@ interface BatchCardProps {
 	startDate: string;
 }
 
- const offlineClassCard: React.FC<BatchCardProps> = ({
+const offlineClassCard: React.FC<BatchCardProps> = ({
 	title,
 	students,
 	startDate,
@@ -70,7 +70,13 @@ interface BatchCardProps {
 
 						<DropdownMenuContent className='bg-white rounded-lg shadow-xl w-[120px] p-2 z-20 space-y-2'>
 							<DropdownMenuItem
-								 onClick={() => navigate("/view-student")}
+								onClick={() =>
+									navigate(`/view-student/${title}`, {
+										state: {
+											data,
+										},
+									})
+								}
 								className='group border border-gray-300 text-black font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer'
 								onMouseEnter={(e: any) =>
 									(e.currentTarget.style.backgroundColor = '#1BBFCA')
@@ -140,22 +146,16 @@ interface BatchCardProps {
 							{startDate}
 						</p>
 					</div>
-
-					<div className='mt-3 flex gap-2'>
-						<div>
-							<Link color={COLORS.blue} />
-						</div>
-						<p
-							style={{ ...FONTS.heading_08_bold, color: COLORS.blue }}
-							className='cursor-pointer underline'
-						>
-							{startDate}
-						</p>
-					</div>
 				</div>
 				<div className='mt-5 flex justify-end'>
 					<Button
-					 onClick={() => navigate("/view-student")}
+						onClick={() =>
+							navigate(`/view-student/${title}`, {
+								state: {
+									data,
+								},
+							})
+						}
 						className='bg-[#3ABE65] p-3 text-white hover:bg-[#3ABE65]'
 						style={{ ...FONTS.heading_07 }}
 					>
@@ -173,4 +173,4 @@ interface BatchCardProps {
 		</Card>
 	);
 };
-export default offlineClassCard
+export default offlineClassCard;
