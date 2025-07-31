@@ -66,7 +66,7 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 				
-				<Route path="/NotificationPage" element={<NotificationPage />} />
+				<Route path="noti/msg" element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}

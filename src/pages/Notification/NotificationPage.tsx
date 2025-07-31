@@ -35,69 +35,75 @@ const NotificationPage = () => {
     },
   ]);
 
+  const toggleReadStatus = (id: number) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: !n.isRead } : n))
+    );
+  };
+
   const filteredNotifications = notifications.filter((n) => {
     if (filter === "all") return true;
     if (filter === "read") return n.isRead;
     if (filter === "unread") return !n.isRead;
+    return true;
   });
+
+  const getLabel = (type: string) => {
+    switch (type) {
+      case "all":
+        return "All Notification";
+      case "read":
+        return "Read";
+      case "unread":
+        return "Unread";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+      <h2 className="text-2xl font-bold mb-6">Notifications</h2>
 
-      <div className="flex gap-3 mb-4">
-        <button
-          className={`border px-4 py-1 rounded ${
-            filter === "all"
-              ? "bg-cyan-500 text-white border-cyan-500"
-              : "text-cyan-500 border-cyan-500"
-          }`}
-          onClick={() => setFilter("all")}
-        >
-          All Notifications
-        </button>
-        <button
-          className={`border px-4 py-1 rounded ${
-            filter === "read"
-              ? "bg-cyan-500 text-white border-cyan-500"
-              : "text-cyan-500 border-cyan-500"
-          }`}
-          onClick={() => setFilter("read")}
-        >
-          Read
-        </button>
-        <button
-          className={`border px-4 py-1 rounded ${
-            filter === "unread"
-              ? "bg-cyan-500 text-white border-cyan-500"
-              : "text-cyan-500 border-cyan-500"
-          }`}
-          onClick={() => setFilter("unread")}
-        >
-          Unread
-        </button>
+      <div className="flex gap-3 mb-6">
+        {["all", "read", "unread"].map((type) => (
+          <button
+            key={type}
+            className={`border px-4 py-2 rounded-xl text-sm font-medium transition ${
+              filter === type
+                ? "bg-[#1BBFCA] text-white border-cyan-500"
+                : "text-[#1BBFCA] border-cyan-500 hover:bg-cyan-50"
+            }`}
+            onClick={() => setFilter(type as "all" | "read" | "unread")}
+          >
+            {getLabel(type)}
+          </button>
+        ))}
       </div>
 
-      <div className="bg-white shadow rounded p-4">
-        {filteredNotifications.length > 0 ? (
-          filteredNotifications.map((n) => (
-            <div key={n.id} className="border-b py-2">
-              <h3
-                className={`font-medium ${
-                  n.isRead ? "text-gray-800" : "text-black"
-                }`}
-              >
-                {n.title}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {n.date} at {n.time}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No notifications found.</p>
-        )}
-      </div>
+      {filteredNotifications.length > 0 ? (
+        filteredNotifications.map((n) => (
+          <div
+            key={n.id}
+            onClick={() => toggleReadStatus(n.id)}
+            className={`border rounded p-4 mb-4 cursor-pointer transition ${
+              n.isRead
+                ? "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                : "bg-white text-black hover:bg-cyan-50"
+            }`}
+          >
+            <h3 className="text-lg font-semibold mb-1">{n.title}</h3>
+            <p className="text-sm">
+              {n.date} at {n.time}
+            </p>
+            <p className="text-xs mt-1 italic">
+              {n.isRead ? "unread" : "read"}
+            </p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500 text-center mt-6">No notifications found.</p>
+      )}
     </div>
   );
 };
