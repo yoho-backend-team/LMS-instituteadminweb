@@ -1,5 +1,6 @@
 import { HiMiniXMark } from "react-icons/hi2";
 import { useLocation, useNavigate } from "react-router-dom"
+import {  FONTS } from '../../constants/uiConstants';
 
 interface Certificate {
   id: number
@@ -54,14 +55,14 @@ export default function CertificateView() {
               </div>
         <div className="w-full max-w-4xl mt-5 justify-center ml-40 bg-white border-8 border-yellow-400 p-12 relative">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-yellow-600 mb-2">
+            <h1 className="text-4xl font-bold text-yellow-600 mb-2" style={{ ...FONTS.heading_01}}>
               Certificate of {certificate.title.split(" ")[0].toUpperCase()} 2024
             </h1>
             <p className="text-lg text-gray-700 italic">This is proudly presented to</p>
           </div>
 
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 inline-block px-8">
+            <h2 className="text-3xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 inline-block px-8" style={{ ...FONTS.heading_02}}>
               {certificate.student}
             </h2>
           </div>

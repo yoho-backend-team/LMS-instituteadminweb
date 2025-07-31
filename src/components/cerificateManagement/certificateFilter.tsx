@@ -2,6 +2,7 @@ import React from 'react'
 import { TbXboxXFilled } from "react-icons/tb"
 import { FaFilter } from "react-icons/fa"
 import { IoMdAdd } from "react-icons/io"
+import {  FONTS } from '../../constants/uiConstants';
 
 interface CertificateFilterProps {
   showFilter: boolean
@@ -34,7 +35,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     <>
       <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
         <h2 className="text-white text-lg font-semibold flex">
-          <FaFilter className="mt-1 mr-2" /> FILTER
+          <FaFilter className="mt-1 mr-2" style={{ ...FONTS.heading_06_bold }} /> FILTER
         </h2>
         <button onClick={() => setShowFilter(!showFilter)} className="bg-white w-10 h-10 p-1 rounded">
           {showFilter ? (
@@ -48,11 +49,12 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
       {showFilter && (
         <div className="bg-white mt-5 rounded-xl p-4 shadow-md grid md:grid-cols-2 gap-3">
           <div>
-            <label className="block text-lg font-medium text-[#716F6F] mb-1">Course</label>
+            <label className="block text-lg font-medium text-[#716F6F] mb-1" style={{ ...FONTS.heading_08 }}>Course</label>
             <select
               className="w-full border h-13 px-3 py-2 rounded"
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
+               style={{ ...FONTS.heading_08 }}
             >
               
               <option value="">All</option>
@@ -61,11 +63,12 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             </select>
           </div>
           <div>
-            <label className="block text-lg font-medium text-[#716F6F] mb-1">Branch</label>
+            <label className="block text-lg font-medium text-[#716F6F] mb-1" style={{ ...FONTS.heading_08 }}>Branch</label>
             <select
               className="w-full border h-13 px-3 py-2 rounded"
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
+              style={{ ...FONTS.heading_08 }}
             >
               <option value="">All</option>
               <option value="OMR">OMR</option>
@@ -73,11 +76,12 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             </select>
           </div>
           <div>
-            <label className="block text-lg font-medium text-[#716F6F] mb-1">Batch</label>
+            <label className="block text-lg font-medium text-[#716F6F] mb-1" style={{ ...FONTS.heading_08 }}>Batch</label>
             <select
               className="w-full border h-13 px-3 py-2 rounded"
               value={selectedBatch}
               onChange={(e) => setSelectedBatch(e.target.value)}
+               style={{ ...FONTS.heading_08 }}
             >
             
               <option value="">All</option>
@@ -99,7 +103,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               onClick={onAdd}
               className="bg-[#1BBFCA] text-white px-4 py-2 w-2/5 flex rounded-lg"
             >
-              <IoMdAdd className="pr-2 h-6 w-7" /> Add Student Certificate
+              <IoMdAdd className="pr-2 h-6 w-7" style={{ ...FONTS.heading_06_bold }} /> Add Student Certificate
             </button>
           </div>
         </div>

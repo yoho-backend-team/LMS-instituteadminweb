@@ -3,6 +3,7 @@ import { BsThreeDotsVertical } from "react-icons/bs"
 import { FaEye } from "react-icons/fa"
 import { MdEditDocument, MdDelete } from "react-icons/md"
 import { IoMdDownload } from "react-icons/io"
+import {  FONTS } from '../../constants/uiConstants';
 
 export interface Certificate {
   id: number
@@ -39,28 +40,28 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#F8F8F8] text-[#716F6F] text-lg h-15">
             <tr>
-              <th className="px-6 py-4 text-left" >ID</th>
-              <th className="px-6 py-4 text-left">User</th>
-              <th className="px-6 py-4 text-left">Title</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-4 text-left" style={{ ...FONTS.heading_05_bold}}>ID</th>
+              <th className="px-6 py-4 text-left" style={{ ...FONTS.heading_05_bold}}>User</th>
+              <th className="px-6 py-4 text-left" style={{ ...FONTS.heading_05_bold}}>Title</th>
+              <th className="px-6 py-4 text-right" style={{ ...FONTS.heading_05_bold}}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {certificates.map((cert) => (
               <tr key={cert.id} className="text-[#716F6F]">
-                <td className="px-6 py-4">{cert.id}</td>
+                <td className="px-6 py-4" style={{ ...FONTS.heading_08}}>{cert.id}</td>
                 <td className="px-6 py-4 flex items-center gap-3">
                   <div className="w-11 h-11 rounded-full bg-[#1BBFCA] text-white flex items-center justify-center font-semibold">
                     
                   </div>
                   <div>
-                    <div className="font-bold text-lg">{cert.student}</div>
-                    <div className="text-sm">{cert.email}</div>
+                    <div className="font-bold text-lg" style={{ ...FONTS.heading_07_bold}}>{cert.student}</div>
+                    <div className="text-sm" style={{ ...FONTS.heading_08}}>{cert.email}</div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="font-semibold text-lg">{cert.title}</div>
-                  <div className="text-sm">{cert.description}</div>
+                  <div className="font-semibold text-lg" style={{ ...FONTS.heading_07_bold}}>{cert.title}</div>
+                  <div className="text-sm" style={{ ...FONTS.heading_08}}>{cert.description}</div>
                 </td>
                 <td className="px-6 py-4 text-right relative dropdown-action">
                   <button

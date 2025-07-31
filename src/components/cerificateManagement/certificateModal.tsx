@@ -1,5 +1,6 @@
 import React from 'react'
 import { HiMiniXMark } from "react-icons/hi2";
+import {  FONTS } from '../../constants/uiConstants';
 
 export interface Certificate {
   id: number
@@ -43,7 +44,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
       <div className="w-full max-w-md h-[90vh] p-5 gap-5 rounded-lg flex flex-col shadow-xl bg-white overflow-hidden">
-        <div className="flex">
+        <div className="flex  " style={{ ...FONTS.heading_05_bold}}>
           <h2 className="text-2xl text-[#716F6F] font-semibold mb-4">
             {isEditing ? "Edit Study Material" : "Add Certificate"}
           </h2>
@@ -56,10 +57,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-lg font-medium mb-1">Select Courses</label>
+            <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Select Courses</label>
             <input
               name="title"
               className="w-full border h-13 px-3 py-2 rounded"
+              style={{ ...FONTS.heading_06}}
               placeholder="Enter Course"
               defaultValue={editingCertificate?.title || ""}
               required
@@ -68,16 +70,16 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           {!isEditing && (
             <>
               <div className="mb-4">
-                <label className="block text-lg font-medium mb-1">Select Branch</label>
-                <select name="branch" className="w-full border h-13 px-3 py-2 rounded" required>
+                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Select Branch</label>
+                <select name="branch" className="w-full border h-13 px-3 py-2 rounded" required style={{ ...FONTS.heading_06}}>
                   <option value="">Select</option>
                   <option value="OMR">OMR</option>
                   <option value="Padur">Padur</option>
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-lg font-medium mb-1">Batch</label>
-                <select name="batch" className="w-full border h-13 px-3 py-2 rounded" required>
+                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Batch</label>
+                <select name="batch" className="w-full border h-13 px-3 py-2 rounded" style={{ ...FONTS.heading_06}} required>
                   <option value="">Select</option>
                   <option value="January 2025">January 2025</option>
                   <option value="Aril 2025">April 2025</option>
@@ -85,7 +87,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-lg font-medium mb-1">Student Name</label>
+                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Student Name</label>
                 <input
                   name="student"
                   className="w-full border h-13 px-3 py-2 rounded"
@@ -100,10 +102,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               type="button"
               onClick={onClose}
               className="bg-[#0400FF1A] text-[#0400FF] px-4 py-2 rounded-lg"
+              style={{ ...FONTS.heading_08}}
             >
               Cancel
             </button>
-            <button type="submit" className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg">
+            <button type="submit" className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg" style={{ ...FONTS.heading_08}}>
               {isEditing ? "Update" : "Submit"}
             </button>
           </div>
