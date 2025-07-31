@@ -39,8 +39,19 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import MainPage from '../components/staff/MainPage';
+import StudentDashboardMain from '../components/BatchManagement/viewBatch';
+import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
+import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
+import { Profile } from '../components/StudentManagement/Profile';
+import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
+import NotificationPage from '../pages/Notification/NotificationPage';
+// import Home from '../pages/Notification/'
+import Accountpf from '../components/Profile/AccProfile';
+import EditUserInfo from '../components/Profile/EditUserInfo';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 
+// import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
 	const isAuthenticated = true;
@@ -60,6 +71,14 @@ const AppRoutes = () => {
 		<Routes>
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
+				{/* Profile Management */}
+
+				<Route path='noti/msg' element={<NotificationPage />} />
+				{/* <Route path="/" element={<HomePage />} /> */}
+
+				{/* <Route path='profile' element={<SecurityProfile />} /> */}
+				<Route path='profile' element={<Accountpf />} />
+				<Route path='Editprof' element={<EditUserInfo />} />
 
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
@@ -68,6 +87,7 @@ const AppRoutes = () => {
 					path='student-notifications'
 					element={<StudentNotifications />}
 				/>
+
 				<Route path='community' element={<Community />} />
 
 				{/* Branch Management */}
@@ -88,19 +108,28 @@ const AppRoutes = () => {
 
 				{/* Staff Management */}
 				<Route path='staffs' element={<TeachingStaffs />} />
+				<Route path='staffs-details' element={<MainPage />} />
 
 				{/* Student Management */}
 				<Route path='students' element={<Students />} />
+				<Route path='students/Profile' element={<Profile />} />
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
+				<Route path='/view-batch' element={<StudentDashboardMain />} />
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
+				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
+				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
+				<Route
+					path='students-attendance/details'
+					element={<StudentDetails />}
+				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
 				<Route path='staffs-attendance/view/:id' element={<AddAttendance />} />
 

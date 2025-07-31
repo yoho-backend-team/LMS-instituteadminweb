@@ -1,7 +1,9 @@
-import React from 'react';
+// import React from 'react'
 
 const Placement = () => {
-	return <div>Placement</div>;
-};
+  return (
+	<div>Placement</div>
+  )
+}
 
-export default Placement;
+export default Placement
