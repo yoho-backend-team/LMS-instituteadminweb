@@ -140,7 +140,7 @@ const RefundFees = () => {
           placeholder="Student ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none"
+          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-80"
         />
 
         <div
