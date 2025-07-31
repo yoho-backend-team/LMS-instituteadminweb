@@ -2,37 +2,49 @@ import React, { useState } from "react";
 import CourseCard from "../../../components/Coursemanagement/CourseCard";
 import FilterPanel from "../../../components/Coursemanagement/FilterPanel";
 import AddNewCourseForm from "../../../components/Coursemanagement/AddNewCourseForm";
+import CourseDetailView from "../../../components/Coursemanagement/CourseDetailView";
 
 const Courses: React.FC = () => {
-  const [showFilter, setShowFilter] = useState(false);
-  const [addingCourse, setAddingCourse] = useState(false);
-
-  const handleToggleFilter = () => setShowFilter((prev) => !prev);
-  const handleAddNewCourse = () => setAddingCourse(true);
-  const handleBack = () => setAddingCourse(false);
-
-  const courses = [
+  const [courses, setCourses] = useState([
     {
       title: "Mern Stack 2025",
       category: "Web Development",
-      mode: "Online",
       price: "₹500,000",
-      modules: "1 Modules",
       image: "https://via.placeholder.com/300x180.png?text=MERN",
     },
     {
       title: "Manual Testing Basic",
       category: "Manual Testing",
-      mode: "Online",
       price: "₹1,00,000",
-      modules: "1 Modules",
       image: "https://via.placeholder.com/300x180.png?text=Testing",
     },
-  ];
+  ]);
 
-  if (addingCourse) {
-    return <AddNewCourseForm onBack={handleBack} />;
-  }
+  const [showFilter, setShowFilter] = useState(false);
+  const [addingCourse, setAddingCourse] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+
+  const handleToggleFilter = () => setShowFilter((prev) => !prev);
+  const handleAddNewCourse = () => setAddingCourse(true);
+  const handleBack = () => {
+    setAddingCourse(false);
+    setSelectedCourse(null);
+  };
+
+  const handleViewCourse = (course: any) => {
+    setSelectedCourse(course);
+  };
+
+  const handleAddCourse = (newCourse: any) => {
+    setCourses((prev) => [...prev, newCourse]);
+    setAddingCourse(false);
+  };
+
+  if (addingCourse)
+    return <AddNewCourseForm onBack={handleBack} onSubmit={handleAddCourse} />;
+
+  if (selectedCourse)
+    return <CourseDetailView course={selectedCourse} onBack={handleBack} />;
 
   return (
     <div className="p-4">
@@ -56,9 +68,9 @@ const Courses: React.FC = () => {
 
       {showFilter && <FilterPanel />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-0">
         {courses.map((course, index) => (
-          <CourseCard key={index} {...course} />
+          <CourseCard key={index} {...course} onView={() => handleViewCourse(course)} />
         ))}
       </div>
     </div>
