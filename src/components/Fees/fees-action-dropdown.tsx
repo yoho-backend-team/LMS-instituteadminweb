@@ -6,13 +6,13 @@ interface FeesActionDropdownProps {
   onAction: (action: string) => void
 }
 
-const FeesActionDropdown = forwardRef<HTMLDivElement, FeesActionDropdownProps>(({ onAction }, ref) => {
+export const FeesActionDropdown = forwardRef<HTMLDivElement, FeesActionDropdownProps>(({ onAction }, ref) => {
   return (
     <div ref={ref} className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-40">
       <div className="py-2">
         <button
           onClick={() => onAction("view")}
-          className="w-full px-4 py-2 text-left text-sm text-white bg-cyan-500 hover:bg-cyan-600 flex items-center gap-2"
+          className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
         >
           <Eye className="w-4 h-4" />
           View
@@ -44,5 +44,3 @@ const FeesActionDropdown = forwardRef<HTMLDivElement, FeesActionDropdownProps>((
 })
 
 FeesActionDropdown.displayName = "FeesActionDropdown"
-
-export default FeesActionDropdown

@@ -1,18 +1,10 @@
 "use client"
+
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { HiDotsVertical } from "react-icons/hi"
-import FeesActionDropdown from "./fees-action-dropdown"
-
-interface Fee {
-  id: string
-  transactionId: string
-  name: string
-  email: string
-  amount: string
-  date: string
-  status: string
-}
+import { MoreVertical } from "lucide-react"
+import { FeesActionDropdown } from "../../components/Fees/fees-action-dropdown"
+import type { Fee } from "../../components/Fees/types"
 
 interface FeesTableRowProps {
   fee: Fee
@@ -22,11 +14,11 @@ interface FeesTableRowProps {
   onDownload: (fee: Fee) => void
 }
 
-const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit, onDelete, onDownload }) => {
+export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit, onDelete, onDownload }) => {
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside [^1]
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -64,10 +56,12 @@ const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit, onDele
 
   return (
     <tr>
-      <td className="px-4 py-3">{fee.id}</td>
+      <td className="px-4 py-3">{fee.id.split("-")[0]}</td> {/* Display original ID without suffix */}
       <td className="px-4 py-3">{fee.transactionId}</td>
       <td className="px-4 py-3 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-cyan-500" />
+        <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+          {fee.name.charAt(0).toUpperCase()}
+        </div>
         <div>
           <p className="font-semibold text-[#1c1c1c]">{fee.name}</p>
           <p className="text-xs text-gray-500">{fee.email}</p>
@@ -79,11 +73,9 @@ const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit, onDele
         <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs">{fee.status}</span>
       </td>
       <td className="px-4 py-3 text-gray-600 relative">
-        <HiDotsVertical className="text-xl cursor-pointer" onClick={handleActionClick} />
+        <MoreVertical className="text-xl cursor-pointer" onClick={handleActionClick} />
         {showDropdown && <FeesActionDropdown ref={dropdownRef} onAction={handleDropdownAction} />}
       </td>
     </tr>
   )
 }
-
-export default FeesTableRow
