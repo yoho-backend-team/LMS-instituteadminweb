@@ -2,7 +2,7 @@ import { SubScriptionPlan } from '../../../components/subscription/SubScriptionP
 import { Subscriptions } from '../../../components/subscription/Subscriptions';
 
 const Subscription = () => {
-	return <div>
+	return <div className='overflow-scroll'>
 		<Subscriptions />
 		<SubScriptionPlan />
 	</div>;
