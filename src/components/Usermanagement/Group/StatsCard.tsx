@@ -1,95 +1,131 @@
 import React, { useState } from "react";
-import { Menu } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
+import { FiMoreVertical } from "react-icons/fi";
+import { ChevronDown } from "lucide-react";
+import Eyeicon from "../../../assets/eyeicon.png";
+import Editicon from "../../../assets/editicon.png";
+import Deleteicon from "../../../assets/Deleteicon.png";
+import { FaEye } from "react-icons/fa";
+import { LuNotebookPen } from "react-icons/lu";
+import { AiOutlineDelete } from "react-icons/ai";
 
 const dummycard = [
   { name: "John William", totalusers: "0" },
-  { name: "Kamal", totalusers: "0" },
-  { name: "Bhuvana", totalusers: "0" },
+  { name: "Diago", totalusers: "0" },
+  { name: "Sally", totalusers: "0" },
 ];
 
-const StatusDropdown = () => {
-  const [status, setStatus] = useState("Active");
-
-  return (
-    <select
-      value={status}
-      onChange={(e) => setStatus(e.target.value)}
-      className="text-sm rounded px-3 py-1 bg-[#10CFC9] text-white"
-    >
-      <option value="Active">Active</option>
-      <option value="Inactive">Inactive</option>
-    </select>
-  );
-};
-
 function StatsCard() {
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
+  // const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
+
+
+  const toggleMenu = (index: number) => {
+    setOpenMenu(openMenu === index ? null : index);
+  };
+
+  // const toggleDropdown = (index: number) => {
+  //   setDropdownOpen(dropdownOpen === index ? null : index);
+  // };
+
+  // const updateStatus = (index: number, value: string) => {
+  //   setStatusMap((prev) => ({ ...prev, [index]: value }));
+  //   setDropdownOpen(null);
+  // };
+   const [status, setStatus] = useState("Active")
+  const [isOpen, setIsOpen] = useState(false)
+
+  const options = ["Active", "Inactive"]
+
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      {dummycard.map((card, idx) => (
-        <div
-          key={idx}
-          className="relative rounded-lg bg-white shadow-md p-4 pt-6"
-        >
-          {/* Three Dots Menu */}
-          <div className="absolute top-3 right-3">
-            <Menu as="div" className="relative inline-block text-left">
-              <Menu.Button>
-                <EllipsisVerticalIcon className="h-5 w-5 text-gray-500" />
-              </Menu.Button>
+    <div className="p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {dummycard.map((card, idx) => {
+          // const currentStatus = statusMap[idx] || "Active";
 
-              <Menu.Items className="absolute right-0 mt-2 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                <div className="py-1 text-sm text-gray-700">
-                  <Menu.Item>
-                    {({ active }: { active: boolean }) => (
-                      <button
-                        className={`block w-full text-left px-4 py-2 ${
-                          active ? "bg-gray-100" : ""
-                        }`}
-                      >
-                        View
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }: { active: boolean }) => (
-                      <button
-                        className={`block w-full text-left px-4 py-2 ${
-                          active ? "bg-gray-100" : ""
-                        }`}
-                      >
-                        Edit
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }: { active: boolean }) => (
-                      <button
-                        className={`block w-full text-left px-4 py-2 ${
-                          active
-                            ? "bg-gray-100 text-red-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </Menu.Item>
-                </div>
-              </Menu.Items>
-            </Menu>
+          return (
+            <div key={idx} className="relative rounded-lg bg-white shadow-md p-4 pt-6">
+              {/* Three Dots Dropdown */}
+              <div className="absolute top-3 right-3 z-20">
+                <button onClick={() => toggleMenu(idx)}>
+                  <FiMoreVertical className="h-5 w-5 text-[#1BBFCA]" />
+                </button>
+                {openMenu === idx && (
+                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30 rounded-lg text-sm p-2 space-y-2">
+                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
+                      {/* <img src={Eyeicon} alt="view" className="w-4 h-4" /> */}
+                    <div > <FaEye className="w-5 h-5" /></div>
+                      <span>View</span>
+                    </button>
+                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
+                      {/* <img src={Editicon} alt="edit" className="w-4 h-4" /> */}
+                      <div ><LuNotebookPen className="w-5 h-5"/></div>
+                      <span>Edit</span>
+                    </button>
+                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
+                      {/* <img src={Deleteicon} alt="delete" className="w-4 h-4" /> */}
+                      <div><AiOutlineDelete className="w-5 h-5"/></div>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Card Content */}
+              <h2 className="text-lg text-[#716F6F] font-semibold mb-1">{card.name}</h2>
+              <p className="text-sm text-[#716F6F] mb-4">
+                Total {card.totalusers} Users
+              </p>
+
+              {/* Status Dropdown Inside Card */}
+              <div className=" flex justify-end">
+      <div className="relative inline-block">
+        {/* Trigger Button */}
+  <button
+  onClick={() => setIsOpen(!isOpen)}
+  className="px-3 py-2 rounded-xl text-white font-medium flex items-center gap-1 hover:opacity-90 transition-opacity duration-200"
+  style={{ backgroundColor: "#1BBFCA" }}
+>
+  <span className="text-sm mr-1">{status}</span>
+  <ChevronDown
+    className={`w-4 h-4 text-white transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+  />
+</button>
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg z-10 min-w-[140px] p-3">
+            <div className="space-y-2">
+              {options.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => {
+                    setStatus(option)
+                    setIsOpen(false)
+                  }}
+                  className="w-full"
+                >
+                  <span
+                    className="block px-4 py-2 rounded-xl text-white text-sm font-medium text-center hover:opacity-90 transition-opacity duration-150"
+                    style={{ backgroundColor: "#1BBFCA" }}
+                  >
+                    {option}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
+        )}
 
-          {/* Name and User Count */}
-          <h2 className="text-lg font-semibold mb-1">{card.name}</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            Total {card.totalusers} Users
-          </p>
+        {/* Backdrop */}
+        {isOpen && <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />}
+      </div>
+    </div>
+            </div>
+          );
+        })}
+      </div>
 
-          {/* Status Dropdown */}
-          <StatusDropdown />
-        </div>
-      ))}
     </div>
   );
 }
