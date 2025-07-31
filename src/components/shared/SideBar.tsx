@@ -148,6 +148,12 @@ const SideBar = ({
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
+					<SidebarLink1
+						to='/notes'
+						label='Notes'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
 				</SidebarDropdown>
 				<SidebarLink
 					to='/notes'
