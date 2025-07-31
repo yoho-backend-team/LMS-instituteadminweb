@@ -26,7 +26,6 @@ import StudentFees from '../pages/Payment Management/Fees/StudentFees';
 import StaffSalaries from '../pages/Payment Management/Salaries/StaffSalaries';
 import Subscription from '../pages/Payment Management/Subscription/Subscription';
 import RefundFees from '../pages/Refund Management/Fees/RefundFees';
-import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import StudentIDCard from '../pages/ID Card Management/Student ID Card/StudentIDCard';
 import StaffIDCard from '../pages/ID Card Management/Staff ID Card/StaffIDCard';
 import Placement from '../pages/Placement Management/Placement';
@@ -45,6 +44,8 @@ import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveCl
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 import { Profile } from '../components/StudentManagement/Profile';
 import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
+import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
+import CertificateView from '../components/cerificateManagement/certificateView';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -119,6 +120,8 @@ const AppRoutes = () => {
 
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
+				<Route path='/certificate-view' element={<CertificateView/>} />
+
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
