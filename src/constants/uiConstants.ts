@@ -112,4 +112,10 @@ export const FONTS = {
 		fontWeight: 300,
 		fontSize: '10px',
 	},
+	
+	heading_13: {
+		fontFamily: 'Poppins',
+		fontWeight: 600,
+		fontSize: '18px',
+	},
 };
