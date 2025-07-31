@@ -1,7 +1,8 @@
-import React from 'react';
-
+import { DashboardCards } from '../Categories/Category';
 const Categories = () => {
-	return <div>Categories</div>;
+	return <div>
+		<DashboardCards/>
+	</div>
 };
 
 export default Categories;

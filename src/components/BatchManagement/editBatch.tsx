@@ -49,19 +49,34 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 	});
 
 	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm'>
-			<div className='bg-white w-full max-w-2xl rounded-2xl shadow-lg'>
+		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4'>
+			<div className='bg-white w-full max-w-2xl rounded-2xl shadow-lg flex flex-col max-h-[90vh]'>
+				{/* Header */}
 				<div className='bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6'>
-					<h2 className='text-center' style={{ ...FONTS.heading_04_bold }}>
-						Edit Batch
-					</h2>
+					<div className='flex justify-between items-center'>
+						<h2
+							className='text-center flex-1'
+							style={{ ...FONTS.heading_04_bold }}
+						>
+							Edit Batch
+						</h2>
+						<button
+							onClick={onClose}
+							className='p-1 rounded-full hover:bg-white/20 transition-colors'
+							aria-label='Close modal'
+						>
+							<X className='w-5 h-5' />
+						</button>
+					</div>
 				</div>
-				<div className='space-y-4 min-h-[calc(100vh-380px)] overflow-y-auto mt-2'>
-					<form onSubmit={formik.handleSubmit} className='mt-6 px-6 space-y-4'>
+
+				{/* Content */}
+				<div className='overflow-y-auto flex-1 p-6'>
+					<form onSubmit={formik.handleSubmit} className='space-y-6'>
 						{/* Batch Name */}
 						<div>
 							<label
-								className='block mb-1'
+								className='block mb-2'
 								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
 							>
 								Batch Name
@@ -72,7 +87,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								value={formik.values.batchName}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
-								className='w-full border rounded-md px-4 py-2'
+								className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 								placeholder='Enter Batch Name'
 							/>
 							{formik.touched.batchName && formik.errors.batchName && (
@@ -83,10 +98,10 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						</div>
 
 						{/* Dates */}
-						<div className='flex flex-col md:flex-row gap-4'>
-							<div className='flex-1'>
+						<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+							<div>
 								<label
-									className='block mb-1'
+									className='block mb-2'
 									style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
 								>
 									Start Date
@@ -97,7 +112,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									value={formik.values.startDate}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									className='w-full border rounded-md px-4 py-2'
+									className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 								/>
 								{formik.touched.startDate && formik.errors.startDate && (
 									<p className='text-[#1BBFCA] text-sm mt-1'>
@@ -106,9 +121,9 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								)}
 							</div>
 
-							<div className='flex-1'>
+							<div>
 								<label
-									className='block mb-1'
+									className='block mb-2'
 									style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
 								>
 									End Date
@@ -119,7 +134,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									value={formik.values.endDate}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									className='w-full border rounded-md px-4 py-2'
+									className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 								/>
 								{formik.touched.endDate && formik.errors.endDate && (
 									<p className='text-[#1BBFCA] text-sm mt-1'>
@@ -132,38 +147,48 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						{/* Students Display */}
 						<div>
 							<label
-								className='block mb-1'
+								className='block mb-2'
 								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
 							>
 								Students
 							</label>
-							<div className='w-full border rounded-md px-4 py-2 flex flex-wrap gap-2 min-h-[44px]'>
-								{selectedStudents.map((student, idx) => (
-									<div
-										key={idx}
-										className='flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full'
-									>
-										{student}
-										<X className='w-4 h-4 cursor-pointer text-green-700 hover:text-red-600' />
-									</div>
-								))}
+							<div className='w-full border border-gray-300 rounded-md px-4 py-2 flex flex-wrap gap-2 min-h-[44px]'>
+								{selectedStudents.length > 0 ? (
+									selectedStudents.map((student, idx) => (
+										<div
+											key={idx}
+											className='flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm'
+										>
+											{student}
+											<button
+												type='button'
+												className='focus:outline-none'
+												onClick={() => console.log('Remove student', student)}
+											>
+												<X className='w-3 h-3 cursor-pointer text-green-700 hover:text-red-600' />
+											</button>
+										</div>
+									))
+								) : (
+									<p className='text-gray-400'>No students added</p>
+								)}
 							</div>
 						</div>
 
 						{/* Action Buttons */}
-						<div className='flex justify-end items-center gap-4 mt-6 mb-8'>
+						<div className='flex justify-end items-center gap-4 pt-4'>
 							<Button
 								type='button'
 								onClick={onClose}
 								variant='outline'
-								className='!border-[#1BBFCA] bg-[#1bbeca15] !text-[#1BBFCA]'
+								className='!border-[#1BBFCA] bg-white !text-[#1BBFCA] hover:bg-[#1bbeca15]'
 								style={{ ...FONTS.heading_07_bold }}
 							>
 								Cancel
 							</Button>
 							<Button
 								type='submit'
-								className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]'
+								className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA] hover:opacity-90'
 								style={{ ...FONTS.heading_07_bold }}
 							>
 								Update

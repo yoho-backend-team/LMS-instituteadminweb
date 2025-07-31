@@ -30,11 +30,11 @@ export function AddNotificationDrawer() {
           <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
             <DrawerTitle className="text-lg font-semibold">Add Notification</DrawerTitle>
             <DrawerClose>
-              <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
+              <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 absolute top-0 right-0" />
             </DrawerClose>
           </DrawerHeader>
 
-          {/* Form Fields */}
+    
           <form
             className="space-y-4"
             onSubmit={(e) => {
