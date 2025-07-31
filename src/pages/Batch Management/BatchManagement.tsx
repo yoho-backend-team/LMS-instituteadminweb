@@ -6,7 +6,7 @@ import plus from '../../assets/Add.png';
 
 import { Button } from '../../components/ui/button';
 import { BatchCard } from '../../components/BatchManagement/batchCard';
-import { FONTS } from '../../constants/uiConstants';
+import { COLORS, FONTS } from '../../constants/uiConstants';
 import { CreateBatchModal } from '../../components/BatchManagement/createBatch';
 
 export default function BatchManagement() {
@@ -15,11 +15,11 @@ export default function BatchManagement() {
 
 	return (
 		<div
-			className='min-h-screen bg-cover bg-no-repeat bg-center p-4'
+			className='min-h-screen bg-cover bg-no-repeat bg-center p-4 overflow-y-auto'
 			// style={{ backgroundImage: `url(${bg})` }}
 		>
 			<div className='mb-8'>
-				<h2 className=' mb-6' style={{ ...FONTS.heading_01 }}>
+				<h2 className=' mb-6' style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>
 					Student
 				</h2>
 
@@ -27,7 +27,7 @@ export default function BatchManagement() {
 					<Button
 						onClick={() => setShowFilter(!showFilter)}
 						className='bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2'
-						style={{ ...FONTS.heading_03 }}
+						style={{ ...FONTS.heading_07, color: COLORS.white }}
 					>
 						<img src={filter} className='w-4 h-4' />
 						{showFilter ? 'Hide Filter' : 'Show Filter'}
@@ -35,7 +35,7 @@ export default function BatchManagement() {
 
 					<Button
 						className='bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2'
-						style={{ ...FONTS.heading_03 }}
+						style={{ ...FONTS.heading_07, color: COLORS.white }}
 						onClick={() => setShowCreateModal(true)}
 					>
 						<img src={plus} className='w-4 h-4' />
@@ -46,12 +46,12 @@ export default function BatchManagement() {
 
 			{showFilter && (
 				<div className='bg-[white] p-6 rounded-2xl shadow mb-8'>
-					<h3 className=' mb-4' style={{ ...FONTS.heading_01 }}>
+					<h3 className=' mb-4' style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02}}>
 						Batches
 					</h3>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 						<div>
-							<label className='block mb-1' style={{ ...FONTS.heading_01 }}>
+							<label className='block mb-1' style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02}}>
 								Search by Status
 							</label>
 							<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'>
@@ -62,7 +62,7 @@ export default function BatchManagement() {
 						</div>
 
 						<div>
-							<label className='block mb-1' style={{ ...FONTS.heading_01 }}>
+							<label className='block mb-1' style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02}}>
 								Search Between Dates
 							</label>
 							<input
@@ -72,21 +72,25 @@ export default function BatchManagement() {
 						</div>
 
 						<div>
-							<label className='block mb-1' style={{ ...FONTS.heading_01 }}>
+							<label className='block mb-1' style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02}}>
 								Search by Course
 							</label>
 							<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'>
 								<option value=''>Select Course</option>
+								<option value='mern stack'>MERN STACK</option>
+								<option value='mean stack'>MEAN STACK</option>
+								<option value='python'>Python</option>
+								<option value='java'>Java</option>
 							</select>
 						</div>
 
 						<div>
-							<label className='block mb-1' style={{ ...FONTS.heading_01 }}>
+							<label className='block mb-1' style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02}}>
 								Search Batch
 							</label>
 							<input
 								type='text'
-								placeholder='Undefined'
+								placeholder='search batch'
 								className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
 							/>
 						</div>
@@ -112,6 +116,7 @@ export default function BatchManagement() {
 					status='Active'
 				/>
 			</div>
+			
 			<CreateBatchModal
 				isOpen={showCreateModal}
 				setIsOpen={setShowCreateModal}
