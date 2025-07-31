@@ -112,14 +112,14 @@ const RefundFees = () => {
     <div className="relative flex flex-col gap-6">
       {showPanel && (
         <div
-          className="absolute inset-0 h-[85vh] flex justify-end z-50"
+          className="fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm"
           onClick={() => {
             setShowPanel(false);
             setEditData(null);
           }}
         >
           <div
-            className="h-full w-1/3 bg-white shadow-xl rounded-xl"
+            className="bg-white rounded-xl shadow-xl w-[500px] max-w-full "
             onClick={(e) => e.stopPropagation()}
           >
             <RefundAdd

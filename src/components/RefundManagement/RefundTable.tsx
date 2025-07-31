@@ -8,7 +8,6 @@ interface Props {
   onDelete: (refundId: string) => void;
   onEdit: (data: RefundData) => void;
 }
-
 const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
   const [sortKey, setSortKey] = useState<keyof RefundData | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");

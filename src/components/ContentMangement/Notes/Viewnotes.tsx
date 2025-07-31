@@ -7,7 +7,7 @@ interface Note {
   description: string;
   status: "Active" | "Completed";
   file?: File;
-  fileName?: string; // Changed from fileName to fileName for clarity
+  fileName?: string;
 }
 
 interface NoteDetailModalProps {
