@@ -1,27 +1,14 @@
 "use client"
-import {
-  ArrowLeft,
-  ArrowUpFromLine,
-  HandCoins,
-  MoreVertical,
-  Ticket,
-  Users,
-  Wallet,
-  MailOpen,
-  BookOpen,
-  ArrowRight,
-  HelpCircle,
-  MessageSquare,
-  Phone,
-} from "lucide-react"
+
+import { ArrowLeft, ArrowRight, BookOpen, MailOpen, MessageSquare, MoreVertical, Ticket, Users } from "lucide-react"
 import { useState } from "react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import ProfitIcon from "../../assets/profit.png";
-import Payout from "../../assets/payout.png";
-import Course from "../../assets/courses.png";
+import Profit from "../../assets/profit.png"
+import Course from "../../assets/courses.png"
+import Pay from "../../assets/payout.png"
 
 interface BranchDetailsPageProps {
   locationName: string
@@ -30,44 +17,78 @@ interface BranchDetailsPageProps {
 
 const CylinderBar = (props: any) => {
   const { fill, x, y, width, height } = props;
-  
+  const barX = Number.isNaN(x) ? 0 : x;
+  const barY = Number.isNaN(y) ? 0 : y;
+  const barWidth = Number.isNaN(width) ? 0 : Math.max(0, width);
+  const barHeight = Number.isNaN(height) ? 0 : Math.max(0, height);
+
+  // Colors for the cylinder effect
+  const topColor = "#FAD3EF";
+  const highlightColor = "#FAD3EF";
+  const baseColor = fill || "#FAD3EF";
+  const shadowColor = "#FAD3EF";
+
+  // Calculate points for the elliptical top and bottom
+  const radiusX = barWidth / 2;
+  const radiusY = 8; // Height of the ellipse
+
   return (
     <g>
-      {/* Main cylinder body */}
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill={fill}
-        opacity={0.75}
+      {/* Main cylinder body with gradient */}
+      <defs>
+        <linearGradient id={`cylinderBody-${fill}`}>
+          <stop offset="0%" stopColor={baseColor} stopOpacity="0.9" />
+          <stop offset="100%" stopColor={shadowColor} stopOpacity="0.9" />
+        </linearGradient>
+      </defs>
+      <rect 
+        x={barX} 
+        y={barY} 
+        width={barWidth} 
+        height={barHeight} 
+        fill={`url(#cylinderBody-${fill})`} 
+        rx="2" // Slightly rounded corners
+      />
+
+      {/* Top ellipse (3D effect) */}
+      <ellipse
+        cx={barX + radiusX}
+        cy={barY}
+        rx={radiusX}
+        ry={radiusY}
+        fill={topColor}
       />
       
-      {/* Top adorn */}
-      <rect
-        x={x}
-        y={y - 8}
-        width={width}
-        height={16}
-        fill="#7086FD"
+      {/* Top highlight */}
+      <ellipse
+        cx={barX + radiusX}
+        cy={barY}
+        rx={radiusX * 0.7}
+        ry={radiusY * 0.7}
+        fill={highlightColor}
+        opacity="0.5"
       />
-      
-      {/* Top overlay */}
-      <rect
-        x={x}
-        y={y - 8}
-        width={width}
-        height={16}
-        fill="rgba(255, 255, 255, 0.5)"
+
+      {/* Bottom ellipse (3D effect) */}
+      <ellipse
+        cx={barX + radiusX}
+        cy={barY + barHeight}
+        rx={radiusX}
+        ry={radiusY}
+        fill={shadowColor}
       />
-      
-      {/* Bottom adorn */}
-      <rect
-        x={x}
-        y={y + height - 8.6}
-        width={width}
-        height={16}
-        fill="#7086FD"
+
+      {/* Side highlight for 3D effect */}
+      <path
+        d={`
+          M${barX + barWidth * 0.7},${barY}
+          L${barX + barWidth * 0.7},${barY + barHeight}
+          A${radiusX * 0.3},${radiusY} 0 0 0 ${barX + barWidth},${barY + barHeight}
+          L${barX + barWidth},${barY}
+          A${radiusX * 0.3},${radiusY} 0 0 1 ${barX + barWidth * 0.7},${barY}
+        `}
+        fill={highlightColor}
+        opacity="0.2"
       />
     </g>
   );
@@ -92,344 +113,312 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
   const chartConfig = {
     fee: {
       label: "Fee",
-      color: "hsl(175 78% 40%)",
+      color: "#23AF62", // Green from image
     },
     salary: {
       label: "Salary",
-      color: "hsl(200 78% 40%)",
+      color: "#FF8400", // Orange from CSS
     },
     pendings: {
       label: "Pendings",
-      color: "hsl(0 78% 60%)",
+      color: "#CA2858", // Red from CSS
     },
     totalIncome: {
       label: "Total Income",
-      color: "hsl(40 78% 60%)",
+      color: "#FFCC00", // Yellow from CSS
     },
   }
 
-  const [activeTab, setActiveTab] = useState("fee")
+  const [activeTab, setActiveTab] = useState<keyof typeof chartConfig>("fee")
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <Button variant="ghost" onClick={onBack} className="flex items-center gap-2 text-[#1BBFCA]">
           <ArrowLeft className="w-5 h-5" />
           <span className="text-lg font-medium">Back to Locations</span>
         </Button>
         <h1 className="text-2xl font-bold text-[#1BBFCA]">{locationName} Dashboard</h1>
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          {/* Key Metrics */}
-          <Card className="p-0 shadow-lg rounded-2xl">
-            <CardHeader className="pb-4 px-0">
-              <CardTitle className="text-lg font-semibold text-[#716F6F] px-6 pt-4">Key Metrics</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row items-center gap-6 px-6 pb-6">
-              {/* Profits Card */}
-              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(122,105,254,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[193px] h-[229px]">
-                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
-                  <img src={ProfitIcon} alt="Profit Icon" className="w-[42px] h-[42px]" />
-                </div>
-                <div className="flex flex-col justify-between h-[111px]">
-                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Profits</span>
-                  <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">12345</span>
-                </div>
-              </div>
-
-              {/* Payouts Card */}
-              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(62,223,235,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[241px] h-[284px]">
-                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
-                  <img src={Payout} alt="Profit Icon" className="w-[42px] h-[42px]" />
-                </div>
-                <div className="flex flex-col justify-between h-[169px]">
-                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Payouts</span>
-                  <span className="text-[42px] leading-[63px] font-bold text-[#7D7D7D]">1234</span>
-                </div>
-              </div>
-
-              {/* Courses Card */}
-              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(230,33,174,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[193px] h-[229px] relative">
-                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),4px_4px_20px_rgba(111,140,176,0.41),-6px_-6px_20px_#FFFFFF,inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
-                  <img src={Course} alt="Profit Icon" className="w-[42px] h-[42px]" />
-                </div>
-                <div className="flex flex-col justify-between h-[111px]">
-                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Courses</span>
-                  <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">098</span>
-                </div>
-                <Button variant="ghost" size="icon" className="absolute top-4 left-70 bg-white rounded-full shadow-md">
-                  <ArrowRight className="w-4 h-4 text-[#716F6F]" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          {/* Statistics */}
-          <Card className="p-4 shadow-lg rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <CardTitle className="text-lg font-semibold text-[#716F6F]">Statistics</CardTitle>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-5 h-5 text-[#716F6F]" />
-              </Button>
+        {/* Left Column (2/3 width) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Key Metrics Card */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold text-[#716F6F]">Key Metrics</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="fee" onValueChange={setActiveTab}>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-light text-[#7D7D7D]">Yearly Earnings Overview</span>
-                  <TabsList className="bg-transparent p-0 h-auto">
-                    <TabsTrigger
-                      value="fee"
-                      className="data-[state=active]:bg-transparent data-[state=active]:text-[#1BBFCA] data-[state=active]:border-b-2 data-[state=active]:border-[#1BBFCA] text-[#716F6F] font-medium text-sm px-3 py-1"
-                    >
-                      Fee
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="salary"
-                      className="data-[state=active]:bg-transparent data-[state=active]:text-[#1BBFCA] data-[state=active]:border-b-2 data-[state=active]:border-[#1BBFCA] text-[#716F6F] font-medium text-sm px-3 py-1"
-                    >
-                      Salary
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="pendings"
-                      className="data-[state=active]:bg-transparent data-[state=active]:text-[#F44336] data-[state=active]:border-b-2 data-[state=active]:border-[#F44336] text-[#716F6F] font-medium text-sm px-3 py-1"
-                    >
-                      Pendings
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="totalIncome"
-                      className="data-[state=active]:bg-transparent data-[state=active]:text-[#FFC107] data-[state=active]:border-b-2 data-[state=active]:border-[#FFC107] text-[#716F6F] font-medium text-sm px-3 py-1"
-                    >
-                      Total Income
-                    </TabsTrigger>
-                  </TabsList>
+              <div className="flex flex-wrap gap-4 justify-between">
+                {/* Profits Card */}
+                <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(122,105,254,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-full sm:w-[193px] h-[229px]">
+                  <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                    <img src={Profit} alt="Profit Icon" className="w-[42px] h-[42px]" />
+                  </div>
+                  <div className="flex flex-col justify-between h-[111px]">
+                    <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Profits</span>
+                    <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">12345</span>
+                  </div>
                 </div>
-                <div style={{ minHeight: '200px', width: '100%', flex: 1 }}>
-                  <BarChart
-                    width={768}
-                    height={300}
-                    data={chartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid vertical={false} strokeDasharray="4 4" />
-                    <XAxis
-                      dataKey="month"
-                      tickLine={false}
-                      tickMargin={10}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={10}
-                      tickFormatter={(value) => `₹${value / 1000}K`}
-                    />
-                    
-                    {activeTab === 'fee' && (
-                      <Bar
-                        dataKey="fee"
-                        fill="#23AF62"
-                        radius={[4, 4, 0, 0]}
-                        shape={<CylinderBar />}
-                      >
-                        <LabelList 
-                          dataKey="fee" 
-                          position="top" 
-                          formatter={(value) => `₹${value / 1000}K`} 
-                          fill="#716F6F"
-                        />
-                      </Bar>
-                    )}
-                    
-                    {activeTab === 'salary' && (
-                      <Bar
-                        dataKey="salary"
-                        fill="#23AF62"
-                        radius={[4, 4, 0, 0]}
-                        shape={<CylinderBar />}
-                      >
-                        <LabelList 
-                          dataKey="salary" 
-                          position="top" 
-                          formatter={(value) => `₹${value / 1000}K`} 
-                          fill="#716F6F"
-                        />
-                      </Bar>
-                    )}
-                    
-                    {activeTab === 'pendings' && (
-                      <Bar
-                        dataKey="pendings"
-                        fill="#23AF62"
-                        radius={[4, 4, 0, 0]}
-                        shape={<CylinderBar />}
-                      >
-                        <LabelList 
-                          dataKey="pendings" 
-                          position="top" 
-                          formatter={(value) => `₹${value / 1000}K`} 
-                          fill="#716F6F"
-                        />
-                      </Bar>
-                    )}
-                    
-                    {activeTab === 'totalIncome' && (
-                      <Bar
-                        dataKey="totalIncome"
-                        fill="#23AF62"
-                        radius={[4, 4, 0, 0]}
-                        shape={<CylinderBar />}
-                      >
-                        <LabelList 
-                          dataKey="totalIncome" 
-                          position="top" 
-                          formatter={(value) => `₹${value / 1000}K`} 
-                          fill="#716F6F"
-                        />
-                      </Bar>
-                    )}
-                    
-                    <defs>
-                      <linearGradient id="cylinderGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#7086FD" />
-                        <stop offset="30%" stopColor="#23AF62" />
-                        <stop offset="100%" stopColor="#23AF62" stopOpacity={0.75} />
-                      </linearGradient>
-                    </defs>
-                  </BarChart>
+                
+                {/* Payouts Card */}
+                <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(62,223,235,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-full sm:w-[241px] h-[284px]">
+                  <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                   <img src={Pay} alt="Payout Icon" className="w-[42px] h-[42px]" />                  </div>
+                  <div className="flex flex-col justify-between h-[169px]">
+                    <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Payouts</span>
+                    <span className="text-[42px] leading-[63px] font-bold text-[#7D7D7D]">1234</span>
+                  </div>
                 </div>
-              </Tabs>
+                
+                {/* Courses Card */}
+                <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(230,33,174,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-full sm:w-[193px] h-[229px] relative">
+                  <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),4px_4px_20px_rgba(111,140,176,0.41),-6px_-6px_20px_#FFFFFF,inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                 <img src={Course} alt="Courses Icon" className="w-[42px] h-[42px]" />
+                  </div>
+                  <div className="flex flex-col justify-between h-[111px]">
+                    <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Courses</span>
+                    <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">098</span>
+                  </div>
+                  <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white rounded-full shadow-md">
+                    <ArrowRight className="w-4 h-4 text-[#716F6F]" />
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
-          {/* Detailed Insights */}
-          <Card className="p-4 shadow-lg rounded-xl">
-            <CardHeader className="pb-4">
+
+          {/* Statistics Card */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-lg font-semibold text-[#716F6F] uppercase">Statistics</h2>
+                  <div className="mt-2">
+                    <h3 className="text-lg font-semibold text-[#716F6F]">Earning Reports</h3>
+                    <p className="text-sm font-light text-[#7D7D7D] uppercase">Yearly Earnings Overview</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon" className="bg-[#1BBFCA] rounded-lg">
+                  <MoreVertical className="w-5 h-5 text-white rotate-90" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartConfig)}>
+                <TabsList className="bg-transparent p-0 gap-4 mb-6">
+                  <TabsTrigger
+                    value="fee"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#23AF62]"
+                  >
+                    <span className="text-[#23AF62] font-semibold">Fee</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="salary"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#FF8400]"
+                  >
+                    <span className="text-[#FF8400] font-semibold">Salary</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="pendings"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#CA2858]"
+                  >
+                    <span className="text-[#CA2858] font-semibold">Pendings</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="totalIncome"
+                    className="data-[state=active]:border-b-2 data-[state=active]:border-[#FFCC00]"
+                  >
+                    <span className="text-[#FFCC00] font-semibold">Total Income</span>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+             <div className="h-[350px]">
+  <BarChart
+    width={700}
+    height={350}
+    data={chartData}
+    margin={{ top: 20, right: 10, left: 5, bottom: 5 }} /* Adjusted margins */
+    barCategoryGap="20%" /* Added gap between bars */
+  >
+    <CartesianGrid vertical={false} strokeDasharray="4 4" />
+    <XAxis 
+      dataKey="month" 
+      tickLine={false} 
+      tickMargin={10} 
+      axisLine={false}
+      padding={{ left: 10, right: 10 }} /* Added padding */
+    />
+    <YAxis
+      tickLine={false}
+      axisLine={false}
+      tickMargin={10}
+      tickFormatter={(value) => `₹${value / 1000}K`}
+    />
+    <Bar
+      dataKey={activeTab}
+      fill={chartConfig[activeTab].color}
+      shape={<CylinderBar />}
+      radius={[4, 4, 0, 0]} /* Added rounded corners to bars */
+    >
+      <LabelList
+        dataKey={activeTab}
+        position="top"
+        formatter={(value: number) => `₹${value / 1000}K`}
+        fill="#716F6F"
+        offset={10} /* Adjusted label offset */
+      />
+    </Bar>
+  </BarChart>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Detailed Insights Card */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
               <CardTitle className="text-lg font-semibold text-[#716F6F]">Detailed Insights</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Courses Card */}
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#F3E8FF]">
-                <span className="text-sm font-medium text-[#716F6F] mb-2">Courses</span>
-                <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Month Ago</span>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-[#FFCDD2]">
-                    <HandCoins className="w-5 h-5 text-[#F44336]" />
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Courses Card (Active/Inactive) */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#F3E8FF]">
+                  <span className="text-sm font-medium text-[#716F6F]">Courses</span>
+                  <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Month Ago</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#E0BFFF]">
+                        <BookOpen className="w-5 h-5 text-[#8A2BE2]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Active</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">22</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#E0BFFF]">
+                        <BookOpen className="w-5 h-5 text-[#8A2BE2]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Inactive</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">03</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Active</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">22</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#FFCDD2]">
-                    <HandCoins className="w-5 h-5 text-[#F44336]" />
+                
+                {/* Classes Card (Online/Offline) */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#E0F7FA]">
+                  <span className="text-sm font-medium text-[#716F6F]">Classes</span>
+                  <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Week Ago</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#B2EBF2]">
+                        <Users className="w-5 h-5 text-[#00BCD4]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Online</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">230</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#B2EBF2]">
+                        <Users className="w-5 h-5 text-[#00BCD4]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Offline</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">45</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Inactive</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">03</span>
                 </div>
-              </div>
-              
-              {/* Classes Card */}
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#E0F7FA]">
-                <span className="text-sm font-medium text-[#716F6F] mb-2">Classes</span>
-                <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Week Ago</span>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-[#B2EBF2]">
-                    <HandCoins className="w-5 h-5 text-[#00BCD4]" />
+                
+                {/* Staff Card (Teaching/Non-Teaching) */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#E8F5E9]">
+                  <span className="text-sm font-medium text-[#716F6F]">Staff</span>
+                  <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Day Ago</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#C8E6C9]">
+                        <Users className="w-5 h-5 text-[#4CAF50]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Teaching</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">66</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-[#C8E6C9]">
+                        <Users className="w-5 h-5 text-[#4CAF50]" />
+                      </div>
+                      <span className="text-sm font-medium text-[#716F6F]">Non-Teaching</span>
+                      <span className="ml-auto text-lg font-bold text-[#716F6F]">10</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Online</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">230</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#B2EBF2]">
-                    <HandCoins className="w-5 h-5 text-[#00BCD4]" />
-                  </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Offline</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">45</span>
-                </div>
-              </div>
-              
-              {/* Support Details Card */}
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#E8F5E9]">
-                <span className="text-sm font-medium text-[#716F6F] mb-2">Support</span>
-                <span className="text-xs text-[#7D7D7D] mb-4">Updates Today</span>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-[#C8E6C9]">
-                    <HelpCircle className="w-5 h-5 text-[#4CAF50]" />
-                  </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Open Tickets</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">28</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#C8E6C9]">
-                    <MessageSquare className="w-5 h-5 text-[#4CAF50]" />
-                  </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Resolved</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">114</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
-        {/* Right Column */}
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          {/* Recent Activities */}
-          <Card className="p-4 shadow-lg rounded-xl">
-            <CardHeader className="pb-4">
+
+        {/* Right Column (1/3 width) */}
+        <div className="space-y-6">
+          {/* Recent Activities Card */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
               <CardTitle className="text-lg font-semibold text-[#716F6F]">Recent Activities</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              {[
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: true },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-                { title: "Notes Created", subtitle: "| Create | Rvr - Study Material Created", active: false },
-              ].map((activity, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-3 p-3 rounded-lg ${
-                    activity.active ? "bg-[#E0F7FA] border border-[#1BBFCA]" : "bg-white border border-gray-200"
-                  }`}
-                >
+            <CardContent>
+              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                {Array.from({ length: 7 }).map((_, index) => (
                   <div
-                    className={`w-8 h-8 rounded-full ${activity.active ? "bg-white" : "bg-[#1BBFCA]"} flex-shrink-0`}
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-[#716F6F]">{activity.title}</span>
-                    <span className="text-xs text-[#7D7D7D]">{activity.subtitle}</span>
+                    key={index}
+                    className={`flex items-start gap-3 p-3 rounded-lg ${
+                      index === 2 ? "bg-[#E0F7FA] border border-[#1BBFCA]" : "bg-white border border-gray-200"
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex-shrink-0 ${
+                        index === 2 ? "bg-white" : "bg-[#1BBFCA]"
+                      }`}
+                    />
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-[#716F6F]">Notes Created</span>
+                      <p className="text-xs text-[#7D7D7D]">| Create | Rvr - Study Material Created</p>
+                    </div>
+                    
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </CardContent>
           </Card>
-          {/* Support Tickets */}
-          <Card className="p-4 shadow-lg rounded-xl">
-            <CardHeader className="pb-4">
+
+          {/* Support Tickets Card */}
+          <Card className="shadow-lg rounded-2xl">
+            <CardHeader>
               <CardTitle className="text-lg font-semibold text-[#716F6F]">Support Tickets</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#F3E8FF]">
-                <div className="p-2 rounded-lg bg-[#E0BFFF] mb-2">
-                  <Ticket className="w-6 h-6 text-[#8A2BE2]" />
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                {/* New Tickets */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#F3E8FF]">
+                  <div className="p-2 rounded-lg bg-[#E0BFFF] mb-2 w-fit">
+                    <Ticket className="w-5 h-5 text-[#8A2BE2]" />
+                  </div>
+                  <span className="text-sm font-medium text-[#716F6F]">New Tickets</span>
+                  <span className="text-2xl font-bold text-[#716F6F]">142</span>
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">New Tickets</span>
-                <span className="text-2xl font-bold text-[#716F6F]">142</span>
-              </div>
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#E0F7FA]">
-                <div className="p-2 rounded-lg bg-[#B2EBF2]">
-                  <MailOpen className="w-6 h-6 text-[#00BCD4]" />
+                
+                {/* Open Tickets */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#E0F7FA]">
+                  <div className="p-2 rounded-lg bg-[#B2EBF2] mb-2 w-fit">
+                    <MailOpen className="w-5 h-5 text-[#00BCD4]" />
+                  </div>
+                  <span className="text-sm font-medium text-[#716F6F]">Open Tickets</span>
+                  <span className="text-2xl font-bold text-[#716F6F]">28</span>
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">Open Tickets</span>
-                <span className="text-2xl font-bold text-[#716F6F]">28</span>
-              </div>
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#FFEBEE] md:col-span-2 relative">
-                <span className="absolute top-4 right-4 text-lg font-bold text-[#F44336]">164</span>
-                <div className="p-2 rounded-lg bg-[#FFCDD2] mb-2">
-                  <BookOpen className="w-6 h-6 text-[#F44336]" />
+                
+                {/* Average Response Time (full width) */}
+                <div className="flex flex-col p-4 rounded-xl bg-[#FFEBEE] col-span-2 relative">
+                  <div className="absolute top-4 right-4 text-2xl font-bold text-[#F44336]">164</div>
+                  <div className="p-2 rounded-lg bg-[#FFCDD2] mb-2 w-fit">
+                    <MessageSquare className="w-5 h-5 text-[#F44336]" />
+                  </div>
+                  <span className="text-sm font-medium text-[#716F6F]">Average Response Time</span>
+                  <span className="text-2xl font-bold text-[#716F6F]">1 Day</span>
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">Average Response Time</span>
-                <span className="text-2xl font-bold text-[#716F6F]">1 Day</span>
               </div>
             </CardContent>
           </Card>
