@@ -44,13 +44,30 @@ const initialRefunds: RefundData[] = [
 const RefundFees = () => {
   const [showPanel, setShowPanel] = useState(false);
   const [refunds, setRefunds] = useState<RefundData[]>(initialRefunds);
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editData, setEditData] = useState<RefundData | null>(null);
 
-  const handleAddRefund = (newRefund: RefundData) => {
-    setRefunds((prev) => [...prev, newRefund]);
+  const handleAddOrUpdateRefund = (data: RefundData) => {
+    if (editData) {
+      setRefunds(prev =>
+        prev.map(item => (item.refundId === data.refundId ? data : item))
+      );
+    } else {
+      setRefunds(prev => [...prev, data]);
+    }
+    setEditData(null);
+    setShowPanel(false);
   };
 
-  
+  const handleDelete = (refundId: string) => {
+    setRefunds(prev => prev.filter(item => item.refundId !== refundId));
+  };
+
+  const handleEdit = (data: RefundData) => {
+    setEditData(data);
+    setShowPanel(true);
+  };
+
   const filteredRefunds = refunds.filter((item) =>
     item.studentId.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -60,15 +77,22 @@ const RefundFees = () => {
       {showPanel && (
         <div
           className="absolute inset-0 h-[85vh] flex justify-end z-50"
-          onClick={() => setShowPanel(false)}
+          onClick={() => {
+            setShowPanel(false);
+            setEditData(null);
+          }}
         >
           <div
             className="h-full w-1/3 bg-white shadow-xl rounded-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <RefundAdd
-              onClose={() => setShowPanel(false)}
-              onSubmit={handleAddRefund}
+              onClose={() => {
+                setShowPanel(false);
+                setEditData(null);
+              }}
+              onSubmit={handleAddOrUpdateRefund}
+              editData={editData}
             />
           </div>
         </div>
@@ -85,16 +109,19 @@ const RefundFees = () => {
 
         <div
           className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer"
-          onClick={() => setShowPanel(true)}
+          onClick={() => {
+            setEditData(null);
+            setShowPanel(true);
+          }}
         >
           <GoPlus size={20} />
           <span>Add Refund</span>
         </div>
       </div>
 
-    <div className="flex-1 overflow-auto h-[60vh]">
-		  <RefundTable data={filteredRefunds} />
-	</div>
+      <div className="flex-1 overflow-auto h-[60vh]">
+        <RefundTable data={filteredRefunds} onDelete={handleDelete} onEdit={handleEdit} />
+      </div>
     </div>
   );
 };
