@@ -39,6 +39,9 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
+import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
+import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -118,6 +121,9 @@ const AppRoutes = () => {
 				{/* Help Center */}
 				<Route path='help-faqs' element={<HelpFAQs />} />
 				<Route path='add-questions' element={<AddQuestions />} />
+				<Route path='secure-delivery' element={<SecureDelivery />} />
+				<Route path='find-missingpackage' element={<FindMissingOrder />} />
+				<Route path='track-order' element={<TrackOrder />} />
 
 				{/* Payment Management */}
 				<Route path='student-fees' element={<StudentFees />} />
@@ -132,6 +138,7 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
+				
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>
