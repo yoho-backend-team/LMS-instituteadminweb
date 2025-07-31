@@ -149,6 +149,12 @@ const SideBar = ({
 						onClick={handleLinkClick}
 					/>
 					<SidebarLink1
+						to='/modules'
+						label='modules'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
+					<SidebarLink1
 						to='/notes'
 						label='Notes'
 						isOpen={isOpen}
