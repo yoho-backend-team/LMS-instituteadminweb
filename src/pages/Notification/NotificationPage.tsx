@@ -71,8 +71,8 @@ const NotificationPage = () => {
             key={type}
             className={`border px-4 py-2 rounded-xl text-sm font-medium transition ${
               filter === type
-                ? "bg-cyan-500 text-white border-cyan-500"
-                : "text-cyan-500 border-cyan-500 hover:bg-cyan-50"
+                ? "bg-[#1BBFCA] text-white border-cyan-500"
+                : "text-[#1BBFCA] border-cyan-500 hover:bg-cyan-50"
             }`}
             onClick={() => setFilter(type as "all" | "read" | "unread")}
           >
