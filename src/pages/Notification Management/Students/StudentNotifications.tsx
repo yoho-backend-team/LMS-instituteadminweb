@@ -2,6 +2,7 @@ import { Card, CardContent } from "../../../components/ui/card"
 import { Button } from "../../../components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { Bell, Check, MessageSquare, Plus } from "lucide-react"
+import  Flower  from "../../../assets/flower.png"
 
 const StudentNotifications = () => {
   const notifications = [
@@ -95,49 +96,52 @@ const StudentNotifications = () => {
         </Card>
       </div>
 
-      {/* Notifications Section */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">Notifications</h2>
+     {/* Notifications Section */}
+<div>
+  <h2 className="text-xl font-semibold text-gray-800 mb-6">Notifications</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {notifications.map((notification, index) => (
-            <Card key={index} className="bg-white shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                {/* User Info */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src={notification.user.avatar || "/placeholder.svg"} alt={notification.user.name} />
-                      <AvatarFallback>
-                        {notification.user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium text-gray-900">{notification.user.name}</p>
-                      <p className="text-sm text-gray-500">{notification.user.email}</p>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-500">ID : {notification.id}</span>
-                </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {notifications.map((notification, index) => (
+      <Card key={index} className="bg-white shadow-lg hover:shadow-md transition-shadow flex flex-col h-[255px] border">
+        <CardContent className="p-6 flex flex-col flex-grow">
+          {/* User Info */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={Flower || "/placeholder.svg"} alt={notification.user.name} />
+                <AvatarFallback>
+                  {notification.user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium text-gray-900">{notification.user.name}</p>
+                <p className="text-sm text-gray-500">{notification.user.email}</p>
+              </div>
+            </div>
+            <span className="text-sm text-gray-500">ID : {notification.id}</span>
+          </div>
 
-                {/* Course Info */}
-                <div className="mb-4">
-                  <h3 className="font-semibold text-gray-900 mb-2">{notification.course}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{notification.description}</p>
-                </div>
+          {/* Course Info */}
+          <div className="mb-4 flex-grow">
+            <h3 className="font-semibold text-gray-900 mb-2">{notification.course}</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{notification.description}</p>
+          </div>
 
-                {/* Resend Button */}
-                <Button className="w-full bg-teal-500 hover:bg-teal-600 text-white">Resend</Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
+          {/* Resend Button - Bottom Left */}
+          <div className="mt-auto flex justify-end">
+            <Button className="bg-teal-500 hover:bg-teal-600 text-white">Resend</Button>
+          </div>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+</div>    
+</div>
   )
 }
 
 export default StudentNotifications
+

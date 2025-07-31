@@ -59,17 +59,8 @@ const navigate = useNavigate();
 	if (showAddStudent) {
 		return (
 			<div className="p-6">
-				<div className="flex justify-between items-center mb-6">
-
-					<Button
-						variant="outline"
-						onClick={toggleAddStudent}
-						className="px-4 py-2 pr-16px pl-16px w-[153px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
-
-					>
-						Back to Students
-					</Button>
-				</div>
+				
+				
 
 				<Card className="mb-6 shadow-md">
 					<CardHeader>
@@ -294,6 +285,7 @@ const navigate = useNavigate();
 				</div>
 			)}
 			{/* Scrollable Row of Cards */}
+			
 			<div className="flex justify-around overflow-x-auto pb-4">
 				{studentData.map((student, index) => (
 					<Card
@@ -320,6 +312,7 @@ const navigate = useNavigate();
 				))}
 			</div>
 		</div>
+	
 	);
 };
 

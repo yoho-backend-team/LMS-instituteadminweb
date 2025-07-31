@@ -211,38 +211,49 @@ export const Profile = () => {
 
   // Your original code exactly as you wrote it
   return (
-    <div className="min-h-screen p-6">
-      {/* Back Button */}
-      <Button variant="outline" onClick={handleBack} className="mb-4 flex items-center gap-2 bg-transparent">
-        <ArrowLeft className="h-4 w-4" />
-        Back to Students
+   <div className="min-h-screen p-6">
+  <div className="mx-auto space-y-6">
+    {/* Back Button at the very top */}
+    <div className="flex justify-between items-center">
+      <Button 
+        variant="outline" 
+        onClick={handleBack} 
+        className="flex items-center gap-2 bg-transparent"
+      >
+        <ArrowLeft className="h-4 w-4  " />
+       
       </Button>
+      
+      {/* Profile Header */}
+      <div className="flex-1">
+        <h2 className="text-[24px] font-semibold text-gray-700 text-start ml-5">Profile Information</h2>
+      </div>
+      
+      {/* Empty div for balance */}
+      <div className="w-[104px]"></div>
+    </div>
 
-      <div className="mx-auto space-y-6">
-        {/* Profile Header */}
-        <div className="border-b pb-4">
+    {/* Profile Content */}
+    <div className="border-b pb-4">
+      <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-20 w-20 rounded-md">
+            <AvatarImage src={man || "/placeholder.svg"} alt="Kamal Einstein" className="rounded-md" />
+            <AvatarFallback className="rounded-md">KE</AvatarFallback>
+          </Avatar>
           <div>
-            <h2 className="text-[24px] font-semibold text-gray-700">Profile Information</h2>
-          </div>
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-20 w-20 rounded-md">
-                <AvatarImage src={man || "/placeholder.svg"} alt="Kamal Einstein" className="rounded-md" />
-                <AvatarFallback className="rounded-md">KE</AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="text-lg font-semibold">Kamal Einstein</h3>
-                <p className="text-sm text-gray-500">Joined on 9 Nov 2024</p>
-                <p className="text-sm text-gray-500">Location: Chennai</p>
-                <Badge className="mt-1 bg-[#3AB635] text-white hover:bg-[#3AB635] w-[90px] h-[38px] ">Active</Badge>
-              </div>
-            </div>
-            <Button className="bg-[#1BBFCA] text-white text-sm hover:bg-[#1BBFCA]/90 w-[104px] h-[48px]">
-              ReactJs
-            </Button>
+            <h3 className="text-lg font-semibold">Kamal Einstein</h3>
+            <p className="text-sm text-gray-500">Joined on 9 Nov 2024</p>
+            <p className="text-sm text-gray-500">Location: Chennai</p>
+            <Badge className="mt-1 bg-[#3AB635] text-white hover:bg-[#3AB635] w-[90px] h-[38px]">Active</Badge>
           </div>
         </div>
-
+        <Button className="bg-[#1BBFCA] text-white text-sm hover:bg-[#1BBFCA]/90 w-[104px] h-[48px]">
+          ReactJs
+        </Button>
+      </div>
+    </div>
+ 
         {/* Additional Details */}
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-4">Additional Details</h3>
