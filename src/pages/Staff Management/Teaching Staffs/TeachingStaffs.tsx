@@ -104,8 +104,7 @@ const TeachingStaffs: React.FC = () => {
         >
           <Plus size={16} />
           Add New Staff
-        </Button>
-      </div>
+        </Button>      </div>
 
       {/* Conditional rendering - either show form or show the rest */}
       {showAddStaff ? (
@@ -254,12 +253,15 @@ const TeachingStaffs: React.FC = () => {
               {staff.map((member) => (
                 <div key={member.id} className="p-4">
                   {/* Profile Section */}
+                  <Avatar>
+                      <AvatarImage src={member.avatar} alt={member.name} />
+                    </Avatar>
                     <div className="flex-1 ">
                       <h3 className="font-medium text-center">{member.name}</h3>
                     </div>
 
                   {/* Email Section */}
-                  <div className="flex items-center justify-center gap-2 mb-3 text-muted-foreground">
+                  <div className="flex items-center gap-2 mb-3 text-muted-foreground">
                     <Mail size={16} />
                     <span className="text-sm">{member.email}</span>
                   </div>
