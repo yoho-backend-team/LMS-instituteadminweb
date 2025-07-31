@@ -28,7 +28,7 @@ export const FONTS = {
 	},
 	heading_04: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '24px',
 	},
 	heading_04_bold: {
@@ -48,7 +48,7 @@ export const FONTS = {
 	},
 	heading_06: {
 		fontFamily: 'Poppins',
-		fontWeight: 400,
+		fontWeight: 600,
 		fontSize: '18px',
 	},
 	heading_06_bold: {
@@ -65,6 +65,11 @@ export const FONTS = {
 		fontFamily: 'Poppins',
 		fontWeight: 600,
 		fontSize: '16px',
+	},
+	heading_08: {
+		fontFamily: 'Poppins',
+		fontWeight: 500,
+		fontSize: '14px',
 	},
 	heading_08_bold: {
 		fontFamily: 'Poppins',
@@ -91,7 +96,4 @@ export const FONTS = {
 		fontWeight: 300,
 		fontSize: '14px',
 	},
-
-
-
-}
+};

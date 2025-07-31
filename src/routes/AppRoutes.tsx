@@ -44,6 +44,7 @@ import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 import { Profile } from '../components/StudentManagement/Profile';
+import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -110,6 +111,7 @@ const AppRoutes = () => {
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
+				<Route path='students-attendance/details' element={<StudentDetails />} />
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
 
 				{/* Refund Management */}
