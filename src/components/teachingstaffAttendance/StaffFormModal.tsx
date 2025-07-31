@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashCalender from '../ui/calendarDash';
 import profile from '../../assets/Ellipse 18.png'
@@ -25,6 +25,12 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen }) => {
         console.log('Form submitted');
     };
 
+    const [currentMonth, setcurrentMonth] = useState(0);
+    const [currentYear, setcurrentYear] = useState(0);
+    const [currentDate, setcurrentDate] = useState(0);
+
+    console.log(currentDate, currentMonth, currentYear)
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -40,7 +46,7 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen }) => {
                     />
 
                     <motion.div
-                        className="fixed top-20 right-5 h-[810px] w-full max-w-md bg-white shadow-xl p-6 rounded-lg"
+                        className="fixed top-4 right-5 h-[880px] w-full max-w-md bg-white shadow-xl p-6 rounded-lg"
                         variants={drawerVariants}
                         initial="hidden"
                         animate="visible"
@@ -80,10 +86,10 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen }) => {
 
                             <div>
                                 <p className='text-[#716F6F]'>Attendance Date</p>
-                                <DashCalender />
+                                <DashCalender setMonth={setcurrentMonth} setYear={setcurrentYear} setDate={setcurrentDate} />
                             </div>
 
-                            <div className='flex flex-row justify-end gap-5'>
+                            <div className='flex flex-row justify-end mt-15 gap-5'>
                                 <div
                                     className="bg-[#1BBFCA1A] w-[98px] text-[#1BBFCA] py-2 px-2 text-center rounded-md border-2 border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white"
                                 >

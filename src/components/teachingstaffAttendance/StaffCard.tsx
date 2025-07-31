@@ -7,7 +7,7 @@ const StaffCard: React.FC = () => {
     const navigate = useNavigate()
 
     return (
-        <div className="flex flex-col justify-between w-[406px] h-[310px] rounded-md p-4 gap-2 shadow-[0px_4px_24px_0px_#00000026]">
+        <div className="flex flex-col justify-between w-[406px] h-[310px] rounded-lg p-4 gap-2 shadow-[0px_4px_24px_0px_#00000026]">
             <div className="flex flex-row items-center w-full h-[62px] gap-5">
                 <img src={profile} alt="" className='w-15 h-15 rounded-[50%]' />
                 <div className="flex flex-col">

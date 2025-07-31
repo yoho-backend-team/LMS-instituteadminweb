@@ -11,10 +11,11 @@ const months = [
 interface propsdata {
   setMonth: (data: number) => void;
   setYear: (data: number) => void;
-  setcals: (data: boolean) => void;
+  setDate?: (data: number) => void;
+  setcals?: (data: boolean) => void;
 }
 
-export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals }) => {
+export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals, setDate }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -118,7 +119,8 @@ export const DashCalender: React.FC<propsdata> = ({ setMonth, setYear, setcals }
                     onClick={() => {
                       setMonth(currentMonth)
                       setYear(currentYear)
-                      setcals(false)
+                      setDate?.(day ?? 0)
+                      setcals?.(false)
                     }}
                     className={`h-8 w-8 flex items-center justify-center rounded-full transition cursor-pointer ${isToday
                       ? "bg-[linear-gradient(135deg,rgba(123,0,255,1)_0%,rgba(178,0,255,1)_100%)] text-white font-bold"
