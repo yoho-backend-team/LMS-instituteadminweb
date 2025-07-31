@@ -43,7 +43,7 @@ import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
-import {Profile} from '../components/StudentManagement/Profile';
+import { Profile } from '../components/StudentManagement/Profile';
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -96,8 +96,7 @@ const AppRoutes = () => {
 
 				{/* Student Management */}
 				<Route path='students' element={<Students />} />
-				<Route path='students/Profile' element={<Profile />}/> 
-				
+				<Route path='students/Profile' element={<Profile />} />
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
@@ -105,7 +104,7 @@ const AppRoutes = () => {
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
-				<Route path="/view-student" element={<StudentClassBatch/>}/>
+				<Route path='/view-student' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
 				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
 
