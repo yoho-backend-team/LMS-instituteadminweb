@@ -10,12 +10,18 @@ import {
   MailOpen,
   BookOpen,
   ArrowRight,
+  HelpCircle,
+  MessageSquare,
+  Phone,
 } from "lucide-react"
 import { useState } from "react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
+import ProfitIcon from "../../assets/profit.png";
+import Payout from "../../assets/payout.png";
+import Course from "../../assets/courses.png";
 
 interface BranchDetailsPageProps {
   locationName: string
@@ -117,32 +123,43 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
         {/* Left Column */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           {/* Key Metrics */}
-          <Card className="p-4 shadow-lg rounded-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold text-[#716F6F]">Key Metrics</CardTitle>
+          <Card className="p-0 shadow-lg rounded-2xl">
+            <CardHeader className="pb-4 px-0">
+              <CardTitle className="text-lg font-semibold text-[#716F6F] px-6 pt-4">Key Metrics</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#F3E8FF] relative overflow-hidden">
-                <div className="p-2 rounded-lg bg-[#E0BFFF] mb-2">
-                  <Wallet className="w-6 h-6 text-[#8A2BE2]" />
+            <CardContent className="flex flex-row items-center gap-6 px-6 pb-6">
+              {/* Profits Card */}
+              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(122,105,254,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[193px] h-[229px]">
+                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                  <img src={ProfitIcon} alt="Profit Icon" className="w-[42px] h-[42px]" />
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">Profits</span>
-                <span className="text-2xl font-bold text-[#716F6F]">12345</span>
+                <div className="flex flex-col justify-between h-[111px]">
+                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Profits</span>
+                  <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">12345</span>
+                </div>
               </div>
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#E0F7FA] relative overflow-hidden">
-                <div className="p-2 rounded-lg bg-[#B2EBF2] mb-2">
-                  <ArrowUpFromLine className="w-6 h-6 text-[#00BCD4]" />
+
+              {/* Payouts Card */}
+              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(62,223,235,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[241px] h-[284px]">
+                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                  <img src={Payout} alt="Profit Icon" className="w-[42px] h-[42px]" />
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">Payouts</span>
-                <span className="text-2xl font-bold text-[#716F6F]">1234</span>
+                <div className="flex flex-col justify-between h-[169px]">
+                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Payouts</span>
+                  <span className="text-[42px] leading-[63px] font-bold text-[#7D7D7D]">1234</span>
+                </div>
               </div>
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#FFEBEE] relative overflow-hidden">
-                <div className="p-2 rounded-lg bg-[#FFCDD2] mb-2">
-                  <Users className="w-6 h-6 text-[#F44336]" />
+
+              {/* Courses Card */}
+              <div className="flex flex-col items-start p-4 rounded-2xl bg-[rgba(230,33,174,0.2)] shadow-[4px_4px_24px_rgba(0,0,0,0.1)] w-[193px] h-[229px] relative">
+                <div className="flex justify-center items-center p-[9px] w-[70px] h-[70px] bg-white rounded-xl shadow-[2px_2px_4px_rgba(114,142,171,0.1),4px_4px_20px_rgba(111,140,176,0.41),-6px_-6px_20px_#FFFFFF,inset_-4px_-4px_9px_rgba(255,255,255,0.88)] mb-4">
+                  <img src={Course} alt="Profit Icon" className="w-[42px] h-[42px]" />
                 </div>
-                <span className="text-sm font-medium text-[#716F6F]">Courses</span>
-                <span className="text-2xl font-bold text-[#716F6F]">098</span>
-                <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white rounded-full">
+                <div className="flex flex-col justify-between h-[111px]">
+                  <span className="text-[22px] leading-[33px] font-normal text-[#716F6F]">Courses</span>
+                  <span className="text-[32px] leading-[48px] font-bold text-[#7D7D7D]">098</span>
+                </div>
+                <Button variant="ghost" size="icon" className="absolute top-4 left-70 bg-white rounded-full shadow-md">
                   <ArrowRight className="w-4 h-4 text-[#716F6F]" />
                 </Button>
               </div>
@@ -290,6 +307,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
               <CardTitle className="text-lg font-semibold text-[#716F6F]">Detailed Insights</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Courses Card */}
               <div className="flex flex-col items-start p-4 rounded-xl bg-[#F3E8FF]">
                 <span className="text-sm font-medium text-[#716F6F] mb-2">Courses</span>
                 <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Month Ago</span>
@@ -308,6 +326,8 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   <span className="ml-auto text-lg font-bold text-[#716F6F]">03</span>
                 </div>
               </div>
+              
+              {/* Classes Card */}
               <div className="flex flex-col items-start p-4 rounded-xl bg-[#E0F7FA]">
                 <span className="text-sm font-medium text-[#716F6F] mb-2">Classes</span>
                 <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Week Ago</span>
@@ -326,22 +346,24 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   <span className="ml-auto text-lg font-bold text-[#716F6F]">45</span>
                 </div>
               </div>
-              <div className="flex flex-col items-start p-4 rounded-xl bg-[#FFEBEE]">
-                <span className="text-sm font-medium text-[#716F6F] mb-2">Courses</span>
-                <span className="text-xs text-[#7D7D7D] mb-4">Updates 1 Day Ago</span>
+              
+              {/* Support Details Card */}
+              <div className="flex flex-col items-start p-4 rounded-xl bg-[#E8F5E9]">
+                <span className="text-sm font-medium text-[#716F6F] mb-2">Support</span>
+                <span className="text-xs text-[#7D7D7D] mb-4">Updates Today</span>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-[#FFCDD2]">
-                    <HandCoins className="w-5 h-5 text-[#F44336]" />
+                  <div className="p-2 rounded-lg bg-[#C8E6C9]">
+                    <HelpCircle className="w-5 h-5 text-[#4CAF50]" />
                   </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Teaching</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">66</span>
+                  <span className="text-sm font-medium text-[#716F6F]">Open Tickets</span>
+                  <span className="ml-auto text-lg font-bold text-[#716F6F]">28</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#FFCDD2]">
-                    <HandCoins className="w-5 h-5 text-[#F44336]" />
+                  <div className="p-2 rounded-lg bg-[#C8E6C9]">
+                    <MessageSquare className="w-5 h-5 text-[#4CAF50]" />
                   </div>
-                  <span className="text-sm font-medium text-[#716F6F]">Non-Teaching</span>
-                  <span className="ml-auto text-lg font-bold text-[#716F6F]">10</span>
+                  <span className="text-sm font-medium text-[#716F6F]">Resolved</span>
+                  <span className="ml-auto text-lg font-bold text-[#716F6F]">114</span>
                 </div>
               </div>
             </CardContent>

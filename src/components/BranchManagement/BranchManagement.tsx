@@ -135,7 +135,6 @@ export function LocationCard({
     </div>
   );
 }
-
 export function LocationCardsGrid() {
   const [locations, setLocations] = useState([
     {
@@ -200,6 +199,7 @@ export function LocationCardsGrid() {
     },
   ]);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -215,12 +215,26 @@ export function LocationCardsGrid() {
     state: 'Tamil Nadu'
   });
 
+  // Filter locations based on search term
+  const filteredLocations = locations.filter(location =>
+    location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Filtering is already handled by the filteredLocations array
   };
 
   const handleEditBranch = (index: number) => {
@@ -298,14 +312,16 @@ export function LocationCardsGrid() {
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div className="w-full md:w-[360px] h-[48px] relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0  bg-white/30 border-2 border-[#1BBFCA] rounded-lg"></div>
+        <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg"></div>
           <input
             type="text"
-            placeholder="Search Branch"
+            placeholder="Search Branch by City"
+            value={searchTerm}
+            onChange={handleSearchChange}
             className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none"
           />
-        </div>
+        </form>
 
         <button 
           onClick={() => {
@@ -322,14 +338,27 @@ export function LocationCardsGrid() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-        {locations.map((location, index) => (
-          <LocationCard 
-            key={index} 
-            {...location} 
-            onViewDetails={() => setViewingBranch(location.cityName)}
-            onEdit={() => handleEditBranch(index)}
-          />
-        ))}
+        {filteredLocations.length > 0 ? (
+          filteredLocations.map((location, index) => {
+            // Find the original index in the full locations array for editing
+            const originalIndex = locations.findIndex(
+              loc => loc.cityName === location.cityName
+            );
+            
+            return (
+              <LocationCard 
+                key={index} 
+                {...location} 
+                onViewDetails={() => setViewingBranch(location.cityName)}
+                onEdit={() => handleEditBranch(originalIndex)}
+              />
+            );
+          })
+        ) : (
+          <div className="col-span-full text-center py-10">
+            <p className="text-lg text-[#716F6F]">No branches found matching "{searchTerm}"</p>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (
