@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { FONTS } from "../../../constants/uiConstants";
+import { Button } from "../../ui/button";
+
 interface Student {
   id: number;
   name: string;
@@ -40,14 +43,29 @@ const StudentClassBatch: React.FC = () => {
   className="flex items-center gap-2 text-[#ca406f] hover:text-[#a2355a] transition-all mb-4"
 >
   <ArrowLeft className="w-5 h-5" />
-  <span className="font-medium text-base">Back</span>
+  {/* <span className="font-medium text-base">Back</span> */}
 </button>
+<Button
+              type="button"
+              
+              className="!bg-[#1BBFCA] !text-white"
+              style={{ ...FONTS.heading_07 }}
+            >
+              MEAN
+            </Button>
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">Batch 21</h2>
         <div className="flex gap-4">
           <span className="text-sm text-gray-500">Duration: 6 Months</span>
-          <button className="text-sm text-green-600 font-medium">Offline</button>
+          <Button
+              type="button"
+              
+              className="!bg-[#1BBFCA] text-center !text-white"
+              style={{ ...FONTS.heading_07 }}
+            >
+              Offline 
+            </Button>
         </div>
       </div>
 
