@@ -86,7 +86,7 @@ const AppRoutes = () => {
 					path='student-notifications'
 					element={<StudentNotifications />}
 				/>
-				
+
 				<Route path='community' element={<Community />} />
 
 				{/* Branch Management */}
