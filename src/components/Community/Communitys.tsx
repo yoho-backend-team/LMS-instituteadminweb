@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import circle from "../../assets/navbar/circle.png";
 import frame2 from "../../assets/navbar/frame2.png";
 import chatBg from "../../assets/navbar/chatBg.png";
-import emojiIcon from "../../assets/navbar/emojIcon.png";
+import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
 import image from "../../assets/navbar/image.png";
 import cancel from "../../assets/navbar/cancel.png";
@@ -37,7 +37,7 @@ const initialChatData: Record<string, Message[]> = {
   "MEAN STACK 2024": [],
 };
 
-const Community: React.FC = () => {
+const Communitys: React.FC = () => {
   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -79,9 +79,16 @@ const Community: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className="flex h-screen font-sans bg-white-100 items-start pt-6">
+
+            
+
+
+
+    <div className="flex h-[calc(100vh-64px)] font-sans bg-white-100 items-start pt-6 mt-[10px]">
+      
       {/* LEFT SIDE */}
       <div className="w-1/4 bg-[#1BBFCA] text-white flex flex-col items-center pt-6 px-4 h-[85vh] rounded-lg overflow-hidden mt-6 ">
+      <div className="text-xl  text-[#BBFCA] font-bold  mr-47     ">Batches</div>
         <div className="w-full space-y-4 ">
           {batches.map((batch) => (
             <div
@@ -113,8 +120,21 @@ const Community: React.FC = () => {
 
       {/* RIGHT SIDE */}
       {selectedBatch && (
-        <div className="w-3/4 p-6 overflow-y-auto h-screen relative">
+        <div className="w-3/4 p-6 overflow-y-auto min-h-[calc(100vh-64px)] relative">
           <div className="bg-white rounded-lg shadow px-2 sm:px-4 md:px-6 min-h-[calc(100vh-100px)] top--15 flex flex-col relative pb-6">
+            {/* <div className="flex justify-end p-2">
+              <button
+                onClick={() => {
+                  setSelectedBatch(null); 
+                  setMessages([]); 
+                }}
+                className="text-gray-500 hover:text-black "
+                title="Close Chat"
+              >
+                <img src={cancel} alt="Close" className="w-5 h-5" />
+              </button>
+            </div> */}
+
             {/* Card */}
             <img
               src={frame2}
@@ -183,7 +203,7 @@ const Community: React.FC = () => {
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               />
-              <button className="absolute right-16 top-1.5 opacity-70">
+              <button className="absolute right-18 top--1 opacity-70">
                 <img src={attachIcon} alt="attach" className="w-5 h-5" />
               </button>
               <button
@@ -326,7 +346,8 @@ const Community: React.FC = () => {
         </div>
       )}
     </div>
+    
   );
 };
 
-export default Community;
+export default Communitys;
