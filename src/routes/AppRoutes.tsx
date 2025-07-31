@@ -78,6 +78,7 @@ const AppRoutes = () => {
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}
 				<Route path='profile' element={<Accountpf />} />
 				<Route path='Editprof' element={<EditUserInfo />} />
+
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
 				<Route path='staff-notifications' element={<StaffsNotifications />} />
@@ -85,6 +86,7 @@ const AppRoutes = () => {
 					path='student-notifications'
 					element={<StudentNotifications />}
 				/>
+				
 				<Route path='community' element={<Community />} />
 
 				{/* Branch Management */}
