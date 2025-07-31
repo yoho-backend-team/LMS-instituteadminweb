@@ -39,13 +39,11 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
-<<<<<<< HEAD
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
-=======
 import {Profile} from '../components/StudentManagement/Profile';
->>>>>>> fbe178fc6449f623b790525e16215bafc0adaf32
 
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
@@ -94,6 +92,7 @@ const AppRoutes = () => {
 
 				{/* Staff Management */}
 				<Route path='staffs' element={<TeachingStaffs />} />
+				<Route path='staffs-details' element={<MainPage />} />
 
 				{/* Student Management */}
 				<Route path='students' element={<Students />} />
