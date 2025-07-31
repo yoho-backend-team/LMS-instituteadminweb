@@ -48,14 +48,14 @@ const SideBar = ({
 						className='rounded-md transition duration-200 hover:bg-white/10 outline-none border-none'
 						title='Toggle Sidebar'
 					>
-						<Menu size={16} className='text-[#ffffff]' />
+						<Menu size={25} className='text-[#ffffff]' />
 					</button>
 					{/* <span className="absolute left-full top-1/2 -translate-y-1/2 ml-4 whitespace-nowrap rounded-3xl bg-[#1BBFCA] text-white text-sm px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 z-50">
                         Toggle Sidebar
                     </span> */}
 				</div>
 			</div>
-			<nav className='overflow-y-auto px-2  space-y-3 mb-15 scrollbar-hide'>
+			<nav className='overflow-y-auto overflow-x-hidden px-2  space-y-3 mb-15 scrollbar-hide '>
 				<SidebarLink
 					to='/'
 					icon={<LayoutDashboard />}
@@ -145,6 +145,12 @@ const SideBar = ({
 					<SidebarLink1
 						to='/study-materials'
 						label='Study Material'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
+					<SidebarLink1
+						to='/modules'
+						label='modules'
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
@@ -517,7 +523,7 @@ const SidebarLink = ({
 				<div
 					className={`text-lg flex-shrink-0 transform scale-100 transition-transform duration-200
                         group-hover:animate-[grow-from-dot-on-hover_1.5s_ease-out]
-                        ${isActive ? 'text-[#1BBFCA]' : 'text-black'}`}
+                        ${isActive ? 'text-[#1BBFCA]' : 'text-white'}`}
 				>
 					{icon}
 				</div>
@@ -643,7 +649,7 @@ const SidebarDropdown = ({
 					<div className='relative px-6 left-2'>
 						{React.Children.map(children, (child, index) => (
 							<div key={index} className='relative'>
-								<div className='absolute -left-2 top-1 translate-x-[-50%]'>
+								<div className='absolute left-6 top-1 translate-x-[-50%]'>
 									<svg
 										width='80'
 										height='60'
