@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
 import CustomDropdown from "../../../components/ContentMangement/Notes/CoustomDropdown/CustomDropdown";
@@ -18,6 +18,7 @@ const Notes = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [editNote, setEditNote] = useState<any>(null);
   const [viewNote, setViewNote] = useState<any>(null);
+   const panelRef = useRef<HTMLDivElement>(null);
 
   const [notes, setNotes] = useState([
     {
@@ -66,14 +67,30 @@ const Notes = () => {
     setShowFilter(false);
     setOpenIndex(null);
   };
+   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+        setShowPanel(false);
+        setEditNote(null);
+      }
+    };
+
+    if (showPanel) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPanel]);
 
   return (
     <div className="relative flex flex-col gap-6">
-      {showPanel && (
+           {showPanel && (
         <div className="absolute inset-0 h-[85vh] flex justify-end z-50">
           <div
+            ref={panelRef}
             className="h-full w-1/3 bg-white shadow-xl rounded-xl"
-            onClick={(e) => e.stopPropagation()}
           >
             {editNote ? (
               <EditNotes

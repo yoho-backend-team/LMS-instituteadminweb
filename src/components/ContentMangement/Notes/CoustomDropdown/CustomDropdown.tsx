@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
 
 interface CustomDropdownProps {
@@ -21,12 +21,26 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   width = "w-full",
 }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isTailwindWidth = width.startsWith("w-");
 
+  // 🔸 Detect clicks outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div
-      className={`relative inline-block text-sm ${
+      ref={dropdownRef}
+      className={`relative inline-block text-sm text-[#7D7D7D] ${
         isTailwindWidth ? width : ""
       } ${className || ""}`}
       style={!isTailwindWidth ? { width } : undefined}
