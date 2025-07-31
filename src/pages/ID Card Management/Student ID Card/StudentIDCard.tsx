@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import bgImage from "../../../assets/IDcardManagement/Group 1000000936.png";
-import barCode from "../../../assets/IDcardManagement/barcode.png"
+import barCode from "../../../assets/IDcardManagement/barcode.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectStudentId } from '../../../features/StudentIdCard/reducers/selectors';
+import { getIdcardthunks } from '../../../features/StudentIdCard/reducers/thunks';
+
 
 const StudentIDCard = () => {
     const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
@@ -14,6 +18,23 @@ const StudentIDCard = () => {
             [index]: !prev[index]
         }));
     };
+
+
+
+
+
+	
+
+
+	const dispatch = useDispatch<any>()
+
+	const studentID = useSelector(selectStudentId)
+
+
+	useEffect(() => {
+		dispatch(getIdcardthunks());
+		console.log(studentID, "Student Idcard Details")
+	}, [dispatch]);
 
     return (
         <div>
