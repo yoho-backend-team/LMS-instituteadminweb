@@ -48,6 +48,9 @@ const Courses: React.FC = () => {
 
   return (
     <div className="p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl text-[#3B3939] font-semibold">Admin User</h1>
+      </div>
       <div className="flex justify-between items-center mb-4">
         <button
           className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm"
