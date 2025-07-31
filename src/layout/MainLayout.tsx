@@ -7,30 +7,6 @@ export const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const sidebarWidth = isSidebarOpen ? 250 : 87;
 
-<<<<<<< HEAD
-    const sidebarWidth = isSidebarOpen ? 250 : 87;
-
-    return (
-    <div className='flex flex-col h-screen w-screen overflow-x-hidden bg-[#1BBFCA]'>
-            <div className=''>
-                <Navbar />
-            </div>
-
-            <div className='flex overflow-y-auto '>
-                <div
-                    className='flex  h-[calc(100vh-64px)] transition-all duration-300 '
-                    style={{ width: `${sidebarWidth}px` }}
-                >
-                    <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-                </div>
-
-                <div
-                    className='flex-1 overflow-auto p-6 bg-white rounded-tl-[35px] h-full'
-                >
-                    <Outlet />
-                </div>
-            </div>
-=======
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#1BBFCA]">
       <div className="h-16 w-full flex-shrink-0">
@@ -43,7 +19,6 @@ export const MainLayout = () => {
           style={{ width: `${sidebarWidth}px` }}
         >
           <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
->>>>>>> 6b08ec24c90d992c48b9a7eaff3cbca8be3750fe
         </div>
         <div className="flex-1 overflow-y-auto p-6 bg-white rounded-tl-[35px]">
           <Outlet />

@@ -39,11 +39,6 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
-<<<<<<< HEAD
-import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
-import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
-import TrackOrder from '../components/HelpFAQ/TrackOrder';
-=======
 import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
@@ -54,7 +49,9 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 // import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
->>>>>>> 6b08ec24c90d992c48b9a7eaff3cbca8be3750fe
+import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
+import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
+import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
