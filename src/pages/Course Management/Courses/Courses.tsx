@@ -3,6 +3,7 @@ import CourseCard from "../../../components/Coursemanagement/CourseCard";
 import FilterPanel from "../../../components/Coursemanagement/FilterPanel";
 import AddNewCourseForm from "../../../components/Coursemanagement/AddNewCourseForm";
 import CourseDetailView from "../../../components/Coursemanagement/CourseDetailView";
+import showfilter from '../../../assets/navbar/showfilter.png'
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState([
@@ -53,11 +54,17 @@ const Courses: React.FC = () => {
       </div>
       <div className="flex justify-between items-center mb-4">
         <button
-          className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm"
-          onClick={handleToggleFilter}
-        >
-          {showFilter ? "Hide Filter" : "Show Filter"}
-        </button>
+  className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm inline-block"
+  onClick={handleToggleFilter}
+>
+  <span className="inline-block align-middle">
+    <img src={showfilter} alt="Filter" className="w-4 h-4 mr-2 inline-block align-middle" />
+  </span>
+  <span className="inline-block align-middle">
+    {showFilter ? "Hide Filter" : "Show Filter"}
+  </span>
+</button>
+
         <button
           className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm"
           onClick={handleAddNewCourse}
