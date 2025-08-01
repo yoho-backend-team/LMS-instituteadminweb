@@ -137,7 +137,8 @@ class Client {
         update_staff: (data: any) => HttpClient.update(HTTP_END_POINTS.staff.update + data?.staff, data)
     };
     staff = {
-        get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query)
+        get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getWithId: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithId, query)
     };
     student = {
         activity: (data: any) => HttpClient.get(HTTP_END_POINTS.student.activity + data.id),

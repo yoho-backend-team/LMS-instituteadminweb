@@ -1,0 +1,1 @@
+export const selectStaff= (state: any) => state.StaffSlice.data;

@@ -147,11 +147,13 @@ const generateEndpoints = () => {
         },
         staff: {
             get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
-            getWithName: `/api/institutes/${instituteId}/branches/${branchId}/staff`,
+            // getWithName: `/api/institutes/${instituteId}/branches/${branchId}/staff`,
+            getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
             getWithId: `/api/institutes/${instituteId}/staff/`,
             getWithcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/`,
             getWithBranch: `/api/institutes/${instituteId}/branches/`,
-            getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
+            // getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
+            getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/4c5bfb52-de4b-4f7a-bf06-c786d250a10a`,
             getActivtiy: "/api/institutes/user/activity/staff/",
             getClasses: "/api/institutes/class/staff/",
             update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/`

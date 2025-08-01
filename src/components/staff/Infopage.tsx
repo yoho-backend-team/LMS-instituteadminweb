@@ -7,22 +7,25 @@ import { COLORS, FONTS } from "../../constants/uiConstants";
 
 interface Staff {
   id: number;
-  name: string;
+  full_name: string;
   email: string;
   status: 'Active' | 'Inactive';
   avatar: string;
-  dateOfBirth?: string;
+  dob?: string;
   gender?: string;
   course?: string;
   designation?: string;
   qualification?: string;
+  contact_info: {
   state?: string;
   city?: string;
   pinCode?: string;
-  addressLine1?: string;
-  addressLine2?: string;
-  phoneNumber?: string;
-  altPhoneNumber?: string;
+  address1?: string;
+  address2?: string;
+  phone_number?: string;
+  alternate_phone_number?: string;
+
+  }
 }
 
 interface InfopageProps {
@@ -33,19 +36,19 @@ interface InfopageProps {
 
 const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) => {
   const [formData, setFormData] = useState({
-    fullName: staff.name,
+    fullName: staff.full_name,
     email: staff.email,
     role: staff.designation || "Senior Advisor To The President",
     gender: staff.gender || "Male",
-    dob: staff.dateOfBirth || "06-08-2000",
-    primaryNumber: staff.phoneNumber || "3804348004",
-    altNumber: staff.altPhoneNumber || "3903858390",
+    dob: staff.dob || "06-08-2000",
+    primaryNumber: staff.contact_info.phone_number || "3804348004",
+    altNumber: staff.contact_info.alternate_phone_number || "3903858390",
     qualification: staff.qualification || "Physics",
-    addressLine1: staff.addressLine1 || "Texas: Near The SpaceX Starbase",
-    addressLine2: staff.addressLine2 || "Pretoria, Texas",
-    city: staff.city || "Boca Chica",
-    state: staff.state || "Texas",
-    pinCode: staff.pinCode || "78521",
+    address1: staff.contact_info.address1 || "Texas: Near The SpaceX Starbase",
+    address2: staff.contact_info.address2 || "Pretoria, Texas",
+    city: staff.contact_info.city || "Boca Chica",
+    state: staff.contact_info.state || "Texas",
+    pinCode: staff.contact_info.pinCode || "78521",
     course: staff.course || "MEAN STACK 2024",
     designation: staff.designation || "Senior Professor",
     module: "number of modules",
@@ -60,19 +63,19 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      fullName: staff.name,
+      fullName: staff.full_name,
       email: staff.email,
       role: staff.designation || "Senior Advisor To The President",
       gender: staff.gender || "Male",
-      dob: staff.dateOfBirth || "06-08-2000",
-      primaryNumber: staff.phoneNumber || "3804348004",
-      altNumber: staff.altPhoneNumber || "3903858390",
+      dob: staff.dob || "06-08-2000",
+      primaryNumber: staff.contact_info.phone_number || "3804348004",
+      altNumber: staff.contact_info.alternate_phone_number || "3903858390",
       qualification: staff.qualification || "Physics",
-      addressLine1: staff.addressLine1 || "Texas: Near The SpaceX Starbase",
-      addressLine2: staff.addressLine2 || "Pretoria, Texas",
-      city: staff.city || "Boca Chica",
-      state: staff.state || "Texas",
-      pinCode: staff.pinCode || "78521",
+      address1: staff.contact_info.address1 || "Texas: Near The SpaceX Starbase",
+      address2: staff.contact_info.address2 || "Pretoria, Texas",
+      city: staff.contact_info.city || "Boca Chica",
+      state: staff.contact_info.state || "Texas",
+      pinCode: staff.contact_info.pinCode || "78521",
       course: staff.course || "MEAN STACK 2024",
       designation: staff.designation || "Senior Professor",
       module: "number of modules",
@@ -176,8 +179,8 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                 <Label className="mb-1">Address Line 1</Label>
                 <Input
                   className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                  name="addressLine1"
-                  value={formData.addressLine1}
+                  name="address1"
+                  value={formData.address1}
                   onChange={handleInputChange}
                 />
               </div>
@@ -185,8 +188,8 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                 <Label className="mb-1">Address Line 2</Label>
                 <Input
                   className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                  name="addressLine2"
-                  value={formData.addressLine2}
+                  name="address2"
+                  value={formData.address2}
                   onChange={handleInputChange}
                 />
               </div>
@@ -275,7 +278,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Full Name
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.name}
+                    defaultValue={staff.full_name}
                     readOnly
                   />
                 </label>
@@ -315,7 +318,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Date Of Birth
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.dateOfBirth || "06-08-2000"}
+                    defaultValue={staff.dob || "06-08-2000"}
                     readOnly
                   />
                 </label>
@@ -335,7 +338,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Primary Number
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.phoneNumber || "3804348004"}
+                    defaultValue={staff.contact_info.phone_number || "3804348004"}
                     readOnly
                   />
                 </label>
@@ -345,7 +348,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Alternative Number
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.altPhoneNumber || "3903858390"}
+                    defaultValue={staff.contact_info.alternate_phone_number || "3903858390"}
                     readOnly
                   />
                 </label>
@@ -375,7 +378,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Address
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.addressLine1 || "Texas: Near The SpaceX Starbase"}
+                    defaultValue={staff.contact_info.address1 || "Texas: Near The SpaceX Starbase"}
                     readOnly
                   />
                 </label>

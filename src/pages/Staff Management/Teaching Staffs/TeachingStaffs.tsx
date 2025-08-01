@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, Filter, Mail } from 'lucide-react';
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
@@ -8,6 +8,11 @@ import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectStaff } from '../../../features/staff/reducers/selector';
+import { getStaffDetailsData } from '../../../features/staff/reducers/thunks';
+import type { AppDispatch } from 'recharts/types/state/store';
+import { GetImageUrl } from '../../../utils/helper';
 
 const theme = {
   primary: {
@@ -134,6 +139,28 @@ const TeachingStaffs: React.FC = () => {
   const handleProfile = (staffMember: Staff) => {
     navigate('/staffs-details', { state: { staff: staffMember } });
   };
+
+	const dispatch = useDispatch<AppDispatch>();
+	const classData = useSelector(selectStaff)?.data || [];
+
+  console.log('classData :',classData);
+
+		const fetchClassData = (
+		page: number = 1
+	) => {
+		dispatch(getStaffDetailsData({
+				page: page,
+			})
+		);
+	};
+
+  useEffect(() => {
+      fetchClassData();
+  },[])
+
+  
+
+
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
@@ -372,13 +399,13 @@ const TeachingStaffs: React.FC = () => {
 
           <Card className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className="divide-y">
-              {staff.map((member) => (
-                <div key={member.id} className="p-4">
+              {classData.map((member) => (
+                <div key={member?.id} className="p-4">
                   <div className="flex items-center gap-3 ">
                     <Avatar className='!w-[80px] !h-[80px]'> 
-                      <AvatarImage src={member.avatar} alt={member.name} />
+                      <AvatarImage src={GetImageUrl(member?.image)} alt={member?.full_name} />
                     </Avatar>
-                    <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.name}</h3>
+                    <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.full_name}</h3>
                   </div>
 
                   <div className="flex items-center gap-2 mb-3 text-muted-foreground">
@@ -389,11 +416,11 @@ const TeachingStaffs: React.FC = () => {
                   <div className="flex items-center justify-between mb-4 bg-white">
                     <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
                     <Select 
-                      value={member.status}
+                      value={member?.is_active ? 'Active' : 'Inactive'}
                       onValueChange={(value: 'Active' | 'Inactive') => toggleStatus(member.id)}
                     >
                       <SelectTrigger className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(member.status)}`}>
-                        <SelectValue placeholder={member.status} />
+                        <SelectValue placeholder={member?.is_active} />
                       </SelectTrigger>
                       <SelectContent className="bg-[#1BBFCA]">
                         <SelectItem value="Active" className="focus:bg-white cursor-pointer">Active</SelectItem>
