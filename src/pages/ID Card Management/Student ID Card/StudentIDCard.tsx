@@ -5,6 +5,7 @@ import barCode from "../../../assets/IDcardManagement/barcode.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { selectStudentId } from '../../../features/StudentIdCard/reducers/selectors';
 import { getIdcardthunks } from '../../../features/StudentIdCard/reducers/thunks';
+import { GetImageUrl } from '../../../utils/helper';
 
 
 const StudentIDCard = () => {
@@ -29,7 +30,7 @@ const StudentIDCard = () => {
 		console.log(studentID, "Student Idcard Details")
 	}, [dispatch]);
 
-    console.log(studentID,"asdfghjkl")
+    console.log(studentID,"studenID card Details")
     return (
         <div>
             <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>Student ID Card</h1>
@@ -56,7 +57,7 @@ const StudentIDCard = () => {
                                     <div className="bg-cover bg-center h-[220px] w-full bg-no-repeat flex justify-center items-center"
                                         style={{ backgroundImage: `url(${bgImage})` }}
                                     >
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFPmGp1XOXV5pXsqM4-YLLbIQBun4NVA4g1ZFg5wotT4_QTCzNd6yuKlQ&s" alt="" className='w-[130px] h-[130px] rounded-full object-cover' />
+                                        <img src={GetImageUrl(data?.image) ?? undefined} alt={data?.name} className='w-[130px] h-[130px] rounded-full object-cover' />
                                     </div>
 
                                     <div className='text-center'>

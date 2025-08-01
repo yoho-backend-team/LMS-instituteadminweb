@@ -161,20 +161,6 @@ const SideBar = ({
 						onClick={handleLinkClick}
 					/>
 				</SidebarDropdown>
-				<SidebarLink
-					to='/notes'
-					icon={<Briefcase />}
-					label='Notes'
-					isOpen={isOpen}
-					onClick={handleLinkClick}
-				/>
-				<SidebarLink
-					to='/modules'
-					icon={<Briefcase />}
-					label='Modules'
-					isOpen={isOpen}
-					onClick={handleLinkClick}
-				/>
 				<SidebarDropdown
 					icon={<UserSearch />}
 					label='Class Management'
@@ -258,7 +244,7 @@ const SideBar = ({
 					/>
 					<SidebarLink1
 						to='/staff-salaries'
-						label='Slaries'
+						label='Salaries'
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>

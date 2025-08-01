@@ -10,8 +10,6 @@ import { GetImageUrl } from '../../../utils/helper';
 const StaffIDCard = () => {
 	const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
 	
-	const arr = [1];
-
 	const handleCardClick = (index: number) => {
 		setFlippedCards(prev => ({
 			...prev,
@@ -57,7 +55,7 @@ const StaffIDCard = () => {
 									<div className="bg-cover bg-center h-[220px] w-full bg-no-repeat flex justify-center items-center"
 										style={{ backgroundImage: `url(${bgImage})` }}
 									>
-										<img src={GetImageUrl(data?.image) || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_1280.png"} alt="" className='w-[130px] h-[130px] rounded-full object-cover' />
+										<img src={GetImageUrl(data?.image) ?? undefined} alt={data?.name} className='w-[130px] h-[130px] rounded-full object-cover' />
 									</div>
 
 									<div className='text-center'>

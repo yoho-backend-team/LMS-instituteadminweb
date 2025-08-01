@@ -30,16 +30,15 @@ Axios.interceptors.response.use(
 
 
 class HttpClient {
+	async get(url: string, params?: any) {
+		const response = await Axios.get(url, { params });
+		return response.data;
+	}
 
-    async get(url: string, params?: string) {
-        const response = await Axios.get(url, { params })
-        return response.data
-    }
-
-    async post(url: string, data: any, params?: string) {
-        const response = await Axios.post(url, data, { params })
-        return response.data
-    }
+	async post(url: string, data: any, params?: any) {
+		const response = await Axios.post(url, data, { params });
+		return response.data;
+	}
 
     async update(url: string, data?: any) {
         const response = await Axios.put(url, data)
