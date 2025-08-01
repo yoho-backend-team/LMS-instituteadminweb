@@ -13,6 +13,7 @@ interface Props {
 		fileName: string;
 		title: string;
 		videoUri: string;
+		
 	}) => void;
 }
 
