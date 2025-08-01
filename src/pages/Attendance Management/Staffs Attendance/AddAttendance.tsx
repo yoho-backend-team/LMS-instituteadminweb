@@ -88,7 +88,7 @@ const AddAttendance = () => {
             <StaffAddBar data={staff} setOpen={setopenModal} setMonth={setCurrentMonth} setYear={setCurrentYear} />
             <StaffFormModal data={staff} setOpen={setopenModal} isOpen={openModal} />
 
-            <div className="w-full grid grid-cols-2 mt-5">
+            <div className="w-full grid grid-cols-2 mt-2">
                 <p className="col-span-1 text-center text-[#716F6F] font-semibold text-[22px]">{months[currentMonth] + ' ' + currentYear}</p>
                 <div className="w-full grid grid-cols-4 gap-5 **:w-full **:h-[47px] **:justify-center **:flex **:items-center **:border **:rounded-md **:cursor-pointer">
                     <div className="border-[#1BBFCA] bg-[#1BBFCA1A] text-[#1BBFCA]">Monthly</div>
