@@ -211,12 +211,11 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
   }, [])
 
   return (
-    <motion.div 
-      className="container mx-auto py-8 px-4 md:px-6 lg:px-8"
-      initial="hidden"
-      animate="show"
-      variants={containerVariants}
-    >
+   <motion.div
+  animate="visible" // 👈 Always shows the elevated effect
+  variants={cardHoverVariants}
+  className="bg-white rounded-xl p-6"
+>
       <div className="flex items-center justify-between mb-8">
         <motion.div variants={itemVariants}>
           <Button 
@@ -419,7 +418,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
       <CardContent>
         <div className="h-[350px]">
           <BarChart
-            width={750}
+            width={800}
             height={350}
             data={chartData}
       margin={{ top: 40, right: 10, left: 5, bottom: 5 }} 
