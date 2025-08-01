@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import TicketCard from "./TicketCard";
 import ticket1 from "../../assets/ticket1.png";
-import { useNavigate } from "react-router-dom";
 
 interface Ticket {
   id: number;
@@ -11,7 +10,7 @@ interface Ticket {
   date: string;
   time: string;
   priority: "High" | "Low";
-  status: "opened" | "closed";
+  status: "opened"; // 👈 Only "opened" tickets included
 }
 
 const Tickets: Ticket[] = [
@@ -24,16 +23,6 @@ const Tickets: Ticket[] = [
     time: "6:03 AM",
     priority: "High",
     status: "opened",
-  },
-  {
-    id: 2,
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    message: "This ticket created from student mobile app",
-    date: "5-7-2025",
-    time: "6:03 AM",
-    priority: "Low",
-    status: "closed",
   },
   {
     id: 3,
@@ -84,7 +73,7 @@ const StudTickets: React.FC = () => {
             <TicketCard key={ticket.id} {...ticket} />
           ))
         ) : (
-          <p className="text-gray-500">No tickets found.</p>
+          <p className="text-gray-500 col-span-3 text-center">No tickets found.</p>
         )}
       </div>
     </div>
