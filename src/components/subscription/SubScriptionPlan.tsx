@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { HiCheckCircle } from "react-icons/hi";
 
@@ -54,7 +53,7 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
             key={plan.id}
             onClick={() => setSelectedPlan(plan)}
             className={cn(
-              "w-full max-w-sm rounded-2xl border shadow-md p-6 flex flex-col justify-between cursor-pointer transition-all duration-300",
+              "w-full max-w-sm rounded-2xl border-2 border-gray-100 shadow-xl p-6 flex flex-col justify-between cursor-pointer transition-all duration-300",
               isSelected ? "bg-[#1BBFCA] text-white" : "bg-white text-gray-700"
             )}
           >
@@ -64,7 +63,7 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
               <p className={cn("text-sm mb-4", isSelected ? "text-white/90" : "text-gray-500")}>
                 {plan.description}
               </p>
-              <p className="text-center text-2xl font-bold mb-4">
+              <p className={cn("text-center text-2xl font-extrabold mb-4",isSelected ? "text-white" : "text-gray-600")}>
                 ₹{plan.price.toLocaleString()}{" "}
                 <span className="text-sm font-normal">/Monthly</span>
               </p>
@@ -73,7 +72,7 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
             <div
               className={cn(
                 "p-4 rounded-xl mb-6 text-sm " ,
-                isSelected ? "bg-[#1BBFCA]/20" : "bg-gray-100"
+                isSelected ? "bg-[#1BBFCA]/4" : "bg-gray-100"
               )}
             >
               <p className={cn("font-semibold uppercase mb-3", isSelected ? "text-white" : "text-gray-600")}>
@@ -97,9 +96,9 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <Button
+              <button
                 className={cn(
-                  "w-full text-sm p-3.5",
+                  "w-full text-sm p-3 rounded",
                   isSelected
                     ? "bg-white text-[#1BBFCA] hover:bg-gray-100"
                     : "bg-[#1BBFCA] text-white hover:bg-cyan-600 border-transparent"
@@ -108,20 +107,20 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
                 onClick={() => onSelectPlan(plan)} 
               >
                 Your Plan
-              </Button>
+              </button>
 
-              <Button
+              <button
                 className={cn(
-                  "w-full text-sm border p-3.5",
+                  "w-full text-sm border p-3 rounded",
                   isSelected
                     ? " bg-[#1BBFCA] text-white hover:bg-cyan-600 border-white"
-                    : "bg-gray-200 text-gray-600 cursor-not-allowed"
+                    : " text-[#1BBFCA] cursor-not-allowed border-[#1BBFCA]"
                 )}
                 disabled={isSelected}
                 onClick={() => onSelectPlan(plan)} 
               >
                 Upgrade Plan
-              </Button>
+              </button>
             </div>
           </div>
         );

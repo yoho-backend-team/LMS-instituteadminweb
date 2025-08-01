@@ -33,7 +33,7 @@ export const Plans = ({ plan, onClose }: PlansProps) => {
       </div>
 
       <div className="flex flex-wrap justify-between my-8">
-        <div className="border shadow-xl rounded-xl p-4 w-full max-w-3xl h-28 flex-1 mb-0">
+        <div className="border-2 border-gray-100 shadow-xl rounded-xl p-4 w-full max-w-3xl h-28 flex-1 mb-0">
           <h4 className="text-lg font-semibold mb-4 text-gray-700">FEATURES</h4>
           <ul className="flex flex-wrap gap-8">
             {plan.features.map((feature, index) => (
@@ -45,7 +45,7 @@ export const Plans = ({ plan, onClose }: PlansProps) => {
           </ul>
         </div>
 
-        <div className="bg-white border shadow-2xl rounded-md p-4 w-full max-w-md flex-1">
+        <div className="bg-white border-2 border-gray-100 shadow-xl rounded-md p-4 w-full max-w-md flex-1">
           <div className="w-full h-32 bg-gray-200 rounded mb-4" />
           <p className="text-sm text-gray-600 mb-1">
             <span className="font-semibold">Course Type:</span> {plan.name}
