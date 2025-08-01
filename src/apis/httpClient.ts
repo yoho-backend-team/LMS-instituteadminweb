@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 
 const Axios = axios.create({
-	baseURL: 'https://lms-node-backend-v1.onrender.com',
+	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
 	timeout: 5000000,
 	headers: {
 		'Content-Type': 'application/json',
@@ -34,12 +34,12 @@ Axios.interceptors.response.use(
 
 class HttpClient {
 	async get(url: string, params?: any) {
-		const response = await Axios.get(url, params);
+		const response = await Axios.get(url, { params });
 		return response.data;
 	}
 
 	async post(url: string, data: any, params?: any) {
-		const response = await Axios.post(url, data, params);
+		const response = await Axios.post(url, data, { params });
 		return response.data;
 	}
 
