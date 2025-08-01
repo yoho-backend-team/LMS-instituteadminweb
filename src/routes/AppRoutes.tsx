@@ -131,7 +131,7 @@ const AppRoutes = () => {
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
 				<Route
-					path='students-attendance/details'
+					path='students-attendance/details/:id'
 					element={<StudentDetails />}
 				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
