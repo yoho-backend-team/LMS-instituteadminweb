@@ -58,7 +58,7 @@ import TrackOrder from '../components/HelpFAQ/TrackOrder';
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
-	const isAuthenticated = true;
+	const isAuthenticated = false;
 
 	// if (isLoading) return null;
 
