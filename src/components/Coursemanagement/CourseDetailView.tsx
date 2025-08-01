@@ -56,7 +56,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
           onSubmit={handleFormSubmit}
         />
       ) : (
-        <div className="bg-white shadow rounded-lg p-4">
+        <div className="bg-white shadow rounded-lg p-4 border-2">
           <img src={card1} alt={courseData.title} className="rounded w-full h-64 object-cover" />
 
           <div className="flex justify-between mt-4 items-center">
