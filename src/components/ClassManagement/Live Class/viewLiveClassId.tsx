@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import avatarImg from '../../../assets/image 109.png';
-import instructorImg from '../../../assets/image 108.png';
 import { Card } from '../../ui/card';
 interface Student {
 	id: number;
@@ -14,23 +13,11 @@ interface Student {
 	address: string;
 }
 
-interface Instructor {
-	id: number;
-	name: string;
-	avatar: string;
-}
-
 const ViewLiveClassId: React.FC = () => {
 	const [searchStudent, setSearchStudent] = useState('');
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { data } = location.state;
-
-	const instructors: Instructor[] = [
-		{ id: 1, name: 'Abdul Kalam', avatar: avatarImg },
-		{ id: 2, name: 'Albert Einstein', avatar: avatarImg },
-		{ id: 3, name: 'Shakespeare', avatar: avatarImg },
-	];
 
 	const students: Student[] = [
 		{
@@ -178,16 +165,42 @@ const ViewLiveClassId: React.FC = () => {
 						className='mt-2 w-2/5 px-3 py-2 border rounded focus:outline-none'
 					/>
 					<div className='flex items-center gap-30 bg-white p-4  shadow rounded-md'>
-						<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
+						<p
+							style={{
+								...FONTS.heading_06_bold,
+								color: COLORS.gray_dark_02,
+								width: '20%',
+							}}
+						>
 							Student ID
 						</p>
-						<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
+						<p
+							style={{
+								...FONTS.heading_06_bold,
+								color: COLORS.gray_dark_02,
+								width: '35%',
+							}}
+						>
 							Student Name
 						</p>
-						<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }} className='ml-16'>
+						<p
+							style={{
+								...FONTS.heading_06_bold,
+								color: COLORS.gray_dark_02,
+								width: '20%',
+							}}
+							className='ml-16'
+						>
 							City
 						</p>
-						<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }} className='ml-16'>
+						<p
+							style={{
+								...FONTS.heading_06_bold,
+								color: COLORS.gray_dark_02,
+								width: '20%',
+							}}
+							className='ml-16'
+						>
 							Address
 						</p>
 					</div>
