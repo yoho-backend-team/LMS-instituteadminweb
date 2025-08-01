@@ -258,7 +258,7 @@ const SideBar = ({
 					/>
 					<SidebarLink1
 						to='/staff-salaries'
-						label='Slaries'
+						label='Salaries'
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
