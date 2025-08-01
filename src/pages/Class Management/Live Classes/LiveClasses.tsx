@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../../components/ui/button';
 import filter from '../../../assets/Filter.png';
 import plus from '../../../assets/Add.png';
 import { CreateLiveClassModal } from '../../../components/ClassManagement/Live Class/createLiveClass';
 import { LiveClassCard } from '../../../components/ClassManagement/Live Class/classCard';
+import { useDispatch } from 'react-redux';
+import { getAllLiveClasses } from '../../../features/Class Management/Live Class/reducers/thunks';
 
 const LiveClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
+	const dispatch = useDispatch<any>();
+
+	const fetchAllLiveClasses = async () => {
+		try {
+			const params_data = {
+				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				institute: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				page: 1,
+			};
+			dispatch(getAllLiveClasses(params_data));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAllLiveClasses();
+	}, [dispatch]);
 
 	return (
 		<>
