@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { ChevronDown } from "lucide-react";
-import Eyeicon from "../../../assets/eyeicon.png";
-import Editicon from "../../../assets/editicon.png";
-import Deleteicon from "../../../assets/Deleteicon.png";
 import { FaEye } from "react-icons/fa";
 import { LuNotebookPen } from "react-icons/lu";
 import { AiOutlineDelete } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const dummycard = [
   { name: "John William", totalusers: "0" },
@@ -15,31 +13,20 @@ const dummycard = [
 ];
 
 function StatsCard() {
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
-  const [statusMap, setStatusMap] = useState<{ [key: number]: string }>({});
-  // const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
-
-
+  const [openMenu, setOpenMenu] = useState<number | null>(null)
   const toggleMenu = (index: number) => {
     setOpenMenu(openMenu === index ? null : index);
   };
 
-  // const toggleDropdown = (index: number) => {
-  //   setDropdownOpen(dropdownOpen === index ? null : index);
-  // };
-
-  // const updateStatus = (index: number, value: string) => {
-  //   setStatusMap((prev) => ({ ...prev, [index]: value }));
-  //   setDropdownOpen(null);
-  // };
   const [status, setStatus] = useState("Active")
   const [isOpen, setIsOpen] = useState(false)
 
   const options = ["Active", "Inactive"]
+  const navigate = useNavigate();
 
 
   return (
-    <div className="p-6">
+    <div className="">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {dummycard.map((card, idx) => {
           // const currentStatus = statusMap[idx] || "Active";
@@ -53,18 +40,18 @@ function StatsCard() {
                 </button>
                 {openMenu === idx && (
                   <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30 rounded-lg text-sm p-2 space-y-2">
-                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
-                      {/* <img src={Eyeicon} alt="view" className="w-4 h-4" /> */}
+                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition" onClick={() => navigate("/group/view")}>
+
                       <div > <FaEye className="w-5 h-5" /></div>
                       <span>View</span>
                     </button>
-                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
-                      {/* <img src={Editicon} alt="edit" className="w-4 h-4" /> */}
+                    <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition" onClick={() => navigate("/group/edit")}>
+
                       <div ><LuNotebookPen className="w-5 h-5" /></div>
                       <span>Edit</span>
                     </button>
                     <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
-                      {/* <img src={Deleteicon} alt="delete" className="w-4 h-4" /> */}
+
                       <div><AiOutlineDelete className="w-5 h-5" /></div>
                       <span>Delete</span>
                     </button>
@@ -73,7 +60,7 @@ function StatsCard() {
               </div>
 
               {/* Card Content */}
-              <h2 className="text-lg text-[#716F6F] font-semibold mb-1">{card.name}</h2>
+              <h2 className="text-lg text-[#716F6F] font-semibold mb-1 mt-4 bg-[#F7F7F7] px-3 py-2">{card.name}</h2>
               <p className="text-sm text-[#716F6F] mb-4">
                 Total {card.totalusers} Users
               </p>
