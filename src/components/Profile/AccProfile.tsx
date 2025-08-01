@@ -51,10 +51,24 @@ const AccountProfile: React.FC = () => {
 			date: 'July 17, 2025 At 06:13:23 Pm',
 			status: 'Notes Created',
 		},
+		
+		
 	];
-
+  const [activeIndex, setActiveIndex] = useState<number | null>(0);
 	return (
-		<div> <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_10 }}>Account</span>
+		<div> 
+			{/* <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Account</span> */}
+			<div>
+        {activeIndex === 0 && (
+          <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Account</span>
+        )}
+        {activeIndex === 1 && (
+         <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Security</span>
+        )}
+        {activeIndex === 2 && (
+          <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Timeline</span>
+        )}
+      </div>
 			<div className="flex  p-0 w-auto mr-5 ml-1">
 
 				<div className="w-68 bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 ml-3 mt-5 ">
@@ -62,27 +76,33 @@ const AccountProfile: React.FC = () => {
 					<ul className="space-y-3">
 						<button
 							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'first' ? 'bg-cyan-500 text-white' : 'bg-white text-[#716F6F]'
-								}`}
-							onClick={() => setActivePanel('first')}
+								} `}
+							onClick={() => {setActivePanel('first');
+								setActiveIndex(0);
+							}}
 						>
 							<img src={icon1} alt="icon" className="w-4 h-4 font-semibold" />
-							<span style={{ ...FONTS.heading_09 }}>Account</span>
+							<span style={{ ...FONTS.heading_06_bold }}>Account</span>
 						</button>
 						<button
 							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'second' ? 'bg-cyan-500 text-white' : 'bg-white text-[#716F6F]'
 								}`}
-							onClick={() => setActivePanel('second')}
+							onClick={() => {setActivePanel('second');
+								setActiveIndex(1);
+							}}
 						>
 							<img src={icon2} alt="icon" className="w-4 h-4 font-semibold text-[#716F6F]" />
-							<span style={{ ...FONTS.heading_09 }}>Security</span>
+							<span style={{ ...FONTS.heading_06_bold }}>Security</span>
 						</button>
 						<button
 							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'third' ? 'bg-cyan-500 text-white' : 'bg-white text-[#716F6F]'
 								}`}
-							onClick={() => setActivePanel('third')}
+							onClick={() => {setActivePanel('third');
+								setActiveIndex(2);
+							}}
 						>
 							<img src={icon3} alt="icon" className="w-4 h-4 font-semibold" />
-							<span style={{ ...FONTS.heading_09 }}>Timeline</span>
+							<span style={{ ...FONTS.heading_06_bold }}>Timeline</span>
 						</button>
 					</ul>
 				</div>
@@ -98,8 +118,8 @@ const AccountProfile: React.FC = () => {
 									className="w-[166px] h-[166px] rounded"
 								/>
 								<div>
-									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Albert Elnstein</h3>
-									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07 }}>Trainee ID : LMSTRN231</p>
+									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>Albert Elnstein</h3>
+									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
 									<img
 										src={actimg}// replace with your actual image path
 										alt="Active"
@@ -120,24 +140,24 @@ const AccountProfile: React.FC = () => {
 						<div className="border-t border border-[#A9A7A7] my-4"></div>
 						{/* User Details */}
 						<div className="p-1 mr-5 flex-2">
-							<h4 className="font-semibold mb-6 text-[#716F6F] mr-5" style={{ ...FONTS.heading_10 }}>User Details</h4>
+							<h4 className="font-semibold mb-6 text-[#716F6F] mr-5" style={{ ...FONTS.heading_04_bold }}>User Details</h4>
 
 							<div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm">
 								<div>
-									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_07 }}>Name</p>
-									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_09 }}>Chandran R</p>
+									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_06_light }}>Name</p>
+									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>Chandran R</p>
 								</div>
 								<div>
-									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_07 }}>Email</p>
-									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_09 }}>Chandran1@gmail.com</p>
+									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_06_light }}>Email</p>
+									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>Chandran1@gmail.com</p>
 								</div>
 								<div>
-									<p className="text-[#716F6F] font-medium mb-1 ml-12" style={{ ...FONTS.heading_07 }}>Status</p>
-									<p className="text-[#3ABE65] font-semibold text-base ml-12" style={{ ...FONTS.heading_09 }}>Active</p>
+									<p className="text-[#716F6F] font-medium mb-1 ml-12" style={{ ...FONTS.heading_06_light }}>Status</p>
+									<p className="text-[#3ABE65] font-semibold text-base ml-12" style={{ ...FONTS.heading_06_bold }}>Active</p>
 								</div>
 								<div>
-									<p className="text-[#716F6F] font-medium mb-1 ml-8" style={{ ...FONTS.heading_07 }}>Contact</p>
-									<p className="text-[#716F6F] font-semibold text-base ml-8" style={{ ...FONTS.heading_09 }}>+91 9876556789</p>
+									<p className="text-[#716F6F] font-medium mb-1 ml-8" style={{ ...FONTS.heading_06_light }}>Contact</p>
+									<p className="text-[#716F6F] font-semibold text-base ml-8" style={{ ...FONTS.heading_06_bold }}>+91 9876556789</p>
 								</div>
 							</div>
 						</div>
@@ -145,7 +165,7 @@ const AccountProfile: React.FC = () => {
 
 						{/* Edit Profile Button */}
 						<div className="text-right mb-0 mt-31">
-							<button onClick={handleEdit} className="bg-green-500 h-[48px] w-[127px] text-white px-4 py-2 rounded-lg hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
+							<button onClick={handleEdit} className="bg-green-500 h-[48px] w-[137px] text-white px-4 py-2 rounded-lg hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
 								Edit Profile
 							</button>
 						</div>
@@ -153,7 +173,7 @@ const AccountProfile: React.FC = () => {
 				)}
 				{/* Security Page Content */}
 				{activePanel === 'second' && (
-					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_0_10px_rgba(0,0,1,0.1)] shadow-md p-2">
+					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_0_10px_rgba(0,1,1,0.1)] shadow-md p-2">
 						<div className="flex flex-col md:flex-row bg-white p-1 rounded-lg  max-w-5xl">
 							<div className=" lg:w-1/2 mb-5 md:mb-0">
 								<h2 className="mb-2 text-[#000000] " style={{ ...FONTS.heading_11 }}>Change Password</h2>
@@ -240,21 +260,26 @@ const AccountProfile: React.FC = () => {
 				)}
 				{/* TimeLine Page Content */}
 				{activePanel === 'third' && (
-					<div className="relative flex-6 ml-6 mt-5 bg-white shadow-[0_0_10px_rgba(0,0,1,0.1)]  rounded-lg shadow-md p-6">
-						<div className="relative border-l-4 border-green-500 ml-10 mt-0">
+					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_0_10px_rgba(0,1,1,0.1)]  rounded-lg shadow-md p-6">
+						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(100vh-180px)] scrollbar-hidden">
+							
 							{timelineData.map((item, index) => (
-								<div key={index} className="mb-10 ml-4 relative">
+								<div key={index} className="mb-1 ml-4 relative">
 									<div className="absolute -left-[50px] top-0">
-										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-6 mt-0 shadow" style={{ ...FONTS.heading_07 }}>
+										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-1 mt-0 shadow" style={{ ...FONTS.heading_07 }}>
+											
 											<img src={noteimg} className='h-[42px] w-[144px]'/>
 										</div>
-										<div className="w-2 h-2 bg-green-500 rounded-full mt-0 ml-7"></div>
+										<div className='w-3 h-3 bg-green-500 rounded-full mt-13 ml-16'></div>
+										<div className=' border-l-4 border-green-500 h-35 w-0 ml-17'></div>
+										
 									</div>
 									<br></br>
-									<div className="ml-18 mt-10 h-[150px]  text-[#716F6F] bg-white rounded-lg shadow-md px-4 py-8 w-[500px]" style={{ ...FONTS.heading_13 }} >
-										<h3 className="text-md font-semibold" >{item.title}</h3>&nbsp;
-										<p className="text-sm text-gray-600">
-											<span style={{ ...FONTS.heading_06 }}>Create</span><br></br> <span className="font-medium" style={{ ...FONTS.heading_13 }}>{item.description}</span>
+									<div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg shadow-md px-4 py-4 w-[500px]" >
+										<h3 className="text-md font-semibold" style={{ ...FONTS.heading_05_bold }}>{item.title}</h3>&nbsp;
+										<p className="text-sm text-gray-600 ">
+											<span className='block mb-3' style={{ ...FONTS.heading_06_light }}>Create</span>
+											<span className="block font-medium" style={{ ...FONTS.heading_06_bold }} >{item.description}</span>
 										</p>
 										<p className="text-sm text-gray-500 text-right mt-0" >{item.date}</p>
 									</div>
