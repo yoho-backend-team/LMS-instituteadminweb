@@ -7,6 +7,9 @@ export const StoreLocalStorage = (key: string, data: any) => {
 
 export const GetLocalStorage = (key: string) => {
 	const data = secureStorage.getItem(key);
+	if (!data) {
+		return null;
+	}
 	return data;
 };
 

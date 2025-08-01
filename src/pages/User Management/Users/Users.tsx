@@ -1,7 +1,8 @@
-import React from 'react';
+import UserCard from '../../../features/Users_Management/Users/components/UserCard';
 
 const Users = () => {
-	return <div>Users</div>;
+  return <div><UserCard /></div>;
 };
+
 
 export default Users;

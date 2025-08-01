@@ -7,9 +7,8 @@ import { Avatar, AvatarImage } from "../../../components/ui/avatar";
 import { Button } from '../../../components/ui/button';
 import { Card } from '../../../components/ui/card';
 import { useNavigate } from 'react-router-dom';
-import { COLORS, FONTS } from '../../../constants/uiConstants'
+import { COLORS, FONTS } from '../../../constants/uiConstants';
 
-// Define your theme colors in one place for easy maintenance
 const theme = {
   primary: {
     bg: 'bg-[#1bbfca]',
@@ -70,7 +69,6 @@ const TeachingStaffs: React.FC = () => {
     ));
   };
 
-  // Status button style based on status
   const getStatusButtonStyle = (status: 'Active' | 'Inactive') => {
     if (status === 'Active') {
       return `${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`;
@@ -88,114 +86,158 @@ const TeachingStaffs: React.FC = () => {
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{...FONTS.heading_02}}>Teaching Staff</h1>
-      {/* Header - Always visible */}
-      <div className="flex items-center justify-between p-4">
-        <Button
-          onClick={() => setShowFilter(!showFilter)}
-          className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
-          disabled={showAddStaff} // Disable when form is open
-        >
-          <Filter size={16} />
-          Show Filter
-        </Button>
-        
-        <Button 
-          onClick={() => setShowAddStaff(true)}
-          className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
-          disabled={showAddStaff} // Disable when form is open
-        >
-          <Plus size={16} />
-          Add New Staff
-        </Button>      </div>
-
-      {/* Conditional rendering - either show form or show the rest */}
+      
       {showAddStaff ? (
+        // Add Staff Form (only shown when showAddStaff is true)
         <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
           <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
 
           {/* Profile Picture Section */}
-          <div className="flex items-center justify-between p-4 border rounded mb-6  bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-            <div>
-              <p className="font-medium">Profile Picture</p>
-              <p className="text-xs text-muted-foreground">Allowed PNG or JPEG. Max size of 800k.</p>
+          {staff.map((member) => (
+            <div key={member.id} className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+              <div className='flex items-center gap-4'>
+                <Avatar className='!w-[70px] !h-[70px]'> 
+                  <AvatarImage src={member.avatar} alt={member.name} />
+                </Avatar>
+                <div>
+                  <p style={{...FONTS.heading_05_bold,color:COLORS.gray_dark_02}}>Elon Musk</p>
+                  <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Allowed PNG or JPEG. Max size of 800k.</p>
+                </div>
+              </div>
+              <Button className="bg-green-500 hover:bg-green-600 text-white">
+                Upload Profile Picture
+              </Button>
             </div>
-            <Button className="bg-green-500 hover:bg-green-600 text-white">
-              Upload Profile Picture
-            </Button>
-          </div>
+          ))}
 
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">Full Name
-            <Input placeholder="Full Name" 
-              value={newStaff.name}
-              onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
-            />
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Full Name
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Full Name" 
+                value={newStaff.name}
+                onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
+              />
             </label>
 
-            <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Email
-            <Input placeholder="Email" 
-              value={newStaff.email}
-              onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
-            /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Email
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Email" 
+                value={newStaff.email}
+                onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+              />
+            </label>
 
-
-            <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Date of Birth
-            <Input placeholder="Date Of Birth" />
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Date of Birth
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Date Of Birth" 
+              />
             </label>
            
-           <label htmlFor="" style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Gender
-            <Select>
-              <SelectTrigger className='w-full'>
-                <SelectValue/>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Gender
+              <Select>
+                <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
+                  <SelectValue/>
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Male">Male</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Female">Female</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </label>
 
-            <label htmlFor="">Courses
-            <Select>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Course 1">Course 1</SelectItem>
-                <SelectItem value="Course 2">Course 2</SelectItem>
-              </SelectContent>
-            </Select>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Courses
+              <Select>
+                <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Course 1">Course 1</SelectItem>
+                  <SelectItem className="bg-white cursor-pointer hover:bg-[#1BBFCA]" value="Course 2">Course 2</SelectItem>
+                </SelectContent>
+              </Select>
             </label>
 
-            <label htmlFor="">Designation
-              <Input placeholder="Designation" />
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Designation
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Designation" 
+              />
             </label>
             
-            <label htmlFor="">Qualification
-            <Input placeholder="Qualification" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Qualification
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Qualification" 
+              />
+            </label>
 
-            <label htmlFor="">State
-            <Input placeholder="State" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              State
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="State" 
+              />
+            </label>
 
-            <label htmlFor="">City
-            <Input placeholder="City" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              City
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="City" 
+              />
+            </label>
 
-            <label htmlFor="">Pin Code
-            <Input placeholder="Pin Code" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Pin Code
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Pin Code" 
+              />
+            </label>
 
-            <label htmlFor="">Address Line 1
-            <Input placeholder="Address Line 1" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Address Line 1
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Address Line 1" 
+              />
+            </label>
 
-            <label htmlFor="">Address Line 2
-            <Input placeholder="Address Line 2" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Address Line 2
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Address Line 2" 
+              />
+            </label>
 
-            <label htmlFor="">Phone Number
-            <Input placeholder="Phone Number" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Phone Number
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Phone Number" 
+              />
+            </label>
 
-            <label htmlFor="">Alt Phone Number
-            <Input placeholder="Alt Phone Number" /></label>
+            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}} htmlFor="">
+              Alt Phone Number
+              <Input 
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]" 
+                placeholder="Alt Phone Number" 
+              />
+            </label>
           </div>
 
           {/* Buttons */}
@@ -216,20 +258,40 @@ const TeachingStaffs: React.FC = () => {
           </div>
         </Card>
       ) : (
+        // Normal View (shown when showAddStaff is false)
         <>
+          {/* Header */}
+          <div className="flex items-center justify-between p-4">
+            <Button
+              onClick={() => setShowFilter(!showFilter)}
+              className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+            >
+              <Filter size={16} />
+              Show Filter
+            </Button>
+            
+            <Button 
+              onClick={() => setShowAddStaff(true)}
+              className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+            >
+              <Plus size={16} />
+              Add New Staff
+            </Button>
+          </div>
+
           {/* Filter Dropdowns */}
           {showFilter && (
             <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
               <div className="space-y-2">
                 <Label style={{color:COLORS.gray_dark_02}} htmlFor="status">Status</Label>
                 <Select>
-                  <SelectTrigger className='w-full'>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                     <SelectValue placeholder=" "  />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  <SelectContent className='bg-white '>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="all">All</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Active">Active</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -237,13 +299,13 @@ const TeachingStaffs: React.FC = () => {
               <div className="space-y-2">
                 <Label style={{color:COLORS.gray_dark_02}} htmlFor="course">Course</Label>
                 <Select>
-                  <SelectTrigger className='w-full'>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                     <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Course</SelectItem>
-                    <SelectItem value="Course 1">Course 1</SelectItem>
-                    <SelectItem value="Course 2">Course 2</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="all">All Course</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Course 1">Course 1</SelectItem>
+                    <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="Course 2">Course 2</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -256,13 +318,12 @@ const TeachingStaffs: React.FC = () => {
               {staff.map((member) => (
                 <div key={member.id} className="p-4">
                   {/* Profile Section */}
-                  
-                    <div className="flex items-center gap-3 ">
-                      <Avatar className='!w-[80px] !h-[80px]'> 
+                  <div className="flex items-center gap-3 ">
+                    <Avatar className='!w-[80px] !h-[80px]'> 
                       <AvatarImage src={member.avatar} alt={member.name} />
                     </Avatar>
-                      <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.name}</h3>
-                    </div>
+                    <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.name}</h3>
+                  </div>
 
                   {/* Email Section */}
                   <div className="flex items-center gap-2 mb-3 text-muted-foreground">
@@ -271,16 +332,21 @@ const TeachingStaffs: React.FC = () => {
                   </div>
 
                   {/* Status Section */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4 bg-white">
                     <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
-                    <Button
-                      onClick={() => toggleStatus(member.id)}
-                      className={`gap-2 ${getStatusButtonStyle(member.status)}`}
-                      size="sm"
+                    <Select 
+                      value={member.status}
+                      onValueChange={(value: 'Active' | 'Inactive') => toggleStatus(member.id)}
+                      
                     >
-                      {member.status}
-                      <ChevronDown size={14} />
-                    </Button>
+                      <SelectTrigger className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(member.status)}`}>
+                        <SelectValue placeholder={member.status} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1BBFCA]">
+                        <SelectItem value="Active" className="focus:bg-white cursor-pointer">Active</SelectItem>
+                        <SelectItem value="Inactive" className="focus:bg-white cursor-pointer">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {/* View Profile Button */}

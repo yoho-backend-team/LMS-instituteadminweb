@@ -198,6 +198,9 @@ class Client {
     id_cards = {
         student: {
             get_all: (data: any) => HttpClient.get(HTTP_END_POINTS.id_cards.student.all, data)
+        },
+        staff: {
+            getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.id_cards.staff.all.replace(':instituteId', params.instituteid).replace(':branchId', params.branchid), params)
         }
     };
     subscription = {

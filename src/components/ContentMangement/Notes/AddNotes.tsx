@@ -32,6 +32,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uploadedFileName, setUploadedFileName] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [titleError, setTitleError] = useState("");
   const [fileError, setFileError] = useState("");
 
@@ -53,13 +54,19 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
       if (!allowedTypes.includes(file.type)) {
         setFileError("Only PDF, DOC, or DOCX files are allowed.");
         setUploadedFileName("");
+        setUploadedFile(null);
       } else {
         setFileError("");
         setUploadedFileName(file.name);
+        setUploadedFile(file);
       }
     }
   };
@@ -113,15 +120,14 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 justify-between overflow-y-auto h-[75vh] scrollbar-hide"
+        className="flex flex-col gap-4 justify-between overflow-y-auto h-[85vh] scrollbar-hide"
       >
         <div className="flex flex-col gap-4">
+          {/* File Upload Box */}
           <div
-            onClick={handleUploadClick}
-            className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
+            onClick={() => !uploadedFile && handleUploadClick()}
+            className="relative flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition text-center"
           >
-            <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
-            <span className="">Drop File Here Or Click To Upload</span>
             <input
               type="file"
               ref={fileInputRef}
@@ -129,14 +135,50 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               accept=".pdf,.doc,.docx"
               className="hidden"
             />
-            {uploadedFileName && (
-              <p className="text-sm mt-1 text-green-600">{uploadedFileName}</p>
+
+            {uploadedFile ? (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setUploadedFile(null);
+                    setUploadedFileName("");
+                  }}
+                  className="absolute top-2 right-2 text-white bg-red-500 hover:bg-red-600 p-1 rounded-full"
+                  type="button"
+                >
+                  <IoMdClose size={16} />
+                </button>
+
+                {uploadedFile.type === "application/pdf" ? (
+                  <iframe
+                    src={URL.createObjectURL(uploadedFile)}
+                    title="PDF Preview"
+                    className="w-full h-48 border rounded"
+                  ></iframe>
+                ) : (
+                  <p className="text-blue-600 mt-2">
+                    Preview not supported for Word files. File is ready to
+                    upload.
+                  </p>
+                )}
+                <p className="text-sm mt-2 text-green-600">
+                  {uploadedFileName}
+                </p>
+              </>
+            ) : (
+              <>
+                <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
+                <span>Drop File Here Or Click To Upload</span>
+              </>
             )}
+
             {fileError && (
               <p className="text-sm mt-1 text-red-500">{fileError}</p>
             )}
           </div>
 
+          {/* Branch */}
           <div className="flex flex-col gap-2">
             <label>Branch</label>
             <CustomDropdown
@@ -148,6 +190,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
             />
           </div>
 
+          {/* Course */}
           <div className="flex flex-col gap-2">
             <label>Course</label>
             <CustomDropdown
@@ -159,6 +202,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
             />
           </div>
 
+          {/* Title */}
           <div className="flex flex-col gap-2">
             <label>Title</label>
             <input
@@ -172,6 +216,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
             )}
           </div>
 
+          {/* Description */}
           <div className="flex flex-col gap-2">
             <label>Description</label>
             <textarea
@@ -181,6 +226,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
             />
           </div>
 
+          {/* Confirm Password */}
           <div className="flex flex-col gap-2">
             <label>Confirm Password</label>
             <CustomDropdown
@@ -193,6 +239,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
           </div>
         </div>
 
+        {/* Submit/Cancel Buttons */}
         <div className="flex justify-end items-center gap-4">
           <button
             className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"

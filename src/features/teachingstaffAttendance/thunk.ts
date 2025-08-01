@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { StaffsAttendanceType } from "../../pages/Attendance Management/Staffs Attendance/StaffsAttendance";
 import { GetStaffAttandaceByID, getStaffAttendaceAll } from "./service";
-import { setSelectStaff, setSelectStaffAttendance, setStaffAttendance } from "./slice";
+import { setSelectStaff, setSelectStaffAttendance, setSelectStaffAttendanceUpdate, setStaffAttendance } from "./slice";
 
 export const GetStaffAttendanceThunk = () => async (dispatch: any) => {
     try {
@@ -34,6 +34,14 @@ export const GetAttendanceByIdThunk = (data: string) => async (dispatch: any) =>
     try {
         const response = await GetStaffAttandaceByID(data)
         dispatch(setSelectStaffAttendance(response?.data))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const UpdateAttendanceThunk = (data: any) => async (dispatch: any) => {
+    try {
+        dispatch(setSelectStaffAttendanceUpdate(data))
     } catch (error) {
         console.log(error)
     }
