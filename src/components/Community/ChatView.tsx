@@ -36,19 +36,19 @@ interface Props {
 }
 
 const ChatView: React.FC<Props> = ({
-  // selectedBatch,
+  //  selectedBatch,
   messages,
   message,
   onChangeMessage,
   onSendMessage,
   onDeleteMessage,
-  // onClose,
+  //  onClose,
   showProfile,
   setShowProfile,
   profileData,
   // setProfileData,
-  // isEditing,
-  // setIsEditing,
+  //  isEditing,
+  //  setIsEditing,
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
@@ -58,7 +58,7 @@ const ChatView: React.FC<Props> = ({
   }, [messages]);
 
   return (
-    <div className="fixed top-20 right-7 w-[856px] h-[79vh] p-6 overflow-hidden bg-white shadow-lg font-['Inter','sans-serif'] rounded-xl">
+    <div className="fixed top-21 right-7 w-[856px] h-[89vh] p-6 overflow-hidden bg-white shadow-lg font-['Inter','sans-serif'] rounded-xl">
       <div className="bg-white rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12 h-full">
         {/* Top Bar */}
         <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4">
@@ -164,10 +164,9 @@ const ChatView: React.FC<Props> = ({
 
             {/* Input box with fixed width */}
             <div className="relative ">
-              
               {/* Moves only the box */}
               <input
-                className="w-[350px] outline-none py-2 text-sm pr-2 ml-[-10px]"
+                className="w-[350px] outline-none py-2 text-sm pr-2 ml-[-10px] "
                 placeholder="Type a message"
                 value={message}
                 onChange={(e) => onChangeMessage(e.target.value)}
@@ -192,71 +191,67 @@ const ChatView: React.FC<Props> = ({
       </div>
 
       {/* Profile Panel */}
-      {showProfile && (
-        <div className="absolute top-12 right-0 bg-white w-[300px] h-[90%] shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm">
-          {/* Fixed Header */}
-          <div className="p-4 border-b flex flex-col items-center">
-            <div className="w-full flex justify-end mb-2">
-              <button onClick={() => setShowProfile(false)}>
-                <img src={cancel} alt="cancel" className="w-5 h-5" />
-              </button>
-            </div>
-            <img
-              src={image}
-              alt="profile"
-              className="w-24 h-24 rounded-full mb-3"
-            />
-            <h2 className="text-lg font-semibold text-[#716F6F]">
-              {profileData.name}
-            </h2>
-            <p className="text-green-500 text-sm">Online</p>
-          </div>
+{showProfile && (
+  <div className="absolute top-12 right-0 bg-white w-[300px] h-[90%] shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm">
+    
+    {/* Fixed Header */}
+    <div className="p-4 border-b flex flex-col items-center shrink-0">
+      <div className="w-full flex justify-end mb-2">
+        <button onClick={() => setShowProfile(false)}>
+          <img src={cancel} alt="cancel" className="w-5 h-5" />
+        </button>
+      </div>
+      <img src={image} alt="profile" className="w-24 h-24 rounded-full mb-3" />
+      <h2 className="text-lg font-semibold text-[#716F6F]">
+        {profileData.name}
+      </h2>
+      <p className="text-green-500 text-sm">Online</p>
+    </div>
 
-          {/* Scrollable Content */}
-          <div className="overflow-y-auto px-4 py-4 flex-1">
-            {/* About */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-[#716F6F]">About</h3>
-                <p>{profileData.about}</p>
-              </div>
-
-              {/* Personal Info */}
-              <div>
-                <h3 className="font-semibold text-[#716F6F]">
-                  Personal Information
-                </h3>
-                <ul className="space-y-2 mt-2">
-                  <li className="flex items-center gap-2">
-                    <img src={box} alt="email" className="w-4 h-4" />
-                    <span>{profileData.email}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <img src={clock} alt="availability" className="w-4 h-4" />
-                    <span>{profileData.availability}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <img src={phone} alt="phone" className="w-4 h-4" />
-                    <span>{profileData.phone}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Staff Section */}
-            <div className="mt-6">
-              <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
-              <p>No Staffs Found</p>
-            </div>
-
-            {/* Students Section */}
-            <div className="mt-6">
-              <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
-              <p>No Students Found</p>
-            </div>
-          </div>
+    {/* ✅ Scrollable Content */}
+    <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
+      {/* About */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="font-semibold text-[#716F6F]">About</h3>
+          <p>{profileData.about}</p>
         </div>
-      )}
+
+        {/* Personal Info */}
+        <div>
+          <h3 className="font-semibold text-[#716F6F]">Personal Information</h3>
+          <ul className="space-y-2 mt-2">
+            <li className="flex items-center gap-2">
+              <img src={box} alt="email" className="w-4 h-4" />
+              <span>{profileData.email}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <img src={clock} alt="availability" className="w-4 h-4" />
+              <span>{profileData.availability}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <img src={phone} alt="phone" className="w-4 h-4" />
+              <span>{profileData.phone}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Staff Section */}
+      <div className="mt-6">
+        <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
+        <p>No Staffs Found</p>
+      </div>
+
+      {/* Students Section */}
+      <div className="mt-6">
+        <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
+        <p>No Students Found</p>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

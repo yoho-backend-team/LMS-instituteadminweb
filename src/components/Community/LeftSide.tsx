@@ -1,4 +1,4 @@
-// LeftSide.tsx
+
 import React from "react";
 import circle from "../../assets/navbar/circle.png";
 
