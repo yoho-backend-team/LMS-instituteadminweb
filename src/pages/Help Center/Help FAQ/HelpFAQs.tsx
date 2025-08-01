@@ -1,7 +1,10 @@
 import React from 'react';
+import HelpFAQ from '../../../components/HelpFAQ/HelpFAQ';
 
 const HelpFAQs = () => {
-	return <div>HelpFAQs</div>;
+	return <div>
+		<HelpFAQ />
+	</div>;
 };
 
 export default HelpFAQs;
