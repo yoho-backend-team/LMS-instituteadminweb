@@ -1,5 +1,5 @@
 "use client";
-import { Plus, MoreVertical, X, ArrowRight } from "lucide-react"; // Include other icons too if needed
+import { Plus, MoreVertical, X, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { ConfirmationPopup } from "../BranchManagement/ConfirmationPopup";
 import { BranchDetailsPage } from "./BranchDetailsPage";
@@ -202,46 +202,46 @@ export function LocationCard({
           </div>
           
           <div className="relative" ref={statusRef}>
-  <button 
-    onClick={toggleStatusDropdown}
-    className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
-      currentStatus === "Active" || currentStatus === "Inactive" 
-        ? "bg-[#1BBFCA] text-white" 
-        : "border border-[#716F6F] text-[#716F6F]"
-    }`}
-  >
-    <div className="flex items-center gap-[10px]">
-      <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
-        {currentStatus}
-      </span>
-      <div className="w-5 h-5 flex items-center justify-center">
-        <ArrowRight 
-          className={`w-full h-full transform ${
-            isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
-          } ${
-            currentStatus === "Active" || currentStatus === "Inactive" 
-              ? "text-white" 
-              : "text-[#716F6F]"
-          }`}
-        />
-      </div>
-    </div>
-  </button>
-  
-  {isStatusDropdownOpen && (
-    <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg overflow-hidden">
-      {statusOptions.map((option) => (
-        <button
-          key={option}
-          onClick={() => requestStatusChange(option)}
-          className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${
-            currentStatus === option 
-              ? 'bg-[#1BBFCA] text-white font-medium' 
-              : 'text-[#7D7D7D] hover:bg-gray-50'
-          }`}
-        >
-          {option}
-        </button>
+            <button 
+              onClick={toggleStatusDropdown}
+              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
+                currentStatus === "Active" || currentStatus === "Inactive" 
+                  ? "bg-[#1BBFCA] text-white" 
+                  : "border border-[#716F6F] text-[#716F6F]"
+              }`}
+            >
+              <div className="flex items-center gap-[10px]">
+                <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
+                  {currentStatus}
+                </span>
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <ArrowRight 
+                    className={`w-full h-full transform ${
+                      isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
+                    } ${
+                      currentStatus === "Active" || currentStatus === "Inactive" 
+                        ? "text-white" 
+                        : "text-[#716F6F]"
+                    }`}
+                  />
+                </div>
+              </div>
+            </button>
+            
+            {isStatusDropdownOpen && (
+              <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg overflow-hidden">
+                {statusOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => requestStatusChange(option)}
+                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${
+                      currentStatus === option 
+                        ? 'bg-[#1BBFCA] text-white font-medium' 
+                        : 'text-[#7D7D7D] hover:bg-gray-50'
+                    }`}
+                  >
+                    {option}
+                  </button>
                 ))}
               </div>
             )}
@@ -338,6 +338,7 @@ export function LocationCardsGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   
   const [formData, setFormData] = useState({
     branchName: '',
@@ -351,9 +352,11 @@ export function LocationCardsGrid() {
   });
 
   // Filter locations based on search term
-  const filteredLocations = locations.filter(location =>
-    location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredLocations = searchTerm
+    ? locations.filter(location =>
+        location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : locations;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -364,12 +367,12 @@ export function LocationCardsGrid() {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value.trim());
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Filtering is already handled by the filteredLocations array
+    // Filtering happens automatically through state updates
   };
 
   const handleEditBranch = (index: number) => {
@@ -403,16 +406,15 @@ export function LocationCardsGrid() {
     };
 
     if (editingIndex !== null) {
-      // Update existing branch
       const updatedLocations = [...locations];
       updatedLocations[editingIndex] = newBranch;
       setLocations(updatedLocations);
+      setShowSuccessPopup(true);
     } else {
-      // Add new branch
       setLocations([...locations, newBranch]);
+      setShowSuccessPopup(true);
     }
 
-    // Reset form and close modal
     resetForm();
     setIsModalOpen(false);
   };
@@ -447,16 +449,16 @@ export function LocationCardsGrid() {
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg"></div>
-          <input
-            type="text"
-            placeholder="Search Branch by City"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none"
-          />
-        </form>
+       <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
+  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
+  <input
+    type="text"
+    placeholder="Search Branch by City"
+    value={searchTerm}
+    onChange={handleSearchChange}
+    className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
+  />
+</form>
 
         <button 
           onClick={() => {
@@ -475,7 +477,6 @@ export function LocationCardsGrid() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
         {filteredLocations.length > 0 ? (
           filteredLocations.map((location, index) => {
-            // Find the original index in the full locations array for editing
             const originalIndex = locations.findIndex(
               loc => loc.cityName === location.cityName
             );
@@ -486,12 +487,26 @@ export function LocationCardsGrid() {
                 {...location} 
                 onViewDetails={() => setViewingBranch(location.cityName)}
                 onEdit={() => handleEditBranch(originalIndex)}
+                onDelete={() => {
+                  const updatedLocations = locations.filter((_, i) => i !== originalIndex);
+                  setLocations(updatedLocations);
+                  setShowSuccessPopup(true);
+                }}
+                onStatusChange={(newStatus) => {
+                  const updatedLocations = [...locations];
+                  updatedLocations[originalIndex].status = newStatus;
+                  setLocations(updatedLocations);
+                }}
               />
             );
           })
         ) : (
           <div className="col-span-full text-center py-10">
-            <p className="text-lg text-[#716F6F]">No branches found matching "{searchTerm}"</p>
+            <p className="text-lg text-[#716F6F]">
+              {searchTerm 
+                ? `No branches found matching "${searchTerm}"` 
+                : "No branches available"}
+            </p>
           </div>
         )}
       </div>
@@ -667,6 +682,19 @@ export function LocationCardsGrid() {
             </div>
           </div>
         </div>
+      )}
+
+      {showSuccessPopup && (
+        <ConfirmationPopup 
+          type="success" 
+          message={
+            editingIndex !== null 
+              ? "Branch updated successfully!" 
+              : "Branch created successfully!"
+              
+          } 
+          onClose={() => setShowSuccessPopup(false)}
+        />
       )}
     </div>
   );
