@@ -30,6 +30,8 @@ export const DashboardCards: React.FC = () => {
     { title: 'MERN Stack Development', imageSrc: '/src/assets/navbar/mernimage.png', status: 'Status' },
   ]);
   const [showFilter, setShowFilter] = useState(false);
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
 
   const handleStatusChange = (title: string, newStatus: string) => {
     setCategories(categories.map(cat => 
@@ -37,11 +39,69 @@ export const DashboardCards: React.FC = () => {
     ));
   };
 
+  const handleAddCategory = () => {
+    if (categoryName.trim()) {
+      // Add your logic to create a new category here
+      setShowAddCategoryModal(false);
+      setCategoryName('');
+    }
+  };
+
   return (
     <div className="p-6">
+      {/* Add Category Modal */}
+      {showAddCategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Add Category</h2>
+            <p className="text-gray-600 mb-6">Create A New Course Category With An Image</p>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+              <input
+                type="text"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter category name"
+              />
+            </div>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Image</label>
+              <div className="border-2 border-dashed border-gray-300 rounded p-4 text-center">
+                <p className="text-gray-500">Drag & drop your image here or click to browse</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Recommended: 388x300 Pixels<br />
+                Accepted Formats: PNG, JIFB
+              </p>
+            </div>
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowAddCategoryModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddCategory}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
+              >
+                Create Category
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Admin User</h2>
-        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400">
+        <button 
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
+          onClick={() => setShowAddCategoryModal(true)}
+        >
           Add New Category
         </button>
       </div>
@@ -50,7 +110,7 @@ export const DashboardCards: React.FC = () => {
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 mb-4"
         onClick={() => setShowFilter(!showFilter)}
       >
-        Show Filter
+        {showFilter ? 'Hide' : 'Show Filter'}
       </button>
 
       {showFilter && (
