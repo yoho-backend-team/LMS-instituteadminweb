@@ -117,4 +117,24 @@ export const FONTS = {
 		fontWeight: 300,
 		fontSize: '10px',
 	},
+	login_heading:{
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '75px',
+	},
+	login_heading_02:{
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '25px',
+	},
+	login_description:{
+		fontFamily: 'Poppins',
+		fontWeight: 400,
+		fontSize: '14px',
+	},
+	login_input_head:{
+		fontFamily: 'Poppins',
+		fontWeight: 500,
+		fontSize: '18px',
+	}
 };
