@@ -170,17 +170,17 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    hidden: { opacity: 1, scale: 1 },  // Always visible
+  show: { opacity: 1, scale: 1 },
   }
 
-  const cardHoverVariants = {
-    hover: {
-      y: -5,
-      boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
-      transition: { duration: 0.3 }
+    const cardHoverVariants = {
+      hover: {
+        y: -5,
+        boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
+        transition: { duration: 0.3 }
+      }
     }
-  }
 
   const visibleCards = [
     statCards[startIndex % statCards.length],
@@ -192,10 +192,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
     setStartIndex((prev) => (prev + 1) % statCards.length)
   }
 
-  const handlePrev = () => {
-    setStartIndex((prev) => (prev - 1 + statCards.length) % statCards.length)
-  }
-
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -243,11 +240,11 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Key Metrics Section */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} initial="show">
             <motion.div
               whileHover="hover"
               variants={cardHoverVariants}
-              className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6 transition-all duration-300"
+              className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)]  rounded-xl p-6 transition-all duration-300"
             >
               <h2 className="text-xl font-semibold text-[#716F6F] mb-6">Key Metrics</h2>
               
@@ -397,7 +394,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
-                    <TabsList className="bg-transparent p-0 gap-5 mb-6 pl-32 flex justify-end ">
+<TabsList className="bg-transparent p-0 gap-5 mb-6 ml-auto flex justify-end">
                       <TabsTrigger
                         value="fee"
                         className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#7086FD] p-2.5 transition-all duration-300"

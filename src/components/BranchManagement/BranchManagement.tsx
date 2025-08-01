@@ -6,7 +6,7 @@ import { BranchDetailsPage } from "./BranchDetailsPage";
 import TrichyImg from "../../assets/trichy.png";
 import EditIcon from "../../assets/edit.png";
 import DeleteIcon from "../../assets/delete.png";
-import ViewIcon from "../../assets/view.png";
+import ViewIcon from "../../assets/vieweye.png";
 
 interface LocationCardProps {
   imageSrc: string;
@@ -437,14 +437,15 @@ export function LocationCardsGrid() {
     setViewingBranch(null);
   };
 
-  if (viewingBranch) {
-    return (
-      <BranchDetailsPage 
-        locationName={viewingBranch} 
-        onBack={handleBackFromBranchDetails} 
-      />
-    );
-  }
+ if (viewingBranch) {
+  console.log("Viewing Branch:", viewingBranch); // Debug log
+  return (
+    <BranchDetailsPage 
+      locationName={viewingBranch} 
+      onBack={handleBackFromBranchDetails} 
+    />
+  );
+}
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addMonths, format, getDaysInMonth, getDay, subMonths, isSameMonth, isToday } from "../ui/dialog";
+import { addMonths, format, getDaysInMonth, getDay, subMonths, isSameMonth, isToday } from "date-fns";
 
 const Attendancepage = () => {
     // const [openModal, setopenModal] = useState(false);
