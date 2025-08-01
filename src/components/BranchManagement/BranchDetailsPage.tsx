@@ -20,36 +20,36 @@ const statCards = [
     title: "Payouts",
     value: "₹21,440",
     icon: Payouts,
-    color: "#5CA7A7", // Dark slate
-    textColor: "#FFFFFF"
+    color: "#E4E1FF", // Dark slate
+    textColor: "#000000ff"
   },
   {
     title: "Profits",
     value: "10,000",
     icon: Profit,
-    color: "#7B6EAD", // Darker slate
-    textColor: "#FFFFFF"
+    color: "#E4E1FF", // Darker slate
+    textColor: "#000000ff"
   },
   {
     title: "Courses",
     value: "543",
     icon: Courses,
-    color: "#A8557B",
-    textColor: "#FFFFFF"
+    color: "#FAD3EF",
+    textColor: "#000000ff"
   },
   {
     title: "Students",
     value: "10,000",
     icon: Courses,
-    color: "#334155",
-    textColor: "#FFFFFF"
+    color: "#FAD3EF",
+    textColor: "#000000ff"
   },
   {
     title: "Revenue",
     value: "₹8,000",
     icon: Payouts,
-    color: "#5CA7A7",
-    textColor: "#FFFFFF"
+    color: "#FAD3EF",
+    textColor: "#000000ff"
   },
 ];
 
@@ -373,44 +373,56 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
           </div>
           
-          <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
-            <TabsList className="bg-transparent p-0 gap-4 h-auto pr-20">
-              <TabsTrigger
-                value="fee"
-                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#23AF62] px-2 py-1"
-              >
-                <span className="text-[#23AF62] font-semibold text-lg ">Fee</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="salary"
-                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF8400] px-2 py-1"
-              >
-                <span className="text-[#FF8400] font-semibold text-lg">Salary</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="pendings"
-                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#CA2858] px-2 py-1"
-              >
-                <span className="text-[#CA2858] font-semibold text-lg">Pendings</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="totalIncome"
-                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FFCC00] px-2 py-1"
-              >
-                <span className="text-[#FFCC00] font-semibold text-lg">Total Income</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
+  <TabsList className="bg-transparent p-0 gap-4 h-auto">
+    <TabsTrigger
+      value="fee"
+      className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+    >
+      <span className="text-[#23AF62] font-semibold text-lg relative">
+        Fee
+        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "fee" ? "active" : "inactive"}></span>
+      </span>
+    </TabsTrigger>
+    <TabsTrigger
+      value="salary"
+      className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+    >
+      <span className="text-[#FF8400] font-semibold text-lg relative">
+        Salary
+        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "salary" ? "active" : "inactive"}></span>
+      </span>
+    </TabsTrigger>
+    <TabsTrigger
+      value="pendings"
+      className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+    >
+      <span className="text-[#CA2858] font-semibold text-lg relative">
+        Pendings
+        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#CA2858] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "pendings" ? "active" : "inactive"}></span>
+      </span>
+    </TabsTrigger>
+    <TabsTrigger
+      value="totalIncome"
+      className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+    >
+      <span className="text-[#FFCC00] font-semibold text-lg relative">
+        Total Income
+        <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FFCC00] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "totalIncome" ? "active" : "inactive"}></span>
+      </span>
+    </TabsTrigger>
+  </TabsList>
+</Tabs>
         </div>
       </CardHeader>
       
       <CardContent>
         <div className="h-[350px]">
           <BarChart
-            width={800}
+            width={750}
             height={350}
             data={chartData}
-            margin={{ top: 20, right: 10, left: 5, bottom: 5 }}
+      margin={{ top: 40, right: 10, left: 5, bottom: 5 }} 
             barCategoryGap="20%"
           >
             <CartesianGrid vertical={false} strokeDasharray="4 4" />
@@ -458,7 +470,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   <CardTitle className="text-lg font-semibold text-[#716F6F]">Recent Activities</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3 max-h-[930px] overflow-y-auto pr-2">
+                  <div className="space-y-3 max-h-[855px] overflow-y-auto pr-2">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item, index) => (
                       <motion.div
                         key={index}
