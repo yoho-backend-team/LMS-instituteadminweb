@@ -153,11 +153,12 @@ const AddQuestion = () => {
               >
                 <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
                 <td className="px-6 py-4 text-lg">{faq.category}</td>
-                <td className="px-6 py-4 underline">
+                <td className="px-6 py-4 text-lg">
                   <a
                     href={faq.videoLink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="hover:text-[#1BBFCA]"
                   >
                     {faq.videoLink}
                   </a>
@@ -209,7 +210,7 @@ const AddQuestion = () => {
       {/* Modal */}
     {showModal && (
    <div
-   className={`fixed inset-0 bg-black bg-opacity-50 flex items-center ${
+   className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
   modalStage === "success" || modalStage === "dialog"
     ? "justify-center"
     : "justify-end"
@@ -333,7 +334,7 @@ const AddQuestion = () => {
             }
           }, 500); // Just for effect, not closing anything now
         }}
-        className="px-4 py-2 bg-[#1BBFCA] focus:bg-pink-500 text-white rounded"
+        className="px-4 py-2 bg-[#1BBFCA] focus:bg-green-600 text-white rounded"
       >
         Yes Status
       </button>
