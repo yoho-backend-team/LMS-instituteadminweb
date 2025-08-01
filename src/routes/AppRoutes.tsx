@@ -144,7 +144,6 @@ const AppRoutes = () => {
 				<Route path='students-certificate' element={<StudentCertificate />} />
 				<Route path='/certificate-view' element={<CertificateView />} />
 
-
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
 
@@ -172,7 +171,6 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
-
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>
