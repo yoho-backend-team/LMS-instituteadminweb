@@ -7,7 +7,7 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 import AllNotifications from '../pages/Notification Management/All Notifications/AllNotifications';
 import StaffsNotifications from '../pages/Notification Management/Staffs/StaffsNotifications';
 import StudentNotifications from '../pages/Notification Management/Students/StudentNotifications';
-// import Community from '../pages/Community/Community';
+import Community from '../pages/Community/Community';
 import BranchManagement from '../pages/Branch Management/BranchManagement';
 import Users from '../pages/User Management/Users/Users';
 import Group from '../pages/User Management/Group/Group';
@@ -92,7 +92,7 @@ const AppRoutes = () => {
 					element={<StudentNotifications />}
 				/>
 
-				{/* <Route path='community' element={<Community />} /> */}
+				<Route path='community' element={<Community />} />
 
 				{/* Branch Management */}
 				<Route path='branch' element={<BranchManagement />} />
