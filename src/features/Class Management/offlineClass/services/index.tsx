@@ -5,3 +5,28 @@ export const getAllOfflineClass = async (params:any) => {
     return response
    }
 }
+
+
+export const deleteOfflineClass = async (data:any)=>{
+    
+    try{
+const response = await Client.offline_class.delete(data)
+    if(response){
+        return response
+    }
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+export const updateOfflineClass = async (data:any)=>{
+    try{
+    const response = await Client.offline_class.update(data)
+    if(response){
+        return response
+    }}
+    catch(error){
+        console.log (error)
+    }
+}
