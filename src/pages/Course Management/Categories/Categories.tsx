@@ -1,11 +1,8 @@
-
-
+import { DashboardCards } from '../Categories/Category';
 const Categories = () => {
-
-
-
 	return <div>
-		Categories</div>;
+		<DashboardCards/>
+	</div>
 };
 
 export default Categories;
