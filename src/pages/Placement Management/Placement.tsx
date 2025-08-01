@@ -25,8 +25,8 @@ interface Placement {
 const initialPlacements: Placement[] = [
   {
     id: 1,
-    studentName: "vikram",
-    email: "vikram@example.com",
+    studentName: "John Carter",
+    email: "john@example.com",
     companyName: "TechCorp",
     companyAddress: "Bangalore, India",
     contactEmail: "hr@techcorp.com",
@@ -34,7 +34,7 @@ const initialPlacements: Placement[] = [
     interviewDate: "2023-05-15",
     jobName: "Software Engineer",
     jobDescription: "Develop and maintain web applications",
-    skills: ["JavaScript", "React"],
+    skills: ["JavaScript", "React", "Node.js"],
     venue: "TechHub Innovation Center",
     address: "123 Tech Street, San Francisco, CA 94107",
     courseName: "Computer Science",
@@ -42,8 +42,8 @@ const initialPlacements: Placement[] = [
   },
   {
     id: 2,
-    studentName: "Sam",
-    email: "sam@example.com",
+    studentName: "Emily Davis",
+    email: "emily@example.com",
     companyName: "DataSystems",
     companyAddress: "Chennai, India",
     contactEmail: "careers@datasystems.com",
@@ -51,14 +51,64 @@ const initialPlacements: Placement[] = [
     interviewDate: "2023-06-20",
     jobName: "Data Analyst",
     jobDescription: "Analyze and interpret complex data",
-    skills: ["Python", "SQL"],
+    skills: ["Python", "SQL", "Tableau"],
     venue: "Downtown Business Plaza",
     address: "500 Business Ave, New York, NY 10001",
     courseName: "Data Science",
     education: "Master's"
+  },
+  {
+    id: 3,
+    studentName: "Michael Brown",
+    email: "michael@example.com",
+    companyName: "HealthPlus",
+    companyAddress: "Mumbai, India",
+    contactEmail: "recruitment@healthplus.com",
+    contactNumber: "+91 7654321098",
+    interviewDate: "2023-07-10",
+    jobName: "UX Designer",
+    jobDescription: "Design user interfaces for healthcare applications",
+    skills: ["Figma", "UI/UX", "Adobe XD"],
+    venue: "Digital Design Studio",
+    address: "789 Creative Lane, Austin, TX 73301",
+    courseName: "Design",
+    education: "Bachelor's"
+  },
+  {
+    id: 4,
+    studentName: "Sarah Wilson",
+    email: "sarah@example.com",
+    companyName: "CloudNine",
+    companyAddress: "Hyderabad, India",
+    contactEmail: "hiring@cloudnine.com",
+    contactNumber: "+91 6543210987",
+    interviewDate: "2023-08-05",
+    jobName: "DevOps Engineer",
+    jobDescription: "Implement and maintain CI/CD pipelines",
+    skills: ["AWS", "Docker", "Kubernetes"],
+    venue: "Cloud Computing Center",
+    address: "456 Cloud Boulevard, Seattle, WA 98101",
+    courseName: "Information Technology",
+    education: "Master's"
+  },
+  {
+    id: 5,
+    studentName: "David Taylor",
+    email: "david@example.com",
+    companyName: "FinEdge",
+    companyAddress: "Delhi, India",
+    contactEmail: "jobs@finedge.com",
+    contactNumber: "+91 9432109876",
+    interviewDate: "2023-09-12",
+    jobName: "Financial Analyst",
+    jobDescription: "Analyze financial data and prepare reports",
+    skills: ["Excel", "Financial Modeling", "Statistics"],
+    venue: "Financial District Tower",
+    address: "321 Finance Street, Chicago, IL 60601",
+    courseName: "Business Administration",
+    education: "MBA"
   }
 ];
-
 const Placements = () => {
   const [showForm, setShowForm] = useState(false);
   const [placements, setPlacements] = useState<Placement[]>(initialPlacements);
