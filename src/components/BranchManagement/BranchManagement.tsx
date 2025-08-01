@@ -202,31 +202,31 @@ export function LocationCard({
           </div>
           
           <div className="relative" ref={statusRef}>
- <button 
-  onClick={toggleStatusDropdown}
-  className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border transition-colors ${
-    currentStatus === "Active" || currentStatus === "Inactive" 
-      ? "bg-[#1BBFCA] border-transparent text-white" 
-      : "border-[#716F6F] bg-white text-[#716F6F] hover:bg-[#1BBFCA] hover:border-transparent hover:text-white"
-  }`}
->
-  <div className="flex items-center justify-between w-full">
-    <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
-      {currentStatus || "Status"}
-    </span>
-    <div className="w-5 h-5 flex items-center justify-center">
-      <ArrowRight 
-        className={`w-full h-full transform transition-transform ${
-          isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
-        } ${
-          currentStatus === "Active" || currentStatus === "Inactive" 
-            ? "text-white" 
-            : "text-[#716F6F] group-hover:text-white"
-        }`}
-      />
+  <button 
+    onClick={toggleStatusDropdown}
+    className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
+      currentStatus === "Active" || currentStatus === "Inactive" 
+        ? "bg-[#1BBFCA] text-white" 
+        : "border border-[#716F6F] text-[#716F6F]"
+    }`}
+  >
+    <div className="flex items-center gap-[10px]">
+      <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
+        {currentStatus}
+      </span>
+      <div className="w-5 h-5 flex items-center justify-center">
+        <ArrowRight 
+          className={`w-full h-full transform ${
+            isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
+          } ${
+            currentStatus === "Active" || currentStatus === "Inactive" 
+              ? "text-white" 
+              : "text-[#716F6F]"
+          }`}
+        />
+      </div>
     </div>
-  </div>
-</button>
+  </button>
   
   {isStatusDropdownOpen && (
     <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg overflow-hidden">
