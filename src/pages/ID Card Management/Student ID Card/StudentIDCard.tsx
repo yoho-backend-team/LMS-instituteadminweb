@@ -10,8 +10,6 @@ import { getIdcardthunks } from '../../../features/StudentIdCard/reducers/thunks
 const StudentIDCard = () => {
     const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
     
-    const arr = [1,2];
-
     const handleCardClick = (index: number) => {
         setFlippedCards(prev => ({
             ...prev,
@@ -20,28 +18,24 @@ const StudentIDCard = () => {
     };
 
 
-
-
-
-	
-
-
 	const dispatch = useDispatch<any>()
 
 	const studentID = useSelector(selectStudentId)
 
 
 	useEffect(() => {
-		dispatch(getIdcardthunks());
+        const paramsData = {branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529", page: 1}
+		dispatch(getIdcardthunks(paramsData));
 		console.log(studentID, "Student Idcard Details")
 	}, [dispatch]);
 
+    console.log(studentID,"asdfghjkl")
     return (
         <div>
             <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>Student ID Card</h1>
 
             <div className='mt-8 flex flex-wrap gap-8'>
-                {arr.map((card, index) => {
+                {studentID?.map((data:any, index:any) => {
                     return (
                         <div key={index} className="w-[370px] h-[560px] perspective-1000">
                             <section 
@@ -66,15 +60,15 @@ const StudentIDCard = () => {
                                     </div>
 
                                     <div className='text-center'>
-                                        <h4 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>Kamal Endhiran</h4>
-                                        <p style={{ ...FONTS.heading_12, color: COLORS.gray_light }}>Student</p>
+                                        <h4 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>{data?.name}</h4>
+                                        <p style={{ ...FONTS.heading_12, color: COLORS.gray_light }}>{data?.role?.identity}</p>
                                     </div>
 
                                     <div className='px-8 py-5 grid gap-2'>
-                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>ID NO : <span style={{ ...FONTS.heading_13 }}>ANN-TIR-STDNT0019</span></p>
-                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>User Name : <span style={{ ...FONTS.heading_13 }}>kamal_Endhiran</span></p>
-                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Email : <span style={{ ...FONTS.heading_13 }}>kamal@endhiran.com</span></p>
-                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Phone : <span style={{ ...FONTS.heading_13 }}>9876543210</span></p>
+                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>ID NO : <span style={{ ...FONTS.heading_13 }}>{data?.student_id}</span></p>
+                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>User Name : <span style={{ ...FONTS.heading_13 }}>{data?.name}</span></p>
+                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Email : <span style={{ ...FONTS.heading_13 }}>{data?.email}</span></p>
+                                        <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Phone : <span style={{ ...FONTS.heading_13 }}>{data?.contact}</span></p>
                                     </div>
 
                                     <div className='p-4 mb-3'>
@@ -96,7 +90,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>User Name</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>kamal_Endhiran</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>{data?.name}</span>
                                             </div>
 
                                             <div className='flex'>
@@ -104,7 +98,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Email</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6 break-words'>kamal@endhiran.com</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6 break-words'>{data?.email}</span>
                                             </div>
 
                                             <div className='flex'>
@@ -112,7 +106,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Role</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>Student</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>{data?.role?.identity}</span>
                                             </div>
 
                                             <div className='flex'>
@@ -120,7 +114,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>ID NO</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>ANN-TIR-STDNT0019</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>{data?.student_id}</span>
                                             </div>
 
                                             <div className='flex'>
@@ -128,7 +122,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Phone</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>9876543210</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>{data?.contact}</span>
                                             </div>
 
                                             <div className='flex'>
@@ -136,7 +130,7 @@ const StudentIDCard = () => {
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Address</span>
                                                     <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
                                                 </div>
-                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>Hello, world, Chennai, Tamilnadu -909090</span>
+                                                <span style={{ ...FONTS.heading_13 }} className='w-2/3 pl-6'>{data?.address?.address_line_one} , {data?.address?.address_line_one} , {data?.address?.city} , {data?.address?.state} - {data?.address?.pin_code} </span>
                                             </div>
                                         </div>
 
