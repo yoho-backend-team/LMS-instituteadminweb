@@ -26,7 +26,6 @@ import StudentFees from '../pages/Payment Management/Fees/StudentFees';
 import StaffSalaries from '../pages/Payment Management/Salaries/StaffSalaries';
 import Subscription from '../pages/Payment Management/Subscription/Subscription';
 import RefundFees from '../pages/Refund Management/Fees/RefundFees';
-import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import StudentIDCard from '../pages/ID Card Management/Student ID Card/StudentIDCard';
 import StaffIDCard from '../pages/ID Card Management/Staff ID Card/StaffIDCard';
 import Placement from '../pages/Placement Management/Placement';
@@ -45,7 +44,18 @@ import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveCl
 import StudentClassBatch from '../components/class management/offlineClass/studentbatchcard';
 import { Profile } from '../components/StudentManagement/Profile';
 import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
+import NotificationPage from '../pages/Notification/NotificationPage';
+// import Home from '../pages/Notification/'
+import Accountpf from '../components/Profile/AccProfile';
+import EditUserInfo from '../components/Profile/EditUserInfo';
+import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
+import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
+import CertificateView from '../components/cerificateManagement/certificateView';
+import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
+import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
+import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
+// import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	// const { isAuthenticated, isLoading } = useAuth();
 	const isAuthenticated = true;
@@ -65,6 +75,14 @@ const AppRoutes = () => {
 		<Routes>
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
+				{/* Profile Management */}
+
+				<Route path='noti/msg' element={<NotificationPage />} />
+				{/* <Route path="/" element={<HomePage />} /> */}
+
+				{/* <Route path='profile' element={<SecurityProfile />} /> */}
+				<Route path='profile' element={<Accountpf />} />
+				<Route path='Editprof' element={<EditUserInfo />} />
 
 				{/* Notifications Management */}
 				<Route path='notifications' element={<AllNotifications />} />
@@ -73,6 +91,7 @@ const AppRoutes = () => {
 					path='student-notifications'
 					element={<StudentNotifications />}
 				/>
+
 				<Route path='community' element={<Community />} />
 
 				{/* Branch Management */}
@@ -105,20 +124,26 @@ const AppRoutes = () => {
 
 				{/* Class Management */}
 				<Route path='offine-classes' element={<OfflineClasses />} />
-				<Route path='/view-student' element={<StudentClassBatch />} />
+				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
 				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
-				<Route path='students-attendance/details' element={<StudentDetails />} />
+				<Route
+					path='students-attendance/details'
+					element={<StudentDetails />}
+				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
+				<Route path='staffs-attendance/view/:id' element={<AddAttendance />} />
 
 				{/* Refund Management */}
 				<Route path='refund-fees' element={<RefundFees />} />
 
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
+				<Route path='/certificate-view' element={<CertificateView />} />
+
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
@@ -130,6 +155,9 @@ const AppRoutes = () => {
 				{/* Help Center */}
 				<Route path='help-faqs' element={<HelpFAQs />} />
 				<Route path='add-questions' element={<AddQuestions />} />
+				<Route path='secure-delivery' element={<SecureDelivery />} />
+				<Route path='find-missingpackage' element={<FindMissingOrder />} />
+				<Route path='track-order' element={<TrackOrder />} />
 
 				{/* Payment Management */}
 				<Route path='student-fees' element={<StudentFees />} />
@@ -144,6 +172,7 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
+
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>

@@ -148,21 +148,19 @@ const SideBar = ({
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
+					<SidebarLink1
+						to='/modules'
+						label='modules'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
+					<SidebarLink1
+						to='/notes'
+						label='Notes'
+						isOpen={isOpen}
+						onClick={handleLinkClick}
+					/>
 				</SidebarDropdown>
-				<SidebarLink
-					to='/notes'
-					icon={<Briefcase />}
-					label='Notes'
-					isOpen={isOpen}
-					onClick={handleLinkClick}
-				/>
-				<SidebarLink
-					to='/modules'
-					icon={<Briefcase />}
-					label='Modules'
-					isOpen={isOpen}
-					onClick={handleLinkClick}
-				/>
 				<SidebarDropdown
 					icon={<UserSearch />}
 					label='Class Management'
@@ -246,7 +244,7 @@ const SideBar = ({
 					/>
 					<SidebarLink1
 						to='/staff-salaries'
-						label='Slaries'
+						label='Salaries'
 						isOpen={isOpen}
 						onClick={handleLinkClick}
 					/>
@@ -667,7 +665,6 @@ const SidebarDropdown = ({
 
 export default SideBar;
 
-
 // import React, { useEffect } from "react"
 // import type { ReactElement } from "react"
 // import { useState } from "react"
@@ -696,8 +693,8 @@ export default SideBar;
 
 //     return (
 //         <div
-//             className={`h-screen z-40 flex flex-col p-1 bg-gradient-to-  via-[#FFFFFF] 
-//               transform transition-all duration-500 ease-in-out origin-left  
+//             className={`h-screen z-40 flex flex-col p-1 bg-gradient-to-  via-[#FFFFFF]
+//               transform transition-all duration-500 ease-in-out origin-left
 //               ${isOpen ? "w-64 scale-100 opacity-100 pb-6 " : "w-17 pb-6  scale-y-100 opacity-80  "}`}
 //         >
 //             <div className="flex items-center justify-between px-4 h-16 py-5">
@@ -969,7 +966,6 @@ export default SideBar;
 //     )
 // }
 
-
 // const SidebarLink = ({
 //     to,
 //     icon,
@@ -1019,10 +1015,6 @@ export default SideBar;
 //         </Link>
 //     )
 // }
-
-
-
-
 
 // const SidebarDropdown = ({
 //     icon,
@@ -1131,4 +1123,3 @@ export default SideBar;
 //         </div>
 //     )
 // }
-

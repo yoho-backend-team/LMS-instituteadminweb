@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../ui/button';
+import { X } from 'lucide-react';
 
 interface EditBatchModalProps {
 	isOpen: boolean;
@@ -31,18 +32,22 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 			liveLink: '',
 		},
 		validationSchema: Yup.object({
-			ClassName: Yup.string().required('class Name is required'),
-			ClassDate: Yup.string().required('class Date is required'),
+			className: Yup.string().required('Class Name is required'),
+			classDate: Yup.string().required('Class Date is required'),
 			startTime: Yup.string().required('Start Time is required'),
-			liveLink: Yup.string().required('Start Time is required'),
+			liveLink: Yup.string().required('Live Link is required'),
+			instructors: Yup.string().required('Instructor is required'),
 			endTime: Yup.string()
 				.required('End Time is required')
 				.test(
 					'is-after-start',
 					'End Time must be after Start time',
 					function (value: any) {
+						const { startTime } = this.parent as { startTime?: string };
+						if (!startTime || !value) return true;
 						return (
-							!value || !this.parent.startDate || value >= this.parent.startDate
+							new Date(`1970-01-01T${value}`) >=
+							new Date(`1970-01-01T${startTime}`)
 						);
 					}
 				),
@@ -61,19 +66,26 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 					<div className='absolute inset-0 bg-gray-500 opacity-50'></div>
 				</div>
 
-				<div className='inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all md:ml-65 md:my-20 sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full'>
-					<div className='bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6'>
-						<h2 className='text-center' style={{ ...FONTS.heading_04_bold }}>
+				<div className='inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full'>
+					<div className='bg-[#1BBFCA] text-white rounded-t-xl py-3 px-6 flex justify-between items-center'>
+						<h2
+							className='text-center flex-1'
+							style={{ ...FONTS.heading_05_bold }}
+						>
 							Edit Live Class
 						</h2>
+						<button
+							onClick={onClose}
+							className='p-1 rounded-full hover:bg-white/20 transition-colors'
+							aria-label='Close modal'
+						>
+							<X className='w-5 h-5' />
+						</button>
 					</div>
 
-					<div className='space-y-4 min-h-[calc(100vh-170px)] overflow-y-auto mt-2'>
-						<form
-							onSubmit={formik.handleSubmit}
-							className='mt-6 px-6 space-y-4'
-						>
-							{/* Batch Name */}
+					<div className='overflow-y-auto max-h-[70vh] p-6'>
+						<form onSubmit={formik.handleSubmit} className='space-y-4'>
+							{/* Class Name */}
 							<div>
 								<label
 									className='block mb-1'
@@ -86,16 +98,16 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								</label>
 								<input
 									type='text'
-									name='batchName'
+									name='className'
 									value={formik.values.className}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									className='w-full border rounded-md px-4 py-2'
+									className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 									style={{
 										...FONTS.heading_08_bold,
 										color: COLORS.gray_dark_01,
 									}}
-									placeholder='Enter Batch Name'
+									placeholder='Enter Class Name'
 								/>
 								{formik.touched.className && formik.errors.className && (
 									<p className='text-[#1BBFCA] text-sm mt-1'>
@@ -104,9 +116,9 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								)}
 							</div>
 
-							{/* Dates */}
-							<div className='flex flex-col md:flex-row gap-4'>
-								<div className='flex-1'>
+							{/* Class Date and Times */}
+							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+								<div>
 									<label
 										className='block mb-1'
 										style={{
@@ -117,17 +129,16 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 										Class Date
 									</label>
 									<input
-										type='text'
-										name='batchName'
+										type='date'
+										name='classDate'
 										value={formik.values.classDate}
 										onChange={formik.handleChange}
 										onBlur={formik.handleBlur}
-										className='w-full border rounded-md px-4 py-2'
+										className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 										style={{
 											...FONTS.heading_08_bold,
 											color: COLORS.gray_dark_01,
 										}}
-										placeholder='Enter Batch Name'
 									/>
 									{formik.touched.classDate && formik.errors.classDate && (
 										<p className='text-[#1BBFCA] text-sm mt-1'>
@@ -136,7 +147,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									)}
 								</div>
 
-								<div className='flex-1'>
+								<div>
 									<label
 										className='block mb-1'
 										style={{
@@ -148,11 +159,11 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									</label>
 									<input
 										type='time'
-										name='startDate'
+										name='startTime'
 										value={formik.values.startTime}
 										onChange={formik.handleChange}
 										onBlur={formik.handleBlur}
-										className='w-full border rounded-md px-4 py-2'
+										className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 										style={{
 											...FONTS.heading_08_bold,
 											color: COLORS.gray_dark_01,
@@ -165,7 +176,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									)}
 								</div>
 
-								<div className='flex-1'>
+								<div>
 									<label
 										className='block mb-1'
 										style={{
@@ -177,11 +188,11 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									</label>
 									<input
 										type='time'
-										name='endDate'
+										name='endTime'
 										value={formik.values.endTime}
 										onChange={formik.handleChange}
 										onBlur={formik.handleBlur}
-										className='w-full border rounded-md px-4 py-2'
+										className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 										style={{
 											...FONTS.heading_08_bold,
 											color: COLORS.gray_dark_01,
@@ -195,6 +206,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								</div>
 							</div>
 
+							{/* Instructors */}
 							<div>
 								<label
 									style={{
@@ -202,12 +214,11 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 										color: COLORS.gray_dark_02,
 									}}
 								>
-									{' '}
 									Instructors
 								</label>
 								<select
-									name='course'
-									className='w-full border rounded-md px-4 py-2 mt-2'
+									name='instructors'
+									className='w-full border rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 									style={{
 										...FONTS.heading_08_bold,
 										color: COLORS.gray_dark_01,
@@ -217,17 +228,17 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 									onBlur={formik.handleBlur}
 								>
 									<option value=''>Select Instructors</option>
-									<option value='course1'>Kamal</option>
-									<option value='course2'>Elan Mask </option>
+									<option value='Kamal'>Kamal</option>
+									<option value='Elan Mask'>Elan Mask</option>
 								</select>
 								{formik.touched.instructors && formik.errors.instructors && (
 									<p className='text-[#1BBFCA] text-sm mt-1'>
 										{formik.errors.instructors}
-										Please select a branch first to enable course selection.
 									</p>
 								)}
 							</div>
 
+							{/* Live Link */}
 							<div>
 								<label
 									className='block mb-1'
@@ -236,15 +247,15 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 										color: COLORS.gray_dark_02,
 									}}
 								>
-									Link
+									Live Link
 								</label>
 								<input
 									type='text'
-									name='batchName'
+									name='liveLink'
 									value={formik.values.liveLink}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									className='w-full border rounded-md px-4 py-2'
+									className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 									style={{
 										...FONTS.heading_08_bold,
 										color: COLORS.gray_dark_01,
@@ -259,12 +270,12 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 							</div>
 
 							{/* Action Buttons */}
-							<div className='flex justify-end items-center gap-4 mt-6 mb-8'>
+							<div className='flex justify-end items-center gap-4 mt-6'>
 								<Button
 									type='button'
 									onClick={onClose}
 									variant='outline'
-									className='!border-[#1BBFCA] !text-[#1BBFCA]'
+									className='!border-[#1BBFCA] bg-white !text-[#1BBFCA] hover:bg-[#1bbeca15]'
 									style={{
 										...FONTS.heading_07_bold,
 										color: COLORS.gray_dark_02,
@@ -274,7 +285,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								</Button>
 								<Button
 									type='submit'
-									className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]'
+									className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA] hover:opacity-90'
 									style={{
 										...FONTS.heading_07_bold,
 										color: COLORS.white,

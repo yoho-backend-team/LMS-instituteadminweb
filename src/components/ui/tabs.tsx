@@ -3,7 +3,8 @@
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
-import { cn } from "@/lib/utils"
+// Update the import path to the correct relative location, for example:
+import { cn } from "../../lib/utils"
 
 function Tabs({
   className,
