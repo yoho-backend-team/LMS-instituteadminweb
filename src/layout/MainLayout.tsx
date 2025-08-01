@@ -4,8 +4,8 @@ import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
 
 export const MainLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const sidebarWidth = isSidebarOpen ? 250 : 87;
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const sidebarWidth = isSidebarOpen ? 250 : 87;
 
   return (
     <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#1BBFCA]">
