@@ -50,7 +50,7 @@ const NoteCard = ({
   }, [openIndex, index, setOpenIndex]);
 
   return (
-    <div className="relative border p-4 rounded-xl bg-white shadow-md flex flex-col gap-3">
+    <div className="relative border p-4 rounded-xl bg-white shadow-lg flex flex-col gap-3">
       <div className="flex justify-end">
         <button
           onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -66,8 +66,8 @@ const NoteCard = ({
             <div
               className="hover:bg-[#00CFFF] hover:text-white border px-4 py-2 rounded-md cursor-pointer mb-2 flex items-center gap-2"
               onClick={() => {
-                onView(); // call the handler
-                setOpenIndex(null); // close dropdown
+                onView(); 
+                setOpenIndex(null); 
               }}
             >
               <IoIosEye size={20} />

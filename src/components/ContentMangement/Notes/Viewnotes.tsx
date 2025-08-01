@@ -7,7 +7,7 @@ interface Note {
   description: string;
   status: "Active" | "Completed";
   file?: File;
-  fileName?: string; // Changed from fileName to fileName for clarity
+  fileName?: string;
 }
 
 interface NoteDetailModalProps {
@@ -193,7 +193,7 @@ const ViewNoteModal: React.FC<NoteDetailModalProps> = ({
       <div className="bg-white grid rounded-2xl p-12 w-2/5 h-4/5 relative shadow-xl overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-xl hover:text-black"
+          className="absolute top-4 right-4 text-xl hover:text-red-500"
         >
           <IoMdClose size={24} />
         </button>
