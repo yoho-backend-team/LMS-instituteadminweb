@@ -4,7 +4,7 @@ import otpimg from '../../../assets/otpimg.png'
 
 const OtpVerification = () => {
 
-
+	//otpverify in login
 	const inputLength = 6;
 	const [otpInput, setOtpInput] = useState<string[]>(Array(inputLength).fill(''));
 	const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
