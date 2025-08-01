@@ -51,6 +51,9 @@ import EditUserInfo from '../components/Profile/EditUserInfo';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import CertificateView from '../components/cerificateManagement/certificateView';
+import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
+import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
+import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -139,7 +142,7 @@ const AppRoutes = () => {
 
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
-				<Route path='/certificate-view' element={<CertificateView/>} />
+				<Route path='/certificate-view' element={<CertificateView />} />
 
 
 				{/* Placement Management */}
@@ -152,6 +155,9 @@ const AppRoutes = () => {
 				{/* Help Center */}
 				<Route path='help-faqs' element={<HelpFAQs />} />
 				<Route path='add-questions' element={<AddQuestions />} />
+				<Route path='secure-delivery' element={<SecureDelivery />} />
+				<Route path='find-missingpackage' element={<FindMissingOrder />} />
+				<Route path='track-order' element={<TrackOrder />} />
 
 				{/* Payment Management */}
 				<Route path='student-fees' element={<StudentFees />} />
@@ -166,6 +172,7 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
+
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>
