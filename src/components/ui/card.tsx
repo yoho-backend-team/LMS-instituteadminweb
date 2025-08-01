@@ -1,89 +1,92 @@
-import React from 'react';
+import * as React from "react"
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  children?: React.ReactNode;
+import { cn } from "@/lib/utils"
+
+function Card({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card"
+      className={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  }
-);
-
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  children?: React.ReactNode;
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-header"
+      className={cn(
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-const CardHeader = ({ className, children, ...props }: CardHeaderProps) => (
-  <div
-    className={`flex flex-col space-y-1.5 p-6 ${className}`}
-    {...props}
-  >
-    {children}
-  </div>
-);
-
-interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  className?: string;
-  children?: React.ReactNode;
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-title"
+      className={cn("leading-none font-semibold", className)}
+      {...props}
+    />
+  )
 }
 
-const CardTitle = ({ className, children, ...props }: CardTitleProps) => (
-  <h3
-    className={`text-2xl font-semibold leading-none tracking-tight ${className}`}
-    {...props}
-  >
-    {children}
-  </h3>
-);
-
-interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  className?: string;
-  children?: React.ReactNode;
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-description"
+      className={cn("text-muted-foreground text-sm", className)}
+      {...props}
+    />
+  )
 }
 
-const CardDescription = ({ className, children, ...props }: CardDescriptionProps) => (
-  <p
-    className={`text-sm text-muted-foreground ${className}`}
-    {...props}
-  >
-    {children}
-  </p>
-);
-
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  children?: React.ReactNode;
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-action"
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-const CardContent = ({ className, children, ...props }: CardContentProps) => (
-  <div className={`p-6 pt-0 ${className}`} {...props}>
-    {children}
-  </div>
-);
-
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string;
-  children?: React.ReactNode;
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-content"
+      className={cn("px-6", className)}
+      {...props}
+    />
+  )
 }
 
-const CardFooter = ({ className, children, ...props }: CardFooterProps) => (
-  <div
-    className={`flex items-center p-6 pt-0 ${className}`}
-    {...props}
-  >
-    {children}
-  </div>
-);
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
+      {...props}
+    />
+  )
+}
 
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+}

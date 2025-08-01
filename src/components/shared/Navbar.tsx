@@ -61,9 +61,9 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="w-full p-3 flex items-center justify-between bg-[#1BBFCA]">
-        <div className="flex items-center">
-          <img src={titleIcon} alt="Logo" className="h-10 w-auto" />
+      <nav className='w-full p-3 flex items-center justify-between bg-[#1BBFCA] '>
+        <div className='flex items-center'>
+          <img src={titleIcon} alt='Logo' className='h-10 w-auto' />
         </div>
 
         <div className="flex items-center gap-4 relative">
