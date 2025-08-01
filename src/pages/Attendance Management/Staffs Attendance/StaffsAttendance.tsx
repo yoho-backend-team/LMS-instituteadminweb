@@ -4,7 +4,7 @@ import StaffTitleBar from '../../../components/teachingstaffAttendance/StaffTitl
 import StaffCard from '../../../components/teachingstaffAttendance/StaffCard';
 import { useDispatch } from 'react-redux';
 import { GetStaffAttendanceThunk } from '../../../features/teachingstaffAttendance/thunk';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 
 export type StaffsAttendanceType = {
 	absentCount: number;
@@ -15,35 +15,31 @@ export type StaffsAttendanceType = {
 	staff: string;
 	staff_id: string;
 	staff_name: string;
-}
+};
 
 const StaffsAttendance: React.FC = () => {
+	const staffs: StaffsAttendanceType[] = useSelector(
+		(state: any) => state.staffAttendace.data
+	);
 
-	const staffs: StaffsAttendanceType[] = useSelector((state: any) => state.staffAttendace.data)
-
-
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<any>();
 
 	useEffect(() => {
-		dispatch(GetStaffAttendanceThunk())
+		dispatch(GetStaffAttendanceThunk());
 	}, [dispatch]);
 
 	return (
 		<div className='w-full h-full'>
 			<StaffTitleBar />
 			<div className='w-full grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-6 mt-5'>
-				{
-					staffs.map((staff: StaffsAttendanceType) => (
-						<div>
-							<StaffCard key={staff.staff} data={staff} />
-						</div>
-					))
-
-				}
+				{staffs?.map((staff: StaffsAttendanceType) => (
+					<div>
+						<StaffCard key={staff.staff} data={staff} />
+					</div>
+				))}
 			</div>
-
 		</div>
-	)
+	);
 };
 
 export default StaffsAttendance;

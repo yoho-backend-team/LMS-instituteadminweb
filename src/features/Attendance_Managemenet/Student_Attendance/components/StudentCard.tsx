@@ -36,7 +36,7 @@ const StudentCard = () => {
                 </div>
             </div>
         </div>
-        <StudentDetails />
+        {/* <StudentDetails /> */}
         </>
     )
 }
