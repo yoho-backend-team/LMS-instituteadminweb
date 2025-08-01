@@ -1,4 +1,4 @@
-// Communitys.tsx
+
 import React, { useState } from "react";
 import LeftSide from "./LeftSide";
 import ChatView from "./ChatView";

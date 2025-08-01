@@ -1,17 +1,18 @@
-// LeftSide.tsx
+
 import React from "react";
 import circle from "../../assets/navbar/circle.png";
 
 interface Props {
+  batches: string[];
   selectedBatch: string | null;
   onSelectBatch: (batch: string) => void;
 }
 
 const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
-  const batch = "MERN 2025"; // Only one batch
+  const batch = "MERN 2025"; 
 
   return (
-    <div className="w-1/4 bg-[#1BBFCA] text-white flex flex-col items-center pt-6 px-4 h-[75vh] rounded-lg overflow-hidden mt-18 ">
+    <div className="w-[300px] bg-[#1BBFCA]  fixed  text-white flex flex-col items-center pt-6 px-4 h-[79vh] rounded-lg overflow-hidden top-6  mt-18 ">
       <div className="text-xl  text-[#BBFCA] font-bold  mr-47 ">Batches</div>
 
       <div
