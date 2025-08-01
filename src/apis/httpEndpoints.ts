@@ -4,7 +4,7 @@ import { GetLocalStorage } from "../utils/localStorage";
 
 const getInstituteDetails = () => {
     if (typeof (secureLocalStorage) !== "undefined") {
-        const institute = GetLocalStorage("institute")
+        const institute = GetLocalStorage("instituteId")
         return institute
     } else {
         return null
