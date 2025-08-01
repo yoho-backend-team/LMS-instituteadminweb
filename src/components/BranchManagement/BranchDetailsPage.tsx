@@ -373,41 +373,41 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
           </div>
           
-        <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
-  <TabsList className="bg-transparent p-0 gap-4 h-auto pr-20">
-    <TabsTrigger
-      value="fee"
-      className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#23AF62] px-2 py-1"
-    >
-      <span className="text-[#23AF62] font-semibold text-lg hover:underline">Fee</span>
-    </TabsTrigger>
-    <TabsTrigger
-      value="salary"
-      className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF8400] px-2 py-1"
-    >
-      <span className="text-[#FF8400] font-semibold text-lg hover:underline">Salary</span>
-    </TabsTrigger>
-    <TabsTrigger
-      value="pendings"
-      className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#CA2858] px-2 py-1"
-    >
-      <span className="text-[#CA2858] font-semibold text-lg hover:underline">Pendings</span>
-    </TabsTrigger>
-    <TabsTrigger
-      value="totalIncome"
-      className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FFCC00] px-2 py-1"
-    >
-      <span className="text-[#FFCC00] font-semibold text-lg hover:underline">Total Income</span>
-    </TabsTrigger>
-  </TabsList>
-</Tabs>
+          <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
+            <TabsList className="bg-transparent p-0 gap-4 h-auto pr-20">
+              <TabsTrigger
+                value="fee"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#23AF62] px-2 py-1"
+              >
+                <span className="text-[#23AF62] font-semibold text-lg ">Fee</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="salary"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF8400] px-2 py-1"
+              >
+                <span className="text-[#FF8400] font-semibold text-lg">Salary</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="pendings"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#CA2858] px-2 py-1"
+              >
+                <span className="text-[#CA2858] font-semibold text-lg">Pendings</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="totalIncome"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FFCC00] px-2 py-1"
+              >
+                <span className="text-[#FFCC00] font-semibold text-lg">Total Income</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </CardHeader>
       
       <CardContent>
         <div className="h-[350px]">
           <BarChart
-            width={700}
+            width={800}
             height={350}
             data={chartData}
             margin={{ top: 20, right: 10, left: 5, bottom: 5 }}
