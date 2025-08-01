@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import Earnings from '../../assets/Dashboard/Earnings.png';
@@ -7,6 +7,9 @@ import Instructor from '../../assets/Dashboard/Instructor.png';
 import Students from '../../assets/Dashboard/Students.png';
 import Course from '../../assets/Dashboard/Course.png';
 import Barchart from '../../components/Dashboard/barchart';
+import { getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDashboardData } from '../../features/Dashboard/reducers/selectors';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -20,6 +23,23 @@ export default function Component() {
 		console.log('Selected Year:', selectedYear);
 		setPeriodOpen(false);
 	};
+
+
+
+
+
+	const dispatch = useDispatch<any>()
+	
+		const DashboardData = useSelector(selectDashboardData)
+	
+		useEffect(() => {
+			const paramsData = {branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4"}
+			dispatch(getDashboardthunks(paramsData));
+			console.log(DashboardData, "Dashboard Details")
+		}, [dispatch]);
+
+
+
 
 	return (
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>

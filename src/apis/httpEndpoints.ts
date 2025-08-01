@@ -4,7 +4,7 @@ import { GetLocalStorage } from "../utils/localStorage";
 
 const getInstituteDetails = () => {
     if (typeof (secureLocalStorage) !== "undefined") {
-        const institute = GetLocalStorage("institute")
+        const institute = GetLocalStorage("instituteId")
         return institute
     } else {
         return null
@@ -142,7 +142,7 @@ const generateEndpoints = () => {
                 all: "/api/institute/student/id_cards/all"
             },
             staff: {
-                all: '/api/staffidcard/:instituteId/:branceId/'
+                all: '/api/staffidcard/:instituteId/:branchId/'
             }
         },
         staff: {
