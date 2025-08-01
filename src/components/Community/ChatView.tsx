@@ -58,9 +58,10 @@ const ChatView: React.FC<Props> = ({
   }, [messages]);
 
   return (
-    <div className="flex-1 h-[89vh] p-6 overflow-hidden bg-white shadow-lg font-['Inter','sans-serif'] rounded-xl relative">
+    <div className=" h-[89vh] w-[900px]  p-6 overflow-hidden  shadow-lg font-['Inter','sans-serif'] rounded-xl relative">
 
-      <div className="bg-white rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12 h-full">
+
+       <div className=" rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12 h-full"> 
         {/* Top Bar */}
         <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4">
           <img
