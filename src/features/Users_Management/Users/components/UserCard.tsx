@@ -15,6 +15,8 @@ const UserCard = () => {
     const [showForm, SetShowForm] = useState<boolean>(false)
     const [showFilter, SetShowFilter] = useState<boolean>(false)
 
+    const filterToggle = () => SetShowFilter(!showFilter)
+
     return (
         <div className='grid gap-5'>
             <div className='grid gap-7 p-1.5'>
@@ -64,8 +66,7 @@ const UserCard = () => {
 
             <div className='grid gap-7 p-1.5'>
                 <div className='flex justify-between w-full'>
-                    {!showFilter ? (<button onClick={() => SetShowFilter(true)} className='bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2' style={{...FONTS.heading_08}}><img src={filter} className='w-[18px] h-[18px]' />Show Filter</button>) : (<button onClick={() => SetShowFilter(false)} className='bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2' style={{...FONTS.heading_08}}><img src={filter} className='w-[18px] h-[18px]' />Hide</button>)
-                    }
+                   <button onClick={filterToggle} className='bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2' style={{...FONTS.heading_08}}><img src={filter} className='w-[18px] h-[18px]' />{showFilter ? 'Hide': 'Show Filter'}</button>
 
                     <button onClick={() => SetShowForm(true)} className='bg-[#1BBFCA] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]' style={{...FONTS.heading_08}}><img src={add} className='w-[18px] h-[18px]' />Add User</button>
                 </div>
