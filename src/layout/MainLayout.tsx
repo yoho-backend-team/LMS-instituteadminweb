@@ -9,7 +9,7 @@ export const MainLayout = () => {
   const sidebarWidth = isSidebarOpen ? 250 : 87;
 
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#1BBFCA]">
+    <div className="flex flex-col w-screen h-auto overflow-hidden bg-[#1BBFCA]">
       <div className="flex flex-col flex-1">
         <Navbar />
       </div>
