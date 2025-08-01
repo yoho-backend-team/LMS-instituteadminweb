@@ -1,4 +1,5 @@
 import React from 'react';
+import { COLORS, FONTS } from '../../constants/uiConstants';
 
 interface TimelineItemProps {
   title: string;
@@ -15,10 +16,10 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, description, timesta
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-1">
-          <h3 className="text-sm font-medium text-gray-900">{title}</h3>
-          <span className="text-xs text-gray-400 whitespace-nowrap ml-4">{timestamp}</span>
+          <h3 style={{...FONTS.heading_07,color:COLORS.gray_dark_03}} >{title}</h3>
+          <span style={{...FONTS.heading_09,color:COLORS.gray_dark_03}} className="whitespace-nowrap ml-4">{timestamp}</span>
         </div>
-        <p className="text-sm text-gray-500 leading-relaxed">{description} <br />{timestamp}</p>
+        <p style={{...FONTS.heading_08,color:COLORS.gray_dark_03}} className="leading-relaxed">{description} <br />{timestamp}</p>
       </div>
     </div>
   );
@@ -45,7 +46,7 @@ const Activitypage: React.FC = () => {
 
   return (
     <div className="bg-white p-6 min-h-screen">
-      <h1 className="text-lg font-medium text-gray-800 mb-6">User Activity Timeline</h1>
+      <h1 style={{...FONTS.heading_04,color:COLORS.gray_dark_02}} className=" mb-6">User Activity Timeline</h1>
       
       <div className="relative">
         {/* Vertical line */}

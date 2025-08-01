@@ -25,12 +25,6 @@ import send from '../../../assets/studentmanagement/send.png';
 import { RiUploadCloudFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
-
-
-
-
-
-
 const studentData = [
 	{
 		name: "Elon Musk",
@@ -65,17 +59,8 @@ const navigate = useNavigate();
 	if (showAddStudent) {
 		return (
 			<div className="p-6">
-				<div className="flex justify-between items-center mb-6">
-
-					<Button
-						variant="outline"
-						onClick={toggleAddStudent}
-						className="px-4 py-2 pr-16px pl-16px w-[153px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
-
-					>
-						Back to Students
-					</Button>
-				</div>
+				
+				
 
 				<Card className="mb-6 shadow-md">
 					<CardHeader>
@@ -233,19 +218,19 @@ const navigate = useNavigate();
 
 			{/* Filter Section - Two filters per row */}
 			{showFilters && (
-				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200">
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200 ">
 					{/* First Row */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div className="space-y-2">
-							<label className="text-[16px] font-medium text-gray-700">Filter by Course</label>
+							<label className="text-[16px] font-medium text-gray-700 ">Filter by Course</label>
 							<Select value={courseFilter} onValueChange={setCourseFilter}>
 								<SelectTrigger
-									className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150"
+									className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150 "
 								>
 									<SelectValue className="text-gray-500" />
 								</SelectTrigger>
-								<SelectContent className="border-gray-300 shadow-md">
-									<SelectItem value="web-dev">Web Development</SelectItem>
+								<SelectContent className="border-gray-300 shadow-md bg-white">
+									<SelectItem value="web-dev ">Web Development</SelectItem>
 									<SelectItem value="data-science">Data Science</SelectItem>
 									<SelectItem value="mobile-dev">Mobile Development</SelectItem>
 								</SelectContent>
@@ -259,7 +244,7 @@ const navigate = useNavigate();
 								<SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
 									<SelectValue className="text-gray-500" />
 								</SelectTrigger>
-								<SelectContent className="border-gray-300 shadow-md">
+								<SelectContent className="border-gray-300 shadow-md bg-white">
 									<SelectItem value="2023">2023</SelectItem>
 									<SelectItem value="2022">2022</SelectItem>
 									<SelectItem value="2021">2021</SelectItem>
@@ -276,7 +261,7 @@ const navigate = useNavigate();
 								<SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
 									<SelectValue className="text-gray-500" />
 								</SelectTrigger>
-								<SelectContent className="border-gray-300 shadow-md">
+								<SelectContent className="border-gray-300 shadow-md bg-white">
 									<SelectItem value="active">Active</SelectItem>
 									<SelectItem value="inactive">Inactive</SelectItem>
 									<SelectItem value="completed">Completed</SelectItem>
@@ -300,6 +285,7 @@ const navigate = useNavigate();
 				</div>
 			)}
 			{/* Scrollable Row of Cards */}
+			
 			<div className="flex justify-around overflow-x-auto pb-4">
 				{studentData.map((student, index) => (
 					<Card
@@ -326,6 +312,7 @@ const navigate = useNavigate();
 				))}
 			</div>
 		</div>
+	
 	);
 };
 
