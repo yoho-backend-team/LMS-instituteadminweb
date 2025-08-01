@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { GoPlus } from "react-icons/go";
 import RefundAdd from "../../../components/RefundManagement/RefundAdd";
 import RefundTable from "../../../components/RefundManagement/RefundTable";
+import { BsPlusLg } from "react-icons/bs";
 
 export interface RefundData {
   refundId: string;
@@ -112,14 +112,14 @@ const RefundFees = () => {
     <div className="relative flex flex-col gap-6">
       {showPanel && (
         <div
-          className="absolute inset-0 h-[85vh] flex justify-end z-50"
+          className="fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm"
           onClick={() => {
             setShowPanel(false);
             setEditData(null);
           }}
         >
           <div
-            className="h-full w-1/3 bg-white shadow-xl rounded-xl"
+            className="bg-white rounded-xl shadow-xl w-[500px] max-w-full "
             onClick={(e) => e.stopPropagation()}
           >
             <RefundAdd
@@ -140,7 +140,7 @@ const RefundFees = () => {
           placeholder="Student ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none"
+          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-80"
         />
 
         <div
@@ -150,7 +150,7 @@ const RefundFees = () => {
             setShowPanel(true);
           }}
         >
-          <GoPlus size={20} />
+          <BsPlusLg size={20} />
           <span>Add Refund</span>
         </div>
       </div>

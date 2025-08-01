@@ -214,11 +214,11 @@ export const Profile = () => {
    <div className="min-h-screen p-6">
   <div className="mx-auto space-y-6">
     {/* Back Button at the very top */}
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center ">
       <Button 
         variant="outline" 
         onClick={handleBack} 
-        className="flex items-center gap-2 bg-transparent"
+        className="flex items-center gap-2 bg-transparent "
       >
         <ArrowLeft className="h-4 w-4  " />
        
