@@ -53,26 +53,24 @@ const ChatView: React.FC<Props> = ({
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   return (
-    <div className=" h-[89vh] w-[900px]  p-6 overflow-hidden  shadow-lg font-['Inter','sans-serif'] rounded-xl relative">
+    <div className=" h-[83vh] grow  shadow-lg font-poppins rounded-xl ">
 
 
-       <div className=" rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12 h-full"> 
+       <div className=" rounded-lg shadow md:px-6 flex flex-col  pb-6  h-full"> 
         {/* Top Bar */}
-        <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4">
+        <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4"
+        onClick={() => setShowProfile(true)}
+        >
           <img
             src={circle}
             alt="batch"
             className="w-12 h-12 rounded-full mr-4"
-            onClick={() => setShowProfile(true)}
+            
           />
           <div>
-            <p className="text-gray-800 font-bold text-sm">MERN 2025</p>
-            <p className="text-gray-500 text-xs">MEAN STACK 2024</p>
+            <p className="text-[#7D7D7D] font-bold text-sm">MERN 2025</p>
+            <p className="text-[#7D7D7D] text-xs">MEAN STACK 2024</p>
           </div>
         </div>
 
@@ -157,7 +155,7 @@ const ChatView: React.FC<Props> = ({
           ))}
           <div ref={chatEndRef} />
         </div>
-        <div className="mt-2 px-8 relative mb-2 ">
+        <div className=" flex items-center ">
           <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow">
             {/* Emoji icon inside input */}
             <span className="pl-3 pr-2" >
@@ -165,10 +163,10 @@ const ChatView: React.FC<Props> = ({
             </span>
 
             {/* Input box with fixed width */}
-            <div className="relative ">
+            <div className=" ">
               {/* Moves only the box */}
               <input
-                className="w-[350px] outline-none py-2 text-sm pr-2 ml-[-10px] "
+                className="w-[350px] outline-none py-2 text-sm  "
                 placeholder="Type a message"
                 value={message}
                 onChange={(e) => onChangeMessage(e.target.value)}
@@ -177,7 +175,7 @@ const ChatView: React.FC<Props> = ({
             </div>
 
             {/* Attach icon */}
-            <button className="px-2 opacity-70  ml-auto ">
+            <button className=" opacity-70  ml-auto ">
               <img src={attachIcon} alt="attach" className="w-5 h-5" />
             </button>
           </div>
@@ -185,16 +183,16 @@ const ChatView: React.FC<Props> = ({
           {/* Send button placed absolutely outside input box */}
           <button
             onClick={onSendMessage}
-            className="absolute -right-4 -bottom-3 p-1"
+            className="p-1 mt-2"
           >
-            <img src={send} alt="send" className="w-[45px] h-[45px]" />
+            <img src={send} alt="send" className="w-[50px] h-[50px]" />
           </button>
         </div>
       </div>
 
       {/* Profile Panel */}
 {showProfile && (
-  <div className="absolute top-15 right-0 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
+  <div className="absolute top-23 right-6 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
     
     {/* Fixed Header */}
     <div className="p-4 border-b flex flex-col items-center shrink-0">
