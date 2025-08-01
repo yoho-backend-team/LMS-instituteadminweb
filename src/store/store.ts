@@ -5,6 +5,8 @@ import ModuleSlice from '../features/Content_Management/reducers/moduleSlice';
 import IdcardSlice from '../features/StudentIdCard/reducers/IdcardSlice';
 import StaffIDcardSlice from '../features/StaffIdCard/reducers/IdcardSlice';
 import DashboardSlice from '../features/Dashboard/reducers/DashboardSlice';
+import liveClassReducer from '../features/Class Management/Live Class/reducers/slices';
+
 
 const store = configureStore({
   reducer: {
@@ -14,7 +16,9 @@ const store = configureStore({
     note: noteReducer,
     StaffIDcardSlice: StaffIDcardSlice,
     DashboardSlice: DashboardSlice,
+    liveClassReducer: liveClassReducer,
   },
-});
+})
+
 
 export default store;
