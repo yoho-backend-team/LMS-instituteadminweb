@@ -20,32 +20,36 @@ const statCards = [
     title: "Payouts",
     value: "₹21,440",
     icon: Payouts,
-    color: "#E621AE33",
+    color: "#5CA7A7", // Dark slate
+    textColor: "#FFFFFF"
   },
   {
     title: "Profits",
     value: "10,000",
     icon: Profit,
-    color: "#3EDFEB33",
+    color: "#7B6EAD", // Darker slate
+    textColor: "#FFFFFF"
   },
   {
     title: "Courses",
     value: "543",
     icon: Courses,
-    color: "#E621AE33",
+    color: "#A8557B",
+    textColor: "#FFFFFF"
   },
   {
     title: "Students",
     value: "10,000",
     icon: Courses,
-    color: " #3EDFEB33",
+    color: "#334155",
+    textColor: "#FFFFFF"
   },
   {
     title: "Revenue",
     value: "₹8,000",
     icon: Payouts,
-    color: "#E621AE33",
-
+    color: "#5CA7A7",
+    textColor: "#FFFFFF"
   },
 ];
 
@@ -59,8 +63,8 @@ const CylinderBar = (props: any) => {
   // Find max value in current dataset
   const maxValue = Math.max(...data.map((item: any) => item[dataKey]))
   
-  // Colors - use #23AF62 for highest bar, #FAD3EF for others
-  const baseColor = value === maxValue ? "#23AF62" : "#FAD3EF"
+  // Colors - use #27AE60 for highest bar, #E4E1FF for others
+  const baseColor = value === maxValue ? "#27AE60" : "#C4E8D0"
   const topHighlightColor = "rgba(255, 255, 255, 0.5)"
   const sideHighlightColor = "rgba(255, 255, 255, 0.2)"
   const shadowColor = "rgba(0, 0, 0, 0.2)"
@@ -305,163 +309,143 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             </motion.div>
           </motion.div>
 
-          {/* Statistics Card */}
-          <motion.div variants={itemVariants}>
-            <motion.div
-              whileHover="hover"
-              variants={cardHoverVariants}
+         {/* Statistics Card */}
+<motion.div variants={itemVariants}>
+  <motion.div whileHover="hover" variants={cardHoverVariants}>
+    <Card className="shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl transition-all duration-300">
+      <CardHeader className="flex flex-col gap-4">
+        {/* Top row with Statistics title and dropdown button */}
+        <div className="flex justify-between items-center w-full">
+          <h2 className="text-xl font-semibold text-[#716F6F] capitalize">Statistics</h2>
+          <div className="relative" ref={dropdownRef}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="bg-[#1BBFCA] rounded-lg hover:bg-[#1BBFCA]/90 transition-colors duration-300"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              whileHover={{ rotate: 90 }}
             >
-              <Card className="shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl transition-all duration-300">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex flex-col gap-5">
-                      <h2 className="text-xl font-semibold text-[#716F6F] capitalize">Statistics</h2>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-semibold text-[#716F6F]">Earning Reports</h3>
-                        <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
-                      </div>
-                    </div>
-                    <div className="relative" ref={dropdownRef}>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="bg-[#1BBFCA] rounded-lg hover:bg-[#1BBFCA]/90 transition-colors duration-300"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        whileHover={{ rotate: 90 }}
-                      >
-                        <MoreVertical className="w-5 h-5 text-white" />
-                      </Button>
+              <MoreVertical className="w-5 h-5 text-white" />
+            </Button>
 
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                            className="absolute right-0 top-full mt-2 w-[152px] bg-white shadow-lg rounded-xl overflow-hidden z-50"
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'flex-start',
-                              padding: '16px',
-                              gap: '30px'
-                            }}
-                          >
-                            <div className="w-full flex flex-col gap-2">
-                              <motion.button
-                                whileHover={{ backgroundColor: '#1BBFCA' }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full text-left px-4 py-3 rounded-lg"
-                                style={{
-                                  backgroundColor: '#1BBFCA',
-                                  color: 'white',
-                                  borderRadius: '8px'
-                                }}
-                              >
-                                <span className="font-medium">Last Week</span>
-                              </motion.button>
-
-                              <motion.button
-                                whileHover={{ backgroundColor: '#f5f5f5' }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg"
-                                style={{
-                                  color: '#716F6F',
-                                  borderRadius: '8px'
-                                }}
-                              >
-                                <span className="font-medium">Last Month</span>
-                              </motion.button>
-
-                              <motion.button
-                                whileHover={{ backgroundColor: '#f5f5f5' }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg"
-                                style={{
-                                  color: '#716F6F',
-                                  borderRadius: '8px'
-                                }}
-                              >
-                                <span className="font-medium">Last Year</span>
-                              </motion.button>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
-<TabsList className="bg-transparent p-0 gap-5 mb-6 ml-auto flex justify-end">
-                      <TabsTrigger
-                        value="fee"
-                        className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#7086FD] p-2.5 transition-all duration-300"
-                      >
-                        <span className="text-[#7086FD] font-semibold text-lg capitalize hover:text-[#7086FD]/90">Fee</span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="salary"
-                        className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF8400] p-2.5 transition-all duration-300"
-                      >
-                        <span className="text-[#FF8400] font-semibold text-lg capitalize hover:text-[#FF8400]/90">Salary</span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="pendings"
-                        className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#CA2858] p-2.5 transition-all duration-300"
-                      >
-                        <span className="text-[#CA2858] font-semibold text-lg capitalize hover:text-[#CA2858]/90">Pendings</span>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="totalIncome"
-                        className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FFCC00] p-2.5 transition-all duration-300"
-                      >
-                        <span className="text-[#FFCC00] font-semibold text-lg capitalize hover:text-[#FFCC00]/90">Total Income</span>
-                      </TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                  <div className="h-[350px]">
-                    <BarChart
-                      width={700}
-                      height={350}
-                      data={chartData}
-                      margin={{ top: 20, right: 10, left: 5, bottom: 5 }}
-                      barCategoryGap="20%"
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-full mt-2 w-[152px] bg-white shadow-lg rounded-xl overflow-hidden z-50"
+                >
+                  <div className="w-full flex flex-col gap-2 p-4">
+                    <motion.button
+                      whileHover={{ backgroundColor: '#1BBFCA' }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full text-left px-4 py-3 rounded-lg bg-[#1BBFCA] text-white"
                     >
-                      <CartesianGrid vertical={false} strokeDasharray="4 4" />
-                      <XAxis
-                        dataKey="month"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                        padding={{ left: 10, right: 10 }}
-                      />
-                      <YAxis
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={10}
-                        tickFormatter={(value) => `₹${value / 1000}K`}
-                      />
-                      <Bar
-                        dataKey={activeTab}
-                        shape={(props) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
-                        barSize={30}
-                      >
-                        <LabelList
-                          dataKey={activeTab}
-                          position="top"
-                          formatter={(value: number) => `₹${value / 1000}K`}
-                          fill="#716F6F"
-                          offset={10}
-                        />
-                      </Bar>
-                    </BarChart>
+                      <span className="font-medium">Last Week</span>
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ backgroundColor: '#f5f5f5' }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg text-[#716F6F]"
+                    >
+                      <span className="font-medium">Last Month</span>
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ backgroundColor: '#f5f5f5' }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg text-[#716F6F]"
+                    >
+                      <span className="font-medium">Last Year</span>
+                    </motion.button>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Combined Earning Reports and Tabs section - now properly aligned */}
+        <div className="flex flex-row justify-between items-center w-full">
+          <div className="flex flex-col">
+            <h3 className="text-xl font-semibold text-[#716F6F]">Earning Reports</h3>
+            <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
+          </div>
+          
+          <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
+            <TabsList className="bg-transparent p-0 gap-4 h-auto pr-20">
+              <TabsTrigger
+                value="fee"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#23AF62] px-2 py-1"
+              >
+                <span className="text-[#23AF62] font-semibold text-lg ">Fee</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="salary"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF8400] px-2 py-1"
+              >
+                <span className="text-[#FF8400] font-semibold text-lg">Salary</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="pendings"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#CA2858] px-2 py-1"
+              >
+                <span className="text-[#CA2858] font-semibold text-lg">Pendings</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="totalIncome"
+                className="data-[state=active]:border-b-[3px] data-[state=active]:border-[#FFCC00] px-2 py-1"
+              >
+                <span className="text-[#FFCC00] font-semibold text-lg">Total Income</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+      </CardHeader>
+      
+      <CardContent>
+        <div className="h-[350px]">
+          <BarChart
+            width={800}
+            height={350}
+            data={chartData}
+            margin={{ top: 20, right: 10, left: 5, bottom: 5 }}
+            barCategoryGap="20%"
+          >
+            <CartesianGrid vertical={false} strokeDasharray="4 4" />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              padding={{ left: 10, right: 10 }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={10}
+              tickFormatter={(value) => `₹${value / 1000}K`}
+            />
+            <Bar
+              dataKey={activeTab}
+              shape={(props) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+              barSize={30}
+            >
+              <LabelList
+                dataKey={activeTab}
+                position="top"
+                formatter={(value: number) => `₹${value / 1000}K`}
+                fill="#716F6F"
+                offset={10}
+              />
+            </Bar>
+          </BarChart>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+</motion.div>
         </div>
         
         {/* Right Column (1/3 width) */}
