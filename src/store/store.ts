@@ -7,6 +7,7 @@ import StaffIDcardSlice from '../features/StaffIdCard/reducers/IdcardSlice';
 import DashboardSlice from '../features/Dashboard/reducers/DashboardSlice';
 import OfflineClassSlice from '../features/Class Management/offlineClass/redures/slice'
 import liveClassReducer from '../features/Class Management/Live Class/reducers/slices';
+import batchReducer from '../features/batchManagement/reducers/slices';
 
 
 const store = configureStore({
@@ -19,6 +20,7 @@ const store = configureStore({
     DashboardSlice: DashboardSlice,
     liveClassReducer: liveClassReducer,
     OfflineClassSlice: OfflineClassSlice,
+    batchReducer: batchReducer,
   },
 })
 

@@ -163,28 +163,12 @@ class Client {
             HttpClient.post(HTTP_END_POINTS.course.template, data),
     };
     batch = {
-        create: (data: any) =>
-            HttpClient.post(
-                HTTP_END_POINTS.batch.create +
-                `${data.branch_id}/courses/${data.course}/batches`,
-                data
-            ),
-        getInstructors: (data: any) =>
-            HttpClient.get(
-                HTTP_END_POINTS.batch.create +
-                `${data.branch_id}/instructors/${data.course_id}`
-            ),
-        getAll: (params: any) =>
-            HttpClient.get(
-                HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all',
-                params
-            ),
-        getWithId: (params: string) =>
-            HttpClient.get(HTTP_END_POINTS.batch.getWithId + params),
-        update: (params: any) =>
-            HttpClient.update(HTTP_END_POINTS.batch.update + params?.uuid, params),
-        delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.batch.delete + data?.uuid),
+        create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
+        getInstructors: (data: any) => HttpClient.get(HTTP_END_POINTS.batch.create + `${data.branch_id}/instructors/${data.course_id}`),
+        getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all', params),
+        getWithId: (params: string) => HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
+        update: (params: any) => HttpClient.update(HTTP_END_POINTS.batch.update + params?.uuid, params),
+        delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.batch.delete + data?.uuid)
     };
     online_class = {
         getAll: (params: string) =>
@@ -276,8 +260,8 @@ class Client {
             HttpClient.update(HTTP_END_POINTS.staff.update + data?.staff, data),
     };
     staff = {
-        get: (query: any) =>
-            HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getCourse: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params)
     };
     student = {
         activity: (data: any) =>

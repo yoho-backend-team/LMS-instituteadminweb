@@ -29,7 +29,9 @@ interface BatchCardProps {
 	students: number;
 	startDate: string;
 	endDate: string;
-	status: string;
+	duration?: string;
+	isActive?: boolean;
+	data?: any;
 }
 
 export const BatchCard: React.FC<BatchCardProps> = ({
@@ -38,9 +40,11 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	students,
 	startDate,
 	endDate,
-	status: initialStatus,
+	isActive,
+	duration,
+	data
 }) => {
-	const [status, setStatus] = useState<string>(initialStatus);
+	const [status, setStatus] = useState<string>(isActive ? 'active' : 'inactive');
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -79,7 +83,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 
 						<DropdownMenuContent className='bg-white rounded-lg shadow-xl w-[120px] p-2 z-50 space-y-2'>
 							<DropdownMenuItem
-								onSelect={() => navigate('/view-batch')}
+								onSelect={() => navigate('/view-batch', { state: { batchData: data } })}
 								className='group border border-gray-300 text-black font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-[#1BBFCA] focus:bg-[#1BBFCA] outline-none'
 							>
 								<Eye className='w-4 h-4 text-black group-hover:text-white' />
@@ -117,7 +121,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 						className='bg-[#1E1EFF] px-6 py-[6px] rounded-md'
 						style={{ ...FONTS.heading_08_bold, color: COLORS.white }}
 					>
-						{startDate}
+						{startDate?.split('T')[0]}
 					</div>
 					<div className='flex items-center justify-center w-28 relative mt-2'>
 						<div className='absolute -top-[3px] left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2' />
@@ -128,7 +132,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 						className='bg-[#1E1EFF] px-6 py-[6px] rounded-md'
 						style={{ ...FONTS.heading_08_bold, color: COLORS.white }}
 					>
-						{endDate}
+						{endDate?.split('T')[0]}
 					</div>
 				</div>
 
@@ -146,7 +150,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 						<span
 							style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}
 						>
-							Days
+							{duration}
 						</span>
 					</div>
 				</div>
