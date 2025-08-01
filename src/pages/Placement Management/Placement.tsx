@@ -199,8 +199,9 @@ const Placements = () => {
         />
       )}
 
-      <Table className="border border-gray-200 shadow-sm rounded-lg overflow-auto">
-        <TableHeader className="bg-gray-50">
+     <div className="border border-gray-400 shadow-2xl rounded-2xl p-2">
+       <Table className=" overflow-auto">
+        <TableHeader className="bg-gray-200">
           <TableRow>
             <TableHead className="px-6 py-3 font-medium">Student</TableHead>
             <TableHead className="px-6 py-3 font-medium">Email</TableHead>
@@ -231,7 +232,7 @@ const Placements = () => {
                   <FaEllipsisV className="h-4 w-4" />
                 </Button>
                 
-                <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 focus:outline-none overflow-hidden">
+                <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
                   <Button
                     variant="ghost"
                     onClick={(e) => {
@@ -262,7 +263,7 @@ const Placements = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table></div>
     </div>
   );
 };

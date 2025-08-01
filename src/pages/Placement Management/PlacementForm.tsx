@@ -3,20 +3,14 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactSelect from 'react-select'; // Renamed to avoid conflict
+import ReactSelect from 'react-select'; 
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 interface PlacementFormData {
   companyName: string;
@@ -124,7 +118,7 @@ const ADDRESS_LIST = [
   const educationLevels = ["Diploma", "Bachelor's", "Master's", "PhD"];
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-10xl mx-auto p-6">
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
