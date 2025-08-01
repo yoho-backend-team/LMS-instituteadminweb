@@ -7,7 +7,7 @@ const FilterPanel: React.FC = () => {
       <input
         type="text"
         placeholder="Search Course"
-        className="border border-[#1BBFCA] px-4 py-2 w-60 rounded-md"
+        className="border border-[#1BBFCA] px-4 py-2 w-98 rounded-md"
       />
 
       {/* White filter box with dropdowns */}

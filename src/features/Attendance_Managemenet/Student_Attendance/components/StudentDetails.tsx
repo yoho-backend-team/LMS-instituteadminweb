@@ -5,14 +5,24 @@ import card2 from '../../../../assets/Frame 5825blue.png'
 import card4 from '../../../../assets/Frame 5825green.png'
 import card3 from '../../../../assets/cardimg3.png'
 import { SlOptionsVertical } from "react-icons/sl";
-import { Select, SelectContent, SelectItem, SelectValue } from '@radix-ui/react-select';
+import { Select, SelectContent, SelectItem, SelectValue } from '../../../../components/ui/select';
 import { SelectTrigger } from '../../../../components/ui/select';
+import { useNavigate } from 'react-router-dom';
 
 const StudentDetails = () => {
+    const navigate = useNavigate()
+    const handleBack = () =>{
+        try {
+            navigate('/students-attendance')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className='grid gap-[30px]'>
             <div className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}>
-                <h1 className='flex gap-[10px] text-[#FFFFFF] !font-semibold items-center' style={{ ...FONTS.heading_05 }}><MdOutlineKeyboardBackspace className='w-[24px] h-[24px] !font-bold' />
+                <h1 className='flex gap-[10px] text-[#FFFFFF] !font-semibold items-center' style={{ ...FONTS.heading_05 }}><div className='cursor-pointer' onClick={handleBack}><MdOutlineKeyboardBackspace className='w-[24px] h-[24px] !font-bold' /></div>
                     WHERE BEGINS THE WEB HISTORY</h1>
             </div>
 
@@ -57,10 +67,10 @@ const StudentDetails = () => {
                     <div className='flex justify-between gap-[10px] items-center'>
                         <img className='w-[62px] h-[62px] rounded-full bg-[#000000]' src=''></img>
                         <div>
-                            <p className={`text-[${COLORS.gray_dark_02}] font-semibold`}>Elon Musk</p>
+                            <p className={`text-[${COLORS.gray_dark_02}] font-bold`}>Elon Musk</p>
                             <p className={`text-[${COLORS.gray_light}]`}><span>Email : </span>elonmusk@gmail.com</p>
                         </div>
-                        <div><SlOptionsVertical /></div>
+                        <div><SlOptionsVertical className={`text-[${COLORS.primary}]`}/></div>
                     </div>
                     <div className='flex justify-center items-center '><h1 className={`text-[${COLORS.gray_dark_02}] font-semibold`}>ID : 46</h1></div>
                     <div className='flex justify-end'>

@@ -10,7 +10,6 @@ interface CustomDropdownProps {
   width?: string;
   className?: string;
 }
-
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
   value,
@@ -22,17 +21,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const isTailwindWidth = width.startsWith("w-");
-
-  // 🔸 Detect clicks outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);

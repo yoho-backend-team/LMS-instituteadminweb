@@ -47,7 +47,7 @@ const EditNotes = ({ noteData, onClose, onSubmit }: Props) => {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4  overflow-y-auto h-[70vh] scrollbar-hide justify-between "
+        className="flex flex-col gap-4  overflow-y-auto h-[85vh] scrollbar-hide justify-between "
       >
         <div className="flex flex-col gap-4">
             <div

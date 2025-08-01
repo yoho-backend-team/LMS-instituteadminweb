@@ -50,9 +50,10 @@ const Modules = () => {
 
 	return (
 		<div className="relative flex flex-col h-fit max-h-fit w-full gap-6">
+
 			{showPanel && (
-				<div className="absolute h-[85vh] inset-0 flex justify-end" onClick={() => setShowPanel(false)}>
-					<div className="h-[85vh] w-1/3 bg-white shadow-xl rounded-xl" onClick={(e) => e.stopPropagation()}>
+				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowPanel(false)}>
+					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
 						<AddModule
 							onClose={() => setShowPanel(false)}
 							onSubmit={(newModule) => {
@@ -72,13 +73,15 @@ const Modules = () => {
 				</div>
 			)}
 
+
 			{showEditPanel && (
-				<div className="absolute h-[85vh] inset-0 flex justify-end" onClick={() => setShowEditPanel(false)}>
-					<div className="h-[85vh] w-1/3 bg-white shadow-xl rounded-xl" onClick={(e) => e.stopPropagation()}>
+				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowEditPanel(false)}>
+					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
 						<EditModule onClose={() => setShowEditPanel(false)} />
 					</div>
 				</div>
 			)}
+
 
 			<div className="flex flex-col gap-4">
 				<h3 className="text-xl font-semibold">Module</h3>
@@ -124,27 +127,8 @@ const Modules = () => {
 				</div>
 			)}
 
-			{/* {showViewModule && selectedModule && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg p-6  max-w-3xl relative">
-						<button
-							onClick={() => setShowViewModule(false)}
-							className="absolute top-2 right-2 text-gray-600 hover:text-black"
-						>
-							✕
-						</button>
-						<ViewModule
-							title={selectedModule.title}
-							courseName={selectedModule.courseName}
-							description="This is a sample module description" 
-							isActive={selectedModule.isActive}
-						/>
-					</div>
-				</div>
-			)} */}
-
 			{showViewModule && selectedModule && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+				<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-white rounded-lg p-6  max-w-3xl relative">
 						<button
 							onClick={() => setShowViewModule(false)}
@@ -152,7 +136,7 @@ const Modules = () => {
 						>
 							✕
 						</button>
-						
+
 						<ViewModule
 							branch={selectedModule.branch}
 							courseName={selectedModule.courseName}

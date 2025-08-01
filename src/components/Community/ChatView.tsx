@@ -58,7 +58,8 @@ const ChatView: React.FC<Props> = ({
   }, [messages]);
 
   return (
-    <div className="fixed top-21 right-7 w-[856px] h-[89vh] p-6 overflow-hidden bg-white shadow-lg font-['Inter','sans-serif'] rounded-xl">
+    <div className="flex-1 h-[89vh] p-6 overflow-hidden bg-white shadow-lg font-['Inter','sans-serif'] rounded-xl relative">
+
       <div className="bg-white rounded-lg shadow md:px-6 flex flex-col relative pb-6 mt-12 h-full">
         {/* Top Bar */}
         <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4">
@@ -158,8 +159,8 @@ const ChatView: React.FC<Props> = ({
         <div className="mt-2 px-8 relative mb-2 ">
           <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow">
             {/* Emoji icon inside input */}
-            <span className="pl-3 pr-2">
-              <img src={emojiIcon} alt="emoji" className="w-5 h-5" />
+            <span className="pl-3 pr-2" >
+              <img src={emojiIcon} alt="emoji" className="w-5 h-5 -gap-3" />
             </span>
 
             {/* Input box with fixed width */}
@@ -192,7 +193,7 @@ const ChatView: React.FC<Props> = ({
 
       {/* Profile Panel */}
 {showProfile && (
-  <div className="absolute top-12 right-0 bg-white w-[300px] h-[90%] shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm">
+  <div className="absolute top-15 right-0 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
     
     {/* Fixed Header */}
     <div className="p-4 border-b flex flex-col items-center shrink-0">
