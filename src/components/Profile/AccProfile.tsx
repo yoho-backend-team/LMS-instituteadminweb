@@ -176,7 +176,7 @@ const AccountProfile: React.FC = () => {
 					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_0_10px_rgba(0,1,1,0.1)] shadow-md p-2">
 						<div className="flex flex-col md:flex-row bg-white p-1 rounded-lg  max-w-5xl">
 							<div className=" lg:w-1/2 mb-5 md:mb-0">
-								<h2 className="mb-2 text-[#000000] " style={{ ...FONTS.heading_11 }}>Change Password</h2>
+								<h2 className="mb-2 mt-8 text-[#000000] " style={{ ...FONTS.heading_11 }}>Change Password</h2>
 								<p className="text-[#716F6F]font-medium text-gray-700 mb-2 mt-6 font-semibold " style={{ ...FONTS.heading_09 }}>Passwords Must Contain:</p>
 								<ul className="text-sm text-gray-600 space-y-2 ml-2 mt-6">
 									<li className="flex items-start gap-5 mb-6" style={{ ...FONTS.heading_07 }}>
@@ -266,12 +266,12 @@ const AccountProfile: React.FC = () => {
 							{timelineData.map((item, index) => (
 								<div key={index} className="mb-1 ml-4 relative">
 									<div className="absolute -left-[50px] top-0">
-										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-1 mt-0 shadow" style={{ ...FONTS.heading_07 }}>
+										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-2 mt-0 shadow" style={{ ...FONTS.heading_07 }}>
 											
 											<img src={noteimg} className='h-[42px] w-[144px]'/>
 										</div>
-										<div className='w-3 h-3 bg-green-500 rounded-full mt-13 ml-16'></div>
-										<div className=' border-l-4 border-green-500 h-35 w-0 ml-17'></div>
+										<div className='w-3 h-3 bg-green-500 rounded-full mt-3 ml-16'></div>
+										<div className=' border-l-4 border-green-500 h-35 w-0 ml-17 mb-20'></div>
 										
 									</div>
 									<br></br>
