@@ -140,6 +140,9 @@ const generateEndpoints = () => {
         id_cards: {
             student: {
                 all: "/api/institute/student/id_cards/all"
+            },
+            staff: {
+                all: '/api/staffidcard/:instituteId/:branceId/'
             }
         },
         staff: {
