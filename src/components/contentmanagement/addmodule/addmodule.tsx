@@ -53,6 +53,9 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 		onSubmit(moduleData);
 	};
 
+
+	
+
 	return (
 		<div className=" text-[#716F6F] p-3 h-full shadow-[4px_4px_24px_0px_#0000001A]">
 			{/* Header */}

@@ -32,7 +32,7 @@ function StatsCard() {
   //   setStatusMap((prev) => ({ ...prev, [index]: value }));
   //   setDropdownOpen(null);
   // };
-   const [status, setStatus] = useState("Active")
+  const [status, setStatus] = useState("Active")
   const [isOpen, setIsOpen] = useState(false)
 
   const options = ["Active", "Inactive"]
@@ -55,17 +55,17 @@ function StatsCard() {
                   <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-30 rounded-lg text-sm p-2 space-y-2">
                     <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
                       {/* <img src={Eyeicon} alt="view" className="w-4 h-4" /> */}
-                    <div > <FaEye className="w-5 h-5" /></div>
+                      <div > <FaEye className="w-5 h-5" /></div>
                       <span>View</span>
                     </button>
                     <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
                       {/* <img src={Editicon} alt="edit" className="w-4 h-4" /> */}
-                      <div ><LuNotebookPen className="w-5 h-5"/></div>
+                      <div ><LuNotebookPen className="w-5 h-5" /></div>
                       <span>Edit</span>
                     </button>
                     <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
                       {/* <img src={Deleteicon} alt="delete" className="w-4 h-4" /> */}
-                      <div><AiOutlineDelete className="w-5 h-5"/></div>
+                      <div><AiOutlineDelete className="w-5 h-5" /></div>
                       <span>Delete</span>
                     </button>
                   </div>
@@ -80,47 +80,47 @@ function StatsCard() {
 
               {/* Status Dropdown Inside Card */}
               <div className=" flex justify-end">
-      <div className="relative inline-block">
-        {/* Trigger Button */}
-  <button
-  onClick={() => setIsOpen(!isOpen)}
-  className="px-3 py-2 rounded-xl text-white font-medium flex items-center gap-1 hover:opacity-90 transition-opacity duration-200"
-  style={{ backgroundColor: "#1BBFCA" }}
->
-  <span className="text-sm mr-1">{status}</span>
-  <ChevronDown
-    className={`w-4 h-4 text-white transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-  />
-</button>
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg z-10 min-w-[140px] p-3">
-            <div className="space-y-2">
-              {options.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setStatus(option)
-                    setIsOpen(false)
-                  }}
-                  className="w-full"
-                >
-                  <span
-                    className="block px-4 py-2 rounded-xl text-white text-sm font-medium text-center hover:opacity-90 transition-opacity duration-150"
+                <div className="relative inline-block">
+                  {/* Trigger Button */}
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="px-3 py-2 rounded-xl text-white font-medium flex items-center gap-1 hover:opacity-90 transition-opacity duration-200"
                     style={{ backgroundColor: "#1BBFCA" }}
                   >
-                    {option}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+                    <span className="text-sm mr-1">{status}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-white transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {/* Dropdown Menu */}
+                  {isOpen && (
+                    <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg z-10 min-w-[140px] p-3">
+                      <div className="space-y-2">
+                        {options.map((option) => (
+                          <button
+                            key={option}
+                            onClick={() => {
+                              setStatus(option)
+                              setIsOpen(false)
+                            }}
+                            className="w-full"
+                          >
+                            <span
+                              className="block px-4 py-2 rounded-xl text-white text-sm font-medium text-center hover:opacity-90 transition-opacity duration-150"
+                              style={{ backgroundColor: "#1BBFCA" }}
+                            >
+                              {option}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-        {/* Backdrop */}
-        {isOpen && <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />}
-      </div>
-    </div>
+                  {/* Backdrop */}
+                  {isOpen && <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />}
+                </div>
+              </div>
             </div>
           );
         })}
