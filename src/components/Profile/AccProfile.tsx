@@ -199,7 +199,7 @@ const AccountProfile: React.FC = () => {
 
 							</div>
 
-							<div className="w-full md:w-1/2 space-y-4 ml-1 font-semibold" style={{ ...FONTS.heading_07 }}>
+							<div className="w-full md:w-1/2 mt-8 space-y-8 ml-1 font-semibold" style={{ ...FONTS.heading_07 }}>
 								<div className="relative">
 									<input
 										type={showPassword.current ? 'text' : 'password'}
