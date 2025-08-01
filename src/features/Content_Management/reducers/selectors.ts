@@ -1,0 +1,1 @@
+export const GetModule=(state:any)=>state.ModuleSlice.data;

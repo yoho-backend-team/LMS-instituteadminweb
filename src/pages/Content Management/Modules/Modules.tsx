@@ -1,12 +1,15 @@
 
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddModule from "../../../components/contentmanagement/addmodule/addmodule";
 import EditModule from "../../../components/contentmanagement/editmodule/editmodule";
 import { FaFileAlt, FaGraduationCap, FaEllipsisV } from 'react-icons/fa';
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ViewModule from "../../../components/contentmanagement/viewmodule/viewmodule"
+import { useDispatch, useSelector } from "react-redux";
+import { GetModule } from "../../../features/Content_Management/reducers/selectors";
+import { GetallModuleThunks } from "../../../features/Content_Management/reducers/thunks";
 interface ModuleCardProps {
 	title: string;
 	courseName: string;
@@ -48,6 +51,16 @@ const Modules = () => {
 		setCardData(updatedData);
 	};
 
+
+	const dispatch= useDispatch<any>()
+	const Module=useSelector(GetModule)
+	useEffect(()=>{
+		const paramsData = {branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", page: 1}
+		dispatch(GetallModuleThunks(paramsData));
+	},[dispatch]);
+	
+	
+	console.log(Module," output in main page")
 	return (
 		<div className="relative flex flex-col h-fit max-h-fit w-full gap-6">
 
@@ -154,7 +167,7 @@ const Modules = () => {
 
 
 			<div className="flex flex-wrap gap-4">
-				{cardData.map((card) => (
+				{Module?.map((card:any) => (
 					<div
 						key={card.id}
 						className="relative w-80 p-4 border rounded-lg shadow-[4px_4px_24px_0px_#0000001A] bg-white"
@@ -165,12 +178,12 @@ const Modules = () => {
 
 						<div className="flex items-center gap-2 bg-gray-100 p-3 rounded mt-5">
 							<FaFileAlt className="text-gray-600 text-lg" />
-							<span className="text-sm font-medium text-gray-700">{card.fileName}</span>
+							<span className="text-sm font-medium text-gray-700">{card?.title}</span>
 						</div>
 
 						<div className="mt-4 flex items-center gap-2">
 							<FaGraduationCap className="text-gray-600 text-xl" />
-							<span className="text-base font-semibold text-gray-700">{card.courseName}</span>
+							<span className="text-base font-semibold text-gray-700">{card.course.course_name}</span>
 						</div>
 
 						<div className="mt-4 flex justify-between items-center">
