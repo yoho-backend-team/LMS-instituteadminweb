@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import mask from '../../../assets/navbar/Mask-1.png';
 import prfimg from '../../../assets/navbar/image.png';
+import { FONTS } from '../../../constants/uiConstants';
 
 type TicketCardProps = {
     name: string;
@@ -10,20 +11,35 @@ type TicketCardProps = {
     time: string;
     priority: "High" | "Medium" | "Low";
     avatarUrl?: string;
+    onView: () => void;
 };
-const priorities = ["Low", "Medium", "High"] as const;
-type Priority = typeof priorities[number];
+
 const TicketCard: React.FC<TicketCardProps> = ({
     name,
     email,
     message,
     date,
     time,
-
+    priority,
     avatarUrl,
+    onView,
 }) => {
-    const [priority, setPriority] = useState<Priority>("High");
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const popupRef = useRef<HTMLDivElement>(null);
+
+    // Optional: Close popup if clicked outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+                setIsPopupOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const priorityColor =
         priority === "High"
@@ -33,8 +49,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 : "bg-gray-400";
 
     return (
-
-        <div className="bg-white shadow-md rounded-lg p-4 w-80">
+        <div className="bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-lg p-4 w-80 relative">
             <div className="flex items-center mb-2">
                 <img
                     src={prfimg}
@@ -42,48 +57,53 @@ const TicketCard: React.FC<TicketCardProps> = ({
                     className="w-10 h-10 rounded-full mr-3"
                 />
                 <div>
-                    <h2 className="text-sm font-bold">{name}</h2>
-                    <p className="text-xs text-gray-500">{email}</p>
+                    <h2 className="text-gray-500" style={{ ...FONTS.heading_07_bold }}>{name}</h2>
+                    <p className="text-gray-500" style={{ ...FONTS.heading_07_light }}>Email: {email}</p>
                 </div>
-                <div
-                    className="ml-auto text-gray-500 text-xl cursor-pointer"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                    ⋮
+
+                {/* ⋮ icon */}
+                <div className="ml-auto relative" ref={popupRef}>
+                    <div
+                        className="text-red text-2xl cursor-pointer text-[#1BBFCA] "
+                        onClick={() => setIsPopupOpen(!isPopupOpen)}
+                    >
+                        ⋮
+                    </div>
+
+                    {/* Popup Button */}
+                    {isPopupOpen && (
+                        <div className="absolute right-0 left-3 top-5  bg-white  rounded shadow z-3">
+                            <button
+                                onClick={() => {
+                                    // alert("Button clicked");
+                                    // setIsPopupOpen(false);
+                                    onView();
+                                }}
+                                className=" w-[90px] ml-1 mt-1 mr-1 border mb-1 h-[34px] text-sm text-white bg-[#1BBFCA] hover:bg-[#1BBFCA] rounded-md hover:text-white"
+                            >
+                                View
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
-            <p className="text-sm mb-3 mt-8">{message}</p>
+
+            <p className="text-gray-500 mb-6 mt-8" style={{ ...FONTS.heading_07_bold }}>{message}</p>
             <div className="flex items-center justify-between text-xs text-gray-500">
-                <div className="flex items-center gap-1">
+                <div className="flex justify-between items-center w-full" style={{ ...FONTS.heading_08 }}>
                     <span>📅 {date}</span>
                     <span>🕕 {time}</span>
                 </div>
             </div>
-            <div className={`flex mt-8 px-3 w-[140px] h-[34px] py-1 text-white text-xs rounded ${priorityColor}`}>
-                <span><img src={mask} /></span>
-                <span className="mt-1 ml-2">Priority: {priority}</span>
+            <div
+                className={`flex mt-8 px-3 w-[140px] h-[34px] py-1 text-white text-xs rounded ${priorityColor}`} 
+            >
+                <span>
+                    <img src={mask} />
+                </span>
+                <span className="mt-1 ml-1" style={{ ...FONTS.heading_08 }}>Priority: {priority}</span>
             </div>
-
-            {/* Priority Selection Menu */}
-            {isMenuOpen && (
-                <div className="absolute top-68 left-114 w-48 bg-white border rounded-lg shadow-md p-2 z-10">
-                    {priorities.map((level) => (
-                        <button
-                            key={level}
-                            onClick={() => {
-                                setPriority(level);
-                                setIsMenuOpen(false);
-                            }}
-                            className={`block w-full text-left px-4 py-2 rounded mb-2 ${level === priority ? "bg-teal-400 text-white" : "border"
-                                }`}
-                        >
-                            {level}
-                        </button>
-                    ))}
-                </div>
-            )}
         </div>
-
     );
 };
 
