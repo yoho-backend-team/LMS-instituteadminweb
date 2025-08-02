@@ -165,9 +165,11 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
           setIsOpen(false);
           toast.success("Batch created successfully!");
         } else {
+           setIsOpen(false);
           toast.error("Subscription limit reached. Update your subscription plan.");
         }
       } catch (error) {
+         setIsOpen(false);
         toast.error("Failed to create batch. Please try again.");
       }
     },
@@ -285,7 +287,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               >
                 <option value="">Select Course</option>
                 {courses?.map((course: any) => (
-                  <option key={course?._id} value={course?.course_name}>
+                  <option key={course?.uuid} value={course?.uuid}>
                     {course?.course_name}
                   </option>
                 ))}
@@ -303,20 +305,21 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 Students
               </label>
               <Select
-                isMulti
-                name="students"
-                options={students}
-                value={students.filter((option) =>
-                  formik.values.students.includes(option.value)
-                )}
-                onChange={(selected) =>
-                  formik.setFieldValue(
-                    "students",
-                    selected ? selected.map((option) => option.value) : []
-                  )
-                }
-                onBlur={() => formik.setFieldTouched("students", true)}
-              />
+  isMulti
+  name="students"
+  options={students}
+  value={students.filter(option =>
+    formik.values.students.includes(option.value)
+  )}
+  onChange={(selected) => {
+    formik.setFieldValue(
+      "students",
+      Array.isArray(selected) ? selected.map(option => option.value) : []
+    );
+    formik.setFieldTouched("students", true, false);
+  }}
+/>
+
               {formik.touched.students && formik.errors.students && (
                 <p className="text-[#1BBFCA] text-sm mt-1">
                   {formik.errors.students}
@@ -329,21 +332,22 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Teacher
               </label>
-              <Select
-                isMulti
-                name="staffs"
-                options={staffs}
-                value={staffs.filter((option) =>
-                  formik.values.staffs.includes(option.value)
-                )}
-                onChange={(selected) =>
-                  formik.setFieldValue(
-                    "staffs",
-                    selected ? selected.map((option) => option.value) : []
-                  )
-                }
-                onBlur={() => formik.setFieldTouched("staffs", true)}
-              />
+             <Select
+  isMulti
+  name="staffs"
+  options={staffs}
+  value={staffs.filter(option =>
+    formik.values.staffs.includes(option.value)
+  )}
+  onChange={(selected) => {
+    formik.setFieldValue(
+      "staffs",
+      Array.isArray(selected) ? selected.map(option => option.value) : []
+    );
+    formik.setFieldTouched("staffs", true, false);
+  }}
+/>
+
               {formik.touched.staffs && formik.errors.staffs && (
                 <p className="text-[#1BBFCA] text-sm mt-1">
                   {formik.errors.staffs}

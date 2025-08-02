@@ -98,8 +98,9 @@ const generateEndpoints = () => {
             getAll: `/api/institutes/${instituteId}/branches/`,
             // getWithId: `/api/institutes/${instituteId}/branches/${branchId}/batches/all`,
             getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
-            update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-            delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/`,
+            update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
+            // update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
+            delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`
         },
         online_class: {
             getAll: `/api/institutes/class/online/all`,

@@ -14,6 +14,7 @@ import studyMaterial from "../features/StudyMaterials/slice"
 import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
 import StaffSlice from '../features/staff/reducers/slices'
+import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
 
 
 const store = configureStore({
@@ -33,8 +34,10 @@ const store = configureStore({
     addQuestion: addQuestion,
     GroupCardSlice: GroupCardSlice,
     StaffSlice: StaffSlice,
+    AllNotificationReducer: AllNotificationReducer,
   },
 })
+
 
 
 
