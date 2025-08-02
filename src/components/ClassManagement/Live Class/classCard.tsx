@@ -208,7 +208,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClass isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClass data={data} isOpen={isEditModalOpen} onClose={closeEditModal} />
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

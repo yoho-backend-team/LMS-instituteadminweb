@@ -195,7 +195,10 @@ class Client {
 		create: (data: any) =>
 			HttpClient.post(HTTP_END_POINTS.online_class.create, data),
 		update: (data: any) =>
-			HttpClient.update(HTTP_END_POINTS.online_class.update + data?.uuid, data),
+			HttpClient.update(
+				HTTP_END_POINTS.online_class.update.replace(':classId', data?.uuid),
+				data
+			),
 		delete: (data: any) =>
 			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.id),
 	};
@@ -279,6 +282,8 @@ class Client {
 	staff = {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+		getall: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.staff.getall, params),
 		getCourse: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 	};
