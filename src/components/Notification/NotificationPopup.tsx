@@ -1,5 +1,4 @@
-// src/components/NotificationPopup.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Notification {
@@ -16,9 +15,18 @@ interface Props {
 
 const NotificationPopup: React.FC<Props> = ({ notifications, onClose }) => {
   const navigate = useNavigate();
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+  }, []);
 
   return (
-    <div className="absolute right-0 top-[60px] w-72 bg-white shadow-lg rounded-md border z-50">
+    <div
+      className={`absolute right-0 top-[60px] w-72 bg-white shadow-lg rounded-md border z-50 
+        transform transition-all duration-600 ease-out 
+        ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+    >
       <div className="bg-[#1BBFCA] text-white font-bold p-2 rounded-t-md">
         Notifications
       </div>

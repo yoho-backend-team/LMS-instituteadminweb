@@ -42,7 +42,7 @@ const NotesManagement = () => {
     },
     {
       id: 2,
-      title: "Java",
+      title: "Leo",
       description: "Introduction to React components and JSX",
       course: "React Full Stack",
       branch: "CSE",

@@ -38,6 +38,10 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import AddNewGroup from '../components/Usermanagement/Group/AddNewGroup';
+import View from '../components/Usermanagement/Group/View';
+import Edit from '../components/Usermanagement/Group/Edit';
+
 import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
@@ -100,6 +104,9 @@ const AppRoutes = () => {
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
+				<Route path='group/add' element={<AddNewGroup/>}/>
+				<Route path='group/view'element={<View/>}/>
+				<Route path='group/edit'element={<Edit/>}/>
 
 				{/* Course Management */}
 				<Route path='courses' element={<Courses />} />
@@ -131,7 +138,7 @@ const AppRoutes = () => {
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
 				<Route
-					path='students-attendance/details'
+					path='students-attendance/details/:id'
 					element={<StudentDetails />}
 				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
@@ -143,7 +150,6 @@ const AppRoutes = () => {
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
 				<Route path='/certificate-view' element={<CertificateView />} />
-
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
@@ -172,7 +178,6 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
-
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>

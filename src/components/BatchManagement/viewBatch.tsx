@@ -2,63 +2,20 @@
 import { Search } from "lucide-react";
 import call from "../../assets/call.png";
 import email from "../../assets/mail.png";
-import flower from "../../assets/flower.png"
-import location from "../../assets/location.png"
-import { useNavigate } from "react-router-dom";
+import locations from "../../assets/location.png"
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Card } from "../ui/card";
+import { GetImageUrl } from "../../utils/helper";
 
-
-
-const batchData = [
-  {
-    name: "MERN STACK 2024",
-    duration: "6 Month",
-    startDate: "April 2, 2025",
-    endDate: "April 3, 2025",
-  },
-  {
-    name: "MERN STACK 2024",
-    duration: "3 Month",
-    startDate: "April 3, 2025",
-    endDate: "April 4, 2025",
-  },
-  {
-    name: "MERN STACK 2024",
-    duration: "2 Month",
-    startDate: "April 4, 2025",
-    endDate: "April 5, 2025",
-  },
-  {
-    name: "MERN STACK 2024",
-    duration: "8 Month",
-    startDate: "April 5, 2025",
-    endDate: "April 6, 2025",
-  },
-];
-
-const students = [
-  {
-    name: "Elon Musk",
-    email: "elonmusk@gmail.com",
-    phone: "+91 9876456783",
-    location: "Boca Chica, Undefined",
-    id: 54,
-    img: "https://i.pravatar.cc/100?u=elon",
-  },
-  {
-    name: "John",
-    email: "johnronaldo@gmail.com",
-    phone: "+91 9876456543",
-    location: "Boca Chica, Chennai",
-    id: 76,
-    img: "https://i.pravatar.cc/100?u=john",
-  },
-];
 
 export default function StudentDashboardMain() {
   const navigate = useNavigate(); 
+  const location = useLocation();
+  const {batchData} = location.state || {};
+
+  console.log("Batch Data:", batchData);
 
   return (
     <div className="p-6  min-h-screen">
@@ -82,29 +39,28 @@ export default function StudentDashboardMain() {
 
 
   <div className="space-y-4">
-    {batchData.map((batch, i) => (
+   
       <Card
-        key={i}
         className="p-4 bg-white shadow-sm rounded-xl flex flex-row items-center justify-between"
       >
         <div className=" w-1/3"style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>
-          {batch.name}
+          {batchData?.course?.course_name}
         </div>
-        <div className=" w-1/3"style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{batch.duration}</div>
+        <div className=" w-1/3"style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{batchData?.course?.duration}</div>
         <div className="flex items-center gap-2 justify-end w-1/3">
           <div className="bg-blue-600  px-3 py-1 rounded-md"style={{...FONTS.heading_08_bold,color:COLORS.white}}>
-            {batch.startDate}
+            {batchData?.start_date}
           </div>
          <div className="flex items-center justify-center w-16 relative">
             <div className="absolute -top-[3px] left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full left-2 -translate-y-1/2 top-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full right-2 -translate-y-1/2 top-1/2" />          </div>
           <div className="bg-blue-600  px-3 py-1 rounded-md"style={{...FONTS.heading_08_bold,color:COLORS.white}}>
-            {batch.endDate}
+            {batchData?.end_date}
           </div>
         </div>
       </Card>
-    ))}
+    
   </div>
 </Card>
 
@@ -122,20 +78,21 @@ export default function StudentDashboardMain() {
 
     
      <div className="space-y-4">
-  {students.map((student, i) => (
+  {batchData?.student?.map((student:any, i:any) => (
     <Card
       key={i}
       className="p-4 rounded-2xl bg-white shadow-md flex flex-row items-center justify-between"
     >
       <div className="flex items-center gap-4">
         <img
-          src={flower}
-          alt={student.name}
+          src={GetImageUrl(student?.image) ?? undefined}
+          alt={student?.full_name}
+          title={student?.full_name}
           className="h-14 w-14 rounded-full object-cover"
         />
         <div>
-          <h4 style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{student.name}</h4>
-          <p style={{...FONTS.heading_12,color:COLORS.gray_dark_02}}>Student ID : {student.id}</p>
+          <h4 style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{student?.full_name}</h4>
+          <p style={{...FONTS.heading_12,color:COLORS.gray_dark_02}}>Student ID : {student?.id}</p>
         </div>
       </div>
 
@@ -143,15 +100,15 @@ export default function StudentDashboardMain() {
       <div className="flex items-center gap-40  text-sm text-gray-700">
         <div className="flex items-center gap-2 ">
           <img src={email} alt="email" className="w-4 h-4" />
-          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student.email}</span>
+          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.email}</span>
         </div>
         <div className="flex items-center ml-0  gap-2">
           <img src={call} alt="call" className="w-4 h-4" />
-          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student.phone}</span>
+          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.contact_info?.phone_number}</span>
         </div>
         <div className="flex items-center gap-2">
-          <img src={location} alt="location" className="w-4 h-4" />
-          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student.location}</span>
+          <img src={locations} alt="location" className="w-4 h-4" />
+          <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.contact_info?.city}</span>
         </div>
       </div>
     </Card>
