@@ -42,7 +42,7 @@ const ViewModule = ({
             <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-1">
 
-                    Mern
+                    {title}
                     <FaStar className="text-yellow-400" />
                 </h2>
 

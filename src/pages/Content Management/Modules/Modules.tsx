@@ -1,7 +1,7 @@
 
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddModule from "../../../components/contentmanagement/addmodule/addmodule";
 import EditModule from "../../../components/contentmanagement/editmodule/editmodule";
 import { FaFileAlt, FaGraduationCap, FaEllipsisV } from 'react-icons/fa';
@@ -9,76 +9,81 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ViewModule from "../../../components/contentmanagement/viewmodule/viewmodule"
 import { useDispatch, useSelector } from "react-redux";
 import { GetModule } from "../../../features/Content_Management/reducers/selectors";
-import { GetallModuleThunks } from "../../../features/Content_Management/reducers/thunks";
+import {  GetallModuleThunks } from "../../../features/Content_Management/reducers/thunks";
+
 interface ModuleCardProps {
+	id: string;
 	title: string;
-	courseName: string;
-	description: string;
+	courseName?: string;
+	description?: string;
 	isActive: boolean;
-	fileUrl: string;
+	fileUrl?: string;
 	fileName: string;
-	branch: string;
+	branch?: string;
+	course?: {
+		course_name: string;
+	};
 }
-
-
 
 const Modules = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showPanel, setShowPanel] = useState(false);
 	const [showEditPanel, setShowEditPanel] = useState(false);
-	const [openCardId, setOpenCardId] = useState<number | null>(null);
+	const [openCardId, setOpenCardId] = useState<number | string | null>(null);
 	const [showViewModule, setShowViewModule] = useState(false);
 	const [selectedModule, setSelectedModule] = useState<ModuleCardProps | null>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
 
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+				setOpenCardId(null); // or however you close the dropdown
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [dropdownRef]);
+
+
+	const dispatch = useDispatch<any>();
+	const Module = useSelector(GetModule);
+
+	useEffect(() => {
+		const paramsData = {
+			branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+			institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+			page: 1
+		};
+		dispatch(GetallModuleThunks(paramsData));
+	}, [dispatch]);
 
 	const handleViewClick = (card: any) => {
 		setSelectedModule(card);
 		setShowViewModule(true);
 	};
 
-
-	const cardDatas = [
-		{ id: 1, fileName: 'RVR', courseName: 'Manual Testing Basic', isActive: true },
-		{ id: 2, fileName: 'ABC', courseName: 'Automation Testing', isActive: false },
-	];
-
-	const [cardData, setCardData] = useState(cardDatas);
-
-	const handleToggle = (id: number) => {
-		const updatedData = cardData.map((card) =>
-			card.id === id ? { ...card, isActive: !card.isActive } : card
-		);
-		setCardData(updatedData);
+	const handleDelete = (id: string) => {
+		dispatch(DeletemoduleThunks({ id }));
 	};
 
+	const handleToggle = (id: string) => {
+		// implement toggle status API if needed
+	};
 
-	const dispatch= useDispatch<any>()
-	const Module=useSelector(GetModule)
-	useEffect(()=>{
-		const paramsData = {branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", page: 1}
-		dispatch(GetallModuleThunks(paramsData));
-	},[dispatch]);
-	
-	
-	console.log(Module," output in main page")
 	return (
 		<div className="relative flex flex-col h-fit max-h-fit w-full gap-6">
-
 			{showPanel && (
 				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowPanel(false)}>
 					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
 						<AddModule
 							onClose={() => setShowPanel(false)}
 							onSubmit={(newModule) => {
-								setCardData((prev) => [
-									...prev,
-									{
-										id: prev.length + 1,
-										fileName: newModule.fileName,
-										courseName: newModule.course,
-										isActive: true,
-									},
-								]);
+								// handled in thunk refresh already
 								setShowPanel(false);
 							}}
 						/>
@@ -86,15 +91,22 @@ const Modules = () => {
 				</div>
 			)}
 
-
-			{showEditPanel && (
-				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowEditPanel(false)}>
-					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
-						<EditModule onClose={() => setShowEditPanel(false)} />
+			{showEditPanel && selectedModule && (
+				<div
+					className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20"
+					onClick={() => setShowEditPanel(false)}
+				>
+					<div
+						className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<EditModule
+							onClose={() => setShowEditPanel(false)}
+							existingModule={selectedModule}
+						/>
 					</div>
 				</div>
 			)}
-
 
 			<div className="flex flex-col gap-4">
 				<h3 className="text-xl font-semibold">Module</h3>
@@ -133,7 +145,7 @@ const Modules = () => {
 					<div className="flex-1 p-1 flex flex-col gap-2">
 						<label htmlFor="status2">Courses</label>
 						<select id="status2" className="border h-10 rounded-lg px-2">
-							<option value="">Select Status</option>
+							<option value="">Select Course</option>
 							<option value="dummy">Dummy</option>
 						</select>
 					</div>
@@ -152,7 +164,7 @@ const Modules = () => {
 
 						<ViewModule
 							branch={selectedModule.branch}
-							courseName={selectedModule.courseName}
+							courseName={selectedModule.course?.course_name}
 							description={selectedModule.description}
 							fileName={selectedModule.fileName}
 							fileUrl={selectedModule.fileUrl}
@@ -163,11 +175,8 @@ const Modules = () => {
 				</div>
 			)}
 
-
-
-
 			<div className="flex flex-wrap gap-4">
-				{Module?.map((card:any) => (
+				{Module?.map((card: ModuleCardProps) => (
 					<div
 						key={card.id}
 						className="relative w-80 p-4 border rounded-lg shadow-[4px_4px_24px_0px_#0000001A] bg-white"
@@ -183,7 +192,7 @@ const Modules = () => {
 
 						<div className="mt-4 flex items-center gap-2">
 							<FaGraduationCap className="text-gray-600 text-xl" />
-							<span className="text-base font-semibold text-gray-700">{card.course.course_name}</span>
+							<span className="text-base font-semibold text-gray-700">{card.course?.course_name}</span>
 						</div>
 
 						<div className="mt-4 flex justify-between items-center">
@@ -208,7 +217,7 @@ const Modules = () => {
 							</label>
 						</div>
 
-						{openCardId === card.id && (
+						{/* {openCardId === card.id && (
 							<div className="absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2">
 								<button
 									className="flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600"
@@ -218,9 +227,11 @@ const Modules = () => {
 									View
 								</button>
 
-
 								<button
-									onClick={() => setShowEditPanel(true)}
+									onClick={() => {
+										setSelectedModule(card);
+										setShowEditPanel(true);
+									}}
 									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaEdit />
@@ -228,10 +239,41 @@ const Modules = () => {
 								</button>
 
 								<button
+									onClick={() => handleDelete(card.id)}
+									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-red-100 text-gray-700"
+								>
+									<FaTrash />
+									Delete
+								</button>
+							</div>
+						)} */}
+
+						{openCardId === card.id && (
+							<div
+								ref={dropdownRef}
+								className="absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2"
+							>
+								<button
+									className="flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600"
+									onClick={() => handleViewClick(card)}
+								>
+									<FaEye />
+									View
+								</button>
+
+								<button
 									onClick={() => {
-										setCardData((prev) => prev.filter((c) => c.id !== card.id));
-										setOpenCardId(null);
+										setSelectedModule(card);
+										setShowEditPanel(true);
 									}}
+									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
+								>
+									<FaEdit />
+									Edit
+								</button>
+
+								<button
+									onClick={() => handleDelete(card.id)}
 									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-red-100 text-gray-700"
 								>
 									<FaTrash />
@@ -239,6 +281,7 @@ const Modules = () => {
 								</button>
 							</div>
 						)}
+
 					</div>
 				))}
 			</div>
