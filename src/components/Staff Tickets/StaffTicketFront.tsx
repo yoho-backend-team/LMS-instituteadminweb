@@ -55,7 +55,7 @@ const StudTickets: React.FC = () => {
       {/* Title with ticket icon */}
       <div className="bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6">
 
-        STUDENT TICKETS
+        STAFF TICKETS
       </div>
 
       {/* Filter buttons */}
