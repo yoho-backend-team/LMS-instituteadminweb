@@ -236,6 +236,10 @@ class Client {
             create: (data: any) =>
                 HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
         },
+        staff_salary: {
+            getall: (params: any) => HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
+            create: (data: any) => HttpClient.post(HTTP_END_POINTS.payment.salary.create, data)
+        }
     };
     nonTeachingStaff = {
         get: (data: any) =>
