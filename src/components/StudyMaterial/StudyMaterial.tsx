@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { HeaderActions } from "./HeaderAction"
 import { FilterSection } from "./FilterSection"
 
@@ -11,6 +11,9 @@ import uploadIcon from '../../assets/icons/upload (2).svg'
 import filterIcon from '../../assets/icons/filter.png'
 import StudyDetailModal from "./StudyDetailModal"
 import { NoteCard } from "./StudyMaterialCard"
+import { useDispatch, useSelector } from "react-redux"
+import { selectStudyMaterials } from "../../features/StudyMaterials/selector"
+import { fetchStudyMaterialsThunk } from "../../features/StudyMaterials/thunk"
 
 
 interface Note {
@@ -51,6 +54,14 @@ const NotesManagement = () => {
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
   ])
+
+   const dispatch = useDispatch<any>();
+  const studyMaterials = useSelector(selectStudyMaterials);
+
+  useEffect(() => {
+   const paramsData = {branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", page: 1}
+    dispatch(fetchStudyMaterialsThunk(paramsData));
+  }, [dispatch]);
 
   const [filterValues, setFilterValues] = useState({
     status: "",
@@ -156,16 +167,25 @@ const NotesManagement = () => {
     })
     setUploadedFile(null)
   }
+  console.log("study", studyMaterials)
 
   const handleFilterChange = (key: string, value: string) => {
     setFilterValues((prev) => ({ ...prev, [key]: value }))
   }
 
-  const filteredNotes = notes.filter((note) => {
-    const statusMatch = filterValues.status ? note.status === filterValues.status : true
-    const courseMatch = filterValues.course ? note.course === filterValues.course : true
-    return statusMatch && courseMatch
-  })
+  const filteredNotes = Array.isArray(studyMaterials)
+  ? studyMaterials.filter((note: Note) => {
+      const statusMatch = filterValues.status
+        ? note.status === filterValues.status
+        : true;
+      const courseMatch = filterValues.course
+        ? note.course === filterValues.course
+        : true;
+      return statusMatch && courseMatch;
+    })
+  : [];
+
+  
 
   return (
     <div className="min-h-screen p-3 w-full bg-cover bg-center">
@@ -187,7 +207,7 @@ const NotesManagement = () => {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4">
-          {filteredNotes.map((note) => (
+          {filteredNotes.map((note: any) => (
             <NoteCard
               key={note.id}
               note={note}
