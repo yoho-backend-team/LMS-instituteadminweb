@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import avatarimg from '../../assets/navbar/avatarimg.png'
 
 interface TicketProps {
   id: number;
@@ -34,7 +35,7 @@ const TicketCard: React.FC<TicketProps> = ({
       <div className="flex items-center justify-between mb-2 relative">
         <div className="flex items-center gap-3">
           <img
-            src="https://i.pravatar.cc/40"
+            src={avatarimg}
             alt="Avatar"
             className="w-10 h-10 rounded-full"
           />
@@ -50,9 +51,9 @@ const TicketCard: React.FC<TicketProps> = ({
             onClick={() => setShowMenu(!showMenu)}
           />
           {showMenu && (
-            <div className="absolute right-0 mt-2 bg-white shadow-md border rounded-md z-10 w-32">
+            <div className="absolute right-0 mt-2 z-10 w-32">
               <button
-                className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                className="w-full px-4 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
                 onClick={handleResolve}
               >
                 <FiCheckCircle /> Resolve
