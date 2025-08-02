@@ -12,6 +12,7 @@ import studentAttendance from '../features/Attendance_Managemenet/Student_Attend
 import auth from '../features/Auth/reducer/slice'
 import studyMaterial from "../features/StudyMaterials/slice"
 import addQuestion from "../features/HelpManagement/AddQuestion/slice"
+import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
 
 
 const store = configureStore({
@@ -29,6 +30,7 @@ const store = configureStore({
     authuser: auth,
     studyMaterial: studyMaterial,
     addQuestion: addQuestion,
+    GroupCardSlice: GroupCardSlice,
   },
 })
 
