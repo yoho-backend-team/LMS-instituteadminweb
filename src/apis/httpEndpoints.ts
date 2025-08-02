@@ -53,7 +53,8 @@ const generateEndpoints = () => {
             getWithRoleName: "/api/institutes/attedance/user-list/"
         },
         branch: {
-            getAll: `/api/institutes/${instituteId}/branches/`,
+            // getAll: `/api/institutes/${instituteId}/branches/`,
+            getAll: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/`,
             create: `/api/institutes/${instituteId}/branches/`,
         },
         faq: {
@@ -95,7 +96,8 @@ const generateEndpoints = () => {
             update_status: '/api/institutes/course/note/update/'
         },
         batch: {
-            create: `/api/institutes/${instituteId}/branches/`,
+            // create: `/api/institutes/${instituteId}/branches/`,
+            create: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/courses/1958e331-84ce-464b-8865-eb06c6189414/batches/`,
             getAll: `/api/institutes/${instituteId}/branches/`,
             // getWithId: `/api/institutes/${instituteId}/branches/${branchId}/batches/`,
             getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
@@ -125,6 +127,7 @@ const generateEndpoints = () => {
         },
         student: {
             get: `/api/institutes/${instituteId}/branches/`,
+            getall: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/1958e331-84ce-464b-8865-eb06c6189414/students/`,
             getWithId: `/api/institutes/auth/student/${instituteId}/students/`,
             getWithBatch: `/api/institutes/${instituteId}/branches/`,
             getWithCourse: `/api/institutes/${instituteId}/branches/`,
@@ -148,6 +151,7 @@ const generateEndpoints = () => {
         },
         staff: {
             get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
+            getall: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/instructors/67f3b7fcb8d2634300cc87b6/`,
             getWithName: `/api/institutes/${instituteId}/branches/${branchId}/staff`,
             getWithId: `/api/institutes/${instituteId}/staff/`,
             getWithcourse: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/courses/`,

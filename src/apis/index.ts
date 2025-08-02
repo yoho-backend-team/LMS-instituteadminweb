@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { create } from 'domain';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
 
@@ -88,7 +89,8 @@ class Client {
         add_template: (data: any) => HttpClient.post(HTTP_END_POINTS.course.template, data)
     };
     batch = {
-        create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
+        // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
+        create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create, data),
         getInstructors: (data: any) => HttpClient.get(HTTP_END_POINTS.batch.create + `${data.branch_id}/instructors/${data.course_id}`),
         getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all', params),
         getWithId: (params: string) => HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
@@ -138,10 +140,12 @@ class Client {
     };
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
-        getCourse:(params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse , params   )
+        getCourse:(params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse , params),
+        getall: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getall, params),
     };
     student = {
         activity: (data: any) => HttpClient.get(HTTP_END_POINTS.student.activity + data.id),
+        getall: (params: any) => HttpClient.get(HTTP_END_POINTS.student.getall, params),
         class: (data: any) => HttpClient.get(HTTP_END_POINTS.student.classess + data.uuid, data),
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid)
