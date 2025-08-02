@@ -75,7 +75,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="Course Name"
+            
             className="border rounded-md p-2 w-full"
           />
         </div>
@@ -88,7 +88,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
           >
-            <option value="">Select Duration</option>
+            <option value=""></option>
             <option>1 Month</option>
             <option>3 Months</option>
             <option>6 Months</option>
@@ -102,7 +102,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.actualPrice}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            placeholder="Actual Price"
+            
           />
         </div>
 
@@ -113,7 +113,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.price}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            placeholder="Current Price"
+            
           />
         </div>
 
@@ -125,7 +125,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
           >
-            <option value="">Select Rating</option>
+            <option value=""></option>
             <option>1 Star</option>
             <option>2 Stars</option>
             <option>3 Stars</option>
@@ -141,7 +141,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.review}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            placeholder="Total Review"
+            
           />
         </div>
 
@@ -153,7 +153,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
           >
-            <option value="">Select Branch</option>
+            <option value=""></option>
             <option>Chennai</option>
             <option>Bangalore</option>
             <option>Hyderabad</option>
@@ -168,7 +168,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
           >
-            <option value="">Select Category</option>
+            <option value=""></option>
             <option>Web Development</option>
             <option>Testing</option>
           </select>
@@ -182,7 +182,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
           >
-            <option value="">Select Format</option>
+            <option value=""></option>
             <option>Online</option>
             <option>Offline</option>
           </select>
@@ -197,7 +197,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.overview}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            placeholder="Course Overview"
+            
           />
         </div>
 
@@ -208,7 +208,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.description}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            placeholder="Course Description"
+            
           />
         </div>
 
