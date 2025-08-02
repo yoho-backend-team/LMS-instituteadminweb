@@ -120,7 +120,7 @@ const FaqCategory: React.FC = () => {
   );
 
   return (
-    <div className="w-[1350px] min-h-screen fixed bg-white font-poppins py-6 px-4">
+    <div className="w-full h-fit bg-white font-poppins py-6 px-4">
       {/* Header */}
       <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
         <h1 className="text-2xl font-bold">FAQ Category</h1>
@@ -154,7 +154,7 @@ const FaqCategory: React.FC = () => {
         {filtered.map((cat, index) => (
           <div
             key={cat.id}
-            className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-sm  text-[#7D7D7D]         text-sm rounded-md relative"
+            className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-sm  text-[#7D7D7D]  text-sm rounded-md relative"
           >
             
             <div>{cat.id}</div>
