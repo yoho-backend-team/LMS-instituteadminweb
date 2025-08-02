@@ -282,12 +282,13 @@ class Client {
             HttpClient.update(HTTP_END_POINTS.staff.update + data?.staff, data),
     };
     staff = {
-        get: (query: any) =>
-            HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
-        getall: (params: any) =>
-            HttpClient.get(HTTP_END_POINTS.staff.getall, params),
-        getCourse: (params: any) =>
-            HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
+        get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
+        getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
+        getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
+        create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
+        update: (data: any) => HttpClient.update(HTTP_END_POINTS.staff.update, data),
+        delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
     };
     student = {
         activity: (data: any) =>
