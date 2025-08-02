@@ -157,9 +157,9 @@ export default function Component() {
 
 			<div className='lg:flex mt-8 gap-5 lg:flex-row '>
 				{/* Left section  */}
-				<section className=' lg:w-[25%] md:w-full lg:flex lg:flex-col lg:gap-7 md:gap-4 md:grid md:grid-cols-3 md:mb-6'>
+				<section className=' lg:w-[25%] md:w-full lg:flex lg:flex-col lg:gap-8 md:gap-4 md:grid md:grid-cols-3 md:mb-6'>
 					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6'>
+						<div className='flex items-center gap-6 '>
 							{/* Icon */}
 
 							<div className=' rounded-lg text-white'>
@@ -336,7 +336,7 @@ export default function Component() {
 													className={`w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-left`}
 													style={{
 														...FONTS.heading_08,
-														background: selectedOption === option ? COLORS.button : 'transparent',
+														background: selectedOption === option ? COLORS.primary : 'transparent',
 														color: selectedOption === option ? 'white' : '#716F6F',
 													}}
 												>
@@ -351,7 +351,7 @@ export default function Component() {
 
 						{/* Courses  */}
 
-						<div className='mt-4 w-full py-3'>
+						<div className='mt-4 w-full py-4'>
 							{DashboardData?.popularCourses?.length > 0 ? (
 								<div className='flex gap-4 overflow-x-scroll scrollbar-hide'>
 									{DashboardData.popularCourses.map((item: any, index: number) => (

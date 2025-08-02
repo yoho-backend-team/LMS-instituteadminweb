@@ -50,7 +50,7 @@ const Bar = () => {
 
     return (
         <div className="w-full p-5">
-            <div className="py-6">
+            <div className="py-3">
                 <div className="flex justify-between mb-10">
                     <button
                         className={`px-5 py-1 rounded-full font-semibold border-2 ${selectedType === 'Revenue'
