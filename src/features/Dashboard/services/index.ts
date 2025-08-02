@@ -6,3 +6,11 @@ export const getDashboard = async (params: any) => {
         return response;
     }
 };
+
+
+export const getActivity = async (params:any)=>{
+    const response = await Client.activity.get(params);
+    if (response) {
+        return response;
+    }
+}

@@ -148,7 +148,7 @@ const generateEndpoints = () => {
                 all: '/api/institute/student/id_cards/all',
             },
             staff: {
-                all: '/api/staffidcard/:instituteId/:branceId/',
+                all: '/api/staffidcard/:instituteId/:branchId/',
             },
         },
         staff: {
@@ -218,7 +218,7 @@ const generateEndpoints = () => {
             get: '/api/institutes/user/activities/',
         },
         reports: {
-            get: `/api/institutes/${instituteId}/report/`,
+            get: `/api/institutes/${instituteId || '973195c0-66ed-47c2-b098-d8989d3e4529'}/report/`
         },
         placements: {
             create: `/api/placements/create`,

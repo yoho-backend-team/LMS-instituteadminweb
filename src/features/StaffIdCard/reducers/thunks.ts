@@ -7,6 +7,7 @@ export const getStaffIdcardthunks =
             const response = await getStaffIdcard(params);
             dispatch(getStaffIDcard(response.data.data));
             console.log(response.data.data,"IDcard Response")
+            return response
         } catch (error) {
             console.log(error);
         }
