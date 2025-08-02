@@ -52,6 +52,7 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 // import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
+import TicketDetailsPage from '../pages/Ticket Management/Student/TicketDetailsPage';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import CertificateView from '../components/cerificateManagement/certificateView';
@@ -80,6 +81,11 @@ const AppRoutes = () => {
 			<Route path='/' element={<MainLayout />}>
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
+
+				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
+
+				
+				<Route path="noti/msg" element={<NotificationPage />} />
 
 				<Route path='noti/msg' element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
