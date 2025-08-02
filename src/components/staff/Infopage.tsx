@@ -1,98 +1,198 @@
-import React, { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Card } from "../ui/card";
-import { Label } from "../ui/label";
-import { COLORS, FONTS } from "../../constants/uiConstants";
+"use client"
+
+import type React from "react"
+import { useEffect, useState } from "react"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Card } from "../ui/card"
+import { Label } from "../ui/label"
+import { COLORS, FONTS } from "../../constants/uiConstants"
+import { useDispatch, useSelector } from "react-redux"
+import { getStaffDetailsDataId } from "../../features/staff/reducers/thunks"
+import { selectStaffId } from "../../features/staff/reducers/selector"
+import { GetImageUrl } from "../../utils/helper"
+import { updateStaff } from "../../features/staff/services"
 
 interface Staff {
-  id: number;
-  full_name: string;
-  email: string;
-  status: 'Active' | 'Inactive';
-  avatar: string;
-  dob?: string;
-  gender?: string;
-  course?: string;
-  designation?: string;
-  qualification?: string;
+  id: number
+  full_name: string
+  email: string
+  status: "Active" | "Inactive"
+  avatar: string
+  dob?: string
+  gender?: string
+  course?: string
+  designation?: string
+  qualification?: string
   contact_info: {
-  state?: string;
-  city?: string;
-  pinCode?: string;
-  address1?: string;
-  address2?: string;
-  phone_number?: string;
-  alternate_phone_number?: string;
-
+    state?: string
+    city?: string
+    pinCode?: string
+    address1?: string
+    address2?: string
+    phone_number?: string
+    alternate_phone_number?: string
   }
 }
 
 interface InfopageProps {
-  isEditing: boolean;
-  setIsEditing: (value: boolean) => void;
-  staff: Staff;
+  isEditing: boolean
+  setIsEditing: (value: boolean) => void
+  staff: Staff
 }
 
 const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) => {
+  const staffId = useSelector(selectStaffId)
+  const staffIdData = staffId?.data?.staff
+  console.log("stafId Data:", staffId?.data?.staff)
+
+  const course = staffIdData?.userDetail?.course;
+  console.log(course,"course")
+  const filcategory = course?.map(item => item?.category?.category_name)
+  const fildescription = course?.map(item => item?.overview)
+  const filthumbnail = course?.map(item => item?.thumbnail) 
+
   const [formData, setFormData] = useState({
-    fullName: staff.full_name,
-    email: staff.email,
-    role: staff.designation || "Senior Advisor To The President",
-    gender: staff.gender || "Male",
-    dob: staff.dob || "06-08-2000",
-    primaryNumber: staff.contact_info.phone_number || "3804348004",
-    altNumber: staff.contact_info.alternate_phone_number || "3903858390",
-    qualification: staff.qualification || "Physics",
-    address1: staff.contact_info.address1 || "Texas: Near The SpaceX Starbase",
-    address2: staff.contact_info.address2 || "Pretoria, Texas",
-    city: staff.contact_info.city || "Boca Chica",
-    state: staff.contact_info.state || "Texas",
-    pinCode: staff.contact_info.pinCode || "78521",
-    course: staff.course || "MEAN STACK 2024",
-    designation: staff.designation || "Senior Professor",
+    fullName: staffIdData?.full_name || "",
+    email: staffIdData?.email || "",
+    role: staffIdData?.designation || "Senior Advisor To The President",
+    gender: staffIdData?.gender || "Male",
+    dob: staffIdData?.dob || "06-08-2000",
+    primaryNumber: staffIdData?.contact_info?.phone_number || "3804348004",
+    altNumber: staffIdData?.contact_info?.alternate_phone_number || "3903858390",
+    qualification: staffIdData?.qualification || "Physics",
+    address1: staffIdData?.contact_info?.address1 || "Texas: Near The SpaceX Starbase",
+    address2: staffIdData?.contact_info?.address2 || "Pretoria, Texas",
+    city: staffIdData?.contact_info?.city || "Boca Chica",
+    state: staffIdData?.contact_info?.state || "Texas",
+    pinCode: staffIdData?.contact_info?.pinCode || "78521",
+    course: staffIdData?.course || "MEAN STACK 2024",
+    designation: staffIdData?.designation || "Senior Professor",
+    category: filcategory || "Development",
+    thumbnail: filthumbnail,
     module: "number of modules",
     price: "$",
-    courseDescription: "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS."
-  });
+    courseDescription: fildescription || "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
+  })
 
   const handleEditClick = () => {
-    setIsEditing(true);
-  };
+    setIsEditing(true)
+  }
 
   const handleCancel = () => {
-    setIsEditing(false);
+    setIsEditing(false)
     setFormData({
-      fullName: staff.full_name,
-      email: staff.email,
-      role: staff.designation || "Senior Advisor To The President",
-      gender: staff.gender || "Male",
-      dob: staff.dob || "06-08-2000",
-      primaryNumber: staff.contact_info.phone_number || "3804348004",
-      altNumber: staff.contact_info.alternate_phone_number || "3903858390",
-      qualification: staff.qualification || "Physics",
-      address1: staff.contact_info.address1 || "Texas: Near The SpaceX Starbase",
-      address2: staff.contact_info.address2 || "Pretoria, Texas",
-      city: staff.contact_info.city || "Boca Chica",
-      state: staff.contact_info.state || "Texas",
-      pinCode: staff.contact_info.pinCode || "78521",
-      course: staff.course || "MEAN STACK 2024",
-      designation: staff.designation || "Senior Professor",
+      fullName: staffIdData?.full_name || "",
+      email: staffIdData?.email || "",
+      // role: staffIdData?.designation || "Senior Advisor To The President",
+      role: "Staff",
+      gender: staffIdData?.gender || "Male",
+      dob: staffIdData?.dob || "06-08-2000",
+      primaryNumber: staffIdData?.contact_info?.phone_number || "3804348004",
+      altNumber: staffIdData?.contact_info?.alternate_phone_number || "3903858390",
+      qualification: staffIdData?.qualification || "Physics",
+      address1: staffIdData?.contact_info?.address1 || "Texas: Near The SpaceX Starbase",
+      address2: staffIdData?.contact_info?.address2 || "Pretoria, Texas",
+      city: staffIdData?.contact_info?.city || "Boca Chica",
+      state: staffIdData?.contact_info?.state || "Texas",
+      pinCode: staffIdData?.contact_info?.pinCode || "78521",
+      course: staffIdData?.course || "MEAN STACK 2024",
+      designation: staffIdData?.designation || "Senior Professor",
+      category: filcategory || "Development",
+      thumbnail: filthumbnail,
       module: "number of modules",
       price: "$",
-      courseDescription: "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS."
-    });
+      courseDescription: fildescription || "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
+    })
+  }
+
+  const handleSubmit = async() => {
+    setIsEditing(false)
+    
+    const payload = {
+    contact_info: {
+      state: formData.state,
+      city: formData.city,
+      pincode: formData.pinCode,
+      address1: formData.address1,
+      address2: formData.address2,
+      phone_number: formData.primaryNumber,
+      alternate_phone_number: formData.altNumber
+    },
+    course: ['67f3b7fcb8d2634300cc87b6'], // Get course IDs array
+    designation: formData.designation,
+    dob: formData.dob,
+    email: formData.email,
+    full_name: formData.fullName,
+    gender: formData.gender,
+    id: staffIdData?._id, // Keep existing ID
+    image: staffIdData?.image || "staticfiles/lms/default-image.png", // Keep existing image or default
+    qualification: formData.qualification,
+    user_details: "InstituteTeachingStaff", // Hardcoded as per requirement
+    username: staffIdData?.userDetail?.username || formData.fullName.replace(/\s+/g, '').toLowerCase() // Generate username if not available
   };
 
-  const handleSubmit = () => {
-    setIsEditing(false);
-    // In a real app, you would update the staff data here
-  };
+try{
+  console.log("Payload to be sent:", payload);
+
+    const response = await updateStaff(payload)
+
+}
+  catch(error){
+    console.log(error);
+  }
+
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const id = staff.uuid
+  console.log("id", id)
+  const dispatch = useDispatch<any>()
+  const fetchClassDataId = () => {
+    dispatch(
+      getStaffDetailsDataId({
+        staffId: id,
+      }),
+    )
+  }
+
+  useEffect(() => {
+    fetchClassDataId()
+  }, [])
+
+  // Update formData when staffIdData changes
+  useEffect(() => {
+    if (staffIdData) {
+      setFormData({
+        fullName: staffIdData.full_name || "",
+        email: staffIdData.email || "",
+        // role: staffIdData.designation || "Senior Advisor To The President",
+        role: "Staff",
+        gender: staffIdData.gender || "Male",
+        dob: staffIdData.dob || "06-08-2000",
+        primaryNumber: staffIdData.contact_info?.phone_number || "3804348004",
+        altNumber: staffIdData.contact_info?.alternate_phone_number || "3903858390",
+        qualification: staffIdData.qualification || "Physics",
+        address1: staffIdData.contact_info?.address1 || "Texas: Near The SpaceX Starbase",
+        address2: staffIdData.contact_info?.address2 || "Pretoria, Texas",
+        city: staffIdData.contact_info?.city || "Boca Chica",
+        state: staffIdData.contact_info?.state || "Texas",
+        pinCode: staffIdData.contact_info?.pinCode || "78521",
+        course: staffIdData.course || "MEAN STACK 2024",
+        designation: staffIdData.designation || "Senior Professor",
+        category: filcategory || "Development",
+        thumbnail: filthumbnail,
+        module: "number of modules",
+        price: "$",
+        courseDescription: fildescription  ||
+          "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
+      })
+    }
+  }, [staffIdData])
 
   return (
     <div className="">
@@ -101,7 +201,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
           <div className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] p-6">
             <h2 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>Personal Information</h2>
             <p style={{ ...FONTS.heading_09, color: COLORS.gray_dark_02 }}>Enter The Staff Member's Personal Details</p>
-            <hr className="my-3"/>
+            <hr className="my-3" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 ">
               <div style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
                 <Label className="mb-1">Full Name</Label>
@@ -169,11 +269,10 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] p-6">
             <h2 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>Address Information</h2>
             <p className="text-xs text-gray-500 ">Enter The Staff Member's Address Details</p>
-            <hr className="my-3"/>
+            <hr className="my-3" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
                 <Label className="mb-1">Address Line 1</Label>
@@ -222,11 +321,10 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] p-6">
             <h2 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>Contact Information</h2>
             <p className="text-xs text-gray-500 ">Enter The Staff Member's Contact Details</p>
-            <hr className="my-3"/>
+            <hr className="my-3" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
                 <Label className="mb-1">Phone Number</Label>
@@ -248,7 +346,6 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
               </div>
             </div>
           </div>
-
           <div className="flex justify-start gap-4">
             <Button
               variant="outline"
@@ -267,7 +364,6 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
           <div style={{ ...FONTS.heading_05 }} className="bg-[#1bbfca] text-white px-4 py-2 rounded-t-md mb-4">
             User Details
           </div>
-
           <div className="p-6 mb-4">
             <h3 style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }} className="mb-4">
               Personal Information
@@ -278,7 +374,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Full Name
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.full_name}
+                    defaultValue={staffIdData?.full_name || ""}
                     readOnly
                   />
                 </label>
@@ -288,7 +384,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Email
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.email}
+                    defaultValue={staffIdData?.email || ""}
                     readOnly
                   />
                 </label>
@@ -298,7 +394,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Role
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.designation || "Senior Advisor To The President"}
+                    defaultValue={staffIdData?.designation || "Senior Advisor To The President"}
                     readOnly
                   />
                 </label>
@@ -308,7 +404,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Gender
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.gender || "Male"}
+                    defaultValue={staffIdData?.gender || "Male"}
                     readOnly
                   />
                 </label>
@@ -318,16 +414,14 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Date Of Birth
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.dob || "06-08-2000"}
+                    defaultValue={staffIdData?.dob || "06-08-2000"}
                     readOnly
                   />
                 </label>
               </div>
             </div>
           </div>
-
           <hr />
-
           <div className="p-6 mb-4">
             <h3 style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }} className="mb-4">
               Contact Information
@@ -338,7 +432,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Primary Number
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.contact_info.phone_number || "3804348004"}
+                    defaultValue={staffIdData?.contact_info?.phone_number || "3804348004"}
                     readOnly
                   />
                 </label>
@@ -348,16 +442,14 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Alternative Number
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.contact_info.alternate_phone_number || "3903858390"}
+                    defaultValue={staffIdData?.contact_info?.alternate_phone_number || "3903858390"}
                     readOnly
                   />
                 </label>
               </div>
             </div>
           </div>
-
           <hr />
-
           <div className="p-6 mb-4">
             <h3 style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }} className="mb-4">
               Additional Information
@@ -368,7 +460,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Qualification
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.qualification || "Physics"}
+                    defaultValue={staffIdData?.qualification || "Physics"}
                     readOnly
                   />
                 </label>
@@ -378,14 +470,13 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                   Address
                   <Input
                     className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
-                    defaultValue={staff.contact_info.address1 || "Texas: Near The SpaceX Starbase"}
+                    defaultValue={staffIdData?.contact_info?.address1 || "Texas: Near The SpaceX Starbase"}
                     readOnly
                   />
                 </label>
               </div>
             </div>
           </div>
-
           <div className="flex justify-end gap-4 mb-8">
             <Button variant="destructive" className="text-[#1bbfca] border border-[#1bbfca] bg-[#1bbfca]/20">
               Delete
@@ -394,26 +485,21 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
               Edit
             </Button>
           </div>
-
           <hr className="mb-4" />
-
           <Card className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-            <div className="bg-gray-300 relative h-64 rounded-md">
+            <div style={{ backgroundImage: `url(${GetImageUrl(filthumbnail)})` }} className="relative h-64 rounded-md bg-contain bg-no-repeat bg-center">
+              
               <span className="bg-[#3abe65] absolute top-5 right-5 text-white text-xs font-medium px-3 py-1 rounded">
                 Online
               </span>
             </div>
             <div>
               <div className="space-y-2">
-                <span className="bg-[#0400ff] text-white text-xs font-medium px-3 py-1 rounded">
-                  Web Development
-                </span>
+                <span className="bg-[#0400ff] text-white text-xs font-medium px-3 py-1 rounded">{filcategory}</span>
                 <h4 style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-                  {staff.course || "MEAN STACK 2024"}
+                  {staffIdData?.course || "MEAN STACK 2024"}
                 </h4>
-                <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
-                  {formData.courseDescription}
-                </p>
+                <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>{formData.courseDescription}</p>
                 <div
                   style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
                   className="flex items-center justify-between space-y-5"
@@ -426,9 +512,9 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
                 <div className="flex justify-between items-center">
                   <Button
                     style={{ ...FONTS.heading_08 }}
-                    className={`text-white px-5 py-1 ${staff.status === "Active" ? "bg-[#3abe65]" : "bg-red-500"}`}
+                    className={`text-white px-5 py-1 ${staffIdData?.status === "Active" ? "bg-[#3abe65]" : "bg-red-500"}`}
                   >
-                    {staff.status}
+                    {staffIdData?.status}
                   </Button>
                   <Button style={{ ...FONTS.heading_08 }} className="text-white px-3 py-1 bg-[#3abe65]">
                     View Details
@@ -440,7 +526,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Infopage;
+export default Infopage

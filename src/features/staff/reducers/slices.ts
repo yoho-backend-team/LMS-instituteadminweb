@@ -3,15 +3,26 @@ import { createSlice } from "@reduxjs/toolkit";
 const StaffSlice = createSlice({
     name : 'staffSlice',
     initialState : {
-        data:[],
+        allData:[],
+        singleData:[],
+        classData:[],
+        activityData:[],
     },
     reducers : {
         getStaffDetails : (state,action) => {
-            state.data = action.payload;
+            state.allData = action.payload;
         },
-        
+        getStaffDetailsId : (state,action) => {
+            state.singleData = action.payload;
+        },
+        getClass : (state,action) => {
+            state.classData = action.payload;
+        },
+        getActivity : (state,action) => {
+            state.activityData = action.payload;
+        }
     }, 
 });
 
 export default StaffSlice.reducer;
-export const { getStaffDetails } = StaffSlice.actions
+export const { getStaffDetails,getStaffDetailsId,getClass,getActivity } = StaffSlice.actions

@@ -70,9 +70,9 @@ const MainPage: React.FC = () => {
       <div className="p-4">
         {activeTab === "Info" && <Infopage isEditing={isEditing} setIsEditing={setIsEditing} staff={staffMember} />}
         {activeTab === "Security" && <Securitypage />}
-        {activeTab === "Classes" && <Classespage />}
+        {activeTab === "Classes" && <Classespage classId = {staffMember._id} />}
         {activeTab === "Attendance" && <Attendancepage />}
-        {activeTab === "Activity" && <Activitypage />}
+        {activeTab === "Activity" && <Activitypage activityId = {staffMember._id} />}
       </div>
     </div>
   );

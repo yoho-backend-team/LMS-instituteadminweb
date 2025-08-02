@@ -13,6 +13,7 @@ import { selectStaff } from '../../../features/staff/reducers/selector';
 import { getStaffDetailsData } from '../../../features/staff/reducers/thunks';
 import type { AppDispatch } from 'recharts/types/state/store';
 import { GetImageUrl } from '../../../utils/helper';
+import { createStaff } from '../../../features/staff/services';
 
 const theme = {
   primary: {
@@ -91,34 +92,69 @@ const TeachingStaffs: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleAddStaff = () => {
-    if (newStaff.name && newStaff.email) {
-      const newStaffMember: Staff = {
-        id: staff.length + 1,
-        ...newStaff,
-        avatar: `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000)}?w=150&h=150&fit=crop&crop=face`
-      };
-      setStaff([...staff, newStaffMember]);
-      setNewStaff({
-        name: '',
-        email: '',
-        status: 'Active',
-        dateOfBirth: '',
-        gender: '',
-        course: '',
-        designation: '',
-        qualification: '',
-        state: '',
-        city: '',
-        pinCode: '',
-        addressLine1: '',
-        addressLine2: '',
-        phoneNumber: '',
-        altPhoneNumber: ''
-      });
-      setShowAddStaff(false);
-    }
-  };
+  const handleAddStaff = async() => {
+  if (newStaff.name && newStaff.email) {
+    // ✅ Build payload in required backend format
+    const payload = {
+      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", // TODO: Replace with actual branch ID dynamically
+      contact_info: {
+        state: newStaff.state,
+        city: newStaff.city,
+        pincode: newStaff.pinCode,
+        address1: newStaff.addressLine1,
+        address2: newStaff.addressLine2,
+        phone_number: newStaff.phoneNumber,
+        alternate_phone_number: newStaff.altPhoneNumber
+      },
+      course: ['1958e331-84ce-464b-8865-eb06c6189414'], // Convert to array
+      designation: newStaff.designation,
+      dob: newStaff.dateOfBirth,
+      email: newStaff.email,
+      full_name: newStaff.name,
+      gender: newStaff.gender,
+      image: "staticfiles/lms/default-image.png", // TODO: replace with uploaded image path
+      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", // TODO: replace with actual institute_id
+      qualification: newStaff.qualification,
+      staffId: "",
+      user_details: "InstituteTeachingStaff"
+    };
+
+    try{
+    // ✅ Log data to check
+    console.log("✅ Staff Payload to send:", payload);
+
+      const response = await createStaff(payload);
+
+      console.log("✅ Staff Created Successfully:", response);
+
+    // ✅ Clear Form
+    setNewStaff({
+      name: '',
+      email: '',
+      status: 'Active',
+      dateOfBirth: '',
+      gender: '',
+      course: '',
+      designation: '',
+      qualification: '',
+      state: '',
+      city: '',
+      pinCode: '',
+      addressLine1: '',
+      addressLine2: '',
+      phoneNumber: '',
+      altPhoneNumber: ''
+    });
+
+    // ✅ Close Add Staff Form
+    setShowAddStaff(false);
+  }
+  catch(error) {
+    console.error("❌ Failed to create staff:", error);
+  }
+  }
+};
+
 
   const toggleStatus = (id: number) => {
     setStaff(staff.map(member => 
@@ -140,7 +176,7 @@ const TeachingStaffs: React.FC = () => {
     navigate('/staffs-details', { state: { staff: staffMember } });
   };
 
-	const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useDispatch<any>();
 	const classData = useSelector(selectStaff)?.data || [];
 
   console.log('classData :',classData);
@@ -172,9 +208,7 @@ const TeachingStaffs: React.FC = () => {
 
           <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className='flex items-center gap-4'>
-              <Avatar className='!w-[70px] !h-[70px]'> 
-                <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Profile" />
-              </Avatar>
+              <input type="file" />
               <div>
                 <p style={{...FONTS.heading_05_bold,color:COLORS.gray_dark_02}}>Profile Picture</p>
                 <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Allowed PNG or JPEG. Max size of 800k.</p>
