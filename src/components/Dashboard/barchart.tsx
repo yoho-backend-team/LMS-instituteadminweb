@@ -1,19 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
+import { selectDashboardData } from '../../features/Dashboard/reducers/selectors';
 
 const Bar = () => {
     const [selectedYear, setSelectedYear] = useState('2024');
     const [selectedType, setSelectedType] = useState<'Revenue' | 'Expense'>('Revenue');
 
+
+
+    const dispatch = useDispatch<any>()
+
+	const DashboardData = useSelector(selectDashboardData)
+
+	useEffect(() => {
+		const paramsData = { branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4" }
+		dispatch(getDashboardthunks(paramsData));
+	}, [dispatch]);
+	console.log(DashboardData, "Dashboard Details")
+
     const annualData: any = {
         '2024': {
             Revenue: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                values: [12000, 5000, 9000, 3500, 7000, 12000, 6500, 4800, 9500, 7000, 5200, 6000],
+                values: DashboardData?.revenue || [],
                 colors: Array(12).fill('#0AA2AC')
             },
             Expense: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                values: [2000, 3000, 6000, 2500, 5000, 8000, 4500, 3000, 7000, 5000, 3200, 4000],
+                values: DashboardData?.expenses || [],
                 colors: Array(12).fill('#0AA2AC')
             }
         }
@@ -28,8 +43,8 @@ const Bar = () => {
 
     const formatCurrency = (value: number) =>
         new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
+            // style: 'currency',
+            // currency: 'USD',
             maximumFractionDigits: 0
         }).format(value);
 
@@ -57,12 +72,12 @@ const Bar = () => {
                     </button>
                 </div>
 
-                <div className="relative w-full h-[310px] border-gray-300 pb-10 left-12">
-                    {Array.from({ length: 7 }, (_, i) => {
-                        const val = maxValue - i * (maxValue / 6);
+                <div className="relative w-full h-[310px] border-gray-300 pb-5 left-12">
+                    {Array.from({ length: 6 }, (_, i) => {
+                        const val = maxValue - i * (maxValue / 5);
                         return (
                             <div
-                                key={val}
+                                // key={val}
                                 className="absolute left-3 w-full"
                                 style={{ bottom: `${(val / maxValue) * 100}%` }}
                             >
