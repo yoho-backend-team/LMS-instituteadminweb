@@ -7,10 +7,11 @@ import { fetchAllStudentAttendances } from "../../../features/Attendance_Managem
 import StudentCard from "../../../features/Attendance_Managemenet/Student_Attendance/components/StudentCard";
 import { getwithIdBatches } from "../../../features/batchManagement/reducers/thunks";
 import { selectBatch } from "../../../features/batchManagement/reducers/selectors";
+import { getInstituteDetails, getSelectedBranchId } from "../../../apis/httpEndpoints";
 
 const StudentsAttendance = () => {
-	const branchId = GetLocalStorage('branchId');
-	const instituteId = GetLocalStorage('instituteId')
+	const branchId = getSelectedBranchId()
+	const instituteId = getInstituteDetails()
 	const studentAttendances = useSelector(selectStudentAttendances);
 	const batches = useSelector(selectBatch)
 	const dispatch = useDispatch();
@@ -25,9 +26,9 @@ const StudentsAttendance = () => {
 
 	return (
 		<div className="w-full">
-			<StudentHeaderBar/>
+			<StudentHeaderBar batches={batches?.data}/>
 			<div className="w-full">
-			<StudentCard studentAttendances={studentAttendances?.data} batches={batches?.data}/>
+			<StudentCard studentAttendances={studentAttendances?.data}/>
 			</div>
 		</div>
 	)

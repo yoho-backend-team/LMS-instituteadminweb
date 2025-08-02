@@ -7,8 +7,11 @@ import { IoClose } from "react-icons/io5"
 import filterImg from '../../../../assets/filter.png'
 import { FiFilter } from "react-icons/fi"
 
+type props = {
+    batches: ()=> void;
+}
 
-const StudentHeaderBar = () => {
+const StudentHeaderBar:React.FC<props> = ({batches}) => {
     const [filterShow, setFilterShow] = useState<boolean>(false)
 
     return (
@@ -32,14 +35,15 @@ const StudentHeaderBar = () => {
                             <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
                             <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
-                            <SelectItem
+                        <SelectContent  className="bg-white text-white border w-full rounded-[8px] p-1">
+                            {batches?.map((batch, index)=>(<SelectItem
+                            key={index}
                                 value="batch"
-                                className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
+                                className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}]   my-1.5 focus:text-white cursor-pointer`}
                                 style={{ ...FONTS.heading_08 }}
                             >
-                                Mern Stack 2025
-                            </SelectItem>
+                                {batch?.batch_name}
+                            </SelectItem>))}
                         </SelectContent>
                     </Select>
 

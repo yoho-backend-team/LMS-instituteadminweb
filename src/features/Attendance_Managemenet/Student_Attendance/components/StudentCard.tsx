@@ -10,7 +10,7 @@ type props = {
     batches: ()=> void;
 }
 
-const StudentCard:React.FC<props> = ({studentAttendances, batches}) => {
+const StudentCard:React.FC<props> = ({studentAttendances}) => {
     const navigate = useNavigate();
 
     const handleStudentAttendanceDetails = (studentId: string) =>{

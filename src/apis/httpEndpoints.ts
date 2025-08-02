@@ -1,7 +1,7 @@
 import secureLocalStorage from 'react-secure-storage';
 import { GetLocalStorage } from '../utils/localStorage';
 
-const getInstituteDetails = () => {
+export const getInstituteDetails = () => {
     if (typeof secureLocalStorage !== 'undefined') {
         const institute = GetLocalStorage('institute');
         return institute;
@@ -10,7 +10,7 @@ const getInstituteDetails = () => {
     }
 };
 
-const getSelectedBranchId = () => {
+export const getSelectedBranchId = () => {
     if (typeof secureLocalStorage !== 'undefined') {
         const branch = GetLocalStorage('selectedBranchId');
         return branch;
