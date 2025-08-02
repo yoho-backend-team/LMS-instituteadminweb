@@ -179,8 +179,8 @@ class Client {
 				HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all',
 				params
 			),
-		getWithId: (params: string) =>
-			HttpClient.get(HTTP_END_POINTS.batch.getWithId + params),
+		getWithId: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
 		update: (params: any) =>
 			HttpClient.update(HTTP_END_POINTS.batch.update + params?.uuid, params),
 		delete: (data: any) =>
@@ -278,6 +278,8 @@ class Client {
 	staff = {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+		getCourse: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 	};
 	student = {
 		activity: (data: any) =>

@@ -126,7 +126,7 @@ const AppRoutes = () => {
 				<Route path='offine-classes' element={<OfflineClasses />} />
 				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
-				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
+				<Route path='/live-classes/:uuid' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
