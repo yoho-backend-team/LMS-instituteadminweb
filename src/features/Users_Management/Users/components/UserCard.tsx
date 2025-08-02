@@ -9,6 +9,7 @@ import filter from '../../../../assets/SHFilter.png'
 import add from '../../../../assets/Add.png'
 import AddForm from './AddForm'
 import { useState } from 'react'
+import { ChevronDownIcon } from 'lucide-react'
 
 
 const UserCard = () => {
@@ -82,6 +83,7 @@ const UserCard = () => {
 
                                 >
                                     <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+                                    <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
                                     <SelectItem
@@ -101,6 +103,7 @@ const UserCard = () => {
                                 <SelectTrigger style={{ height: '45px' }}
                                     className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                                     <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+                                    <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
                                     <SelectItem
@@ -116,8 +119,10 @@ const UserCard = () => {
                     </div>
                 </div>)}
             </div>
-            {showForm && <div className={`fixed top-0 right-0 rounded-[8px] overflow-y-auto h-full w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${showForm ? 'translate-x-0' : 'translate-x-full'}`}>
+            {showForm && <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" >
+             <div className={`fixed top-0 right-0 rounded-[8px] overflow-y-auto h-full w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${showForm ? 'translate-x-0' : 'translate-x-full'}`}>
                 <AddForm setShowForm={SetShowForm} />
+            </div>
             </div>
             }
         </div>

@@ -17,3 +17,12 @@ export const getStudentAttendance = async (data:any) => {
         console.log(error)
     }
 }
+
+export const updateStudentAttendanceStatus = async (data:any) => {
+    try {
+        const response = await Client.attedence.mark_attedence(data);
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}
