@@ -7,6 +7,7 @@ import { GetImageUrl } from '../../utils/helper';
 import { useDispatch } from 'react-redux';
 import { UpdateAttendanceThunk } from '../../features/teachingstaffAttendance/thunk';
 import { UpdateStaffAttendance } from '../../features/teachingstaffAttendance/service';
+import toast from 'react-hot-toast';
 
 interface formtype {
     setOpen: (data: boolean) => void;
@@ -38,13 +39,23 @@ const StaffFormModal: React.FC<formtype> = ({ setOpen, isOpen, data }) => {
     const [currentYear, setcurrentYear] = useState(0);
     const [currentDate, setcurrentDate] = useState(0);
 
-    const handelsubmit = () => {
+    const handelsubmit = async () => {
         const date = new Date(currentYear, currentMonth, currentDate, 12).toISOString();
         FormData.date = date.split('T')[0];
         FormData.staff = data.staff;
+        if (currentDate == 0 && FormData.status == '') {
+            return toast.error("please selected the date and attendance")
+        }
+        setOpen(false)
         const thunk = { date, status: FormData.status, staff: data.staff };
         dispatch(UpdateAttendanceThunk(thunk));
-        UpdateStaffAttendance(FormData);
+        const response: any = await UpdateStaffAttendance(FormData);
+        if (response.data.status == 'failed') {
+            toast.success("attendance added successfully")
+        } else {
+            toast.error(response.data.message)
+        }
+
     };
 
     return (

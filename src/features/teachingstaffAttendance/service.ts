@@ -33,8 +33,8 @@ export const UpdateStaffAttendance = async (data: any) => {
     try {
         data.institute = institute
         data.branch = branch
-        const response = await Client.attedence.mark_staff_attedence(data)
-        return response
+        const response: any = await Client.attedence.mark_staff_attedence(data)
+        return response.data
     } catch (error: any) {
         console.log(error)
     }
