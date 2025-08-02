@@ -8,10 +8,10 @@ const ChangePassword = () => {
 		<div className='h-screen w-screen grid grid-cols-2'>
 			<div className="w-full h-screen grid items-center">
 				<section className=' px-14 '>
-					<h1 style={{...FONTS.login_heading , color:COLORS.primary}} className='tracking-[20px] text-center'>LMS</h1>
+					<h1 style={{ ...FONTS.login_heading, color: COLORS.primary }} className='tracking-[20px] text-center'>LMS</h1>
 					<div className='mt-12'>
-						<h1 style={{...FONTS.login_heading_02 , color:COLORS.primary}} className='mb-3'>Forgot Password?</h1>
-						<p  style={{...FONTS.login_description}} className='text-[#969696]'>Enter your email and well send you instructions to reset your password</p>
+						<h1 style={{ ...FONTS.login_heading_02, color: COLORS.primary }} className='mb-3'>Forgot Password?</h1>
+						<p style={{ ...FONTS.login_description }} className='text-[#969696]'>Enter your email and well send you instructions to reset your password</p>
 					</div>
 
 					<div>
@@ -30,15 +30,15 @@ const ChangePassword = () => {
 							<button
 								type='submit'
 								className={`w-full my-6 mt-8 py-2 rounded-md transition cursor-pointer`}
-								style={{ ...FONTS.bold_heading,background:COLORS.primary, color: COLORS.white }}
+								style={{ ...FONTS.bold_heading, background: COLORS.primary, color: COLORS.white }}
 							>
 								Send OTP
 							</button>
 							<Link
-							to='/login'
-							className='flex items-center justify-center gap-2'>
-								<BsInfoCircle  />
-								<p style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>
+								to='/login'
+								className='flex items-center justify-center gap-2'>
+								<BsInfoCircle />
+								<p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
 									Back to Login
 								</p>
 							</Link>
@@ -49,10 +49,10 @@ const ChangePassword = () => {
 			</div>
 
 			<div className="h-screen w-full ">
-				<img src={image} alt="" className='object-cover w-full h-screen '/>
+				<img src={image} alt="" className='object-cover w-full h-screen ' />
 			</div>
 		</div>
 	);
 };
 
-export default ChangePassword;
+export default ChangePassword

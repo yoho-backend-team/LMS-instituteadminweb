@@ -10,7 +10,7 @@ interface NoteData {
   confirm: string;
   description: string;
   isActive?: boolean;
-  fileName?: string;
+  file?: File;
 }
 
 interface Props {
@@ -33,8 +33,13 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
   const [description, setDescription] = useState("");
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
   const [titleError, setTitleError] = useState("");
   const [fileError, setFileError] = useState("");
+  const [branchError, setBranchError] = useState("");
+  const [courseError, setCourseError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
 
   useEffect(() => {
     if (noteData) {
@@ -43,7 +48,6 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
       setSelectedConfirm(noteData.confirm);
       setTitle(noteData.title);
       setDescription(noteData.description);
-      setUploadedFileName(noteData.fileName || "");
     }
   }, [noteData]);
 
@@ -61,12 +65,12 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
       ];
       if (!allowedTypes.includes(file.type)) {
         setFileError("Only PDF, DOC, or DOCX files are allowed.");
-        setUploadedFileName("");
         setUploadedFile(null);
+        setUploadedFileName("");
       } else {
         setFileError("");
-        setUploadedFileName(file.name);
         setUploadedFile(file);
+        setUploadedFileName(file.name);
       }
     }
   };
@@ -82,11 +86,39 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
       setTitleError("");
     }
 
-    if (!uploadedFileName) {
+    if (!uploadedFile) {
       setFileError("Please upload a valid document file.");
       valid = false;
     } else {
       setFileError("");
+    }
+
+    if (!selectedBranch) {
+      setBranchError("Branch is required.");
+      valid = false;
+    } else {
+      setBranchError("");
+    }
+
+    if (!selectedCourse) {
+      setCourseError("Course is required.");
+      valid = false;
+    } else {
+      setCourseError("");
+    }
+
+    if (!selectedConfirm) {
+      setConfirmError("Confirm selection is required.");
+      valid = false;
+    } else {
+      setConfirmError("");
+    }
+
+    if (!description.trim()) {
+      setDescriptionError("Description is required.");
+      valid = false;
+    } else {
+      setDescriptionError("");
     }
 
     if (!valid) return;
@@ -98,7 +130,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
       confirm: selectedConfirm,
       description,
       isActive: noteData?.isActive ?? true,
-      fileName: uploadedFileName,
+      file: uploadedFile ?? undefined,
     });
 
     onClose();
@@ -107,9 +139,7 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
   return (
     <div className="relative text-[#716F6F] p-3 h-full">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">
-          {noteData ? "Edit Note" : "Add Note"}
-        </h2>
+        <h2 className="text-xl font-bold">{noteData ? "Edit Note" : "Add Note"}</h2>
         <button
           onClick={onClose}
           className="text-white bg-gray-500 rounded-full p-1 hover:bg-red-500"
@@ -123,11 +153,12 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
         className="flex flex-col gap-4 justify-between overflow-y-auto h-[85vh] scrollbar-hide"
       >
         <div className="flex flex-col gap-4">
-          {/* File Upload Box */}
           <div
-            onClick={() => !uploadedFile && handleUploadClick()}
-            className="relative flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition text-center"
+            onClick={handleUploadClick}
+            className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
           >
+            <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
+            <span className="">Drop File Here Or Click To Upload</span>
             <input
               type="file"
               ref={fileInputRef}
@@ -135,50 +166,14 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               accept=".pdf,.doc,.docx"
               className="hidden"
             />
-
-            {uploadedFile ? (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setUploadedFile(null);
-                    setUploadedFileName("");
-                  }}
-                  className="absolute top-2 right-2 text-white bg-red-500 hover:bg-red-600 p-1 rounded-full"
-                  type="button"
-                >
-                  <IoMdClose size={16} />
-                </button>
-
-                {uploadedFile.type === "application/pdf" ? (
-                  <iframe
-                    src={URL.createObjectURL(uploadedFile)}
-                    title="PDF Preview"
-                    className="w-full h-48 border rounded"
-                  ></iframe>
-                ) : (
-                  <p className="text-blue-600 mt-2">
-                    Preview not supported for Word files. File is ready to
-                    upload.
-                  </p>
-                )}
-                <p className="text-sm mt-2 text-green-600">
-                  {uploadedFileName}
-                </p>
-              </>
-            ) : (
-              <>
-                <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
-                <span>Drop File Here Or Click To Upload</span>
-              </>
+            {uploadedFileName && (
+              <p className="text-sm mt-1 text-green-600">{uploadedFileName}</p>
             )}
-
             {fileError && (
               <p className="text-sm mt-1 text-red-500">{fileError}</p>
             )}
           </div>
 
-          {/* Branch */}
           <div className="flex flex-col gap-2">
             <label>Branch</label>
             <CustomDropdown
@@ -188,9 +183,9 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               placeholder="Select Branch"
               width="w-full"
             />
+            {branchError && <p className="text-sm text-red-500">{branchError}</p>}
           </div>
 
-          {/* Course */}
           <div className="flex flex-col gap-2">
             <label>Course</label>
             <CustomDropdown
@@ -200,9 +195,9 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               placeholder="Select Course"
               width="w-full"
             />
+            {courseError && <p className="text-sm text-red-500">{courseError}</p>}
           </div>
 
-          {/* Title */}
           <div className="flex flex-col gap-2">
             <label>Title</label>
             <input
@@ -211,12 +206,9 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               type="text"
               className="border p-2 rounded h-10"
             />
-            {titleError && (
-              <p className="text-sm text-red-500">{titleError}</p>
-            )}
+            {titleError && <p className="text-sm text-red-500">{titleError}</p>}
           </div>
 
-          {/* Description */}
           <div className="flex flex-col gap-2">
             <label>Description</label>
             <textarea
@@ -224,11 +216,13 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               onChange={(e) => setDescription(e.target.value)}
               className="border p-2 rounded h-20 resize-none"
             />
+            {descriptionError && (
+              <p className="text-sm text-red-500">{descriptionError}</p>
+            )}
           </div>
 
-          {/* Confirm Password */}
           <div className="flex flex-col gap-2">
-            <label>Confirm Password</label>
+            <label>Confirm</label>
             <CustomDropdown
               options={confirmOptions}
               value={selectedConfirm}
@@ -236,10 +230,12 @@ const AddNotes = ({ onClose, onSubmit, noteData }: Props) => {
               placeholder="Select Option"
               width="w-full"
             />
+            {confirmError && (
+              <p className="text-sm text-red-500">{confirmError}</p>
+            )}
           </div>
         </div>
 
-        {/* Submit/Cancel Buttons */}
         <div className="flex justify-end items-center gap-4">
           <button
             className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"

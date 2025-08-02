@@ -7,6 +7,7 @@ import { Button } from '../../../components/ui/button';
 import instructorImg from '../../../assets/image 108.png';
 import studentImg from '../../../assets/image 109.png';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
+import toast from 'react-hot-toast';
 
 const notifications = [
 	{
@@ -113,11 +114,11 @@ export default function AllNotifications() {
 								/>
 							</div>
 						</div>
-						<CardContent className='pt-10'>
-							<p className='text-gray-700  mr-10 font-medium text-sm'>
+						<CardContent className='pt-12 -ml-4'>
+							<p style={{ ...FONTS.heading_08_bold,color: COLORS.gray_dark_02 }}>
 								{stat.title}
 							</p>
-							<p className='text-xl font-bold text-gray-800 mt-2'>
+							<p style={{ ...FONTS.heading_04_bold,color: COLORS.gray_dark_01 }} className='mt-2'>
 								{stat.count}
 							</p>
 						</CardContent>
@@ -125,7 +126,7 @@ export default function AllNotifications() {
 				))}
 			</div>
 
-			<h2 className='text-lg font-semibold mt-8 mb-4'>Notifications</h2>
+			<h2 style={{...FONTS.heading_06_bold, color: COLORS.gray_dark_02}} className='my-5'>Notifications</h2>
 			<div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
 				{notifications.map((n, index) => (
 					<Card key={index} className='p-4 rounded-2xl shadow-md'>
@@ -187,7 +188,7 @@ export default function AllNotifications() {
 									Status : {n.status}
 								</span>
 							</div>
-							<Button className='bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end'>
+							<Button className='bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end' onClick={() => toast.success('Resend Notification')}>
 								Resend
 							</Button>
 						</CardContent>

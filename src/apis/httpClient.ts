@@ -11,10 +11,10 @@ const Axios = axios.create({
 });
 
 Axios.interceptors.request.use((config) => {
-    const token = GetLocalStorage("token");
-    // if (token) {
-        config.headers["Authorization"] = 'Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoYW5kcmFuMUBnbWFpbC5jb20iLCJyb2xlIjoiNjdhMDY4ODU0MDBmZmFlMmQyMDZhYmZiIiwiaW5zdGl0dXRlX2lkIjoiNjdmM2EyNmRmNGIyYzUzMGFjZDE2NDE5IiwidXVpZCI6Ijg3MjcyMjVkLWM5ZDUtNGQ0MC1hYjAyLTZhYzUyOGEyM2Q1MiIsInVzZXJfdHlwZSI6Imluc3RpdHV0ZSIsImlhdCI6MTc1NDA1MjA2OSwiZXhwIjoxNzU0MTM4NDY5fQ.PqooZMfiMH8mJGN6JdvJopgl7gyTjMgdZ8VmQizemJg'
-    // }
+    const token = GetLocalStorage('instituteAdminToken');
+    if (token) {
+        config.headers['Authorization'] = `Token ${token}`;
+    }
     return config;
 });
 
@@ -30,15 +30,15 @@ Axios.interceptors.response.use(
 
 
 class HttpClient {
-	async get(url: string, params?: any) {
-		const response = await Axios.get(url, { params });
-		return response.data;
-	}
+    async get(url: string, params?: any) {
+        const response = await Axios.get(url, { params });
+        return response.data;
+    }
 
-	async post(url: string, data: any, params?: any) {
-		const response = await Axios.post(url, data, { params });
-		return response.data;
-	}
+    async post(url: string, data: any, params?: any) {
+        const response = await Axios.post(url, data, { params });
+        return response.data;
+    }
 
     async update(url: string, data?: any) {
         const response = await Axios.put(url, data)
