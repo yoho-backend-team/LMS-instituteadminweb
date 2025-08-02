@@ -4,8 +4,9 @@ import { Calendar } from "lucide-react"
 import StudentCard from "./StudentCard"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
 import { Input } from "../../../../components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IoClose } from "react-icons/io5"
+
 
 const StudentHeaderBar = () => {
     const [filterShow, setFilterShow] = useState<boolean>(false)
@@ -46,7 +47,7 @@ const StudentHeaderBar = () => {
                     </Input>
                 </div>
             </div>}
-            <StudentCard />
+            {/* <StudentCard /> */}
         </div>
     )
 }
