@@ -81,3 +81,32 @@ export const createBatches = async (params:any) => {
         return null;
     }
 }
+
+
+
+
+export const updateBatches = async (params:any) => {
+    try {
+      const response = await Client.batch.update(params);
+      if (response){
+        return response;
+      } 
+    } catch (error) {
+        console.error("Error in updatebatches:", error);
+        return null;
+    }
+}
+
+
+
+export const deleteBatches = async (params:any) => {
+    try {
+      const response = await Client.batch.delete(params);
+      if (response){
+        return response;
+      } 
+    } catch (error) {
+        console.error("Error in deletebatches:", error);
+        return null;
+    }
+}

@@ -94,8 +94,8 @@ class Client {
         getInstructors: (data: any) => HttpClient.get(HTTP_END_POINTS.batch.create + `${data.branch_id}/instructors/${data.course_id}`),
         getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all', params),
         getWithId: (params: string) => HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
-        update: (params: any) => HttpClient.update(HTTP_END_POINTS.batch.update + params?.uuid, params),
-        delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.batch.delete + data?.uuid)
+        update: (data: any) => HttpClient.update(HTTP_END_POINTS.batch.update.replace(":batchId", data?.uuid ) , data),
+        delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.batch.delete.replace(":batchId", data?.uuid ) , data),
     };
     online_class = {
         getAll: (params: string) => HttpClient.get(HTTP_END_POINTS.online_class.getAll, params),
