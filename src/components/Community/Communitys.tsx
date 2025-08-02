@@ -55,7 +55,7 @@ const Communitys: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full max-w-full overflow-hidden h-screen bg-white font-sans">
+    <div className="flex justify-between w-full gap-6 bg-white font-poppins">
 
       <LeftSide
         batches={batches}
