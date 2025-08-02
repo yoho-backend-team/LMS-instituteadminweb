@@ -9,6 +9,7 @@ import OfflineClassSlice from '../features/Class Management/offlineClass/redures
 import liveClassReducer from '../features/Class Management/Live Class/reducers/slices';
 import batchReducer from '../features/batchManagement/reducers/slices';
 import studentAttendance from '../features/Attendance_Managemenet/Student_Attendance/redux/slice'
+import auth from '../features/Auth/reducer/slice'
 
 
 const store = configureStore({
@@ -22,7 +23,8 @@ const store = configureStore({
     liveClassReducer: liveClassReducer,
     OfflineClassSlice: OfflineClassSlice,
     batchReducer: batchReducer,
-    studentAttendance: studentAttendance
+    studentAttendance: studentAttendance,
+    authuser: auth,
   },
 })
 

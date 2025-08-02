@@ -28,8 +28,11 @@ const generateEndpoints = () => {
             me: `/api/institutes/auth/admin/me`,
             change_password: '/api/institutes/auth/admin/change-password',
             forget_password: `/api/institutes/auth/admin/forget-password`,
-            verfiy_otp: `/api/institutes/auth/admin/validate-otp`,
+            validate_otp: `/api/institutes/auth/admin/validate-otp`,
+            verfiy_otp: '/api/institutes/auth/admin/verify-otp/',
             reset_password: `/api/institutes/auth/admin/update-password`,
+            login: '/api/institutes/auth/admin/login/',
+            logout: '/api/institutes/admin/institute-user/logout'
         },
         permission: {
             getAll: `/api/admin/institutes/permissions/all`,
