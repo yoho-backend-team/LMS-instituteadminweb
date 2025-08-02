@@ -62,8 +62,7 @@ import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
-	// const { isAuthenticated, isLoading } = useAuth();
-	const isAuthenticated = true;
+	const { isAuthenticated } = useAuth();
 
 	// if (isLoading) return null;
 
@@ -84,7 +83,7 @@ const AppRoutes = () => {
 
 				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
 
-				
+
 				<Route path="noti/msg" element={<NotificationPage />} />
 
 				<Route path='noti/msg' element={<NotificationPage />} />
@@ -110,9 +109,9 @@ const AppRoutes = () => {
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
-				<Route path='group/add' element={<AddNewGroup/>}/>
-				<Route path='group/view'element={<View/>}/>
-				<Route path='group/edit'element={<Edit/>}/>
+				<Route path='group/add' element={<AddNewGroup />} />
+				<Route path='group/view' element={<View />} />
+				<Route path='group/edit' element={<Edit />} />
 
 				{/* Course Management */}
 				<Route path='courses' element={<Courses />} />
