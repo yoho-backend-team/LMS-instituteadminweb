@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiX, FiSend } from "react-icons/fi";
-import chatbg from '../../../assets/navbar/chatbg.png';
-import circleblue from '../../../assets/navbar/circleblue.png';
-import userblue from '../../../assets/navbar/userblue.png';
+import { FiX, FiSend, FiArrowLeft } from "react-icons/fi";
+import chatbg from "../../../assets/navbar/chatbg.png";
+import circleblue from "../../../assets/navbar/circleblue.png";
+import userblue from "../../../assets/navbar/userblue.png";
 
 interface Message {
   sender: "user" | "admin";
@@ -35,6 +35,9 @@ const TicketDetailsPage: React.FC = () => {
   ]);
 
   const [inputValue, setInputValue] = useState("");
+  const [status, setStatus] = useState<"Opened" | "Closed">("Opened");
+
+  const chatRef = useRef<HTMLDivElement>(null);
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
@@ -49,9 +52,26 @@ const TicketDetailsPage: React.FC = () => {
     setInputValue("");
   };
 
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="p-6 pt-3">
-      <h1 className="text-xl font-bold mb-4">Student Ticket</h1>
+    <div className="p-6 pt-0">
+      {/* Back & Title */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 px-4 py-2 text-black rounded-md text-sm font-semibold"
+          >
+            <FiArrowLeft className="text-lg" /> Back
+          </button>
+          <h1 className="text-xl font-bold">Student Ticket</h1>
+        </div>
+      </div>
 
       {/* Ticket Header */}
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
@@ -71,12 +91,12 @@ const TicketDetailsPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Main layout */}
+      {/* Layout */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Section */}
-        <div className="flex-1 flex flex-col gap-4">
-          {/* Box 1: Oliver Info */}
-          <div className="bg-white rounded-md shadow p-4">
+        <div className="flex-1 flex flex-col gap-4 relative">
+          {/* Oliver Info */}
+          <div className="bg-white rounded-md border-t-2 shadow p-4">
             <div className="flex items-center gap-3">
               <img
                 src={circleblue}
@@ -90,13 +110,16 @@ const TicketDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Box 2: Chat Panel */}
+          {/* Chat Panel */}
           <div
-            className="bg-white rounded-md shadow p-4 flex flex-col justify-between flex-1 border-2"
+            className="bg-white rounded-md shadow border-2 flex flex-col flex-1 relative"
             style={{ backgroundImage: `url(${chatbg})` }}
           >
-            {/* Chat messages */}
-            <div className="h-[300px] overflow-y-auto rounded-md p-4 space-y-4 mb-4 bg-no-repeat bg-cover bg-center">
+            {/* Chat Messages */}
+            <div
+              ref={chatRef}
+              className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
+            >
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -106,7 +129,7 @@ const TicketDetailsPage: React.FC = () => {
                     <img
                       src={userblue}
                       alt="User"
-                      className="w-14 h-14 rounded-full object-cover"
+                      className="w-12 h-12 rounded-full object-cover"
                     />
                   )}
                   <div
@@ -128,46 +151,46 @@ const TicketDetailsPage: React.FC = () => {
                   {msg.sender === "admin" && (
                     <img
                       src={userblue}
-                      alt="User"
-                      className="w-14 h-14 rounded-full object-cover"
+                      alt="Admin"
+                      className="w-12 h-12 rounded-full object-cover"
                     />
                   )}
                 </div>
               ))}
+            </div>
 
-              {/* Quick Action Buttons */}
-              <div className="flex gap-2 mb-4">
-                <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded text-sm">
-                  Solved
-                </button>
-                <button className="bg-blue-100 text-blue-700 px-4 py-1 rounded text-sm">
-                  Not Related
-                </button>
-              </div>
+            {/* Action Buttons */}
+            <div className="flex gap-2 p-4">
+              <button
+                className="  border border-[#14b8c6] text-[#14b8c6] px-4 py-1 rounded text-sm font-semibold"
+                onClick={() => setStatus("Closed")}
+              >
+                Solved
+              </button>
+              <button className="bg-[#14b8c6] text-white px-3 py-1 rounded text-sm">
+                Not Related
+              </button>
+            </div>
 
-              {/* Input Message */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type a message"
-                  className="w-full border border-gray-500 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8c6]"
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                />
-                <button
-                  onClick={handleSend}
-                  className="bg-green-500 p-2 rounded text-white"
-                >
-                  <FiSend />
-                </button>
-              </div>
+            {/* Input Box Fixed Bottom */}
+            <div className="border-t border-gray-200 px-4 py-3 flex items-center gap-2 bg-white">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type a message"
+                className="w-full border border-gray-400 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8c6]"
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              />
+              <button onClick={handleSend} className="bg-green-500 p-2 rounded text-white">
+                <FiSend />
+              </button>
             </div>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full lg:w-[30%] bg-white rounded-md shadow p-4 space-y-4">
+        <div className="w-full lg:w-[30%] bg-white border rounded-md shadow p-4 space-y-4">
           <div>
             <p className="font-semibold text-gray-800 mb-1">Issue Description:</p>
             <p className="text-sm text-gray-600">
@@ -189,8 +212,14 @@ const TicketDetailsPage: React.FC = () => {
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
-            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
-              Opened
+            <span
+              className={`inline-block px-3 py-1 rounded text-xs ${
+                status === "Opened"
+                  ? " text-white bg-[#1BBFCA]"
+                  : "text-white bg-[#3ABE65]"
+              }`}
+            >
+              {status}
             </span>
           </div>
         </div>
