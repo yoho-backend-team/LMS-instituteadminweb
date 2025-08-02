@@ -5,25 +5,29 @@ import { selectLoading, selectStudentAttendances } from "../../../features/Atten
 import { useEffect } from "react";
 import { fetchAllStudentAttendances } from "../../../features/Attendance_Managemenet/Student_Attendance/redux/thunk";
 import StudentCard from "../../../features/Attendance_Managemenet/Student_Attendance/components/StudentCard";
+import { getwithIdBatches } from "../../../features/batchManagement/reducers/thunks";
+import { selectBatch } from "../../../features/batchManagement/reducers/selectors";
 
 const StudentsAttendance = () => {
 	const branchId = GetLocalStorage('branchId');
 	const instituteId = GetLocalStorage('instituteId')
 	const studentAttendances = useSelector(selectStudentAttendances);
-	const loading = useSelector(selectLoading)
+	const batches = useSelector(selectBatch)
 	const dispatch = useDispatch();
 
 	useEffect(()=>{
 		const data = {branch_id: branchId, institute_id: instituteId, page: '1'}
 		dispatch(fetchAllStudentAttendances(data))
+		dispatch(getwithIdBatches(data))
 	},[branchId, dispatch])
 
-		console.log("data", studentAttendances)
+	console.log("Batches", batches)
+
 	return (
 		<div className="w-full">
 			<StudentHeaderBar/>
 			<div className="w-full">
-			<StudentCard studentAttendances={studentAttendances?.data}/>
+			<StudentCard studentAttendances={studentAttendances?.data} batches={batches?.data}/>
 			</div>
 		</div>
 	)

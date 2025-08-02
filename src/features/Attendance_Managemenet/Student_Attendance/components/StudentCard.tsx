@@ -7,9 +7,10 @@ import { GetImageUrl } from "../../../../utils/helper"
 
 type props = {
     studentAttendances : ()=> void;
+    batches: ()=> void;
 }
 
-const StudentCard:React.FC<props> = ({studentAttendances}) => {
+const StudentCard:React.FC<props> = ({studentAttendances, batches}) => {
     const navigate = useNavigate();
 
     const handleStudentAttendanceDetails = (studentId: string) =>{
@@ -21,19 +22,20 @@ const StudentCard:React.FC<props> = ({studentAttendances}) => {
     }
     return (
     
-        <div className="w-full flex flex-wrap gap-[30px] mt-5">
-            {studentAttendances?.map((card, index)=>(<div key={index} className="border w-[406px] h-[307px] rounded-[12px] p-[16px] shadow-[0px_4px_20px_rgba(0,0,0,0.25)] grid gap-[20px]">
+        <div className="w-full grid grid-cols-3 gap-[30px] mt-5">
+            {studentAttendances?.map((card, index)=>(<div key={index} className="border w-full h-[307px] rounded-[12px] p-[16px] shadow-[0px_4px_20px_rgba(0,0,0,0.25)] grid gap-[20px]">
                 <div className="w-full">
                     <h3 className={`text-[${COLORS.gray_dark_02}] font-semibold `} style={{...FONTS.heading_04}}>{card?.student_class?.class_name}</h3>
                 </div>
-                <div className="flex justify-between w-full items-center">
+                <div className="flex justify-between w-full items-center pl-2 pr-7">
                     {card?.students.map((img, index) =>(<img key={index} className='w-[62px] h-[62px] rounded-full bg-[#000000]' src={GetImageUrl(img.student.image)}/>))}
-                    <p className={`text-[${COLORS.gray_dark_02}] font-semibold`} style={{...FONTS.heading_06}}>{card?.students?.length + " "+'students'}</p>
+                    <p className={`text-[${COLORS.gray_dark_02}] font-semibold`} style={{...FONTS.heading_06}}>{card?.students?.length > 1 ? `${card?.students?.length} + Students` : `${card?.students?.length} Student`}</p>
                 </div>
-                <div className="flex  w-full justify-between ">
-                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[12px] items-center`} style={{...FONTS.heading_08}}> <TbCalendarTime className="w-[18px] h-[18px]" />{card?.student_class?.start_date}</p>
-                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[12px] items-center`} style={{...FONTS.heading_08}}><FaClock className="w-[18px] h-[18px]"/>{dayjs(card?.student_class?.start_time).format('HH:mm A')}</p>
-                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[12px] items-center`} style={{...FONTS.heading_08}}><TbClockHour7Filled className="w-[18px] h-[18px]"/>{dayjs(card?.student_class?.end_time).format('HH:mm A')}</p>
+                <div className="flex  w-full justify-between gap-0.5 ">
+                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[7px] items-center`} style={{...FONTS.heading_08}}> <TbCalendarTime className="w-[18px] h-[18px]" />{card?.student_class?.start_date}</p>
+                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[7px] items-center`} style={{...FONTS.heading_08}}><FaClock className="w-[18px] h-[18px]"/>{dayjs(card?.student_class?.start_time).format('HH:mm A')}</p>
+                    <p className={`flex items-center text-[${COLORS.gray_light}]`} style={{...FONTS.heading_12}}>to</p>
+                    <p className={`text-[${COLORS.gray_light}] font-semibold flex gap-[7px] items-center`} style={{...FONTS.heading_08}}><TbClockHour7Filled className="w-[18px] h-[18px]"/>{dayjs(card?.student_class?.end_time).format('HH:mm A')}</p>
                 </div>
                 <div className="flex w-full items-center justify-end">
                     <button onClick={()=> handleStudentAttendanceDetails(card.uuid)} className=" pr-[16px] pl-[16px] bg-[#3ABE65] text-[#FFFFFF] hover:bg-[#3abea1] w-[170px] h-[48px] rounded-[8px]" style={{...FONTS.heading_07}}>View Attendance</button>
