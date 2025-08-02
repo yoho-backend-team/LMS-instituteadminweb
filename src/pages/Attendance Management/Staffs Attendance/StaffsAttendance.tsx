@@ -46,7 +46,7 @@ const StaffsAttendance: React.FC = () => {
 
 						Array(6).fill(null).map((_, index) => (
 							<ContentLoader
-								speed={2}
+								speed={1}
 								width="100%"
 								height={310}
 								viewBox="0 0 400 310"
