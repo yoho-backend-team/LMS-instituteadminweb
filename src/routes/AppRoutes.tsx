@@ -105,7 +105,7 @@ const AppRoutes = () => {
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
 				<Route path='group/add' element={<AddNewGroup/>}/>
-				<Route path='group/view'element={<View/>}/>
+				<Route path='group/view/:id'element={<View/>}/>
 				<Route path='group/edit'element={<Edit/>}/>
 
 				{/* Course Management */}
