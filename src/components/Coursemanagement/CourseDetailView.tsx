@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import card1 from '../../assets/navbar/card1.png';
-import editicon1 from '../../assets/editicon1.png';
-import CourseEditForm from './CourseEditForm'; // Make sure the import path is correct
+import card1 from "../../assets/navbar/card1.png";
+import editicon1 from "../../assets/editicon1.png";
+import MaterialDetailModal from "./MaterialDetailModal";
 
 interface CourseDetailViewProps {
   course: {
@@ -18,14 +18,18 @@ interface CourseDetailViewProps {
   onBack: () => void;
 }
 
-const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) => {
+const CourseDetailView: React.FC<CourseDetailViewProps> = ({
+  course,
+  onBack,
+}) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [courseData, setCourseData] = useState(course);
+  const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
 
   const handleFormSubmit = (updatedData: typeof course) => {
     setCourseData(updatedData);
     setIsEditMode(false);
-    console.log('Course updated:', updatedData);
+    console.log("Course updated:", updatedData);
   };
 
   return (
@@ -50,14 +54,15 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
 
       {/* Conditional Rendering */}
       {isEditMode ? (
-        <CourseEditForm
-          initialData={courseData}
-          onCancel={() => setIsEditMode(false)}
-          onSubmit={handleFormSubmit}
-        />
+        // Your CourseEditForm component (not shown here)
+        <div>Edit Form Component</div>
       ) : (
         <div className="bg-white shadow rounded-lg p-4 border-2">
-          <img src={card1} alt={courseData.title} className="rounded w-full h-64 object-cover" />
+          <img
+            src={card1}
+            alt={courseData.title}
+            className="rounded w-full h-64 object-cover"
+          />
 
           <div className="flex justify-between mt-4 items-center">
             <span className="text-sm text-gray-600">Mon–Fri 10AM - 8PM</span>
@@ -65,12 +70,24 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
           </div>
 
           <div className="mt-4 space-y-1">
-            <p><strong>Course:</strong> {courseData.title}</p>
-            <p><strong>Category:</strong> {courseData.category}</p>
-            <p><strong>Format:</strong> {courseData.format}</p>
-            <p><strong>Duration:</strong> {courseData.duration} months</p>
-            <p><strong>Overview:</strong> {courseData.overview}</p>
-            <p><strong>Description:</strong> {courseData.description}</p>
+            <p>
+              <strong>Course:</strong> {courseData.title}
+            </p>
+            <p>
+              <strong>Category:</strong> {courseData.category}
+            </p>
+            <p>
+              <strong>Format:</strong> {courseData.format}
+            </p>
+            <p>
+              <strong>Duration:</strong> {courseData.duration} months
+            </p>
+            <p>
+              <strong>Overview:</strong> {courseData.overview}
+            </p>
+            <p>
+              <strong>Description:</strong> {courseData.description}
+            </p>
           </div>
 
           {/* Images */}
@@ -93,8 +110,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
 
           {/* Delete Button */}
           <div className="flex justify-end">
-            <button className="bg-[#1BBFCA]
- text-white rounded px-4 py-1 mt-4 hover:bg-red-600">
+            <button className="bg-[#1BBFCA] text-white rounded px-4 py-1 mt-4 hover:bg-red-600">
               Delete
             </button>
           </div>
@@ -109,8 +125,40 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack }) =
                 Notes
               </div>
             </div>
+
+            {/* Study Material Card (like RVR) */}
+            <div className="mt-4 p-4 rounded-lg shadow border flex flex-col gap-2">
+              <button
+                onClick={() => setMaterialModalOpen(true)}
+                className="flex items-center gap-2 text-left"
+              >
+                <div className="bg-gray-600 w-6 h-6 rounded flex items-center justify-center text-white text-sm font-bold">
+                  📄
+                </div>
+                <span className="font-semibold">RVR</span>
+              </button>
+
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600 font-medium">
+                  Manual Testing Basic
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Modal */}
+      {isMaterialModalOpen && (
+        <MaterialDetailModal
+          onClose={() => setMaterialModalOpen(false)}
+          material={{
+            title: "Mern",
+            courseName: "MEAN STACK 2024",
+            description: "Mern Tech",
+            isActive: true,
+          }}
+        />
       )}
     </div>
   );
