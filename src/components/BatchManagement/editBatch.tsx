@@ -62,7 +62,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						</h2>
 						<button
 							onClick={onClose}
-							className='p-1 rounded-full hover:bg-white/20 transition-colors'
+							className='p-1 rounded-full bg-white/20 transition-colors'
 							aria-label='Close modal'
 						>
 							<X className='w-5 h-5' />

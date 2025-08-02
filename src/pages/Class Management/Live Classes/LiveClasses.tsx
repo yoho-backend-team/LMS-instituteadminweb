@@ -5,13 +5,30 @@ import filter from '../../../assets/Filter.png';
 import plus from '../../../assets/Add.png';
 import { CreateLiveClassModal } from '../../../components/ClassManagement/Live Class/createLiveClass';
 import { LiveClassCard } from '../../../components/ClassManagement/Live Class/classCard';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllLiveClasses } from '../../../features/Class Management/Live Class/reducers/thunks';
+import { selectLiveClass } from '../../../features/Class Management/Live Class/reducers/selectors';
+import {
+	getAllBatches,
+	getAllCourses,
+} from '../../../features/Class Management/Live Class/services';
 
 const LiveClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const dispatch = useDispatch<any>();
+	const liveClassData = useSelector(selectLiveClass);
+	const [allCourses, setAllCourses] = useState([]);
+	const [allBatches, setAllBatches] = useState([]);
+	const [filteredClasses, setFilteredClasses] = useState([]);
+	const [searchTerms, setSearchTerms] = useState({
+		status: '',
+		course: '',
+		batch: '',
+		startDate: '',
+		endDate: '',
+		searchText: '',
+	});
 
 	const fetchAllLiveClasses = async () => {
 		try {
@@ -26,9 +43,100 @@ const LiveClasses = () => {
 		}
 	};
 
+	const fetchAllCourses = async () => {
+		try {
+			const response = await getAllCourses({});
+			if (response) {
+				setAllCourses(response?.data);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const fetchAllBatches = async () => {
+		try {
+			const response = await getAllBatches({});
+			if (response) {
+				setAllBatches(response?.data);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		if (liveClassData?.data) {
+			const filtered = liveClassData.data.filter((liveClass: any) => {
+				if (searchTerms.status === 'active' && !liveClass.is_active)
+					return false;
+				if (searchTerms.status === 'inactive' && liveClass.is_active)
+					return false;
+
+				if (searchTerms.course && liveClass.course !== searchTerms.course)
+					return false;
+
+				if (searchTerms.batch && liveClass.batch?._id !== searchTerms.batch)
+					return false;
+
+				if (
+					searchTerms.startDate &&
+					new Date(liveClass.start_date) < new Date(searchTerms.startDate)
+				)
+					return false;
+				if (
+					searchTerms.endDate &&
+					new Date(liveClass.start_date) > new Date(searchTerms.endDate)
+				)
+					return false;
+
+				if (
+					searchTerms.searchText &&
+					!liveClass.class_name
+						.toLowerCase()
+						.includes(searchTerms.searchText.toLowerCase())
+				) {
+					return false;
+				}
+
+				return true;
+			});
+			setFilteredClasses(filtered);
+		}
+	}, [searchTerms, liveClassData]);
+
+	useEffect(() => {
+		if (liveClassData?.data) {
+			setFilteredClasses(liveClassData.data);
+		}
+	}, [liveClassData]);
+
 	useEffect(() => {
 		fetchAllLiveClasses();
+		fetchAllCourses();
+		fetchAllBatches();
 	}, [dispatch]);
+
+	const handleFilterChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setSearchTerms((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+
+	const resetFilters = () => {
+		setSearchTerms({
+			status: '',
+			course: '',
+			batch: '',
+			startDate: '',
+			endDate: '',
+			searchText: '',
+		});
+	};
 
 	return (
 		<>
@@ -64,12 +172,20 @@ const LiveClasses = () => {
 
 				{showFilter && (
 					<div className='bg-[white] p-6 rounded-2xl shadow mb-8'>
-						<h3
-							className=' mb-4'
-							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
-						>
-							Filters
-						</h3>
+						<div className='flex justify-between items-center mb-4'>
+							<h3
+								style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
+							>
+								Filters
+							</h3>
+							<button
+								onClick={resetFilters}
+								className='bg-[#1BBFCA] text-white'
+								style={{ ...FONTS.heading_08 }}
+							>
+								Reset Filters
+							</button>
+						</div>
 						<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 							<div>
 								<label
@@ -78,7 +194,12 @@ const LiveClasses = () => {
 								>
 									Status
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
+								<select
+									name='status'
+									value={searchTerms.status}
+									onChange={handleFilterChange}
+									className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'
+								>
 									<option value=''>Select Status</option>
 									<option value='active'>Active</option>
 									<option value='inactive'>Inactive</option>
@@ -92,12 +213,18 @@ const LiveClasses = () => {
 								>
 									Course
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
+								<select
+									name='course'
+									value={searchTerms.course}
+									onChange={handleFilterChange}
+									className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'
+								>
 									<option value=''>Select Course</option>
-									<option value='mern'>MERN STACK</option>
-									<option value='mean'>MEAN STACK</option>
-									<option value='full'>FULL STACK</option>
-									<option value='python'>PYTHON</option>
+									{allCourses?.map((course: any) => (
+										<option key={course?._id} value={course?._id}>
+											{course?.course_name}
+										</option>
+									))}
 								</select>
 							</div>
 
@@ -108,13 +235,18 @@ const LiveClasses = () => {
 								>
 									Batches
 								</label>
-								<select className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'>
-									<option value=''>Select Batches</option>
-									<option value='batch_1'>BATCH 1</option>
-									<option value='batch_2'>BATCH 2</option>
-									<option value='batch_3'>BATCH 3</option>
-									<option value='batch_4'>BATCH 4</option>
-									<option value='batch_5'>BATCH 5</option>
+								<select
+									name='batch'
+									value={searchTerms.batch}
+									onChange={handleFilterChange}
+									className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer'
+								>
+									<option value=''>Select Batch</option>
+									{allBatches?.map((batch: any) => (
+										<option key={batch?._id} value={batch?._id}>
+											{batch?.batch_name}
+										</option>
+									))}
 								</select>
 							</div>
 
@@ -128,6 +260,9 @@ const LiveClasses = () => {
 									</label>
 									<input
 										type='date'
+										name='startDate'
+										value={searchTerms.startDate}
+										onChange={handleFilterChange}
 										className='w-[220px] border border-gray-300 rounded-md px-3 py-2 text-sm'
 									/>
 								</div>
@@ -140,6 +275,9 @@ const LiveClasses = () => {
 									</label>
 									<input
 										type='date'
+										name='endDate'
+										value={searchTerms.endDate}
+										onChange={handleFilterChange}
 										className='w-[220px] border border-gray-300 rounded-md px-3 py-2 text-sm'
 									/>
 								</div>
@@ -154,6 +292,9 @@ const LiveClasses = () => {
 								</label>
 								<input
 									type='text'
+									name='searchText'
+									value={searchTerms.searchText}
+									onChange={handleFilterChange}
 									placeholder='Search Class'
 									className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
 								/>
@@ -163,21 +304,21 @@ const LiveClasses = () => {
 				)}
 
 				<div className='flex gap-6 flex-wrap'>
-					<LiveClassCard
-						title='MERN'
-						students={2}
-						startDate='Thu, July 12, 2025 | 12:00 PM - 01:00 PM'
-					/>
-					<LiveClassCard
-						title='MEAN'
-						students={1}
-						startDate='Fri, August 4, 2025 | 12:00 PM - 01:00 PM'
-					/>
-					<LiveClassCard
-						title='PYTHON'
-						students={5}
-						startDate='Sun, August 31, 2025 | 12:00 AM - 12:00 PM'
-					/>
+					{filteredClasses?.length > 0 ? (
+						filteredClasses?.map((liveClass: any, index: any) => (
+							<LiveClassCard
+								key={index}
+								title={liveClass?.class_name}
+								data={liveClass}
+							/>
+						))
+					) : (
+						<div className='w-full text-center py-8'>
+							<p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
+								No live classes found
+							</p>
+						</div>
+					)}
 				</div>
 
 				<CreateLiveClassModal
