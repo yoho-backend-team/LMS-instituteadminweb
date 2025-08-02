@@ -3,12 +3,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
+import { TicketProvider } from './components/StudentTickets/TicketContext';
 
 function App() {
 	return (
 		<>
 			<BrowserRouter>
 				<AuthProvider>
+					<TicketProvider>
 					<AppRoutes />
 					<Toaster
 						position='top-right'
@@ -34,6 +36,7 @@ function App() {
 							},
 						}}
 					/>
+					</TicketProvider>
 				</AuthProvider>
 			</BrowserRouter>
 		</>
