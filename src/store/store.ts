@@ -10,6 +10,8 @@ import liveClassReducer from '../features/Class Management/Live Class/reducers/s
 import batchReducer from '../features/batchManagement/reducers/slices';
 import studentAttendance from '../features/Attendance_Managemenet/Student_Attendance/redux/slice'
 import auth from '../features/Auth/reducer/slice'
+import studyMaterial from "../features/StudyMaterials/slice"
+import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 
 
 const store = configureStore({
@@ -25,6 +27,8 @@ const store = configureStore({
     batchReducer: batchReducer,
     studentAttendance: studentAttendance,
     authuser: auth,
+    studyMaterial: studyMaterial,
+    addQuestion: addQuestion,
   },
 })
 
