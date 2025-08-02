@@ -11,6 +11,7 @@ import { createSlice } from "@reduxjs/toolkit";
             getStudyMaterial: (state, action) => {
                 state.data = action.payload;
             },
+            
 
         },
     });

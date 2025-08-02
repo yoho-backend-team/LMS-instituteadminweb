@@ -13,3 +13,4 @@ export const fetchStudyMaterialsThunk = (params:any) => async (dispatch: any) =>
     console.error("Failed to fetch study materials:", error);
   }
 };
+

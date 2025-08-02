@@ -67,7 +67,7 @@ class Client {
     study_material = {
         getAll: (params: string) => HttpClient.get(HTTP_END_POINTS.study_material.get, params),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.study_material.get, data),
-        update: (data: any) => HttpClient.update(HTTP_END_POINTS.study_material.get + data.uuid, data),
+        update: (data: any, id: string) => HttpClient.update(HTTP_END_POINTS.study_material.get + data.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.study_material.get + data.id),
         update_status: (data: any) => HttpClient.update(HTTP_END_POINTS.study_material.update_status + data.id, data)
     };
