@@ -1,70 +1,60 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import {
-  fetchNotesThunk,
-  createNoteThunk,
-  updateNoteThunk,
-  deleteNoteThunk,
-} from "./noteThunk";
-
-interface NoteState {
-  data: any[];
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: NoteState = {
-  data: [],
-  loading: false,
-  error: null,
-};
+import { createSlice } from "@reduxjs/toolkit";
 
 const noteSlice = createSlice({
   name: "note",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchNotesThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchNotesThunk.fulfilled,
-        (state, action: PayloadAction<any[]>) => {
-          state.loading = false;
-          state.data = action.payload;
-        }
-      )
-      .addCase(fetchNotesThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch notes";
-      })
-      .addCase(
-        createNoteThunk.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.data.push(action.payload);
-        }
-      )
+  initialState: {
+    data: [],
+    loading: false,
+    error: null,
+    branches: [],
+    courses: [],
+  },
 
-      .addCase(
-        updateNoteThunk.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.data = state.data.map((note) =>
-            note.uuid === action.payload.uuid
-              ? { ...note, ...action.payload }
-              : note
-          );
-        }
-      )
-      .addCase(
-        deleteNoteThunk.fulfilled,
-        (state, action: PayloadAction<string>) => {
-          state.data = state.data.filter(
-            (note) => note.uuid !== action.payload
-          );
-        }
+  reducers: {
+    setLoading: (state: any, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state: any, action) => {
+      state.error = action.payload;
+    },
+    setNotes: (state: any, action) => {
+      state.data = action.payload;
+    },
+    addNote: (state: any, action) => {
+      state.data.push(action.payload);
+    },
+    EditsNote: (state: any, action) => {
+      state.data = state.data.map((note: any) =>
+        note.uuid === action.payload.uuid
+          ? { ...note, ...action.payload }
+          : note
       );
+    },
+    deleteNote: (state, action) => {
+      state.data = state.data.filter(
+        (note: any) => note.uuid !== action.payload
+      );
+    },
+    setBranches: (state: any, action) => {
+      state.branches = action.payload;
+    },
+    setCourses: (state: any, action) => {
+      state.courses = action.payload;
+    },
   },
 });
 
+export const {
+  setLoading,
+  setError,
+  setNotes,
+  addNote,
+  EditsNote,
+  deleteNote,
+  setBranches,
+  setCourses,
+} = noteSlice.actions;
+
 export default noteSlice.reducer;
+
+export const GetNotes = (state: any) => state.noteSlice.data;
