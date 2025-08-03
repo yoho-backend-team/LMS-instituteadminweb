@@ -108,8 +108,8 @@ const Modules = () => {
 						<AddModule
 							onClose={() => setShowPanel(false)}
 							onSubmit={(newModule) => {
-								// handled in thunk refresh already
 								setShowPanel(false);
+								console.log(newModule,"new module added successfully")
 							}}
 						/>
 					</div>

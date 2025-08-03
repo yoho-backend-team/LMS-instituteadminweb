@@ -25,6 +25,16 @@ export const UploadFile = async (data: FormData) => {
   return response.data;
 };
 
+
+
+
+export const ToggleModuleStatus = async (data: any) => {
+  const response = await Client.course_module.update_status(data)
+  console.log("Module status updated successfully in services", response.data);
+  return response.data;
+};
+
+
 export const AddModule = async (data: any) => {
   try {
     const response = await Client.course_module.create(data);
@@ -36,22 +46,16 @@ export const AddModule = async (data: any) => {
   }
 };
 
-
-
-export const ToggleModuleStatus = async (data: any) => {
-  const response = await Client.course_module.update_status(data)
-  console.log("Module status updated successfully in services", response.data);
-  return response.data;
+export const GetBranch = async (params: any) => {
+  const response = await Client.branch.getAll(params);
+  console.log("Branch data getting", response);
+  if (response) {
+    return response;
+  }
 };
 
 
 
 
 
-// export const CreatModule=async(params:any)=>{
-//     const response=await Client.course_module.create(params);
-//     console.log("Module data adding",response)
-//     if(response){
-//         return response;
-//     }
-// }
+

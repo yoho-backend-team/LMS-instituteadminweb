@@ -4,12 +4,14 @@ import {
   DeleteModule,
   EditModule,
   GetAllModule,
+  GetBranch,
   ToggleModuleStatus,
   UploadFile,
 } from "../services/index";
 import {
   addModules,
   deleteModule,
+  getBranches,
   getModule,
   updateModuleStatus,
   upload_editdata,
@@ -37,19 +39,9 @@ export const DeletemoduleThunks =
   };
 
  
-export const AddModuleThunks =
-  (data: any) => async (dispatch: any) => {
-    try {
-      const result = await AddModule(data); 
-      dispatch(addModules(result)); 
-      console.log("Added module:", result);
-    } catch (error) {
-      console.error("Error in AddModuleThunks", error);
-    }
-  };
-
-
-export const EditModuleThunks = (params: any) => async (dispatch: any) => {
+  
+  
+  export const EditModuleThunks = (params: any) => async (dispatch: any) => {
   try {
     const updatedData = await EditModule(params);
     dispatch(EditmodulePage(updatedData));
@@ -85,3 +77,28 @@ export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
     console.error("Error toggling status:", error);
   }
 };
+
+export const AddModuleThunks = (data: any) => async (dispatch: any) => {
+    try {
+      const result = await AddModule(data); 
+      dispatch(addModules(result)); 
+      console.log("Added module:", result);
+      return result
+    } catch (error) {
+      console.error("Error in AddModuleThunks", error);
+    }
+  };
+
+  
+
+export const GetBranchThunks =
+  (params: any) => async (dispatch: any) => {
+    try {
+      const result = await GetBranch(params);
+      dispatch(getBranches(result)); 
+      console.log("Fetched branches:", result);
+      return result;
+    } catch (error) {
+      console.error("Error in GetBranchThunks", error);
+    }
+  };

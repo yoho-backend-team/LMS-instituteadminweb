@@ -5,6 +5,7 @@ const ModuleSlice = createSlice({
   initialState: {
     data: [],
     upload_editdata: [],
+    branch:[],
   },
   reducers: {
     getModule: (state, action) => {
@@ -47,6 +48,10 @@ const ModuleSlice = createSlice({
     upload_editdata: (state, action) => {
       state.upload_editdata = action.payload;
     },
+        getBranches(state, action) {
+      state.data = action.payload;
+    },
+
   },
 });
 export const {
@@ -56,5 +61,6 @@ export const {
   upload_editdata,
   updateModuleStatus,
   addModules,
+  getBranches,
 } = ModuleSlice.actions;
 export default ModuleSlice.reducer;

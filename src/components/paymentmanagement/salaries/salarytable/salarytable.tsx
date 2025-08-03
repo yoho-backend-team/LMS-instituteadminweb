@@ -38,8 +38,10 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     const filteredData = cardData.filter((row) => {
         const searchQuery = search.toLowerCase();
         const matchesSearch =
-            row.name.toLowerCase().includes(searchQuery) ||
-            row.id.toString().includes(searchQuery);
+            row.staff.username?.toLowerCase().includes(searchQuery) ||
+            row.salary_amount?.toString().includes(searchQuery) ||
+            row.id?.toString().includes(searchQuery);
+
 
         const matchesBranch = branch === "" || row.branchId === branch;
 
@@ -114,7 +116,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
                         {filteredData.map((row) => (
                             <tr key={row.id} className="border-t transition-colors text-sm font-semibold relative">
                                 <td className="py-3 px-4">#{row.id}</td>
-                                <td className="py-3 px-4">{row.transactionId}</td>
+                                <td className="py-3 px-4">{row.transaction_id}</td>
                                 <td className="py-3 px-4">
                                     <div className="flex items-center gap-3">
                                         <img
@@ -123,16 +125,16 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
                                             className="w-10 h-10 rounded-full object-cover"
                                         />
                                         <div className="flex flex-col">
-                                            <span className="font-medium text-gray-800">{row.name}</span>
+                                            <span className="font-medium text-gray-800">{row.staff.username}</span>
                                             <span className="text-sm text-gray-500">{row.email}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-3 px-4">${row.salaryAmount}</td>
-                                <td className="py-3 px-4">{row.paymentDate}</td>
+                                <td className="py-3 px-4">${row.salary_amount}</td>
+                                <td className="py-3 px-4">{row.payment_date}</td>
                                 <td className="py-3 px-4">
                                     <p
-                                        className={`px-2 py-1 w-20 rounded text-lg font-medium ${row.status === "Active"
+                                        className={`px-2 py-1 w-28 text-center rounded text-lg font-medium ${row.status === "completed"
                                             ? "bg-green-600 text-white"
                                             : "bg-yellow-100 text-yellow-600"
                                             }`}
