@@ -67,46 +67,91 @@ const EditmodulePage = ({ onClose, existingModule }: Props) => {
         setFormData(prev => ({ ...prev, [id]: value }));
     };
 
+    //     const handleSubmit = async (e: React.FormEvent) => {
+    //         e.preventDefault();
+
+    //         let finalVideoUri = formData.video_uri;
+
+    //         if (formData.file) {
+    //             const formDataToSend = new FormData();
+    //             formDataToSend.append("file", formData.file);
+
+    //             try {
+    //                 const response = await dispatch(Upload_addFileThunks(formDataToSend));
+    //                 console.log(response, 'res')
+
+    //                 if (response) {
+    //                      const payload = {
+    //             file: response?.file,
+    //             _id: formData._id,
+    //             uuid: formData.uuid,
+    //             title: formData.title,
+    //             description: formData.description,
+    //             video_uri: finalVideoUri,
+    //         };
+
+    //         const paramsData = {
+    //             branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+    //             institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+    //             page: 1,
+    //         };
+
+    //         await dispatch(EditModuleThunks(payload));
+    //         onClose(); // close the sidebar
+    //         dispatch(GetallModuleThunks(paramsData));
+    //                 } else {
+    //                     console.warn("No file_uri in upload response");
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Upload failed", error);
+    //             }
+    //     };
+    // }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         let finalVideoUri = formData.video_uri;
+        let uploadedFile = null;
 
-        if (formData.file) {
-            const formDataToSend = new FormData();
-            formDataToSend.append("file", formData.file);
+        try {
+            if (formData.file) {
+                const formDataToSend = new FormData();
+                formDataToSend.append("file", formData.file);
 
-            try {
                 const response = await dispatch(Upload_addFileThunks(formDataToSend));
-                console.log(response, 'res')
-                
-                if (response) {
-                     const payload = {
-            file: response?.file,
-            _id: formData._id,
-            uuid: formData.uuid,
-            title: formData.title,
-            description: formData.description,
-            video_uri: finalVideoUri,
-        };
+                console.log(response, 'res');
 
-        const paramsData = {
-            branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-            institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-            page: 1,
-        };
-
-        await dispatch(EditModuleThunks(payload));
-        onClose(); // close the sidebar
-        dispatch(GetallModuleThunks(paramsData));
+                if (response?.file) {
+                    uploadedFile = response.file;
                 } else {
-                    console.warn("No file_uri in upload response");
+                    console.warn("No file returned from upload.");
                 }
-            } catch (error) {
-                console.error("Upload failed", error);
             }
+
+            const payload = {
+                file: uploadedFile, // may be null if no new file uploaded
+                _id: formData._id,
+                uuid: formData.uuid,
+                title: formData.title,
+                description: formData.description,
+                video_uri: finalVideoUri,
+            };
+
+            const paramsData = {
+                branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+                institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+                page: 1,
+            };
+
+            await dispatch(EditModuleThunks(payload));
+            onClose();
+            dispatch(GetallModuleThunks(paramsData));
+        } catch (error) {
+            console.error("Error in module update:", error);
+        }
     };
-}
+
 
     return (
         <div className="relative text-[#716F6F] p-3 h-full shadow-[4px_4px_24px_0px_#0000001A]">

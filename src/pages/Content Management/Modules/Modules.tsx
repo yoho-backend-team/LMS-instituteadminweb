@@ -9,7 +9,7 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ViewModule from "../../../components/contentmanagement/viewmodule/viewmodule"
 import { useDispatch, useSelector } from "react-redux";
 import { GetModule } from "../../../features/Content_Management/reducers/selectors";
-import {  GetallModuleThunks } from "../../../features/Content_Management/reducers/thunks";
+import { DeletemoduleThunks, GetallModuleThunks, UpdateModuleStatusThunk } from "../../../features/Content_Management/reducers/thunks";
 
 interface ModuleCardProps {
 	id: string;
@@ -33,12 +33,14 @@ const Modules = () => {
 	const [showViewModule, setShowViewModule] = useState(false);
 	const [selectedModule, setSelectedModule] = useState<ModuleCardProps | null>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	const [toggleStatusMap, setToggleStatusMap] = useState<{ [key: string]: boolean }>({});
+
 
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-				setOpenCardId(null); // or however you close the dropdown
+				setOpenCardId(null);
 			}
 		};
 
@@ -68,12 +70,35 @@ const Modules = () => {
 	};
 
 	const handleDelete = (id: string) => {
+		if (selectedModule?.id === id) {
+			setShowViewModule(false);
+			setSelectedModule(null);
+		}
 		dispatch(DeletemoduleThunks({ id }));
 	};
 
-	const handleToggle = (id: string) => {
-		// implement toggle status API if needed
+
+	const handleToggle = (module: any) => {
+		const currentLocal = toggleStatusMap[module.module_id];
+		const currentStatus =
+			currentLocal !== undefined ? currentLocal : module.status === "active" || module.status === true;
+
+		const updatedStatus = !currentStatus;
+
+		setToggleStatusMap((prev) => ({
+			...prev,
+			[module.module_id]: updatedStatus,
+		}));
+
+		const payload = {
+			module_id: module.module_id,
+			status: updatedStatus ? "active" : "inactive",
+		};
+
+		dispatch(UpdateModuleStatusThunk(payload));
 	};
+
+
 
 	return (
 		<div className="relative flex flex-col h-fit max-h-fit w-full gap-6">
@@ -152,9 +177,9 @@ const Modules = () => {
 				</div>
 			)}
 
-			{showViewModule && selectedModule && (
+			{showViewModule && selectedModule?.title && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg p-6  max-w-3xl relative">
+					<div className="bg-white rounded-lg p-6 max-w-3xl relative">
 						<button
 							onClick={() => setShowViewModule(false)}
 							className="absolute top-2 right-2 text-gray-600 hover:text-black"
@@ -163,17 +188,19 @@ const Modules = () => {
 						</button>
 
 						<ViewModule
-							branch={selectedModule.branch}
-							courseName={selectedModule.course?.course_name}
-							description={selectedModule.description}
-							fileName={selectedModule.fileName}
-							fileUrl={selectedModule.fileUrl}
-							isActive={selectedModule.isActive}
 							title={selectedModule.title}
+							courseName={selectedModule.course?.course_name ?? ""}
+							description={selectedModule.description ?? ""}
+							isActive={selectedModule.isActive ?? false}
+							fileUrl={selectedModule.fileUrl}
+							fileName={selectedModule.fileName}
+							branch={selectedModule.branch ?? ""}
 						/>
 					</div>
 				</div>
 			)}
+
+
 
 			<div className="flex flex-wrap gap-4">
 				{Module?.map((card: ModuleCardProps) => (
@@ -197,56 +224,67 @@ const Modules = () => {
 
 						<div className="mt-4 flex justify-between items-center">
 							<div
-								className={`flex items-center gap-1 font-medium ${card.isActive ? 'text-green-500' : 'text-red-500'}`}
+								className={`flex items-center gap-1 font-medium ${toggleStatusMap[card.id] !== undefined
+									? toggleStatusMap[card.id]
+										? 'text-green-500'
+										: 'text-red-500'
+									: card.isActive
+										? 'text-green-500'
+										: 'text-red-500'
+									}`}
 							>
-								<span className="text-sm">{card.isActive ? 'Active' : 'Inactive'}</span>
+								<span className="text-sm">
+									{toggleStatusMap[card.id] !== undefined
+										? toggleStatusMap[card.id]
+											? 'Active'
+											: 'Inactive'
+										: card.isActive
+											? 'Active'
+											: 'Inactive'}
+								</span>
 								<span
-									className={`w-2 h-2 rounded-full ${card.isActive ? 'bg-green-500' : 'bg-red-500'}`}
+									className={`w-2 h-2 rounded-full ${toggleStatusMap[card.id] !== undefined
+										? toggleStatusMap[card.id]
+											? 'bg-green-500'
+											: 'bg-red-500'
+										: card.isActive
+											? 'bg-green-500'
+											: 'bg-red-500'
+										}`}
 								/>
 							</div>
+
 
 							<label className="relative inline-block w-11 h-6 cursor-pointer">
 								<input
 									type="checkbox"
 									className="sr-only peer"
-									checked={card.isActive}
-									onChange={() => handleToggle(card.id)}
+									checked={
+										toggleStatusMap[card.id] !== undefined
+											? toggleStatusMap[card.id]
+											: card.isActive
+									}
+
+									onChange={() =>
+										handleToggle({
+											module_id: card.id,
+											status:
+												toggleStatusMap[card.id] !== undefined
+													? toggleStatusMap[card.id]
+														? "active"
+														: "inactive"
+													: card.isActive
+														? "active"
+														: "inactive",
+										})
+									}
+
 								/>
 								<div className="w-full h-full bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors duration-300" />
 								<div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-2.5" />
 							</label>
 						</div>
 
-						{/* {openCardId === card.id && (
-							<div className="absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2">
-								<button
-									className="flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600"
-									onClick={() => handleViewClick(card)}
-								>
-									<FaEye />
-									View
-								</button>
-
-								<button
-									onClick={() => {
-										setSelectedModule(card);
-										setShowEditPanel(true);
-									}}
-									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
-								>
-									<FaEdit />
-									Edit
-								</button>
-
-								<button
-									onClick={() => handleDelete(card.id)}
-									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-red-100 text-gray-700"
-								>
-									<FaTrash />
-									Delete
-								</button>
-							</div>
-						)} */}
 
 						{openCardId === card.id && (
 							<div
@@ -274,11 +312,12 @@ const Modules = () => {
 
 								<button
 									onClick={() => handleDelete(card.id)}
-									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-red-100 text-gray-700"
+									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaTrash />
 									Delete
 								</button>
+
 							</div>
 						)}
 

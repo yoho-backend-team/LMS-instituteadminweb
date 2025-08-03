@@ -4,17 +4,16 @@ const ModuleSlice = createSlice({
   name: "Module",
   initialState: {
     data: [],
-    upload_editdata:[]
+    upload_editdata: [],
   },
   reducers: {
-
     getModule: (state, action) => {
       state.data = action.payload;
     },
     addModules: (state: any, action) => {
       state.data = [...state.data, ...action.payload];
     },
-    
+
     deleteModule: (state: any, action) => {
       const idToDelete = action.payload;
       state.data = state.data.filter((module: any) => module.id !== idToDelete);
@@ -28,10 +27,34 @@ const ModuleSlice = createSlice({
         state.data[index] = updatedModule;
       }
     },
-     upload_editdata: (state, action) => {
+    updateModuleStatus: (state:any, action) => {
+      console.log("Reducer payload:", action.payload); 
+      const updatedModule = action.payload;
+
+      if (!updatedModule || !updatedModule.module_id) return; 
+
+      const index = state.data.findIndex(
+        (item:any) => item.module_id === updatedModule.module_id
+      );
+      if (index !== -1) {
+        state.data[index] = {
+          ...state.data[index],
+          status: updatedModule.status,
+        };
+      }
+    },
+
+    upload_editdata: (state, action) => {
       state.upload_editdata = action.payload;
     },
   },
 });
-export const { getModule, deleteModule, editModule,upload_editdata } = ModuleSlice.actions;
+export const {
+  getModule,
+  deleteModule,
+  editModule,
+  upload_editdata,
+  updateModuleStatus,
+  addModules,
+} = ModuleSlice.actions;
 export default ModuleSlice.reducer;
