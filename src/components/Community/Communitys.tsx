@@ -1,4 +1,4 @@
-// Communitys.tsx
+
 import React, { useState } from "react";
 import LeftSide from "./LeftSide";
 import ChatView from "./ChatView";
@@ -55,7 +55,8 @@ const Communitys: React.FC = () => {
   };
 
   return (
-    <div className="flex  font-sans bg-white-100 items-start ">
+    <div className="flex justify-between w-full gap-6 bg-white font-poppins">
+
       <LeftSide
         batches={batches}
         selectedBatch={selectedBatch}

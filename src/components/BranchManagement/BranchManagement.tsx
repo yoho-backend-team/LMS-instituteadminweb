@@ -363,9 +363,6 @@ export function LocationCardsGrid() {
   const dispatch = useDispatch<AppDispatch>();
   const { branches: reduxBranches, loading, error } = useSelector((state: RootState) => state.branch);
 
-  // Combine Redux branches with sample branches
-  const allBranches = [...sampleBranches, ...reduxBranches];
-
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
@@ -384,9 +381,11 @@ export function LocationCardsGrid() {
     state: 'Tamil Nadu'
   });
 
+  const instituteId = '973195c0-66ed-47c2-b098-d8989d3e4529';
+
   useEffect(() => {
-    dispatch(fetchBranches());
-  }, [dispatch]);
+    dispatch(fetchBranches({ instituteId }));
+  }, [dispatch, instituteId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -394,10 +393,9 @@ export function LocationCardsGrid() {
       ...currInput,
       [name]: value
     }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => {
-        const newErrors = {...prev};
+        const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
       });
@@ -411,7 +409,7 @@ export function LocationCardsGrid() {
     if (!formData.address.trim()) newErrors.address = "Address is required";
     if (!formData.pinCode.trim()) newErrors.pinCode = "Pincode is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -433,15 +431,15 @@ export function LocationCardsGrid() {
       landMark: formData.landMark,
       city: formData.city,
       state: formData.state,
-      imageSrc: TrichyImg // Set default image for new branches
+      imageSrc: TrichyImg
     };
 
     if (editingId) {
       // Handle update logic here if needed
     } else {
-      dispatch(createNewBranch(branchData));
+      dispatch(createNewBranch({ instituteId, branchData }));
     }
-    
+
     setShowSuccessPopup(true);
     resetForm();
     setIsModalOpen(false);
@@ -463,7 +461,7 @@ export function LocationCardsGrid() {
   };
 
   const handleEdit = (branchId: string) => {
-    const branch = allBranches.find(b => b.id === branchId);
+    const branch = reduxBranches.find(b => b.id === branchId);
     if (branch) {
       setFormData({
         branchName: branch.cityName,
@@ -481,12 +479,12 @@ export function LocationCardsGrid() {
   };
 
   const filteredLocations = searchTerm
-    ? allBranches.filter(location =>
+    ? reduxBranches.filter(location =>
         location.cityName.toLowerCase().includes(searchTerm.toLowerCase()))
-    : allBranches;
+    : reduxBranches;
 
   if (viewingBranch) {
-    const branch = allBranches.find(b => b.cityName === viewingBranch);
+    const branch = reduxBranches.find(b => b.cityName === viewingBranch);
     return (
       <BranchDetailsPage 
         locationName={viewingBranch} 
@@ -566,213 +564,21 @@ export function LocationCardsGrid() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl w-full max-w-[1022px] max-h-[90vh] overflow-y-auto">
-            <div className="p-6 flex flex-col gap-6">
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-3">
-                  <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
-                    {editingId ? "Edit Branch" : "Create a New Branch"}
-                  </h2>
-                  <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
-                    {editingId 
-                      ? "Update the branch details below" 
-                      : "Fill in the details below to add a new branch"}
-                  </p>
-                </div>
-                <button 
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    resetForm();
-                  }}
-                  className="text-gray-500 hover:text-gray-700"
-                  aria-label="Close modal"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="branchName" className="text-sm font-medium text-[#7D7D7D]">
-                      Branch Name*
-                    </label>
-                    <input
-                      type="text"
-                      id="branchName"
-                      name="branchName"
-                      value={formData.branchName}
-                      onChange={handleInputChange}
-                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
-                        errors.branchName ? 'border-red-500' : 'border-[#D9D9D9]'
-                      }`}
-                      placeholder="Enter branch name"
-                    />
-                    {errors.branchName && (
-                      <p className="text-red-500 text-xs">{errors.branchName}</p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="phoneNumber" className="text-sm font-medium text-[#7D7D7D]">
-                      Phone Number*
-                    </label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleInputChange}
-                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
-                        errors.phoneNumber ? 'border-red-500' : 'border-[#D9D9D9]'
-                      }`}
-                      placeholder="Enter phone number"
-                    />
-                    {errors.phoneNumber && (
-                      <p className="text-red-500 text-xs">{errors.phoneNumber}</p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="alternateNumber" className="text-sm font-medium text-[#7D7D7D]">
-                      Alternate Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="alternateNumber"
-                      name="alternateNumber"
-                      value={formData.alternateNumber}
-                      onChange={handleInputChange}
-                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
-                      placeholder="Enter alternate number"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="address" className="text-sm font-medium text-[#7D7D7D]">
-                      Address*
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
-                        errors.address ? 'border-red-500' : 'border-[#D9D9D9]'
-                      }`}
-                      placeholder="Enter address"
-                    />
-                    {errors.address && (
-                      <p className="text-red-500 text-xs">{errors.address}</p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="pinCode" className="text-sm font-medium text-[#7D7D7D]">
-                      Pincode*
-                    </label>
-                    <input
-                      type="text"
-                      id="pinCode"
-                      name="pinCode"
-                      value={formData.pinCode}
-                      onChange={handleInputChange}
-                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
-                        errors.pinCode ? 'border-red-500' : 'border-[#D9D9D9]'
-                      }`}
-                      placeholder="Enter pincode"
-                    />
-                    {errors.pinCode && (
-                      <p className="text-red-500 text-xs">{errors.pinCode}</p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="landMark" className="text-sm font-medium text-[#7D7D7D]">
-                      Landmark
-                    </label>
-                    <input
-                      type="text"
-                      id="landMark"
-                      name="landMark"
-                      value={formData.landMark}
-                      onChange={handleInputChange}
-                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
-                      placeholder="Enter landmark"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="city" className="text-sm font-medium text-[#7D7D7D]">
-                      City*
-                    </label>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
-                        errors.city ? 'border-red-500' : 'border-[#D9D9D9]'
-                      }`}
-                      placeholder="Enter city"
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-xs">{errors.city}</p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="state" className="text-sm font-medium text-[#7D7D7D]">
-                      State
-                    </label>
-                    <input
-                      type="text"
-                      id="state"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
-                      placeholder="Enter state"
-                      readOnly
-                    />
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-4 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      resetForm();
-                    }}
-                    className="px-6 py-2 border border-[#1BBFCA] text-[#1BBFCA] font-poppins font-medium rounded-lg bg-[rgba(27,191,202,0.1)] hover:bg-[rgba(27,191,202,0.2)] transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-[#1BBFCA] text-white font-poppins font-medium rounded-lg hover:bg-[#15a9b4] transition-colors"
-                  >
-                    {editingId ? "Update Branch" : "Create Branch"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        <YourModalComponent 
+          formData={formData}
+          errors={errors}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          resetForm={resetForm}
+          editingId={editingId}
+          closeModal={() => setIsModalOpen(false)}
+        />
       )}
 
       {showSuccessPopup && (
         <ConfirmationPopup 
           type="success" 
-          message={
-            editingId 
-              ? "Branch updated successfully!" 
-              : "Branch created successfully!"
-          } 
+          message={editingId ? "Branch updated successfully!" : "Branch created successfully!"} 
           onClose={() => setShowSuccessPopup(false)}
         />
       )}

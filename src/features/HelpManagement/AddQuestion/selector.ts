@@ -1,0 +1,1 @@
+export const selectAddQuestion = (state: any) => state.addQuestion?.data;
