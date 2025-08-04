@@ -7,7 +7,8 @@ interface NoteCardProps {
   note: Note;
   onView: (note: Note) => void;
   onEdit: (note: Note) => void;
-  onDelete: (uuid: string) => void; 
+  onDelete: (id: number) => void; 
+  
   onToggleStatus?: (uuid: string, status: "Active" | "Completed") => void;
   fileIcon: string;
   titleIcon: string;
@@ -27,7 +28,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   const handleToggle = () => {
     const newStatus = status === "Active" ? "Completed" : "Active";
     setStatus(newStatus);
-    onToggleStatus?.(note.uuid, newStatus); // ✅ use uuid instead of id
+    onToggleStatus?.(note.uuid, newStatus); 
   };
 
   return (
@@ -36,7 +37,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         <DropdownMenu
           onView={() => onView(note)}
           onEdit={() => onEdit(note)}
-          onDelete={() => onDelete(note.uuid)} // ✅ use uuid here
+          onDelete={() => onDelete(note.id)} 
         />
       </div>
 
@@ -57,7 +58,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
       </h2>
 
       <div className="flex items-center mt-4">
-        {status === "Active" ? (
+        {note?.is_active ? (
           <div className="flex items-center gap-1 text-green-600 font-medium text-lg">
             <span>Active</span>
             <span className="h-3 w-3 mt-1 ml-1 rounded-full bg-green-500 inline-block" />
@@ -70,7 +71,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         )}
 
         <button onClick={handleToggle} className="ml-auto">
-          {status === "Active" ? (
+          {note?.is_active ? (
             <MdToggleOn className="text-green-500 text-5xl" />
           ) : (
             <MdToggleOff className="text-gray-400 text-5xl" />

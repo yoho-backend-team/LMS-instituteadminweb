@@ -1,4 +1,5 @@
 export interface Note {
+  is_active: any;
   id: number;
   uuid: string; 
   title: string;
