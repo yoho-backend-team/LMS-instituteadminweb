@@ -1,12 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { FONTS,COLORS } from '../../constants/uiConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import { getClassesData } from '../../features/staff/reducers/thunks';
+import { selectClass } from '../../features/staff/reducers/selector';
 
-const ClassesPage: React.FC = () => {
+interface ClassProps {
+  classId: any;
+}
+
+const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+
+  console.log("classId :", classId);
+
+  const classData = useSelector(selectClass);
+  const classesData = classData?.data?.classes;
+
+  const dispatch = useDispatch<any>()
+
+  const fetchClassData = async() => {
+    dispatch(getClassesData({
+      staff: classId,
+    }))
+  }
+
+  useEffect (() => {
+    fetchClassData();
+  },[])
 
   const courses = [
     {
@@ -116,7 +140,7 @@ const ClassesPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course, index) => (
+          {classesData?.map((course, index) => (
             <Card
               key={index}
               className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "
@@ -124,13 +148,13 @@ const ClassesPage: React.FC = () => {
               <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex-grow space-y-2">
                   <h3 className='whitespace-nowrap' style={{...FONTS.heading_06,color:COLORS.gray_dark_02}}>
-                    {course.title}
+                    {course?.class_name}
                   </h3>
                   <p style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>
-                    {course.studentCount} Students on this Class
+                    {course?.batch?.student.length} Students on this Class
                   </p>
                   <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
-                    {course.timeRange}
+                    {new Date(course.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })} to {new Date(course.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                   </p>
                 </div>
                 <div className="flex justify-end mt-4">

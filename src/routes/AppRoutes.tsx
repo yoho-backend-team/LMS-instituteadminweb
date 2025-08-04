@@ -38,6 +38,10 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import AddNewGroup from '../components/Usermanagement/Group/AddNewGroup';
+import View from '../components/Usermanagement/Group/View';
+import Edit from '../components/Usermanagement/Group/Edit';
+
 import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
@@ -58,10 +62,9 @@ import TrackOrder from '../components/HelpFAQ/TrackOrder';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
-	// const { isAuthenticated, isLoading } = useAuth();
-	const isAuthenticated = true;
+	const { isAuthenticated, isLoading } = useAuth();
 
-	// if (isLoading) return null;
+	if (isLoading) return null;
 
 	const AuthRoutes = () => (
 		<Routes>
@@ -82,7 +85,6 @@ const AppRoutes = () => {
 
 				<Route path="noti/msg" element={<NotificationPage />} />
 
-				<Route path='noti/msg' element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}
@@ -105,6 +107,9 @@ const AppRoutes = () => {
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
+				<Route path='group/add' element={<AddNewGroup />} />
+				<Route path='group/view/:id' element={<View />} />
+				<Route path='group/edit' element={<Edit />} />
 
 				{/* Course Management */}
 				<Route path='courses' element={<Courses />} />
@@ -131,12 +136,12 @@ const AppRoutes = () => {
 				<Route path='offine-classes' element={<OfflineClasses />} />
 				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
-				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
+				<Route path='/live-classes/:uuid' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
 				<Route
-					path='students-attendance/details'
+					path='students-attendance/details/:id'
 					element={<StudentDetails />}
 				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />
@@ -148,7 +153,6 @@ const AppRoutes = () => {
 				{/* Certificate Management */}
 				<Route path='students-certificate' element={<StudentCertificate />} />
 				<Route path='/certificate-view' element={<CertificateView />} />
-
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
@@ -177,7 +181,6 @@ const AppRoutes = () => {
 				{/* FAQ */}
 				<Route path='faq-category' element={<Category />} />
 				<Route path='faqs' element={<FAQs />} />
-
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Route>

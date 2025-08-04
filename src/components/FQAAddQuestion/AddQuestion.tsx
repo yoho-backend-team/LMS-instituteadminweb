@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import success from '../../assets/tick.png'
 import warning from '../../assets/warning.png'
 import { FaPlus } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAddQuestion } from "../../features/HelpManagement/AddQuestion/selector";
+import { fetchAddQuestionThunk } from "../../features/HelpManagement/AddQuestion/thunks";
 
 interface FAQItem {
   id: number;
@@ -52,6 +55,15 @@ const AddQuestion = () => {
     status: "",
     description: "",
   });
+const dispatch = useDispatch<any>();
+  const faqLists = useSelector(selectAddQuestion);
+
+  useEffect(() => {
+   const paramsData = {branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", page: 1}
+    dispatch(fetchAddQuestionThunk(paramsData));
+  }, [dispatch]);
+
+
 
   const handleAddFAQ = () => {
     setModalStage(null);
@@ -107,7 +119,7 @@ const AddQuestion = () => {
     setModalStage("confirm");
   };
 
-  const filteredList = faqList.filter((faq) =>
+  const filteredList = faqLists.filter((faq: any) =>
     faq.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -146,18 +158,19 @@ const AddQuestion = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((faq) => (
+            {filteredList.map((faq: any) => (
               <tr
                 key={faq.id}
                 className="bg-white/30 shadow-xl backdrop-blur-xl text-md h-22 rounded-xl font-semibold relative overflow-visible"
               >
                 <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
                 <td className="px-6 py-4 text-lg">{faq.category}</td>
-                <td className="px-6 py-4 underline">
+                <td className="px-6 py-4 text-lg">
                   <a
                     href={faq.videoLink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="hover:text-[#1BBFCA]"
                   >
                     {faq.videoLink}
                   </a>
@@ -209,7 +222,7 @@ const AddQuestion = () => {
       {/* Modal */}
     {showModal && (
    <div
-   className={`fixed inset-0 bg-black bg-opacity-50 flex items-center ${
+   className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
   modalStage === "success" || modalStage === "dialog"
     ? "justify-center"
     : "justify-end"
@@ -333,7 +346,7 @@ const AddQuestion = () => {
             }
           }, 500); // Just for effect, not closing anything now
         }}
-        className="px-4 py-2 bg-[#1BBFCA] focus:bg-pink-500 text-white rounded"
+        className="px-4 py-2 bg-[#1BBFCA] focus:bg-green-600 text-white rounded"
       >
         Yes Status
       </button>
