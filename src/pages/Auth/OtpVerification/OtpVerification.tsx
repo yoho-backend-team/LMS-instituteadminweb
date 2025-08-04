@@ -1,13 +1,21 @@
 
 import React, { useRef, useState } from 'react';
 import otpimg from '../../../assets/otpimg.png'
+import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../../utils/localStorage';
+import { AuthOtp } from '../../../features/Auth/service';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 const OtpVerification = () => {
 
-	//otpverify in login
+	const navigate = useNavigate()
+	const { login } = useAuth()
+
 	const inputLength = 6;
 	const [otpInput, setOtpInput] = useState<string[]>(Array(inputLength).fill(''));
 	const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+	const otpValue = JSON.stringify(GetLocalStorage('otp'))
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
 		const value = e.target.value;
@@ -40,7 +48,26 @@ const OtpVerification = () => {
 
 
 	const handlesubmit = async () => {
-		console.log(otpInput, "check otp")
+
+		const token = GetLocalStorage('OtpToken')
+		const email = GetLocalStorage('email')
+
+		const data = {
+			token,
+			email,
+			otp: otpInput.join('')
+		}
+		const response = await AuthOtp(data)
+		if (response?.status == 'success' || response?.status == 'sucess') {
+			RemoveLocalStorage('OtpToken')
+			RemoveLocalStorage('otp')
+			RemoveLocalStorage('email')
+			console.log(response)
+			login(response?.data?.token)
+
+		} else {
+			toast.error(response?.message)
+		}
 	}
 
 	return (
@@ -51,6 +78,7 @@ const OtpVerification = () => {
 					<div className='w-full cursor-default'>
 						<p className='text-[28px] xl:text-[32px] font-bold text-[#1BBFCA]'>OTP Verifications</p>
 						<p className='text-[16px] xl:text-[20px] font-normal text-[#969696]'>Enter the 6 Digit OTP Sent to your Mobile Number</p>
+						<span className='text-[16px] xl:text-[20px] font-normal text-[#969696]'>{otpValue ?? ''}</span>
 					</div>
 					<div className="w-max gap-5 flex flex-row justify-center">
 						{otpInput.map((digit, index) => (

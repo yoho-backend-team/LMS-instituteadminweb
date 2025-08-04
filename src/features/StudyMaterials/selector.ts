@@ -1,0 +1,1 @@
+export const selectStudyMaterials = (state: any) => state.studyMaterial?.data;

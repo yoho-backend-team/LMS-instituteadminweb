@@ -1,13 +1,23 @@
-import { getDashboard } from '../services'; 
-import { getDashboardData } from './DashboardSlice';
+import { getActivity, getDashboard } from '../services'; 
+import { getActivityData, getDashboardData } from './DashboardSlice';
 
 export const getDashboardthunks =
     (params:any) => async (dispatch: any) => {
         try {
             const response = await getDashboard(params);
-            dispatch(getDashboardData(response.data));
-            console.log(response.data,"Dashboard Response")
+            dispatch(getDashboardData(response));
+            console.log(response,"Dashboard Response")
         } catch (error) {
             console.log(error);
         }
     };
+
+export const getActivitythunks = (params:any)=> async (dispatch:any)=>{
+    try {
+        const response = await getActivity(params);
+        dispatch(getActivityData(response.data));
+        console.log(response.data,"Activity Data")
+    } catch (error) {
+            console.log(error);
+        }
+}

@@ -5,6 +5,7 @@ import upload from '../../../../assets/cloud.png'
 import close from '../../../../assets/Cancel.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
+import { ChevronDownIcon } from 'lucide-react'
 
 type props = {
     setShowForm : (show: boolean)=> void;
@@ -69,6 +70,7 @@ const AddForm:React.FC<props> = ({setShowForm}) => {
                     >
                         <SelectTrigger style={{ height: '45px' }} className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                             <SelectValue placeholder='Select branch' />
+                            <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                         </SelectTrigger>
                         <SelectContent className='bg-[#FFFFFF]'>
                             <SelectItem value='branch' className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
@@ -164,6 +166,7 @@ const AddForm:React.FC<props> = ({setShowForm}) => {
                     >
                         <SelectTrigger style={{ height: '45px' }} className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                             <SelectValue placeholder='Select role' />
+                            <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                         </SelectTrigger>
                         <SelectContent className='bg-[#FFFFFF]'>
                             <SelectItem value='role' className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}

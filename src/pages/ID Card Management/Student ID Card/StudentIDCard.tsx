@@ -6,10 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectStudentId } from '../../../features/StudentIdCard/reducers/selectors';
 import { getIdcardthunks } from '../../../features/StudentIdCard/reducers/thunks';
 import { GetImageUrl } from '../../../utils/helper';
+import Shimmer from '../../../components/IdcardShimmer/Shimmer';
 
 
 const StudentIDCard = () => {
     const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
+    	const [isLoading, setIsLoading] = useState(true)
+
     
     const handleCardClick = (index: number) => {
         setFlippedCards(prev => ({
@@ -25,9 +28,15 @@ const StudentIDCard = () => {
 
 
 	useEffect(() => {
+        		(async () => {
+
         const paramsData = {branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529", page: 1}
-		dispatch(getIdcardthunks(paramsData));
-		console.log(studentID, "Student Idcard Details")
+		const response = await dispatch(getIdcardthunks(paramsData));
+		console.log(response, "Student Idcard Details")
+        if (response?.status == "success") {
+				setIsLoading(false)
+			}
+        	})()
 	}, [dispatch]);
 
     console.log(studentID,"studenID card Details")
@@ -35,6 +44,12 @@ const StudentIDCard = () => {
         <div>
             <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>Student ID Card</h1>
 
+
+            {isLoading ?
+
+				<Shimmer />
+
+				:
             <div className='mt-8 flex flex-wrap gap-8'>
                 {studentID?.map((data:any, index:any) => {
                     return (
@@ -143,6 +158,7 @@ const StudentIDCard = () => {
                     );
                 })}
             </div>
+            }
         </div>
     );
 };
