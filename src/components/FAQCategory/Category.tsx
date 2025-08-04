@@ -37,11 +37,16 @@ const FaqCategory: React.FC = () => {
   const [newDescription, setNewDescription] = useState("");
 
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [deleteCategoryIndex, setDeleteCategoryIndex] = useState<number | null>(null);
+  const [deleteCategoryIndex, setDeleteCategoryIndex] = useState<number | null>(
+    null
+  );
 
-  
-  const [pendingStatusIndex, setPendingStatusIndex] = useState<number | null>(null);
-  const [pendingNewStatus, setPendingNewStatus] = useState<"Active" | "Inactive" | null>(null);
+  const [pendingStatusIndex, setPendingStatusIndex] = useState<number | null>(
+    null
+  );
+  const [pendingNewStatus, setPendingNewStatus] = useState<
+    "Active" | "Inactive" | null
+  >(null);
 
   useEffect(() => {
     if (
@@ -57,7 +62,12 @@ const FaqCategory: React.FC = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isFormOpen, isAddSuccessModalOpen, isEditSuccessModalOpen, isDeleteConfirmOpen]);
+  }, [
+    isFormOpen,
+    isAddSuccessModalOpen,
+    isEditSuccessModalOpen,
+    isDeleteConfirmOpen,
+  ]);
 
   const toggleStatus = (index: number) => {
     setOpenStatusIndex(openStatusIndex === index ? null : index);
@@ -67,7 +77,6 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
-  
   const handleStatusChange = (
     index: number,
     newStatus: "Active" | "Inactive"
@@ -127,9 +136,7 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(null);
   };
 
-  
   const confirmDelete = () => {
-    
     if (pendingStatusIndex !== null && pendingNewStatus !== null) {
       const updated = [...categories];
       updated[pendingStatusIndex].status = pendingNewStatus;
@@ -140,7 +147,6 @@ const FaqCategory: React.FC = () => {
       return;
     }
 
-    
     if (deleteCategoryIndex !== null) {
       const updated = categories.filter((_, i) => i !== deleteCategoryIndex);
       setCategories(updated);
@@ -150,7 +156,6 @@ const FaqCategory: React.FC = () => {
     }
   };
 
-  
   const cancelDelete = () => {
     setIsDeleteConfirmOpen(false);
     setDeleteCategoryIndex(null);
@@ -319,7 +324,11 @@ const FaqCategory: React.FC = () => {
       {isAddSuccessModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Added!
             </h2>
@@ -337,7 +346,11 @@ const FaqCategory: React.FC = () => {
       {isEditSuccessModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Updated!
             </h2>
@@ -355,9 +368,15 @@ const FaqCategory: React.FC = () => {
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
-            <img src={warning} alt="Warning" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={warning}
+              alt="Warning"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-2xl font-semibold text-[#716F6F] mb-2">
-              {pendingStatusIndex !== null ? "Confirm Status Change" : "Confirm Delete"}
+              {pendingStatusIndex !== null
+                ? "Confirm Status Change"
+                : "Confirm Delete"}
             </h2>
             <p className="text-[#7D7D7D] mb-6">
               {pendingStatusIndex !== null
