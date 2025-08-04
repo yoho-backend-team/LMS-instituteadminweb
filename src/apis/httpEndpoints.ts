@@ -20,16 +20,19 @@ export const getSelectedBranchId = () => {
 };
 
 const generateEndpoints = () => {
-    const instituteId = getInstituteDetails() ?? '';
-    const branchId = getSelectedBranchId() ?? '';
+    const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
+    const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
 
     return {
         admin: {
             me: `/api/institutes/auth/admin/me`,
             change_password: '/api/institutes/auth/admin/change-password',
             forget_password: `/api/institutes/auth/admin/forget-password`,
-            verfiy_otp: `/api/institutes/auth/admin/validate-otp`,
+            validate_otp: `/api/institutes/auth/admin/validate-otp`,
+            verfiy_otp: '/api/institutes/auth/admin/verify-otp/',
             reset_password: `/api/institutes/auth/admin/update-password`,
+            login: '/api/institutes/auth/admin/login/',
+            logout: '/api/institutes/admin/institute-user/logout'
         },
         permission: {
             getAll: `/api/admin/institutes/permissions/all`,
