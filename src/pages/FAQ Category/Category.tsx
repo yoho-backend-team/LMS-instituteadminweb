@@ -4,17 +4,24 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, ChevronDown, MoreVertical } from "lucide-react"
+import { Plus, ChevronDown, MoreVertical, X } from "lucide-react" // Added X icon
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogClose,
-  DialogTrigger,
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
+import {
+  Drawer, // Added Drawer components
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import { Textarea } from "@/components/ui/textarea"
 import { FileEdit, Trash2, AlertTriangle, CheckCircle } from "lucide-react"
 import { useState, useEffect } from "react"
@@ -54,10 +61,13 @@ function AddFAQCategoryDialog({
   }
 
   return (
-    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg fixed top-[500px] -translate-y-1/2 right-0 left-auto mr-4">
-      <DialogHeader className="flex flex-row justify-between pb-4 border-gray-200">
-        <DialogTitle className="text-xl font-semibold">Add FAQ Category</DialogTitle>
-      </DialogHeader>
+    <DrawerContent className="fixed top-0 right-0 h-full w-full sm:w-[600px] p-6 m-0 rounded-lg duration-0">
+      <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
+        <DrawerTitle className="text-xl font-semibold">Add FAQ Category</DrawerTitle>
+        <DrawerClose onClick={onCancel}>
+          <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
+        </DrawerClose>
+      </DrawerHeader>
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
           <label htmlFor="category" className="text-sm font-medium text-gray-700">
@@ -96,7 +106,7 @@ function AddFAQCategoryDialog({
           Submit
         </Button>
       </div>
-    </DialogContent>
+    </DrawerContent>
   )
 }
 
@@ -126,10 +136,13 @@ function EditFAQCategoryDialog({
   }
 
   return (
-    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg fixed top-[500px] -translate-y-1/2 right-0 left-auto mr-4">
-      <DialogHeader className="flex flex-row justify-between pb-4 ">
-        <DialogTitle className="text-xl font-semibold">Edit FAQ Category</DialogTitle>
-      </DialogHeader>
+    <DrawerContent className="fixed top-0 right-0 h-full w-full sm:w-[600px] p-6 m-0 rounded-lg duration-0">
+      <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
+        <DrawerTitle className="text-xl font-semibold">Edit FAQ Category</DrawerTitle>
+        <DrawerClose onClick={onCancel}>
+          <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
+        </DrawerClose>
+      </DrawerHeader>
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
           <label htmlFor="title" className="text-sm font-medium text-gray-700">
@@ -168,7 +181,7 @@ function EditFAQCategoryDialog({
           Submit
         </Button>
       </div>
-    </DialogContent>
+    </DrawerContent>
   )
 }
 
@@ -176,7 +189,7 @@ function EditFAQCategoryDialog({
 function SuccessDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4">
+      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4 duration-0">
         <DialogHeader className="flex flex-col items-center justify-center gap-4">
           <CheckCircle className="h-16 w-16 text-green-500" />
           <DialogTitle className="text-2xl font-bold">Success!</DialogTitle>
@@ -203,7 +216,7 @@ function ConfirmDeleteDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4">
+      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4 duration-0">
         <DialogHeader className="flex flex-col items-center justify-center gap-4 ">
           <AlertTriangle className="h-16 w-16 text-red-500 " />
           <DialogTitle className="text-xl font-bold">Confirm Action</DialogTitle>
@@ -317,20 +330,18 @@ export default function FAQCategoryPage() {
           placeholder="Search Category"
           className="max-w-sm w-full rounded-lg border-2 border-gray-200 focus:border-primary-teal focus:ring-0"
         />
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          {" "}
-          {/* Control add dialog visibility */}
-          <DialogTrigger asChild>
+        <Drawer open={showAddDialog} onOpenChange={setShowAddDialog} direction="right">
+          <DrawerTrigger asChild>
             <Button className="bg-cyan-500 hover:bg-cyan-600 text-white rounded-md px-4 py-2 flex items-center gap-2 ">
               <Plus className="w-4 h-4" />
               Add FAQ Category
             </Button>
-          </DialogTrigger>
+          </DrawerTrigger>
           <AddFAQCategoryDialog onSave={handleAddSave} onCancel={handleAddCancel} />
-        </Dialog>
+        </Drawer>
       </div>
       <div className="grid gap-4 border border-gray-200 rounded-lg p-4 shadow-gray-400 shadow-xl bg-gray-50 transition-all">
-        <div className="grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] rounded-lg bg-gray-200 items-center px-4 py-3 text-sm font-medium text-gray-500 border border-gray-200 shadow-gray-50 ">
+        <div className="grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] items-center gap-30 rounded-lg bg-gray-200 items-center px-4 py-4 text-sm font-medium text-gray-600 border border-gray-200 shadow-gray-50 ">
           <div>ID</div>
           <div>Category Name</div>
           <div>Status</div>
@@ -338,7 +349,7 @@ export default function FAQCategoryPage() {
         </div>
         {faqCategories.map((category) => (
           <Card key={category.id} className="shadow-sm rounded-lg shadow-gray-200 shadow-sm">
-            <CardContent className="p-4 grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] items-center gap-4 bg-shadow-lg">
+            <CardContent className=" grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] items-center gap-30 bg-shadow-lg">
               <div className="text-sm font-medium">{category.id}</div>
               <div>
                 <div className="font-semibold">{category.name}</div>
@@ -413,11 +424,11 @@ export default function FAQCategoryPage() {
         onConfirm={handleConfirmDelete}
       />
       <SuccessDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog} />
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+      <Drawer open={showEditDialog} onOpenChange={setShowEditDialog} direction="right">
         {editingCategory && (
           <EditFAQCategoryDialog category={editingCategory} onSave={handleEditSave} onCancel={handleEditCancel} />
         )}
-      </Dialog>
+      </Drawer>
     </div>
   )
 }

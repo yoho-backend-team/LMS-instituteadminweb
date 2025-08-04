@@ -1,8 +1,11 @@
 "use client"
+
+import type React from "react"
+
 import { useState, useEffect } from "react"
-import { Button } from "../../components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Plus,
   ChevronDown,
@@ -12,18 +15,12 @@ import {
   CheckCircle,
   FileEdit,
   Trash2,
+  X,
 } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "../../components/ui/dialog"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Textarea } from "../../components/ui/textarea" // Added Textarea import
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer"
 
 interface FAQItem {
   id: number
@@ -33,103 +30,115 @@ interface FAQItem {
   category: string
 }
 
-// Inlined AddFAQDialog component
-function AddFAQDialog({
+// Inlined AddFAQDrawer component
+function AddFAQDrawer({
   open,
   onOpenChange,
   onSave,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (faq: { title: string; description: string; category1: string; category2: string }) => void
+  onSave: (newFAQData: { title: string; description: string; category1: string; category2: string }) => void
 }) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [category1, setCategory1] = useState("")
   const [category2, setCategory2] = useState("")
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (!open) {
+      // Reset form when drawer closes
+      setTitle("")
+      setDescription("")
+      setCategory1("")
+      setCategory2("")
+    }
+  }, [open])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     onSave({ title, description, category1, category2 })
-    setTitle("")
-    setDescription("")
-    setCategory1("")
-    setCategory2("")
     onOpenChange(false)
   }
 
   const handleCancel = () => {
-    setTitle("")
-    setDescription("")
-    setCategory1("")
-    setCategory2("")
     onOpenChange(false)
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-6 rounded-lg fixed top-[575px] -translate-y-1/2 right-0 left-auto mr-4">
-        <DialogHeader className="flex flex-row justify-between items-center mb-4">
-          <DialogTitle className="text-xl font-bold">Add FAQ</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="col-span-3" />
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+        <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
+          <DrawerTitle className="text-lg font-semibold">Add FAQ</DrawerTitle>
+          <DrawerClose>
+            <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
+          </DrawerClose>
+        </DrawerHeader>
+        <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+          {/* Title */}
+          <div className="flex flex-col">
+            <Label htmlFor="faq-title">Title</Label>
+            <Input id="faq-title" className="mt-1" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea // Changed to Textarea
-              id="description"
+          {/* Description */}
+          <div className="flex flex-col">
+            <Label htmlFor="faq-description">Description</Label>
+            <Textarea
+              id="faq-description"
+              className="mt-1"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="col-span-3 min-h-[100px]" // Added min-h for textarea
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="category1">Select Category</Label>
+          {/* Category 1 */}
+          <div className="flex flex-col">
+            <Label htmlFor="faq-category1">Category 1</Label>
             <Select value={category1} onValueChange={setCategory1}>
-              <SelectTrigger id="category1" className="w-full">
-                <SelectValue placeholder="" />
+              <SelectTrigger id="faq-category1" className="mt-1 w-full">
+                <SelectValue placeholder="Select category 1" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="general">General</SelectItem>
-                <SelectItem value="technical">Technical</SelectItem>
-                <SelectItem value="billing">Billing</SelectItem>
+              <SelectContent className="bg-white">
+                <SelectItem value="General">General</SelectItem>
+                <SelectItem value="Technical">Technical</SelectItem>
+                <SelectItem value="Billing">Billing</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="category2">Select Category</Label>
+          {/* Category 2 */}
+          <div className="flex flex-col">
+            <Label htmlFor="faq-category2">Category 2</Label>
             <Select value={category2} onValueChange={setCategory2}>
-              <SelectTrigger id="category2" className="w-full">
-                <SelectValue placeholder="" />
+              <SelectTrigger id="faq-category2" className="mt-1 w-full">
+                <SelectValue placeholder="Select category 2" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="faq">FAQ</SelectItem>
-                <SelectItem value="support">Support</SelectItem>
-                <SelectItem value="product">Product</SelectItem>
+              <SelectContent className="bg-white">
+                <SelectItem value="Usage">Usage</SelectItem>
+                <SelectItem value="Troubleshooting">Troubleshooting</SelectItem>
+                <SelectItem value="Account">Account</SelectItem>
               </SelectContent>
             </Select>
           </div>
-        </div>
-        <div className="flex justify-end gap-2 mt-4">
-          <Button
-            variant="outline"
-            className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 hover:text-cyan-600 bg-transparent"
-            onClick={handleCancel}
-          >
-            Cancel
-          </Button>
-          <Button className="bg-cyan-500 text-white hover:bg-cyan-600" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+          {/* Buttons */}
+          <div className="flex justify-between mt-6">
+            <Button
+              type="button"
+              onClick={handleCancel}
+              variant="outline"
+              className="border-cyan-500 text-cyan-500 hover:bg-cyan-50  bg-transparent"
+            >
+              Cancel
+            </Button>
+            <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
-// Inlined EditFAQDialog component
+// Converted EditFAQDialog to Drawer
 function EditFAQDialog({
   open,
   onOpenChange,
@@ -166,23 +175,26 @@ function EditFAQDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-6 rounded-lg fixed top-[500px] -translate-y-1/2 right-0 left-auto mr-4">
-        <DialogHeader className="flex flex-row justify-between items-center mb-4">
-          <DialogTitle className="text-xl font-bold">Edit FAQ</DialogTitle>
-        </DialogHeader>
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+        <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
+          <DrawerTitle className="text-lg font-semibold">Edit FAQ</DrawerTitle>
+          <DrawerClose>
+            <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
+          </DrawerClose>
+        </DrawerHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="col-span-3" />
+            <Label htmlFor="edit-title">Title</Label>
+            <Input id="edit-title" value={title} onChange={(e) => setTitle(e.target.value)} className="col-span-3" />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea // Changed to Textarea
-              id="description"
+            <Label htmlFor="edit-description">Description</Label>
+            <Textarea
+              id="edit-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="col-span-3 min-h-[100px]" // Added min-h for textarea
+              className="col-span-3 min-h-[100px]"
             />
           </div>
         </div>
@@ -198,12 +210,12 @@ function EditFAQDialog({
             Submit
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
-// Inlined ConfirmDialog component
+// Converted ConfirmDialog to Drawer
 function ConfirmDialog({
   open,
   onOpenChange,
@@ -222,14 +234,14 @@ function ConfirmDialog({
   onConfirm: () => void
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 bg-white rounded-lg shadow-lg text-center">
-        <DialogHeader className="flex flex-col items-center gap-4">
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+        <DrawerHeader className="flex flex-col items-center gap-4">
           <TriangleAlert className="h-16 w-16 text-red-500 fill-red-500" />
-          <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
-          <DialogDescription className="text-gray-600">{message}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="flex justify-center gap-4 mt-6">
+          <DrawerTitle className="text-xl font-bold">{title}</DrawerTitle>
+          <p className="text-gray-600">{message}</p>
+        </DrawerHeader>
+        <div className="flex justify-center gap-4 mt-6">
           <Button
             variant="outline"
             className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 hover:text-cyan-600 bg-transparent px-6 py-2 rounded-md"
@@ -240,13 +252,13 @@ function ConfirmDialog({
           <Button className="bg-green-500 text-white hover:bg-green-600 px-6 py-2 rounded-md" onClick={onConfirm}>
             {confirmButtonText}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
-// Inlined SuccessDialog component
+// Converted SuccessDialog to Drawer
 function SuccessDialog({
   open,
   onOpenChange,
@@ -259,27 +271,27 @@ function SuccessDialog({
   onOk: () => void
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 bg-white rounded-lg shadow-lg text-center">
-        <DialogHeader className="flex flex-col items-center gap-4">
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+        <DrawerHeader className="flex flex-col items-center gap-4">
           <div className="flex items-center justify-center h-20 w-20 rounded-full bg-green-500">
             <CheckCircle className="h-12 w-12 text-white" />
           </div>
-          <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
-        </DialogHeader>
-        <DialogFooter className="flex justify-center mt-6">
+          <DrawerTitle className="text-xl font-bold">{title}</DrawerTitle>
+        </DrawerHeader>
+        <div className="flex justify-center mt-6">
           <Button className="bg-green-500 text-white hover:bg-green-600 px-6 py-2 rounded-md" onClick={onOk}>
             Ok
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
-export default function FAQPage() {
+export default function Page() {
   const [showFilter, setShowFilter] = useState(false)
-  const [isAddFAQModalOpen, setIsAddFAQModalOpen] = useState(false)
+  const [isAddFAQDrawerOpen, setIsAddFAQDrawerOpen] = useState(false)
   const [isEditFAQModalOpen, setIsEditFAQModalOpen] = useState(false)
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
@@ -291,7 +303,7 @@ export default function FAQPage() {
       name: "Chennai",
       address: "29/1, Second Floor, Sri Ambal Nagar Rd",
       status: "Active",
-      category: "General", // Default category for existing item
+      category: "General, Usage", // Default category for existing item
     },
   ])
 
@@ -309,14 +321,14 @@ export default function FAQPage() {
       category: `${newFAQData.category1}, ${newFAQData.category2}`, // Combine categories for display
     }
     setFaqs((prevFaqs) => [...prevFaqs, newFAQ])
-    setIsAddFAQModalOpen(false) // Close modal after saving
+    setIsAddFAQDrawerOpen(false) // Close drawer after saving
   }
 
   const handleEditFAQ = (id: number, updatedData: { name: string; address: string }) => {
     setFaqs((prevFaqs) =>
       prevFaqs.map((faq) => (faq.id === id ? { ...faq, name: updatedData.name, address: updatedData.address } : faq)),
     )
-    setIsEditFAQModalOpen(false) // Close modal after saving
+    setIsEditFAQModalOpen(false) // Close drawer after saving
     setCurrentFAQToEdit(null) // Clear the editing state
   }
 
@@ -330,12 +342,12 @@ export default function FAQPage() {
       setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq.id !== faqToDeleteId))
       setIsConfirmDeleteModalOpen(false)
       setFaqToDeleteId(null)
-      setIsSuccessModalOpen(true) // Show success dialog after deletion
+      setIsSuccessModalOpen(true) // Show success drawer after deletion
     }
   }
 
   const handleSuccessOk = () => {
-    setIsSuccessModalOpen(false) // Close success dialog
+    setIsSuccessModalOpen(false) // Close success drawer
   }
 
   const handleStatusChange = (id: number, newStatus: string) => {
@@ -343,7 +355,7 @@ export default function FAQPage() {
   }
 
   return (
-    <div className="">
+    <div className="p-6">
       {/* Main Content Area */}
       <h1 className="text-2xl font-bold mb-6">FAQ</h1>
       {/* Action Bar with "Show Filter" / "Hide" and "Add FAQ" buttons */}
@@ -356,14 +368,16 @@ export default function FAQPage() {
           <SlidersHorizontal className="w-4 h-4" />
           <span>{showFilter ? "Hide" : "Show Filter"}</span>
         </Button>
-        {/* "Add FAQ" Button with teal background */}
-        <Button
-          className="bg-cyan-500 text-white hover:bg-cyan-600 px-4 py-2 rounded-md flex items-center space-x-2"
-          onClick={() => setIsAddFAQModalOpen(true)} // Open the dialog
-        >
-          <Plus className="w-8 h-8" />
-          <span>Add FAQ</span>
-        </Button>
+        <div className="flex gap-2">
+          {/* "Add FAQ" Button */}
+          <Button
+            className="bg-cyan-500 text-white hover:bg-cyan-600 px-4 py-2 rounded-md flex items-center space-x-2"
+            onClick={() => setIsAddFAQDrawerOpen(true)} // Open the Add FAQ drawer
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add FAQ</span>
+          </Button>
+        </div>
       </div>
       {/* Filter Content - Conditionally rendered */}
       {showFilter && (
@@ -401,10 +415,10 @@ export default function FAQPage() {
         </div>
       )}
       {/* FAQ List/Table structure */}
-      <div className="max-w-6xl mx-auto bg-white rounded-lg p-6 shadow-gray-200 border bg-gray-100 shadow-md transition-all">
-        <div className="grid gap-4 shadow-gray-400 ">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg p-6 shadow-gray-200 border bg-gray-40 shadow-md ">
+        <div className="grid gap-4 shadow-gray-300 ">
           {/* Table Header Row with light gray background */}
-          <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-2 p-4 bg-gray-100 text-sm font-semibold text-gray-600 border-gray-400 rounded-lg shadow-gray">
+          <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-2 p-4 bg-gray-200 text-sm font-semibold text-gray-600 border-gray-400 rounded-lg shadow-gray">
             <div>ID</div>
             <div>FAQ Name</div>
             <div>Category</div>
@@ -477,9 +491,9 @@ export default function FAQPage() {
           ))}
         </div>
       </div>
-      {/* Add FAQ Dialog */}
-      <AddFAQDialog open={isAddFAQModalOpen} onOpenChange={setIsAddFAQModalOpen} onSave={handleAddFAQ} />
-      {/* Edit FAQ Dialog */}
+      {/* Add FAQ Drawer */}
+      <AddFAQDrawer open={isAddFAQDrawerOpen} onOpenChange={setIsAddFAQDrawerOpen} onSave={handleAddFAQ} />
+      {/* Edit FAQ Drawer */}
       {currentFAQToEdit && (
         <EditFAQDialog
           open={isEditFAQModalOpen}
@@ -488,7 +502,7 @@ export default function FAQPage() {
           onSave={handleEditFAQ}
         />
       )}
-      {/* Confirm Delete Dialog */}
+      {/* Confirm Delete Drawer */}
       <ConfirmDialog
         open={isConfirmDeleteModalOpen}
         onOpenChange={setIsConfirmDeleteModalOpen}
@@ -498,7 +512,7 @@ export default function FAQPage() {
         cancelButtonText="Cancel"
         onConfirm={handleConfirmDelete}
       />
-      {/* Success Dialog */}
+      {/* Success Drawer */}
       <SuccessDialog
         open={isSuccessModalOpen}
         onOpenChange={setIsSuccessModalOpen}
