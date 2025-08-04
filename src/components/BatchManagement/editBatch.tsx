@@ -64,8 +64,8 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({
         const response = await updateBatches(payload);
 
         if (response) {
-          onClose(); // close modal before showing toast
-          toast.dismiss(); // remove existing toasts
+          onClose(); 
+          toast.dismiss(); 
           toast.success("Batch updated successfully!");
 
           if (fetchBatchData) {
@@ -77,7 +77,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({
         toast.dismiss();
         toast.error("Failed to update batch");
       } finally {
-        setSubmitting(false); // re-enable button
+        setSubmitting(false); 
       }
     },
   });

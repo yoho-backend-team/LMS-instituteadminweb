@@ -27,12 +27,15 @@ type OptionType = {
 export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) => {
   if (!isOpen) return null;
 
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [students, setStudents] = useState<OptionType[]>([]);
   const [staffs, setStaffs] = useState<OptionType[]>([]);
-  const [branches, setBranches] = useState([]);
+  const [branches, setBranches] = useState<any[]>([]);
   const dispatch = useDispatch<any>();
-  const [courseId, setCourseId] = useState("");
+
+  // store both UUID and ObjectId for course
+  const [courseUUID, setCourseUUID] = useState("");
+  const [courseObjectId, setCourseObjectId] = useState("");
 
   // Fetch courses
   const fetchAllCourses = async () => {
@@ -40,8 +43,6 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
       const response = await getCourseService({});
       if (response) {
         setCourses(response?.data);
-      } else {
-        console.log("No courses found");
       }
     } catch (error) {
       console.log("Error fetching course data:", error);
@@ -54,18 +55,17 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
       const response = await getBranchService({});
       if (response) {
         setBranches(response?.data);
-      } else {
-        console.log("No branch found");
       }
     } catch (error) {
       console.log("Error fetching branch data:", error);
     }
   };
 
-  // Fetch students
+  // Fetch students using UUID
   const fetchAllStudents = async () => {
+    if (!courseUUID) return;
     try {
-      const response = await getStudentService({uuid: courseId});
+      const response = await getStudentService({ uuid: courseUUID });
       if (response && Array.isArray(response.data)) {
         const mappedStudents = response.data.map((student: any) => ({
           value: student.uuid,
@@ -73,17 +73,18 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
         }));
         setStudents(mappedStudents);
       } else {
-        console.log("No students found");
+        setStudents([]);
       }
     } catch (error) {
       console.log("Error fetching student data:", error);
     }
   };
 
-  // Fetch staff
+  // Fetch staff using ObjectId
   const fetchAllStaff = async () => {
+    if (!courseObjectId) return;
     try {
-      const response = await getStaffService({uuid: courseId});
+      const response = await getStaffService({ uuid: courseObjectId });
       if (response && Array.isArray(response.data)) {
         const mappedStaff = response.data.map((staff: any) => ({
           value: staff.uuid,
@@ -91,7 +92,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
         }));
         setStaffs(mappedStaff);
       } else {
-        console.log("No staff found");
+        setStaffs([]);
       }
     } catch (error) {
       console.log("Error fetching staff data:", error);
@@ -102,11 +103,11 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     fetchAllCourses();
     fetchAllBranches();
   }, [dispatch]);
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     fetchAllStudents();
     fetchAllStaff();
-  },[courseId])
+  }, [courseUUID, courseObjectId]);
 
   // Validation schema
   const validationSchema = Yup.object({
@@ -147,33 +148,28 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log("Form values:", values);
-
       const payload = {
         batch_name: values.batchName,
         start_date: values.startDate,
         end_date: values.endDate,
         branch_id: values.branch,
-        course: values.course,
+        course: values.course, // this is UUID
         instructor: values.staffs,
         student: values.students,
         institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       };
 
-      console.log("Payload for creating batch:", payload);
-
       try {
         const response = await createBatches(payload);
-        console.log("Batch created successfully:", response);
         if (response) {
           setIsOpen(false);
           toast.success("Batch created successfully!");
         } else {
-           setIsOpen(false);
+          setIsOpen(false);
           toast.error("Subscription limit reached. Update your subscription plan.");
         }
       } catch (error) {
-         setIsOpen(false);
+        setIsOpen(false);
         toast.error("Failed to create batch. Please try again.");
       }
     },
@@ -241,9 +237,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 className="w-full border rounded-md px-4 py-2"
                 type="date"
                 value={formik.values.endDate}
-                onChange={ formik.handleChange 
-
-                }
+                onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
               {formik.touched.endDate && formik.errors.endDate && (
@@ -289,8 +283,10 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 className="w-full border rounded-md px-4 py-2"
                 value={formik.values.course}
                 onChange={(e) => {
+                  const selectedCourse = courses.find((c) => c.uuid === e.target.value);
                   formik.handleChange(e);
-                  setCourseId(e.target.value);
+                  setCourseUUID(selectedCourse?.uuid || "");
+                  setCourseObjectId(selectedCourse?._id || "");
                 }}
                 onBlur={formik.handleBlur}
               >
@@ -314,21 +310,20 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 Students
               </label>
               <Select
-  isMulti
-  name="students"
-  options={students}
-  value={students.filter(option =>
-    formik.values.students.includes(option.value)
-  )}
-  onChange={(selected) => {
-    formik.setFieldValue(
-      "students",
-      Array.isArray(selected) ? selected.map(option => option.value) : []
-    );
-    formik.setFieldTouched("students", true, false);
-  }}
-/>
-
+                isMulti
+                name="students"
+                options={students}
+                value={students.filter((option) =>
+                  formik.values.students.includes(option.value)
+                )}
+                onChange={(selected) => {
+                  formik.setFieldValue(
+                    "students",
+                    Array.isArray(selected) ? selected.map((option) => option.value) : []
+                  );
+                  formik.setFieldTouched("students", true, false);
+                }}
+              />
               {formik.touched.students && formik.errors.students && (
                 <p className="text-[#1BBFCA] text-sm mt-1">
                   {formik.errors.students}
@@ -341,22 +336,21 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Teacher
               </label>
-             <Select
-  isMulti
-  name="staffs"
-  options={staffs}
-  value={staffs.filter(option =>
-    formik.values.staffs.includes(option.value)
-  )}
-  onChange={(selected) => {
-    formik.setFieldValue(
-      "staffs",
-      Array.isArray(selected) ? selected.map(option => option.value) : []
-    );
-    formik.setFieldTouched("staffs", true, false);
-  }}
-/>
-
+              <Select
+                isMulti
+                name="staffs"
+                options={staffs}
+                value={staffs.filter((option) =>
+                  formik.values.staffs.includes(option.value)
+                )}
+                onChange={(selected) => {
+                  formik.setFieldValue(
+                    "staffs",
+                    Array.isArray(selected) ? selected.map((option) => option.value) : []
+                  );
+                  formik.setFieldTouched("staffs", true, false);
+                }}
+              />
               {formik.touched.staffs && formik.errors.staffs && (
                 <p className="text-[#1BBFCA] text-sm mt-1">
                   {formik.errors.staffs}
