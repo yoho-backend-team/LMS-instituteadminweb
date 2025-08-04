@@ -35,7 +35,7 @@ useEffect(() => {
   dispatch(GetViewGroupthunks(ParamsData));
 }, [dispatch]);
 
-console.log(groupView.data, "response");
+console.log(groupView, "response");
 
   // Track checkbox state per module+permission
   const [state, setState] = useState<Record<string, Record<Permission, boolean>>>(
