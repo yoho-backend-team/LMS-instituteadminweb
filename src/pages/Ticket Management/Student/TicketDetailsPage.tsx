@@ -23,7 +23,7 @@ const TicketDetailsPage: React.FC = () => {
 
   const handleCloseTicket = () => {
     updateTicketStatus(ticketId, "closed");
-    navigate(-1); // Go back to ticket list
+    navigate(-1);
   };
 
   const [messages, setMessages] = useState<Message[]>([
@@ -72,7 +72,6 @@ const TicketDetailsPage: React.FC = () => {
 
   return (
     <div className="p-6 pt-0">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
           <button
@@ -85,7 +84,6 @@ const TicketDetailsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Ticket Header */}
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
         <div>
           <p className="text-sm font-semibold">
@@ -106,11 +104,8 @@ const TicketDetailsPage: React.FC = () => {
         )}
       </div>
 
-      {/* Chat + Info Layout */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left: Chat Panel */}
         <div className="flex-1 flex flex-col gap-4 relative">
-          {/* User Info */}
           <div className="bg-white rounded-md border-t-2 shadow p-4">
             <div className="flex items-center gap-3">
               <img
@@ -127,7 +122,6 @@ const TicketDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Chat Messages */}
           <div
             className="bg-white rounded-md shadow border-2 flex flex-col flex-1 relative"
             style={{ backgroundImage: `url(${chatbg})` }}
@@ -178,7 +172,6 @@ const TicketDetailsPage: React.FC = () => {
                 </div>
               ))}
 
-              {/* ✅ Solved / Not Related Buttons - Side by Side */}
               {status !== "closed" && (
                 <div className="flex gap-2 px-4 py-2 border-t">
                   <button
@@ -196,7 +189,6 @@ const TicketDetailsPage: React.FC = () => {
               )}
             </div>
 
-            {/* Chat Input */}
             <div className="border-t border-gray-200 px-4 py-3 flex items-center gap-2 bg-white">
               <input
                 type="text"
@@ -216,7 +208,6 @@ const TicketDetailsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Ticket Info */}
         <div className="w-full lg:w-[30%] bg-white border rounded-md shadow p-4 space-y-4">
           <div>
             <p className="font-semibold text-gray-800 mb-1">
@@ -242,7 +233,7 @@ const TicketDetailsPage: React.FC = () => {
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
-              className={`inline-block px-3 py-1 rounded text-xs ${
+              className={`inline-block px-3 py-2 rounded text-sm ${
                 status === "opened"
                   ? "text-white bg-[#1BBFCA]"
                   : "text-white bg-[#3ABE65]"

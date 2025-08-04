@@ -1,4 +1,3 @@
-// src/components/StudentTickets/TicketContext.tsx
 import React, { createContext, useContext, useState } from "react";
 
 export interface Ticket {
