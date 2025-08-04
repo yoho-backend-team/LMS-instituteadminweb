@@ -456,5 +456,10 @@ class Client {
         getById: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.placements.getById, params),
     };
+    certificate={
+        getAll:(params:any)=>HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId',params?.certificateId),params),
+
+           
+    }
 }
 export default new Client();
