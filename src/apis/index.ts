@@ -268,6 +268,7 @@ class Client {
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
         getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
+        getWithCourse: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
         getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
         getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),

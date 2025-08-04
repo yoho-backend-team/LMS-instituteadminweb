@@ -81,9 +81,9 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
-				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
+				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
 
-				<Route path="noti/msg" element={<NotificationPage />} />
+				<Route path='noti/msg' element={<NotificationPage />} />
 
 				{/* <Route path="/" element={<HomePage />} /> */}
 
