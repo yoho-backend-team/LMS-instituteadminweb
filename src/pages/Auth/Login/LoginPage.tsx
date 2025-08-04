@@ -28,7 +28,7 @@ const LoginPage = () => {
 
 		const response = await AuthLogin({ email, password })
 
-		if (response?.status == 'success' || response?.status == 'sucess') {
+		if (response?.status == 'success' || response?.status == 'success') {
 			if (response?.data?.otpVerify) {
 				toast.success(response?.message)
 				navigate('/otp-verify')

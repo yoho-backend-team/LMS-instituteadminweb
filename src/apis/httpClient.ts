@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
-import { ClearLocalStorage, GetLocalStorage } from "../utils/localStorage";
+import axios from 'axios';
+import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 
 const Axios = axios.create({
     baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -11,11 +11,11 @@ const Axios = axios.create({
 });
 
 Axios.interceptors.request.use((config) => {
-    const token = GetLocalStorage('instituteAdminToken');
-    if (token) {
-        config.headers['Authorization'] = `Token ${token}`;
-    }
-    return config;
+	const token = GetLocalStorage('instituteAdminToken');
+	if (token) {
+		config.headers['Authorization'] = `Token ${token ? token : ''}`;
+	}
+	return config;
 });
 
 Axios.interceptors.response.use(
