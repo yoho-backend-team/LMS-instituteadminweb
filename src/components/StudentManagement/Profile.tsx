@@ -13,8 +13,9 @@ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getcoursesdata } from "../../features/StudentManagement/reducer/thunks"
 import { selectCoursedata } from "../../features/StudentManagement/reducer/selector"
-import { updatestudentdata } from "../../features/StudentManagement/services/Student"
+import { deletestudentdata, updatestudentdata } from "../../features/StudentManagement/services/Student"
 import { GetImageUrl } from "../../utils/helper"
+import toast from "react-hot-toast"
 
 export const Profile = () => {
   const navigate = useNavigate()
@@ -149,7 +150,8 @@ export const Profile = () => {
     
     try {
       // Prepare the data to send to the API
-      const updateData = { ... formData,
+      const updateData = { ...formData,
+        uuid: studData?.data?.uuid,
         _id: studData?.data?._id, // Ensure you have the student ID
         first_name: formData.fullName,
         last_name: formData.lastName,
@@ -169,6 +171,8 @@ export const Profile = () => {
         is_active: formData.status === "Active"
       }
 
+      console.log(updateData, 'updated')
+
       // Call the update service
       const response = await updatestudentdata(updateData)
       
@@ -182,6 +186,18 @@ export const Profile = () => {
       setError("Failed to update student data. Please try again.")
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDelete = async() => {
+    try {
+      const response = await deletestudentdata({uuid: studData?.data?.uuid})
+      console.log(response, 'response')
+      if(response){
+        toast.success('profile deleted successfully!')
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -737,6 +753,7 @@ export const Profile = () => {
               <div className="flex justify-end gap-4 pt-6">
                 <Button
                   variant="outline"
+                  onClick={handleDelete}
                   className="border-[#1BBFCA] text-[#1BBFCA] hover:bg-[#1BBFCA]/10 hover:text-[#1BBFCA] h-10 px-6 bg-transparent"
                 >
                   Delete
