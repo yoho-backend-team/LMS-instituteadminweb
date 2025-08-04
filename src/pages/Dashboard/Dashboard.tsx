@@ -409,7 +409,7 @@ export default function Component() {
 				<h1 style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
 					Recent Activities
 				</h1>
-				{ActivityData.length != 0 ? (
+				{ActivityData?.length != 0 ? (
 					<div className='py-4 px-2 flex gap-4 w-full overflow-x-scroll scrollbar-hide'>
 						{ActivityData?.map((item: any, index: any) => (
 							<section
