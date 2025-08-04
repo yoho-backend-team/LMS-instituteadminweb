@@ -1,12 +1,16 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
 import SalaryTable from "../../../components/paymentmanagement/salaries/salarytable/salarytable";
 import Filtersalary from "../../../components/paymentmanagement/salaries/filtersalary/filtersalary";
+import { GetAllSalaryThunks } from "../../../features/Payment_Managemant/salary/reducers/thunks";
+import { useDispatch } from "react-redux";
 
 const StaffSalaries = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showAddsalary, setAddsalary] = useState(false);
+	const [cardData, setCardData] = useState<any[]>([]);
 
 	const [filters, setFilters] = useState({
 		search: "",
@@ -15,38 +19,21 @@ const StaffSalaries = () => {
 		endDate: "",
 	});
 
-	const [cardData, setCardData] = useState([
-		{
-			id: 1,
-			name: "Prakash",
-			transactionId: "TXN123456",
-			salaryAmount: 50000,
-			paymentDate: "2025-07-31",
-			status: "Active",
-			image: "https://i.pravatar.cc/150?img=5",
-			email: "john@example.com",
-			branchId: "1",
-		},
-	]);
+	const dispatch = useDispatch();
 
-	const [newSalary, setNewSalary] = useState({
-		branchId: "",
-		staffType: "",
-		name: "",
-		paymentDate: "",
-		transactionId: "",
-		salaryAmount: "",
-		balance: "",
-	});
+	useEffect(() => {
+		const fetchData = async () => {
+			const result = await dispatch<any>(GetAllSalaryThunks({}));
+			console.log("Result from thunk:", result);
+			if (result?.payload && Array.isArray(result.payload)) {
+				setCardData(result.payload);
+			} else {
+				console.warn("No data received in payload");
+			}
+		};
 
-	const branches = [
-		{ id: "1", name: "Chennai" },
-		{ id: "2", name: "Bangalore" },
-	];
-
-	function handleFilterChange(updatedFilters: typeof filters) {
-		setFilters(updatedFilters);
-	}
+		fetchData();
+	}, [dispatch]);
 
 	const handleCancel = () => {
 		setAddsalary(false);
@@ -60,6 +47,16 @@ const StaffSalaries = () => {
 			balance: "",
 		});
 	};
+
+	const [newSalary, setNewSalary] = useState({
+		branchId: "",
+		staffType: "",
+		name: "",
+		paymentDate: "",
+		transactionId: "",
+		salaryAmount: "",
+		balance: "",
+	});
 
 	const handleSubmitAndClose = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -77,6 +74,15 @@ const StaffSalaries = () => {
 		alert("Form submitted successfully!");
 		handleCancel();
 	};
+
+	const branches = [
+		{ id: "1", name: "Chennai" },
+		{ id: "2", name: "Bangalore" },
+	];
+
+	function handleFilterChange(updatedFilters: typeof filters) {
+		setFilters(updatedFilters);
+	}
 
 	return (
 		<div>
@@ -221,7 +227,7 @@ const StaffSalaries = () => {
 					</div>
 				</div>
 			)}
-
+			
 			<SalaryTable
 				search={filters.search}
 				branch={filters.branch}
@@ -230,6 +236,7 @@ const StaffSalaries = () => {
 				cardData={cardData}
 				setCardData={setCardData}
 			/>
+
 		</div>
 	);
 };

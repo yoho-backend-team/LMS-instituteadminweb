@@ -106,14 +106,13 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`,
+			delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
 			getWithId: `/api/institutes/class/online/`,
 			create: `/api/institutes/class/online`,
 			update: `/api/institutes/class/online/update/:classId`,
-			delete: `/api/institutes/class/online/:classId`,
 		},
 		offline_class: {
 			create: `/api/institutes/class/offline`,
@@ -212,7 +211,6 @@ const generateEndpoints = () => {
 			staff_notification: `/api/institutes/staff/notifications/all`,
 			create_staff_notification: `/api/institutes/staff/notifications/`,
 			institute_notification: `/api/institutes/branch/notifications`,
-			create_all_notification: `/api/institutes/branch/notifications`,
 		},
 		institute_notification: {
 			get_all: `/api/notification/institute/`,
@@ -236,14 +234,7 @@ const generateEndpoints = () => {
 			update: `/api/placements/update`,
 			getById: `/api/placements/fetch`,
 		},
-		notificationSubscription: {
-			post: '/notification/subscribe',
-		},
-		certificate: {
-			get: '/api/certificate/973195c0-66ed-47c2-b098-d8989d3e4529/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22',
-		}
 	};
-
 };
 
 export const HTTP_END_POINTS = generateEndpoints();

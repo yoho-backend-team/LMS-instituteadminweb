@@ -1,1 +1,0 @@
-export const GetSalarySelectors=(state:any)=>state.SalarySlice.data;
