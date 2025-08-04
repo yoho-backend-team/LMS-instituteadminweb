@@ -59,9 +59,6 @@ import CertificateView from '../components/cerificateManagement/certificateView'
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
-import LogoutRoute from '../components/shared/Navbar';
-
-// import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
@@ -73,7 +70,6 @@ const AppRoutes = () => {
 			<Route path='/otp-verify' element={<OtpVerification />} />
 			<Route path='/reset-password' element={<ChangePassword />} />
 			<Route path='*' element={<Navigate to='/login' />} />
-			<Route path="/logout" element={<LogoutRoute />} />
 		</Routes>
 	);
 
