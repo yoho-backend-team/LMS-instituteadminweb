@@ -23,7 +23,10 @@ import { Card, CardContent } from '../ui/card';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import DeleteConfirmationModal from './deleteModal';
 import toast from 'react-hot-toast';
-import { deleteBatches, updateBatches } from '../../features/batchManagement/services';
+import {
+	deleteBatches,
+	updateBatches,
+} from '../../features/batchManagement/services';
 
 interface BatchCardProps {
 	title: string;
@@ -46,7 +49,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	isActive,
 	duration,
 	data,
-	fetchBatchData
+	fetchBatchData,
 }) => {
 	const [status, setStatus] = useState<any>(isActive ? 'active' : 'inactive');
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -57,51 +60,47 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = async() => {
+	const handleConfirmDelete = async () => {
 		try {
 			const response = await deleteBatches({ uuid: data?.uuid });
 			if (response) {
-				toast.success("Batch deleted successfully!");
+				toast.success('Batch deleted successfully!');
 				closeDeleteModal();
 				if (fetchBatchData) {
 					fetchBatchData();
 				}
 			} else {
-				toast.error("Failed to delete batch");
+				toast.error('Failed to delete batch');
 			}
 		} catch (error) {
 			console.log('Error deleting batch:', error);
-			
 		}
 	};
 
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const handleStatusChange = async(value: string) => {
-			setStatus(value);
+	const handleStatusChange = async (value: string) => {
+		setStatus(value);
 
-			 const payload = {
-				uuid: data?.uuid,
-				batch_name: data?.batch_name,
-				is_active: value === 'active',
-      		};
+		const payload = {
+			uuid: data?.uuid,
+			batch_name: data?.batch_name,
+			is_active: value === 'active',
+		};
 
-      try {
-        const response = await updateBatches(payload);
-        if(response){
-			toast.success("Batch updated successfully!");
-			if (fetchBatchData) {
-			fetchBatchData();
+		try {
+			const response = await updateBatches(payload);
+			if (response) {
+				toast.success('Batch updated successfully!');
+				if (fetchBatchData) {
+					fetchBatchData();
+				}
 			}
+		} catch (error) {
+			console.error('Error updating batch:', error);
+			toast.error('Failed to update batch');
 		}
-      } catch (error) {
-        console.error("Error updating batch:", error);
-        toast.error("Failed to update batch");
-      }
-    }
-		handleStatusChange(status)
-	}, [status]);
+	};
 
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-full max-w-md bg-white relative'>
@@ -126,7 +125,9 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 
 						<DropdownMenuContent className='bg-white rounded-lg shadow-xl w-[120px] p-2 z-50 space-y-2'>
 							<DropdownMenuItem
-								onSelect={() => navigate('/view-batch', { state: { batchData: data } })}
+								onSelect={() =>
+									navigate('/view-batch', { state: { batchData: data } })
+								}
 								className='group border border-gray-300 text-black font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-[#1BBFCA] focus:bg-[#1BBFCA] outline-none'
 							>
 								<Eye className='w-4 h-4 text-black group-hover:text-white' />
@@ -203,7 +204,10 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 				</div>
 
 				<div className='flex justify-end mt-12'>
-					<Select value={status} onValueChange={setStatus}>
+					<Select
+						value={status}
+						onValueChange={() => handleStatusChange(status)}
+					>
 						<SelectTrigger
 							className={`w-[100px] h-[40px] border border-gray px-2 bg-transparent shadow-none ${
 								status && 'px-0 [&>svg]:hidden'
@@ -241,7 +245,12 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 					</Select>
 				</div>
 			</CardContent>
-			<EditBatchModal fetchBatchData={fetchBatchData} data={data} isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditBatchModal
+				fetchBatchData={fetchBatchData}
+				data={data}
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+			/>
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}
