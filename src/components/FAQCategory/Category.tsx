@@ -39,6 +39,10 @@ const FaqCategory: React.FC = () => {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deleteCategoryIndex, setDeleteCategoryIndex] = useState<number | null>(null);
 
+  
+  const [pendingStatusIndex, setPendingStatusIndex] = useState<number | null>(null);
+  const [pendingNewStatus, setPendingNewStatus] = useState<"Active" | "Inactive" | null>(null);
+
   useEffect(() => {
     if (
       isFormOpen ||
@@ -63,13 +67,14 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
+  
   const handleStatusChange = (
     index: number,
     newStatus: "Active" | "Inactive"
   ) => {
-    const updated = [...categories];
-    updated[index].status = newStatus;
-    setCategories(updated);
+    setPendingStatusIndex(index);
+    setPendingNewStatus(newStatus);
+    setIsDeleteConfirmOpen(true);
     setOpenStatusIndex(null);
   };
 
@@ -122,18 +127,35 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(null);
   };
 
+  
   const confirmDelete = () => {
-    if (deleteCategoryIndex === null) return;
-    const updated = categories.filter((_, i) => i !== deleteCategoryIndex);
-    setCategories(updated);
-    setIsDeleteConfirmOpen(false);
-    setDeleteCategoryIndex(null);
-    setIsAddSuccessModalOpen(true);
+    
+    if (pendingStatusIndex !== null && pendingNewStatus !== null) {
+      const updated = [...categories];
+      updated[pendingStatusIndex].status = pendingNewStatus;
+      setCategories(updated);
+      setIsDeleteConfirmOpen(false);
+      setPendingStatusIndex(null);
+      setPendingNewStatus(null);
+      return;
+    }
+
+    
+    if (deleteCategoryIndex !== null) {
+      const updated = categories.filter((_, i) => i !== deleteCategoryIndex);
+      setCategories(updated);
+      setIsDeleteConfirmOpen(false);
+      setDeleteCategoryIndex(null);
+      setIsAddSuccessModalOpen(true);
+    }
   };
 
+  
   const cancelDelete = () => {
     setIsDeleteConfirmOpen(false);
     setDeleteCategoryIndex(null);
+    setPendingStatusIndex(null);
+    setPendingNewStatus(null);
   };
 
   const filtered = categories.filter((c) =>
@@ -164,7 +186,7 @@ const FaqCategory: React.FC = () => {
       />
 
       {/* Table */}
-      <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]">
+      <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.03),0px_-4px_24px_0px_rgba(0,0,0,0.03)]">
         <div className="grid grid-cols-4 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md">
           <div>ID</div>
           <div>Category Name</div>
@@ -329,27 +351,29 @@ const FaqCategory: React.FC = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete  */}
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
             <img src={warning} alt="Warning" className="mx-auto w-20 h-20 mb-4" />
             <h2 className="text-2xl font-semibold text-[#716F6F] mb-2">
-              Confirm Delete
+              {pendingStatusIndex !== null ? "Confirm Status Change" : "Confirm Delete"}
             </h2>
             <p className="text-[#7D7D7D] mb-6">
-              Are you sure you want to delete this category?
+              {pendingStatusIndex !== null
+                ? `Are you sure you want to change the status to "${pendingNewStatus}"?`
+                : "Are you sure you want to delete this category?"}
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-8">
               <button
+                className="bg-[#1BBFCA] text-white  hover:bg-[#3ABE65]     rounded-xl px-6 py-2"
                 onClick={confirmDelete}
-                className="bg-red-500 hover:bg-[#3ABE65] text-white font-semibold px-6 py-2 rounded-lg"
               >
-                Yes, Delete
+                Yes,Status
               </button>
               <button
-                onClick={cancelDelete}
                 className="border border-[#1BBFCA] text-[#1BBFCA] bg-[#E6FBFD] hover:bg-[#d1f5f8] font-semibold px-6 py-2 rounded-lg"
+                onClick={cancelDelete}
               >
                 Cancel
               </button>
