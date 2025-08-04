@@ -71,3 +71,15 @@ export const updateLiveClass = async (data: any) => {
 		return null;
 	}
 };
+
+export const deleteLiveClass = async (params: any) => {
+	try {
+		const response = await Client.online_class.delete(params);
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};

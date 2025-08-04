@@ -199,8 +199,10 @@ class Client {
 				HTTP_END_POINTS.online_class.update.replace(':classId', data?.uuid),
 				data
 			),
-		delete: (data: any) =>
-			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.id),
+		delete: (params: any) =>
+			HttpClient.delete(
+				HTTP_END_POINTS.online_class.delete.replace(':classId', params?.uuid)
+			),
 	};
 	offline_class = {
 		create: (data: any) =>
