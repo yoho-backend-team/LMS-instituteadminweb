@@ -4,7 +4,7 @@ import { HTTP_END_POINTS } from './httpEndpoints';
 
 class Client {
     admin = {
-        me: (data: any) => HttpClient.get(HTTP_END_POINTS.admin.me, data),
+        me: () => HttpClient.get(HTTP_END_POINTS.admin.me),
         change_password: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.admin.change_password, data),
         forget_password: (data: any) =>
