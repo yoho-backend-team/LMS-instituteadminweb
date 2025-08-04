@@ -132,7 +132,7 @@ export default function BatchManagement() {
     </div>
 
     
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+    <div className='grid grid-cols md:grid-cols-2 gap-6'>
       <div>
         <label
           className='block mb-1'
@@ -206,8 +206,7 @@ export default function BatchManagement() {
   </div>
 )}
 
-
-			<div className='flex gap-6 flex-wrap'>
+                <div className='flex flex-col-3 gap-3 flex-wrap'>
 				{filteredBatches?.length ? filteredBatches?.map((batch: any) 	=>(
                   <BatchCard
 				  	key={batch?._id}
