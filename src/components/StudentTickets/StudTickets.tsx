@@ -1,55 +1,21 @@
 import React, { useState } from "react";
 import TicketCard from "./TicketCard";
 import ticket1 from "../../assets/ticket1.png";
-
-interface Ticket {
-  id: number;
-  name: string;
-  email: string;
-  message: string;
-  date: string;
-  time: string;
-  priority: "High" | "Low";
-  status: "opened"; // 👈 Only "opened" tickets included
-}
-
-const Tickets: Ticket[] = [
-  {
-    id: 1,
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    message: "This ticket created from student mobile app",
-    date: "5-7-2025",
-    time: "6:03 AM",
-    priority: "High",
-    status: "opened",
-  },
-  {
-    id: 3,
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    message: "This ticket created from student mobile app",
-    date: "5-7-2025",
-    time: "6:03 AM",
-    priority: "Low",
-    status: "opened",
-  },
-];
+import { useTicketContext } from "../../components/StudentTickets/TicketContext";
 
 const StudTickets: React.FC = () => {
   const [filter, setFilter] = useState<"opened" | "closed">("opened");
+  const { tickets } = useTicketContext();
 
-  const filteredTickets = Tickets.filter((ticket) => ticket.status === filter);
+  const filteredTickets = tickets.filter((ticket) => ticket.status === filter);
 
   return (
     <div>
-      {/* Title with ticket icon */}
       <div className="bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6 w-full">
         <img src={ticket1} alt="Ticket Icon" className="w-5 h-5" />
         STUDENT TICKETS
       </div>
 
-      {/* Filter buttons */}
       <div className="flex gap-4 mb-6">
         {["opened", "closed"].map((type) => (
           <button
@@ -66,12 +32,9 @@ const StudTickets: React.FC = () => {
         ))}
       </div>
 
-      {/* Ticket Cards */}
       <div className="grid md:grid-cols-3 gap-6">
         {filteredTickets.length > 0 ? (
-          filteredTickets.map((ticket) => (
-            <TicketCard key={ticket.id} {...ticket} />
-          ))
+          filteredTickets.map((ticket) => <TicketCard key={ticket.id} {...ticket} />)
         ) : (
           <p className="text-gray-500 col-span-3 text-center">No tickets found.</p>
         )}
