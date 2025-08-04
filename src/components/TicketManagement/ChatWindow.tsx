@@ -46,10 +46,10 @@ const ChatWindow: React.FC = () => {
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-auto w-2/3">
+        <div className="flex flex-col h-auto w-4/5 w-full">
             <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl mr-5 items-center gap-4">
                 {/* Circular Image */}
-                <img src={ciricon} alt="User" className="w-12 h-12 rounded-full object-cover" />
+                <img src={ciricon} alt="User" className="w-10 h-10 rounded-full object-cover" />
 
                 {/* Text Column */}
                 <div>
@@ -59,7 +59,7 @@ const ChatWindow: React.FC = () => {
             </div>
 
             {/* Chat Body */}
-            <div className="flex-1 p-4 overflow-y-auto rounded-t-2xl mt-4 mr-5"
+            <div className="flex-1 p-1  overflow-y-auto rounded-t-2xl mt-4 mr-5"
                 style={{ backgroundImage: `url(${chatimg})` }}>
                 {messages.map((msg, index) => (
                     <MessageBubble key={index} {...msg} />
