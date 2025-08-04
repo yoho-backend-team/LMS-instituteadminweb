@@ -13,6 +13,7 @@ export const getInstituteDetails = () => {
 export const getSelectedBranchId = () => {
 	if (typeof secureLocalStorage !== 'undefined') {
 		const branch = GetLocalStorage('selectedBranchId');
+        console.log(branch, 'branch id')
 		return branch;
 	} else {
 		return null;
@@ -112,6 +113,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/class/online/`,
 			create: `/api/institutes/class/online`,
 			update: `/api/institutes/class/online/update/:classId`,
+			delete: `/api/institutes/class/online/:classId`,
 		},
 		offline_class: {
 			create: `/api/institutes/class/offline`,
@@ -158,8 +160,7 @@ const generateEndpoints = () => {
 			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
 			getWithId: `/api/institutes/${instituteId}/staff/`,
 			getWithcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/`,
-			getWithBranch: `/api/institutes/${instituteId}/branches/${branchId}/instructors/:courseUUID
-`,
+			getWithBranch: `/api/institutes/${instituteId}/branches/${branchId}/instructors/:courseUUID`,
 			// getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
 			// getActivtiy: "/api/institutes/user/activity/staff/",

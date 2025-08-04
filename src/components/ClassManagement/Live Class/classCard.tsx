@@ -92,7 +92,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -109,7 +109,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -182,7 +182,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 							className=' mt-4'
 							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
 						>
-							{title}
+							{`${title.substring(0, 25)}${title.length > 25 ? '...' : ''}`}
 						</p>
 					</div>
 
@@ -214,8 +214,8 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 							className='cursor-pointer underline'
 							target='_blank'
 						>
-							{`${data?.video_url.substring(0, 35)} ${
-								data?.video_url?.length > 35 ? '...' : ''
+							{`${data?.video_url.substring(0, 30)} ${
+								data?.video_url?.length > 30 ? '...' : ''
 							}`}
 						</a>
 					</div>
