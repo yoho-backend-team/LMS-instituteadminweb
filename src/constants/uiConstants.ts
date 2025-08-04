@@ -59,7 +59,7 @@ export const FONTS = {
 	},
 	heading_06: {
 		fontFamily: 'Poppins',
-		fontWeight: 600,
+		fontWeight: 500,
 		fontSize: '18px',
 	},
 	heading_06_bold: {
@@ -67,9 +67,19 @@ export const FONTS = {
 		fontWeight: 600,
 		fontSize: '18px',
 	},
+	heading_06_light: {
+		fontFamily: 'Poppins',
+		fontWeight: 300,
+		fontSize: '18px',
+	},
 	heading_07: {
 		fontFamily: 'Poppins',
 		fontWeight: 500,
+		fontSize: '16px',
+	},
+	heading_07_light: {
+		fontFamily: 'Poppins',
+		fontWeight: 300,
 		fontSize: '16px',
 	},
 	heading_07_bold: {
@@ -107,14 +117,34 @@ export const FONTS = {
 		fontWeight: 300,
 		fontSize: '14px',
 	},
-	heading_13:{
+	heading_13: {
 		fontFamily: 'Poppins',
-		fontWeight: 300,
-		fontSize: '18px',
+		fontWeight: 400,
+		fontSize: '14px',
 	},
 	description: {
 		fontFamily: 'Poppins',
 		fontWeight: 300,
 		fontSize: '10px',
 	},
+	login_heading:{
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '75px',
+	},
+	login_heading_02:{
+		fontFamily: 'Poppins',
+		fontWeight: 700,
+		fontSize: '25px',
+	},
+	login_description:{
+		fontFamily: 'Poppins',
+		fontWeight: 400,
+		fontSize: '14px',
+	},
+	login_input_head:{
+		fontFamily: 'Poppins',
+		fontWeight: 500,
+		fontSize: '18px',
+	}
 };

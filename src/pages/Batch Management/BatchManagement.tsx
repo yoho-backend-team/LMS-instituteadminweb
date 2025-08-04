@@ -77,6 +77,8 @@ export default function BatchManagement() {
 	return matchesStatus && matchesDate && matchesCourse && matchesBatch;
 });
 
+console.log('Filtered Batches:', filteredBatches);
+
 	return (
 		<div className='min-h-screen bg-cover bg-no-repeat bg-center p-4 overflow-y-auto'>
 			<div className='mb-8'>
@@ -221,6 +223,7 @@ export default function BatchManagement() {
 					endDate={batch?.end_date}
 					isActive={batch?.is_active}
 					data={batch}
+					fetchBatchData={fetchBatchData}
 				/>
 				)) : <div className='flex flex-1 justify-center mt-20'>
 						<p >No batches available</p>

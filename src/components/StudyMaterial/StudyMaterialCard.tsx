@@ -58,7 +58,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             alt="file"
             className="w-5 h-5"
           />
-          <span className="text-sm">{note.file.name}</span>
+          <span className="text-sm">{note.id}</span>
         </div>
       )}
 
