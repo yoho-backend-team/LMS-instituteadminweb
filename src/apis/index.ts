@@ -281,6 +281,7 @@ class Client {
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
         get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
+        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
         
     };
     community = {

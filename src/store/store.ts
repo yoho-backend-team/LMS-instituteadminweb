@@ -16,6 +16,7 @@ import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
 import StaffSlice from '../features/staff/reducers/slices'
 import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
+import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 
 
 const store = configureStore({
@@ -38,6 +39,9 @@ const store = configureStore({
 		GroupCardSlice: GroupCardSlice,
 		StaffSlice: StaffSlice,
 		AllNotificationReducer: AllNotificationReducer,
+		Coursedata:Coursedata
+		
+
 	},
 })
 

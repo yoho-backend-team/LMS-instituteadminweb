@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { getStudentmanagement } from "../../../features/StudentManagement/reducer/thunks"
 import type { AppDispatch } from "recharts/types/state/store"
 import { selectStudent } from "../../../features/StudentManagement/reducer/selector"
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
+import { GetImageUrl } from "../../../utils/helper"
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false)
@@ -61,8 +63,7 @@ const Students = () => {
       location: `${newStudentForm.city}, ${newStudentForm.state}`,
     }
     
-    // Here you would typically make an API call to add the student
-    // For now, we'll just close the form
+ 
     setNewStudentForm({
       fullName: "",
       lastName: "",
@@ -98,23 +99,48 @@ const Students = () => {
     fetchStudentManagement()
   }, [])
 
-  // Format the backend data to match your UI structure
+  
+
+
   const formatStudentData = (data: any) => {
     if (!data || !data.data) return []
     
     return data.data.map((student: any) => ({
+      id: student._id,
       name: student.full_name || `${student.first_name} ${student.last_name}`,
+      firstName: student.first_name,
+      lastName: student.last_name,
       email: student.email,
       location: student.contact_info 
         ? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''}`.trim()
         : 'Location not specified',
       image: student.image,
       phone: student.contact_info?.phone_number,
-      id: student._id
+      altPhone: student.contact_info?.alternate_phone_number,
+      dob: student.dob,
+      gender: student.gender,
+      qualification: student.qualification,
+      course: student.course,
+      addressLine1: student.contact_info?.address1,
+      addressLine2: student.contact_info?.address2,
+      city: student.contact_info?.city,
+      state: student.contact_info?.state,
+      pinCode: student.contact_info?.pincode,
+      joinedDate: student.created_at,
+      status: student.status || 'Active',
+      uuid: student?.uuid
     }))
   }
 
   const formattedStudents = formatStudentData(studentData)
+
+  const handleStudentClick = (student: any) => {
+    navigate(`/students/Profile`, { 
+      state: { 
+        studentData: student 
+      } 
+    })
+  }
 
   if (showAddStudent) {
     return (
@@ -133,6 +159,7 @@ const Students = () => {
             </div>
           </CardContent>
         </Card>
+
         <Card className="mb-6 shadow-md">
           <CardHeader>
             <CardTitle className="text-[20px] font-semibold">Student Details</CardTitle>
@@ -231,6 +258,7 @@ const Students = () => {
             </div>
           </CardContent>
         </Card>
+
         <Card className="mb-6 shadow-md">
           <CardHeader>
             <CardTitle className="text-[20px] font-semibold">Contact Info</CardTitle>
@@ -338,6 +366,7 @@ const Students = () => {
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-[24px] font-semibold">Student</h4>
       </div>
+
       <div className="flex justify-between items-center mb-4">
         <Button
           variant="outline"
@@ -347,6 +376,7 @@ const Students = () => {
           <FaSlidersH className="text-white text-[18px]" />
           {showFilters ? "Hide Filter" : "Show Filter"}
         </Button>
+
         <Button
           className="px-4 py-2 pr-16px pl-16px w-[205px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
           onClick={toggleAddStudent}
@@ -418,18 +448,31 @@ const Students = () => {
         {formattedStudents.map((student, index) => (
           <Card
             key={index}
-            className="min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md"
-            onClick={() => navigate(`/students/Profile`)}
+            className="min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => handleStudentClick(student)}
           >
-            <CardContent className="p-4">
-              <div className="bg-gray-300 h-32 rounded-md mb-4" />
-              <h5 className="text-[20px] font-semibold">{student.name}</h5>
-              <p className="text-[16px] text-gray-500">{student.email}</p>
-              <div className="flex items-center mt-2 text-[16px] text-gray-700 gap-[16px]">
-                <img className="w-5 h-5" src={location} alt="Location" />
-                <span>{student.location}</span>
-              </div>
-            </CardContent>
+            
+             <CardContent className="p-4">
+        <div className="flex justify-center mb-4">
+          <Avatar className="h-20 w-20 rounded-lg">
+            <AvatarImage
+              src={GetImageUrl(student?.image) ?? undefined}
+              alt={student?.name || "Student"}
+              className="rounded-lg object-cover"
+            />
+            
+          </Avatar>
+        </div>
+
+        <h5 className="text-[20px] font-semibold text-center">{student.name}</h5>
+        <p className="text-[16px] text-gray-500 text-center">{student.email}</p>
+
+        <div className="flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]">
+          <img className="w-5 h-5" src={location} alt="Location" />
+          <span>{student.location}</span>
+        </div>
+      </CardContent>
+
             <CardFooter className="flex justify-center gap-[30px] items-center px-4 pb-4">
               <img className="w-8 h-8" src={call} alt="Call" />
               <img className="w-8 h-8" src={msg} alt="Message" />
