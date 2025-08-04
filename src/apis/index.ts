@@ -460,5 +460,10 @@ class Client {
         post: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
     };
+    certificate = {
+        getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId', params?.certificateId), params),
+
+
+    }
 }
 export default new Client();

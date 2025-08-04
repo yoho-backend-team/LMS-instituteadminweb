@@ -3,12 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const OfflineSlice=createSlice({
     name:'OfflineSlice',
     initialState:{
-        data:[],
+        offlineclass:[],
 
     },
     reducers:{
         setOfflineClass:(state,action)=>{
-            state.data=action.payload;
+            state.offlineclass=action.payload;
         },
     }
 })

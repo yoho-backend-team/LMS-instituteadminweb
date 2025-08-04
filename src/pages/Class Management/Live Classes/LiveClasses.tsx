@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../../components/ui/button';
 import filter from '../../../assets/Filter.png';
@@ -30,7 +30,7 @@ const LiveClasses = () => {
 		searchText: '',
 	});
 
-	const fetchAllLiveClasses = async () => {
+	const fetchAllLiveClasses = useCallback(async () => {
 		try {
 			const params_data = {
 				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
@@ -41,9 +41,9 @@ const LiveClasses = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, [dispatch]);
 
-	const fetchAllCourses = async () => {
+	const fetchAllCourses = useCallback(async () => {
 		try {
 			const response = await getAllCourses({});
 			if (response) {
@@ -52,9 +52,9 @@ const LiveClasses = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, []);
 
-	const fetchAllBatches = async () => {
+	const fetchAllBatches = useCallback(async () => {
 		try {
 			const response = await getAllBatches({});
 			if (response) {
@@ -63,7 +63,37 @@ const LiveClasses = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, []);
+
+	const handleFilterChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+			const { name, value } = e.target;
+			setSearchTerms((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		},
+		[]
+	);
+
+	const resetFilters = useCallback(() => {
+		setSearchTerms({
+			status: '',
+			course: '',
+			batch: '',
+			startDate: '',
+			endDate: '',
+			searchText: '',
+		});
+	}, []);
+
+	const toggleFilter = useCallback(() => {
+		setShowFilter((prev) => !prev);
+	}, []);
+
+	const toggleCreateModal = useCallback(() => {
+		setShowCreateModal((prev) => !prev);
+	}, []);
 
 	useEffect(() => {
 		if (liveClassData?.data) {
@@ -117,27 +147,6 @@ const LiveClasses = () => {
 		fetchAllBatches();
 	}, [dispatch]);
 
-	const handleFilterChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-	) => {
-		const { name, value } = e.target;
-		setSearchTerms((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
-
-	const resetFilters = () => {
-		setSearchTerms({
-			status: '',
-			course: '',
-			batch: '',
-			startDate: '',
-			endDate: '',
-			searchText: '',
-		});
-	};
-
 	return (
 		<>
 			<div className='my-4 min-h-screen'>
@@ -151,7 +160,7 @@ const LiveClasses = () => {
 
 					<div className='flex justify-between items-center'>
 						<Button
-							onClick={() => setShowFilter(!showFilter)}
+							onClick={toggleFilter}
 							className='bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2'
 							style={{ ...FONTS.heading_07, color: COLORS.white }}
 						>
@@ -162,7 +171,7 @@ const LiveClasses = () => {
 						<Button
 							className='bg-[#1BBFCA] hover:bg-[#1BBFCA]  px-4 flex items-center gap-2'
 							style={{ ...FONTS.heading_07, color: COLORS.white }}
-							onClick={() => setShowCreateModal(true)}
+							onClick={toggleCreateModal}
 						>
 							<img src={plus} className='w-4 h-4' />
 							Add Live Class
@@ -308,6 +317,7 @@ const LiveClasses = () => {
 						filteredClasses?.map((liveClass: any, index: any) => (
 							<LiveClassCard
 								key={index}
+								fetchAllLiveClasses={fetchAllLiveClasses}
 								title={liveClass?.class_name}
 								data={liveClass}
 							/>
@@ -322,6 +332,7 @@ const LiveClasses = () => {
 				</div>
 
 				<CreateLiveClassModal
+					fetchAllLiveClasses={fetchAllLiveClasses}
 					isOpen={showCreateModal}
 					setIsOpen={setShowCreateModal}
 				/>
