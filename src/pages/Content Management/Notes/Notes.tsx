@@ -1,15 +1,27 @@
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { BsPlusLg, BsSliders } from "react-icons/bs";
 import CustomDropdown from "../../../components/ContentMangement/Notes/CoustomDropdown/CustomDropdown";
 import AddNotes from "../../../components/ContentMangement/Notes/AddNotes";
 import NoteCard from "../../../components/ContentMangement/Notes/NotesCards";
 import EditNotes from "../../../components/ContentMangement/Notes/EditNotes";
 import ViewNoteModal from "../../../components/ContentMangement/Notes/Viewnotes";
+import {
+  fetchNotesThunk,
+  createNoteThunk,
+  updateNoteThunk,
+  deleteNoteThunk,
+} from "../../../features/ContentMangement/Notes/Reducer/noteThunk";
+import { selectNote } from "../../../features/ContentMangement/Notes/Reducer/selectors";
+import toast from "react-hot-toast";
 
 const statusfilteroption = ["Active", "InActive"];
 const courseOptions = ["Course 1", "Course 2"];
 
 const Notes = () => {
+  const dispatch = useDispatch<any>();
+  const notes = useSelector(selectNote);
+
   const [showFilter, setShowFilter] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [showPanel, setShowPanel] = useState(false);
@@ -19,36 +31,24 @@ const Notes = () => {
   const [viewNote, setViewNote] = useState<any>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const [notes, setNotes] = useState([
-    {
-      title: "RVR",
-      fileName: "dummy.pdf",
-      course: "Course 1",
-      branch: "Branch 1",
-      confirm: "Confirm 1",
-      description: "Description 1",
-      isActive: true,
-    },
-    {
-      title: "ABC",
-      fileName: "abc_content.pdf",
-      course: "Course 2",
-      branch: "Branch 2",
-      confirm: "Confirm 2",
-      description: "Description 2",
-      isActive: false,
-    },
-  ]);
+  useEffect(() => {
+    const params = {
+      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      page: 1,
+    };
+    dispatch(fetchNotesThunk(params));
+  }, [dispatch]);
 
   const handleNoteSubmit = (data: any) => {
     if (editNote) {
-      setNotes((prev) =>
-        prev.map((note) =>
-          note.title === editNote.title ? { ...note, ...data } : note
-        )
-      );
+      dispatch(updateNoteThunk(data))
+        .then(() => toast.success("Note updated"))
+        .catch(() => toast.error("Update failed"));
     } else {
-      setNotes((prev) => [...prev, data]);
+      console.log("Data being sent:", data);
+      dispatch(createNoteThunk(data))
+        .then(() => toast.success("Note added"))
+        .catch(() => toast.error("Add failed"));
     }
     setEditNote(null);
     setShowPanel(false);
@@ -60,12 +60,41 @@ const Notes = () => {
     setShowFilter(false);
     setOpenIndex(null);
   };
-
-  const handleDeleteClick = (note: any) => {
-    setNotes((prev) => prev.filter((n) => n.title !== note.title));
-    setShowFilter(false);
-    setOpenIndex(null);
+  const handleDeleteNote = (noteId: string) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2">
+          <span>Are you sure you want to delete this note?</span>
+          <div className="flex justify-end gap-2 mt-2">
+            <button
+              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+              onClick={async () => {
+                toast.dismiss(t.id);
+                try {
+                  await dispatch(deleteNoteThunk(noteId)).unwrap();
+                  toast.success("Note deleted successfully");
+                  setShowFilter(false);
+                  setOpenIndex(null);
+                } catch (error) {
+                  toast.error("Failed to delete note");
+                }
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 5000 }
+    );
   };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -80,7 +109,6 @@ const Notes = () => {
     if (showPanel) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -88,6 +116,7 @@ const Notes = () => {
 
   return (
     <div className="relative flex flex-col gap-6">
+      {/* Side panel for Add/Edit */}
       {showPanel && (
         <div
           className="fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm"
@@ -122,7 +151,7 @@ const Notes = () => {
           </div>
         </div>
       )}
-
+      {/* Top bar */}
       <div className="flex justify-between items-center">
         <div className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center">
           <BsSliders size={20} />
@@ -143,7 +172,7 @@ const Notes = () => {
           <span>Add New Note</span>
         </div>
       </div>
-
+      {/* Filters */}
       {showFilter && (
         <div className="flex gap-5 bg-white p-2 rounded-lg shadow-lg">
           <div className="flex-1 p-1 flex flex-col gap-2">
@@ -168,29 +197,33 @@ const Notes = () => {
           </div>
         </div>
       )}
-
+      {/* Notes Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {notes.map((note, index) => (
+        {notes.map((note: any, index: number) => (
           <NoteCard
-            key={index}
+            key={note.uuid || index}
             {...note}
             index={index}
             openIndex={openIndex}
             setOpenIndex={setOpenIndex}
             onEdit={() => handleEditClick(note)}
-            onDelete={() => handleDeleteClick(note)}
+            onDelete={() => handleDeleteNote(note.uuid)}
             onView={() => setViewNote(note)}
           />
         ))}
+        {/* View Modal */}
         {viewNote && (
           <ViewNoteModal
             isOpen={true}
             note={{
               title: viewNote.title,
-              course: viewNote.course,
-              description: viewNote.description,
-              file: viewNote.file,
-              fileName: viewNote.fileName, 
+              course: viewNote.course?.course_name ?? "N/A",
+              description: viewNote.description ?? "",
+              file: viewNote.file instanceof File ? viewNote.file : undefined,
+              fileName:
+                typeof viewNote.fileName === "string"
+                  ? viewNote.fileName
+                  : undefined,
               status: viewNote.isActive ? "Active" : "Completed",
             }}
             onClose={() => setViewNote(null)}
@@ -200,5 +233,4 @@ const Notes = () => {
     </div>
   );
 };
-
 export default Notes;

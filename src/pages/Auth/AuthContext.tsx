@@ -25,14 +25,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		// const token = localStorage.getItem("authToken");
 		const token = GetLocalStorage('instituteAdminToken');
 		setIsAuthenticated(!!token);
 		setIsLoading(false);
 	}, []);
 
-	const login = (data?: string) => {
-		StoreLocalStorage('instituteAdminToken', 'dummy-token');
+	const login = (data: string) => {
+		StoreLocalStorage('instituteAdminToken', data);
 		setIsAuthenticated(true);
 	};
 
