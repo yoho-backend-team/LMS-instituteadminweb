@@ -128,6 +128,7 @@ const generateEndpoints = () => {
         },
         student: {
             get: `/api/institutes/${instituteId}/branches/`,
+            getall: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/:courseUUID/students`,
             getWithId: `/api/institutes/auth/student/${instituteId}/students/`,
             getWithBatch: `/api/institutes/${instituteId}/branches/`,
             getWithCourse: `/api/institutes/${instituteId}/branches/`,
@@ -156,7 +157,8 @@ const generateEndpoints = () => {
             getWithId: `/api/institutes/${instituteId}/staff/`,
             // getWithcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/`,
             getWithcourse: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/courses/`,
-            getWithBranch: `/api/institutes/${instituteId}/branches/`,
+            getWithBranch: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/instructors/:courseUUID
+`,
             // getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
             getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
             // getActivtiy: "/api/institutes/user/activity/staff/",

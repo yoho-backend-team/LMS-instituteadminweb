@@ -32,6 +32,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
   const [staffs, setStaffs] = useState<OptionType[]>([]);
   const [branches, setBranches] = useState([]);
   const dispatch = useDispatch<any>();
+  const [courseId, setCourseId] = useState("");
 
   // Fetch courses
   const fetchAllCourses = async () => {
@@ -64,7 +65,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
   // Fetch students
   const fetchAllStudents = async () => {
     try {
-      const response = await getStudentService({});
+      const response = await getStudentService({uuid: courseId});
       if (response && Array.isArray(response.data)) {
         const mappedStudents = response.data.map((student: any) => ({
           value: student.uuid,
@@ -82,7 +83,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
   // Fetch staff
   const fetchAllStaff = async () => {
     try {
-      const response = await getStaffService({});
+      const response = await getStaffService({uuid: courseId});
       if (response && Array.isArray(response.data)) {
         const mappedStaff = response.data.map((staff: any) => ({
           value: staff.uuid,
@@ -100,9 +101,12 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
   useEffect(() => {
     fetchAllCourses();
     fetchAllBranches();
+  }, [dispatch]);
+  
+  useEffect(()=> {
     fetchAllStudents();
     fetchAllStaff();
-  }, [dispatch]);
+  },[courseId])
 
   // Validation schema
   const validationSchema = Yup.object({
@@ -237,7 +241,9 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 className="w-full border rounded-md px-4 py-2"
                 type="date"
                 value={formik.values.endDate}
-                onChange={formik.handleChange}
+                onChange={ formik.handleChange 
+
+                }
                 onBlur={formik.handleBlur}
               />
               {formik.touched.endDate && formik.errors.endDate && (
@@ -282,7 +288,10 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
                 name="course"
                 className="w-full border rounded-md px-4 py-2"
                 value={formik.values.course}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  setCourseId(e.target.value);
+                }}
                 onBlur={formik.handleBlur}
               >
                 <option value="">Select Course</option>

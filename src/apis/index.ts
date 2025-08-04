@@ -1,5 +1,3 @@
-
-import { create } from 'domain';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
 
@@ -268,9 +266,11 @@ class Client {
     };
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getall: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithBranch.replace(":courseUUID", params?.uuid),{}),
         getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
         getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
         getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
+        getCourse:(params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.staff.update, data),
         delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
@@ -284,6 +284,8 @@ class Client {
             HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) =>
             HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
+        getall: (params: any) =>
+            HttpClient.get(HTTP_END_POINTS.student.getall.replace(":courseUUID", params?.uuid),{}),
     };
     community = {
         getAll: (data: any) =>

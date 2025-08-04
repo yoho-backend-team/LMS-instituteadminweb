@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import filter from '../../assets/Filter.png';
+import filter from '../../assets/icons/filter.png';
 import plus from '../../assets/Add.png';
 import { Button } from '../../components/ui/button';
 import { BatchCard } from '../../components/BatchManagement/batchCard';
@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getwithIdBatches } from '../../features/batchManagement/reducers/thunks';
 import { selectBatch } from '../../features/batchManagement/reducers/selectors';
 import { getCourseService } from '../../features/batchManagement/services';
-import { set } from 'date-fns';
+
 
 export default function BatchManagement() {
 	const [showFilter, setShowFilter] = useState(false);
@@ -55,8 +55,6 @@ export default function BatchManagement() {
 		fetchAllCourses();
 	}, [dispatch]);
 
-	console.log('course Data:', courses);
-
 	const filteredBatches = batchData?.data?.filter((batch: any) => {
 	const matchesStatus = searchterms.status
 		? batch.is_active === (searchterms.status === 'active')
@@ -76,8 +74,6 @@ export default function BatchManagement() {
 
 	return matchesStatus && matchesDate && matchesCourse && matchesBatch;
 });
-
-console.log('Filtered Batches:', filteredBatches);
 
 	return (
 		<div className='min-h-screen bg-cover bg-no-repeat bg-center p-4 overflow-y-auto'>
