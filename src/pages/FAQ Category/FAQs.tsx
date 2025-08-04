@@ -355,7 +355,7 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6">
+    <div className="">
       {/* Main Content Area */}
       <h1 className="text-2xl font-bold mb-6">FAQ</h1>
       {/* Action Bar with "Show Filter" / "Hide" and "Add FAQ" buttons */}
