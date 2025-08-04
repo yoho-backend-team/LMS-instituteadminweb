@@ -1,6 +1,6 @@
 import { FiBell } from "react-icons/fi";
 import titleIcon from "../../assets/navbar/titleIcon.png";
-import { useState, useRef, useEffect,useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
@@ -17,6 +17,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
@@ -30,7 +31,7 @@ const Navbar = () => {
     // your logout logic here
     localStorage.removeItem("token");
     logout();
-    dispatch(AuthThunks.logOutUser?.());
+    // dispatch(AuthThunks.logOutUser?.());
     toast.success("Logged out Successfully");
     navigate("/login", { replace: true });
   }, [logout, dispatch, navigate]);
@@ -136,11 +137,10 @@ const Navbar = () => {
                         setActiveTab("profile");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
-                        activeTab === "profile"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "profile"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <FaRegUser /> Profile
@@ -154,11 +154,10 @@ const Navbar = () => {
                         setActiveTab("settings");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
-                        activeTab === "settings"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "settings"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <IoSettingsOutline /> Settings
@@ -171,27 +170,51 @@ const Navbar = () => {
                       onClick={() => {
                         setActiveTab("logout");
                         setDropdownOpen(false);
+                        setShowModal(true);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${
-                        activeTab === "logout"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
-                     <button
-                    type="button"
-                    onClick={handleLogout}
-                    className={`w-full text-left rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${
-                      activeTab === "logout" && "bg-[#1BBFCA] text-white"
-                    }`}
-                  >
-                    <div className="flex gap-2"><TbLogout /> Logout</div>
-                  </button>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className={`w-full text-left rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout" && "bg-[#1BBFCA] text-white"
+                          }`}
+                      >
+                        <div className="flex gap-2"><TbLogout /> Logout</div>
+                      </button>
                     </Link>
                   </li>
                 </ul>
               </div>
             )}
+            {/* Logout modal message .......[start]........... */}
+            {showModal && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="logout-modal-title"
+                onClick={() => setShowModal(false)}
+              >
+                <div
+                  className="bg-white p-6 rounded-md max-w-xs w-full shadow"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <h2 id="logout-modal-title" className="text-lg font-semibold mb-2">Success</h2>
+                  <p className="text-gray-700">Logged out successfully.</p>
+                  <button
+                    onClick={() => navigate("/login", { replace: true })}
+                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            )}
+            {/* Logout modal message .......[End]........... */}
           </div>
         </div>
       </nav>
