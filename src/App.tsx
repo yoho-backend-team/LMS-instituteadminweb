@@ -3,42 +3,48 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
-import { Provider } from 'react-redux'
-import store from './store/store';
+import { TicketProvider } from './components/StudentTickets/TicketContext';
+
+import { store } from './app/store';
+import { Provider } from 'react-redux';
+
 
 function App() {
 	return (
 		<>
 			<BrowserRouter>
-				<Provider store={store}>
-					<AuthProvider>
-						<AppRoutes />
-						<Toaster
-							position='top-right'
-							toastOptions={{
-								duration: 4000,
+				<AuthProvider>
+					<TicketProvider>
+						  <Provider store={store}>
+						
+					<AppRoutes />
+					<Toaster
+						position='top-right'
+						toastOptions={{
+							duration: 4000,
+							style: {
+								background: '#363636',
+								color: '#fff',
+							},
+							success: {
+								duration: 3000,
 								style: {
-									background: '#363636',
+									background: '#10B981',
 									color: '#fff',
 								},
-								success: {
-									duration: 3000,
-									style: {
-										background: '#10B981',
-										color: '#fff',
-									},
+							},
+							error: {
+								duration: 4000,
+								style: {
+									background: '#EF4444',
+									color: '#fff',
 								},
-								error: {
-									duration: 4000,
-									style: {
-										background: '#EF4444',
-										color: '#fff',
-									},
-								},
-							}}
-						/>
-					</AuthProvider>
-				</Provider>
+							},
+						}}
+					/>
+					</Provider>
+					</TicketProvider>
+				</AuthProvider>
 			</BrowserRouter>
 		</>
 	);

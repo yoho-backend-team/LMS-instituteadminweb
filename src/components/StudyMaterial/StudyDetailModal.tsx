@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import cancel from "../../assets/icons/Cancel.png";
 
+
+
 interface Note {
-  title: string;
-  course: string;
-  description: string;
-  status: "Active" | "Completed";
-  file?: File;
+  id: number
+  title: string
+  description: string
+  course: string
+  branch: string
+  status: "Active" | "Completed"
+  file?: File
+  video?: string
 }
 
 interface NoteDetailModalProps {
@@ -126,7 +131,7 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 text-[#716F6F] flex items-center justify-center">
       <div className="bg-white grid rounded-2xl p-12 w-2/5 h-4/5 relative shadow-xl overflow-y-auto">
-        {/* Close Button */}
+       
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-xl hover:text-black"
@@ -134,10 +139,10 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
           <img src={cancel} alt="close" />
         </button>
 
-        {/* File Preview */}
+       
         {renderFilePreview()}
 
-        {/* Title + Status */}
+       
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold flex items-center gap-2">
             {note.title}
@@ -154,7 +159,7 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
           </span>
         </div>
 
-        {/* Details */}
+     
         <div className="mt-4 space-y-2 text-sm">
           <p>
             <span className="font-medium">Title :</span> {note.title}

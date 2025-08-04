@@ -1,0 +1,1 @@
+export const selectBatch = (state:any) => state.batchReducer.batch; 
