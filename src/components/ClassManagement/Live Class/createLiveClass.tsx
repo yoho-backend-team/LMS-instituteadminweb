@@ -50,6 +50,7 @@ export const CreateLiveClassModal = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
 	const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+	const [courseId, setCourseId] = useState<string>('');
 
 	// Initial form values
 	const initialValues: FormValues = {
@@ -74,20 +75,7 @@ export const CreateLiveClassModal = ({
 			.required('Class date is required')
 			.min(new Date(), 'Class date cannot be in the past'),
 		startTime: Yup.string().required('Start time is required'),
-		endTime: Yup.string()
-			.required('End time is required')
-			.test(
-				'is-after-start',
-				'End time must be after start time',
-				function (endTime) {
-					const { startTime } = this.parent;
-					if (!startTime || !endTime) return true;
-					return (
-						new Date(`1970-01-01T${endTime}`) >
-						new Date(`1970-01-01T${startTime}`)
-					);
-				}
-			),
+		endTime: Yup.string().required('End time is required'),
 		instructors: Yup.array()
 			.min(1, 'At least one instructor is required')
 			.required('Instructor selection is required'),
@@ -134,7 +122,7 @@ export const CreateLiveClassModal = ({
 	const fetchAvailableInstructors = useCallback(
 		async (courseId: string, date: string) => {
 			try {
-				const response = await getStaffService({});
+				const response = await getStaffService({ uuid: courseId });
 				if (response) {
 					setAvailableInstructors(response.data);
 				}
@@ -219,7 +207,7 @@ export const CreateLiveClassModal = ({
 			fetchAllBranches();
 			fetchAllCourses();
 			fetchAllBatches();
-			fetchAvailableInstructors('courseId', 'date');
+			fetchAvailableInstructors(courseId, 'date');
 		}
 	}, [isOpen]);
 
@@ -345,7 +333,10 @@ export const CreateLiveClassModal = ({
 										name='course'
 										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
 										value={formik.values.course}
-										onChange={formik.handleChange}
+										onChange={(e) => {
+											formik.handleChange(e);
+											setCourseId(e.target.value);
+										}}
 										onBlur={formik.handleBlur}
 										disabled={!formik.values.branch}
 									>
