@@ -231,6 +231,9 @@ const generateEndpoints = () => {
             update: `/api/placements/update`,
             getById: `/api/placements/fetch`,
         },
+        notificationSubscription: {
+            post: '/notification/subscribe',
+        },
     };
 };
 

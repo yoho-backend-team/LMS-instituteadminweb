@@ -456,5 +456,9 @@ class Client {
         getById: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.placements.getById, params),
     };
+    notificatinsubscription = {
+        post: (data: any) =>
+            HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
+    };
 }
 export default new Client();
