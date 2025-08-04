@@ -53,6 +53,7 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
 import TicketDetailsPage from '../pages/Ticket Management/Student/TicketDetailsPage';
+import { TicketProvider } from '../components/StudentTickets/TicketContext';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import CertificateView from '../components/cerificateManagement/certificateView';
@@ -81,12 +82,10 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
-				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
-
+				<Route path="/tickets/:id" element={<TicketProvider><TicketDetailsPage /></TicketProvider>} />
 
 				<Route path="noti/msg" element={<NotificationPage />} />
 
-				<Route path='noti/msg' element={<NotificationPage />} />
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}
@@ -110,7 +109,7 @@ const AppRoutes = () => {
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
 				<Route path='group/add' element={<AddNewGroup />} />
-				<Route path='group/view' element={<View />} />
+				<Route path='group/view/:id' element={<View />} />
 				<Route path='group/edit' element={<Edit />} />
 
 				{/* Course Management */}
@@ -138,7 +137,7 @@ const AppRoutes = () => {
 				<Route path='offine-classes' element={<OfflineClasses />} />
 				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
-				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
+				<Route path='/live-classes/:uuid' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />

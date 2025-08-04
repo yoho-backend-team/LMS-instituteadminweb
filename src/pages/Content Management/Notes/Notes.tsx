@@ -42,13 +42,11 @@ const Notes = () => {
   const handleNoteSubmit = (data: any) => {
     if (editNote) {
       dispatch(updateNoteThunk(data))
-        .unwrap()
         .then(() => toast.success("Note updated"))
         .catch(() => toast.error("Update failed"));
     } else {
       console.log("Data being sent:", data);
       dispatch(createNoteThunk(data))
-        .unwrap()
         .then(() => toast.success("Note added"))
         .catch(() => toast.error("Add failed"));
     }
@@ -93,9 +91,7 @@ const Notes = () => {
           </div>
         </div>
       ),
-      {
-        duration: 5000,
-      }
+      { duration: 5000 }
     );
   };
 
@@ -155,7 +151,6 @@ const Notes = () => {
           </div>
         </div>
       )}
-
       {/* Top bar */}
       <div className="flex justify-between items-center">
         <div className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center">
@@ -177,7 +172,6 @@ const Notes = () => {
           <span>Add New Note</span>
         </div>
       </div>
-
       {/* Filters */}
       {showFilter && (
         <div className="flex gap-5 bg-white p-2 rounded-lg shadow-lg">
@@ -203,7 +197,6 @@ const Notes = () => {
           </div>
         </div>
       )}
-
       {/* Notes Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {notes.map((note: any, index: number) => (
@@ -218,17 +211,19 @@ const Notes = () => {
             onView={() => setViewNote(note)}
           />
         ))}
-
         {/* View Modal */}
         {viewNote && (
           <ViewNoteModal
             isOpen={true}
             note={{
               title: viewNote.title,
-              course: viewNote.course,
-              description: viewNote.description,
-              file: viewNote.file,
-              fileName: viewNote.fileName,
+              course: viewNote.course?.course_name ?? "N/A",
+              description: viewNote.description ?? "",
+              file: viewNote.file instanceof File ? viewNote.file : undefined,
+              fileName:
+                typeof viewNote.fileName === "string"
+                  ? viewNote.fileName
+                  : undefined,
               status: viewNote.isActive ? "Active" : "Completed",
             }}
             onClose={() => setViewNote(null)}
@@ -238,5 +233,4 @@ const Notes = () => {
     </div>
   );
 };
-
 export default Notes;

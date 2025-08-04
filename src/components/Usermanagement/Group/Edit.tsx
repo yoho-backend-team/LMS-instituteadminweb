@@ -44,7 +44,7 @@ function Edit() {
       <div className="flex justify-between gap-3 mb-6 text-[#7D7D7D]">
         <p>AdminiStrator Access</p>
         <label className="flex items-center gap-2">
-          <input type="checkbox" className="w-4 h-4 text-green-500 bg-white border-gray-300 rounded accent-green-500" />
+          <input type="checkbox" className="w-5 h-5 appearance-none rounded-md border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 checked:before:content-['✓'] checked:before:block checked:before:text-white checked:before:text-center checked:before:font-bold checked:before:leading-[1.1rem]" />
           Select All
         </label>
       </div>
@@ -67,7 +67,7 @@ function Edit() {
               type="checkbox"
               id={`${module}-${permission}`}
               defaultChecked={true}
-              className="w-4 h-4 text-green-500 bg-white border-gray-300 rounded-2xl accent-green-500"
+             className="w-5 h-5 appearance-none rounded-md border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 checked:before:content-['✓'] checked:before:block checked:before:text-white checked:before:text-center checked:before:font-bold checked:before:leading-[1.1rem]"
             />
             <label
               htmlFor={`${module}-${permission}`}

@@ -1,0 +1,297 @@
+
+
+import React, { useState, useEffect } from "react";
+import dropdownIcon from "../../assets/navbar/dropdown.png";
+import plus from "../../assets/navbar/plus.png";
+import edit from "../../assets/navbar/edit.png";
+import deleteIcon from "../../assets/navbar/deleteIcon.png";
+import button1 from "../../assets/navbar/button1.png";
+import cancel from "../../assets/navbar/cancel.png";
+import sucess from "../../assets/navbar/sucess.png";
+
+type Category = {
+  id: number;
+  title: string;
+  createdBy: string;
+  status: "Active" | "Inactive";
+};
+
+const initialCategories: Category[] = [
+  { id: 1, title: "Certificate Issue", createdBy: "Sara", status: "Active" },
+  { id: 2, title: "Login Issue", createdBy: "Peater", status: "Inactive" },
+];
+
+const FaqCategory: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [openStatusIndex, setOpenStatusIndex] = useState<number | null>(null);
+  const [openActionIndex, setOpenActionIndex] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editCategoryId, setEditCategoryId] = useState<number | null>(null);
+
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+
+  
+  useEffect(() => {
+    if (isFormOpen || isSuccessModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isFormOpen, isSuccessModalOpen]);
+
+  const toggleStatus = (index: number) => {
+    setOpenStatusIndex(openStatusIndex === index ? null : index);
+  };
+
+  const toggleAction = (index: number) => {
+    setOpenActionIndex(openActionIndex === index ? null : index);
+  };
+
+  const handleStatusChange = (
+    index: number,
+    newStatus: "Active" | "Inactive"
+  ) => {
+    const updated = [...categories];
+    updated[index].status = newStatus;
+    setCategories(updated);
+    setOpenStatusIndex(null);
+  };
+
+  const openAddForm = () => {
+    setIsEditing(false);
+    setEditCategoryId(null);
+    setNewTitle("");
+    setNewDescription("");
+    setIsFormOpen(true);
+  };
+
+  const openEditForm = (category: Category) => {
+    setIsEditing(true);
+    setEditCategoryId(category.id);
+    setNewTitle(category.title);
+    setNewDescription("");
+    setIsFormOpen(true);
+  };
+
+  const handleSubmit = () => {
+    if (newTitle.trim() === "") return;
+
+    if (isEditing && editCategoryId !== null) {
+      const updatedCategories = categories.map((cat) =>
+        cat.id === editCategoryId
+          ? { ...cat, title: newTitle, createdBy: cat.createdBy }
+          : cat
+      );
+      setCategories(updatedCategories);
+    } else {
+      const newCat: Category = {
+        id: categories.length + 1,
+        title: newTitle,
+        createdBy: "Admin",
+        status: "Active",
+      };
+      setCategories([...categories, newCat]);
+    }
+
+    setNewTitle("");
+    setNewDescription("");
+    setIsFormOpen(false);
+    setIsSuccessModalOpen(true);
+  };
+
+  const handleDeleteCategory = (id: number) => {
+    const updated = categories.filter((cat) => cat.id !== id);
+    setCategories(updated);
+    setOpenActionIndex(null);
+  };
+
+  const filtered = categories.filter((c) =>
+    c.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="w-full h-fit bg-white font-poppins py-6 px-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+        <h1 className="text-2xl font-bold">FAQ Category</h1>
+        <button
+          className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm flex items-center gap-2"
+          onClick={openAddForm}
+        >
+          <img src={plus} alt="Add" className="w-4 h-4" />
+          Add FAQ Category
+        </button>
+      </div>
+
+      {/* Search */}
+      <input
+        type="text"
+        placeholder="Search Category"
+        className="border border-[#1BBFCA] px-4 py-2 rounded-md w-full max-w-xs mb-4 focus:outline-none"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* Table */}
+      <div className="bg-white rounded-xl p-4 shadow-md">
+        <div className="grid grid-cols-4 font-semibold px-4 py-3 text-[#716F6F] bg-gray-100 text-sm rounded-md">
+          <div>ID</div>
+          <div>Category Name</div>
+          <div>Status</div>
+          <div>Actions</div>
+        </div>
+         <div className="flex flex-col gap-3 mt-3">   
+        {filtered.map((cat, index) => (
+          <div
+            key={cat.id}
+            className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-sm  text-[#7D7D7D]  text-sm rounded-md relative"
+          >
+            
+            <div>{cat.id}</div>
+            <div>
+              <p className="font-semibold">{cat.title}</p>
+              <p className="text-[#7D7D7D]">{cat.createdBy}</p>
+            </div>
+            
+             
+            {/* Status Dropdown */}
+            <div className="relative">
+              <button
+                className="flex items-center gap-1 text-sm"
+                onClick={() => toggleStatus(index)}
+              >
+                {cat.status}
+                <img src={dropdownIcon} alt="dropdown" className="w-3 h-3" />
+              </button>
+
+              {openStatusIndex === index && (
+                <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
+                  <button
+                    onClick={() => handleStatusChange(index, "Active")}
+                    className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
+                  >
+                    Active
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange(index, "Inactive")}
+                    className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
+                  >
+                    Inactive
+                  </button>
+                </div>
+                
+              )}
+            </div>
+            
+
+            {/*  Actions */}
+            <div className="text-right relative">
+              <img
+                src={button1}
+                alt="options"
+                className="w-5 h-5 inline-block cursor-pointer"
+                onClick={() => toggleAction(index)}
+              />
+              {openActionIndex === index && (
+                <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[150px]">
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md"
+                    onClick={() => {
+                      openEditForm(cat);
+                      setOpenActionIndex(null);
+                    }}
+                  >
+                    <img src={edit} alt="Edit" className="w-4 h-4" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCategory(cat.id)}
+                    className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
+                  >
+                    <img src={deleteIcon} alt="Delete" className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+      </div>
+
+      {/* Form Modal */}
+      {isFormOpen && (
+        <div className="fixed inset-0 bg-[#7D7D7D] bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow_0px_4px_24px_0px_#00000026; relative  ">
+            <h2 className="text-xl text-[#716F6F]       font-bold mb-4">
+              {isEditing ? "Edit FAQ Category" : "Add FAQ Category"}
+            </h2>
+            <button
+              className="absolute top-4 right-4"
+              onClick={() => setIsFormOpen(false)}
+            >
+              <img src={cancel} alt="Cancel" className="h-4 w-4" />
+            </button>
+
+            <label className="block mb-2 text-sm  text-[#7D7D7D]      font-medium">Category</label>
+            <input
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              className="border border-gray-400 w-full px-4 py-2 rounded mb-4"
+            />
+
+            <label className="block mb-2 text-sm text-[#7D7D7D] font-medium">Description</label>
+            <input
+              type="text"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              className="border border-gray-400 w-full px-4 py-2 rounded mb-6"
+            />
+
+            <div className="flex justify-end gap-4">
+              <button onClick={() => setIsFormOpen(false)}></button>
+              <button
+                onClick={handleSubmit}
+                className="bg-[#1BBFCA] text-white px-6 py-2 rounded"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {isSuccessModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
+            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+              Success!
+            </h2>
+            <button
+              onClick={() => setIsSuccessModalOpen(false)}
+              className="bg-green-500 text-white px-6 py-2 rounded"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+    
+  );
+};
+
+export default FaqCategory;

@@ -2,7 +2,7 @@ import { MoreVertical } from 'lucide-react';
 import humaning from '../../assets/humanimg.png';
 import clock from '../../assets/clock.png';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EditBatchModal from './editBatch';
 import { useNavigate } from 'react-router-dom';
 import wave from '../../assets/wave (2).png';
@@ -22,6 +22,8 @@ import {
 import { Card, CardContent } from '../ui/card';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import DeleteConfirmationModal from './deleteModal';
+import toast from 'react-hot-toast';
+import { deleteBatches, updateBatches } from '../../features/batchManagement/services';
 
 interface BatchCardProps {
 	title: string;
@@ -32,6 +34,7 @@ interface BatchCardProps {
 	duration?: string;
 	isActive?: boolean;
 	data?: any;
+	fetchBatchData?: () => void;
 }
 
 export const BatchCard: React.FC<BatchCardProps> = ({
@@ -42,9 +45,10 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	endDate,
 	isActive,
 	duration,
-	data
+	data,
+	fetchBatchData
 }) => {
-	const [status, setStatus] = useState<string>(isActive ? 'active' : 'inactive');
+	const [status, setStatus] = useState<any>(isActive ? 'active' : 'inactive');
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -53,12 +57,51 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = () => {
-		console.log('Deleted:', title);
-		closeDeleteModal();
+	const handleConfirmDelete = async() => {
+		try {
+			const response = await deleteBatches({ uuid: data?.uuid });
+			if (response) {
+				toast.success("Batch deleted successfully!");
+				closeDeleteModal();
+				if (fetchBatchData) {
+					fetchBatchData();
+				}
+			} else {
+				toast.error("Failed to delete batch");
+			}
+		} catch (error) {
+			console.log('Error deleting batch:', error);
+			
+		}
 	};
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const handleStatusChange = async(value: string) => {
+			setStatus(value);
+
+			 const payload = {
+				uuid: data?.uuid,
+				batch_name: data?.batch_name,
+				is_active: value === 'active',
+      		};
+
+      try {
+        const response = await updateBatches(payload);
+        if(response){
+			toast.success("Batch updated successfully!");
+			if (fetchBatchData) {
+			fetchBatchData();
+			}
+		}
+      } catch (error) {
+        console.error("Error updating batch:", error);
+        toast.error("Failed to update batch");
+      }
+    }
+		handleStatusChange(status)
+	}, [status]);
 
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-full max-w-md bg-white relative'>
@@ -198,7 +241,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 					</Select>
 				</div>
 			</CardContent>
-			<EditBatchModal isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditBatchModal fetchBatchData={fetchBatchData} data={data} isOpen={isEditModalOpen} onClose={closeEditModal} />
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

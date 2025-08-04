@@ -51,9 +51,9 @@ const TicketCard: React.FC<TicketProps> = ({
             onClick={() => setShowMenu(!showMenu)}
           />
           {showMenu && (
-            <div className="absolute right-0 mt-2 z-10 w-32">
+            <div className="absolute right-0 mt-2 z-10 w-25">
               <button
-                className="w-full px-4 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
+                className="w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
                 onClick={handleResolve}
               >
                 <FiCheckCircle /> Resolve

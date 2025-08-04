@@ -49,14 +49,14 @@ export default function StudentDashboardMain() {
         <div className=" w-1/3"style={{...FONTS.heading_06_bold,color:COLORS.gray_dark_02}}>{batchData?.course?.duration}</div>
         <div className="flex items-center gap-2 justify-end w-1/3">
           <div className="bg-blue-600  px-3 py-1 rounded-md"style={{...FONTS.heading_08_bold,color:COLORS.white}}>
-            {batchData?.start_date}
+            {batchData?.start_date.split("T")[0]}
           </div>
          <div className="flex items-center justify-center w-16 relative">
             <div className="absolute -top-[3px] left-2 right-2 h-[2px] bg-[#1BBFCA] rounded-full -translate-y-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full left-2 -translate-y-1/2 top-1/2" />
             <div className="absolute w-2 h-2 bg-[#1BBFCA] rounded-full right-2 -translate-y-1/2 top-1/2" />          </div>
           <div className="bg-blue-600  px-3 py-1 rounded-md"style={{...FONTS.heading_08_bold,color:COLORS.white}}>
-            {batchData?.end_date}
+            {batchData?.end_date.split("T")[0]}
           </div>
         </div>
       </Card>
@@ -98,15 +98,15 @@ export default function StudentDashboardMain() {
 
       
       <div className="flex items-center gap-40  text-sm text-gray-700">
-        <div className="flex items-center gap-2 ">
+        <div className="flex items-center gap-2  w-50">
           <img src={email} alt="email" className="w-4 h-4" />
           <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.email}</span>
         </div>
-        <div className="flex items-center ml-0  gap-2">
+        <div className="flex items-center ml-0  gap-2 w-50">
           <img src={call} alt="call" className="w-4 h-4" />
           <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.contact_info?.phone_number}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-50">
           <img src={locations} alt="location" className="w-4 h-4" />
           <span className="font-medium text-gray-600"style={{...FONTS.heading_07_bold,color:COLORS.gray_dark_02}}>{student?.contact_info?.city}</span>
         </div>

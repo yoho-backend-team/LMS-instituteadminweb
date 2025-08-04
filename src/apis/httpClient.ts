@@ -28,7 +28,6 @@ Axios.interceptors.response.use(
     }
 );
 
-
 class HttpClient {
     async get(url: string, params?: any) {
         const response = await Axios.get(url, { params });
@@ -56,6 +55,4 @@ class HttpClient {
     }
 }
 
-export default new HttpClient()
-
-
+export default new HttpClient();

@@ -77,6 +77,8 @@ export default function BatchManagement() {
 	return matchesStatus && matchesDate && matchesCourse && matchesBatch;
 });
 
+console.log('Filtered Batches:', filteredBatches);
+
 	return (
 		<div className='min-h-screen bg-cover bg-no-repeat bg-center p-4 overflow-y-auto'>
 			<div className='mb-8'>
@@ -109,89 +111,108 @@ export default function BatchManagement() {
 			</div>
 
 			{showFilter && (
-				<div className='bg-white p-6 rounded-2xl shadow mb-8'>
-					<h3
-						className='mb-4'
-						style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
-					>
-						Batches
-					</h3>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-						<div>
-							<label
-								className='block mb-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Search by Status
-							</label>
-							<select
-								className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
-								value={searchterms.status}
-								onChange={(e) => setSearchTerms({ ...searchterms, status: e.target.value })}
-							>
-								<option value=''>Select Status</option>
-								<option value='active'>Active</option>
-								<option value='inactive'>Inactive</option>
-							</select>
-						</div>
+  <div className='bg-white p-6 rounded-2xl shadow mb-8'>
+    <div className='flex justify-between items-center mb-4'>
+      <h3
+        style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
+      >
+        Batches
+      </h3>
 
-						<div>
-							<label
-								className='block mb-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Search Between Dates
-							</label>
-							<input
-								type='date'
-								className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
-								value={searchterms.date}
-								onChange={(e) => setSearchTerms({ ...searchterms, date: e.target.value })}
-							/>
-						</div>
+      <Button
+        variant="outline"
+        className="border border-gray-300 text-sm px-3 py-1 rounded-md bg-[#1BBFCA] hover:bg-[#1BBFCA]" style={{ ...FONTS.heading_07, color: COLORS.white }}
+        onClick={() =>
+          setSearchTerms({
+            status: '',
+            date: '',
+            course: '',
+            batch: ''
+          })
+        }
+      >
+        Reset Filters
+      </Button>
+    </div>
 
-						<div>
-							<label
-								className='block mb-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Search by Course
-							</label>
-							<select
-								className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
-								value={searchterms.course}
-								onChange={(e) => setSearchTerms({ ...searchterms, course: e.target.value })}
-							>
-								<option value=''>Select Course</option>
-								{courses?.map((course: any) => (
-									<option key={course?._id} value={course?.course_name}>
-										{course?.course_name}
-									</option>
-								))}
-							</select>
-						</div>
+    
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div>
+        <label
+          className='block mb-1'
+          style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+        >
+          Search by Status
+        </label>
+        <select
+          className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
+          value={searchterms.status}
+          onChange={(e) => setSearchTerms({ ...searchterms, status: e.target.value })}
+        >
+          <option value=''>Select Status</option>
+          <option value='active'>Active</option>
+          <option value='inactive'>Inactive</option>
+        </select>
+      </div>
 
-						<div>
-							<label
-								className='block mb-1'
-								style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-							>
-								Search Batch
-							</label>
-							<input
-								type='text'
-								placeholder='search batch'
-								className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
-								value={searchterms.batch}
-								onChange={(e) => setSearchTerms({ ...searchterms, batch: e.target.value })}
-							/>
-						</div>
-					</div>
-				</div>
-			)}
+      <div>
+        <label
+          className='block mb-1'
+          style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+        >
+          Search Between Dates
+        </label>
+        <input
+          type='date'
+          className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
+          value={searchterms.date}
+          onChange={(e) => setSearchTerms({ ...searchterms, date: e.target.value })}
+        />
+      </div>
+
+      <div>
+        <label
+          className='block mb-1'
+          style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+        >
+          Search by Course
+        </label>
+        <select
+          className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
+          value={searchterms.course}
+          onChange={(e) => setSearchTerms({ ...searchterms, course: e.target.value })}
+        >
+          <option value=''>Select Course</option>
+          {courses?.map((course: any) => (
+            <option key={course?._id} value={course?.course_name}>
+              {course?.course_name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label
+          className='block mb-1'
+          style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+        >
+          Search Batch
+        </label>
+        <input
+          type='text'
+          placeholder='search batch'
+          className='w-full border border-gray-300 rounded-md px-3 py-2 text-sm'
+          value={searchterms.batch}
+          onChange={(e) => setSearchTerms({ ...searchterms, batch: e.target.value })}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
 
 			<div className='flex gap-6 flex-wrap'>
-				{filteredBatches ? filteredBatches?.map((batch: any) 	=>(
+				{filteredBatches?.length ? filteredBatches?.map((batch: any) 	=>(
                   <BatchCard
 				  	key={batch?._id}
 					title={batch?.batch_name}
@@ -202,9 +223,10 @@ export default function BatchManagement() {
 					endDate={batch?.end_date}
 					isActive={batch?.is_active}
 					data={batch}
+					fetchBatchData={fetchBatchData}
 				/>
-				)) : <div>
-						<p>No batches available</p>
+				)) : <div className='flex flex-1 justify-center mt-20'>
+						<p >No batches available</p>
 					</div>
 					}		
 			</div>

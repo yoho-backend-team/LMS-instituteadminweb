@@ -10,23 +10,35 @@ import liveClassReducer from '../features/Class Management/Live Class/reducers/s
 import batchReducer from '../features/batchManagement/reducers/slices';
 import studentAttendance from '../features/Attendance_Managemenet/Student_Attendance/redux/slice'
 import auth from '../features/Auth/reducer/slice'
+import studyMaterial from "../features/StudyMaterials/slice"
+import addQuestion from "../features/HelpManagement/AddQuestion/slice"
+import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
+import StaffSlice from '../features/staff/reducers/slices'
+import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
 
 
 const store = configureStore({
-  reducer: {
-    staffAttendace: staffattendance,
-    IdcardSlice: IdcardSlice,
-    ModuleSlice: ModuleSlice,
-    note: noteReducer,
-    StaffIDcardSlice: StaffIDcardSlice,
-    DashboardSlice: DashboardSlice,
-    liveClassReducer: liveClassReducer,
-    OfflineClassSlice: OfflineClassSlice,
-    batchReducer: batchReducer,
-    studentAttendance: studentAttendance,
-    authuser: auth,
-  },
+	reducer: {
+		staffAttendace: staffattendance,
+		IdcardSlice: IdcardSlice,
+		ModuleSlice: ModuleSlice,
+		note: noteReducer,
+		StaffIDcardSlice: StaffIDcardSlice,
+		DashboardSlice: DashboardSlice,
+		liveClassReducer: liveClassReducer,
+		OfflineClassSlice: OfflineClassSlice,
+		batchReducer: batchReducer,
+		studentAttendance: studentAttendance,
+		authuser: auth,
+		studyMaterial: studyMaterial,
+		addQuestion: addQuestion,
+		GroupCardSlice: GroupCardSlice,
+		StaffSlice: StaffSlice,
+		AllNotificationReducer: AllNotificationReducer,
+	},
 })
+
+
 
 
 export default store;
