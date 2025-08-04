@@ -69,7 +69,7 @@ const NotificationPage = () => {
         {["all", "read", "unread"].map((type) => (
           <button
             key={type}
-            className={`border px-4 py-2 rounded-xl text-sm font-medium transition ${
+            className={`border px-4 py-2 w-35 rounded-xl text-sm font-medium transition ${
               filter === type
                 ? "bg-[#1BBFCA] text-white border-cyan-500"
                 : "text-[#1BBFCA] border-cyan-500 hover:bg-cyan-50"
