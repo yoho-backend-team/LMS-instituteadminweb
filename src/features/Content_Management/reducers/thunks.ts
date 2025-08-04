@@ -30,11 +30,11 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
 };
 
 export const DeletemoduleThunks =
-  (params: { id: string }) => async (dispatch: any) => {
+  (params: { id: string,uuid:string }) => async (dispatch: any) => {
     try {
       await DeleteModule(params); 
-      dispatch(deleteModule(params.id)); 
-      console.log("Deleted module ID:", params.id);
+      dispatch(deleteModule(params.id));
+      console.log("Deleted module ID:", params.uuid);
     } catch (error) {
       console.error("Error in thunks", error);
     }

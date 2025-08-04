@@ -109,7 +109,7 @@ class Client {
                 data
             ),
         delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.course_module.get + data.id),
+            HttpClient.delete(HTTP_END_POINTS.course_module.get + data.uuid),
     };
     study_material = {
         getAll: (params: string) =>

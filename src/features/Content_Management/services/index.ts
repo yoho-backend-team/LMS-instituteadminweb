@@ -7,7 +7,7 @@ export const GetAllModule = async (params: any) => {
   }
 };
 
-export const DeleteModule = async (params: { id: string }) => {
+export const DeleteModule = async (params: { uuid: string }) => {
   const response = await Client.course_module.delete(params); // pass object with id
   console.log("Data deleted completely", response);
   return response.data;

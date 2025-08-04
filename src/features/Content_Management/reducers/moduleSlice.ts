@@ -23,7 +23,7 @@ const ModuleSlice = createSlice({
 
     deleteModule: (state: any, action) => {
       const idToDelete = action.payload;
-      state.data = state.data.filter((module: any) => module.id !== idToDelete);
+      state.data = state.data.filter((module: any) => module.uuid !== idToDelete);
     },
     editModule: (state: any, action) => {
       const updatedModule = action.payload;

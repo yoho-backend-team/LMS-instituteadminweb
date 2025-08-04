@@ -69,12 +69,12 @@ const Modules = () => {
 		setShowViewModule(true);
 	};
 
-	const handleDelete = (id: string) => {
+	const handleDelete = (id: string,uuid:string) => {
 		if (selectedModule?.id === id) {
 			setShowViewModule(false);
 			setSelectedModule(null);
 		}
-		dispatch(DeletemoduleThunks({ id }));
+		dispatch(DeletemoduleThunks({ id ,uuid}));
 	};
 
 
@@ -311,7 +311,7 @@ const Modules = () => {
 								</button>
 
 								<button
-									onClick={() => handleDelete(card.id)}
+									onClick={() => handleDelete(card.id,card.uuid)}
 									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaTrash />
