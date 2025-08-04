@@ -7,7 +7,6 @@ import { GetImageUrl } from "../../../../utils/helper"
 
 type props = {
     studentAttendances : ()=> void;
-    batches: ()=> void;
 }
 
 const StudentCard:React.FC<props> = ({studentAttendances}) => {
