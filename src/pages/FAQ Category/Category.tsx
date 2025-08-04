@@ -1,14 +1,9 @@
 "use client"
 
-import { Input } from "../../components/ui/input"
-import { Button } from "../../components/ui/button"
-import { Card, CardContent } from "../../components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Plus, ChevronDown, MoreVertical } from "lucide-react"
 import {
   Dialog,
@@ -19,8 +14,8 @@ import {
   DialogTrigger,
   DialogDescription,
   DialogFooter,
-} from "../../components/ui/dialog"
-import { Textarea } from "../../components/ui/textarea"
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { FileEdit, Trash2, AlertTriangle, CheckCircle } from "lucide-react"
 import { useState, useEffect } from "react"
 
@@ -59,14 +54,9 @@ function AddFAQCategoryDialog({
   }
 
   return (
-    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg ">  
-      <DialogHeader className="flex flex-row justify-between pb-4  border-gray-200">
+    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg fixed top-[500px] -translate-y-1/2 right-0 left-auto mr-4">
+      <DialogHeader className="flex flex-row justify-between pb-4 border-gray-200">
         <DialogTitle className="text-xl font-semibold">Add FAQ Category</DialogTitle>
-        <DialogClose asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={handleCancelClick}>
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogClose>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
@@ -136,19 +126,14 @@ function EditFAQCategoryDialog({
   }
 
   return (
-    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg shadow-lg">
+    <DialogContent className="sm:max-w-[425px] p-6 rounded-lg fixed top-[500px] -translate-y-1/2 right-0 left-auto mr-4">
       <DialogHeader className="flex flex-row justify-between pb-4 ">
         <DialogTitle className="text-xl font-semibold">Edit FAQ Category</DialogTitle>
-        <DialogClose asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={onCancel}>
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogClose>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="grid gap-2">
           <label htmlFor="title" className="text-sm font-medium text-gray-700">
-            Tittle
+            Title
           </label>
           <Input
             id="title"
@@ -191,7 +176,7 @@ function EditFAQCategoryDialog({
 function SuccessDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center">
+      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4">
         <DialogHeader className="flex flex-col items-center justify-center gap-4">
           <CheckCircle className="h-16 w-16 text-green-500" />
           <DialogTitle className="text-2xl font-bold">Success!</DialogTitle>
@@ -218,7 +203,7 @@ function ConfirmDeleteDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center ">
+      <DialogContent className="sm:max-w-[350px] p-6 rounded-lg shadow-lg text-center fixed top-1/2 -translate-y-1/2 right-0 left-auto mr-4">
         <DialogHeader className="flex flex-col items-center justify-center gap-4 ">
           <AlertTriangle className="h-16 w-16 text-red-500 " />
           <DialogTitle className="text-xl font-bold">Confirm Action</DialogTitle>
@@ -261,14 +246,11 @@ export default function FAQCategoryPage() {
       description: "Information regarding login difficulties.",
     },
   ])
-
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [categoryToDeleteId, setCategoryToDeleteId] = useState<number | null>(null)
-
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [editingCategory, setEditingCategory] = useState<FAQCategory | null>(null)
-
   const [showAddDialog, setShowAddDialog] = useState(false) // State for Add FAQ Category dialog
 
   const handleStatusChange = (id: number, newStatus: string) => {
@@ -347,8 +329,8 @@ export default function FAQCategoryPage() {
           <AddFAQCategoryDialog onSave={handleAddSave} onCancel={handleAddCancel} />
         </Dialog>
       </div>
-      <div className="grid gap-4 border border-gray-200 rounded-lg p-4 shadow-gray-400 shadow-xl">
-        <div className="grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] rounded-lg bg-gray-200 items-center px-4 py-3 text-sm font-medium text-gray-500 border border-gray-200 shadow-gray-200 ">
+      <div className="grid gap-4 border border-gray-200 rounded-lg p-4 shadow-gray-400 shadow-xl bg-gray-50 transition-all">
+        <div className="grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] rounded-lg bg-gray-200 items-center px-4 py-3 text-sm font-medium text-gray-500 border border-gray-200 shadow-gray-50 ">
           <div>ID</div>
           <div>Category Name</div>
           <div>Status</div>
@@ -356,7 +338,7 @@ export default function FAQCategoryPage() {
         </div>
         {faqCategories.map((category) => (
           <Card key={category.id} className="shadow-sm rounded-lg shadow-gray-200 shadow-sm">
-            <CardContent className="p-4 grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] items-center gap-4">
+            <CardContent className="p-4 grid grid-cols-[50px_1fr_120px_60px] sm:grid-cols-[50px_1fr_120px_60px] items-center gap-4 bg-shadow-lg">
               <div className="text-sm font-medium">{category.id}</div>
               <div>
                 <div className="font-semibold">{category.name}</div>
@@ -372,15 +354,17 @@ export default function FAQCategoryPage() {
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
+                <DropdownMenuContent align="start" className="p-2">
+                  {" "}
+                  {/* Added p-2 for padding around buttons */}
                   <DropdownMenuItem
-                    className="cursor-pointer"
+                    className="w-full bg-cyan-500 text-white rounded-md px-4 py-2 hover:bg-cyan-600 focus:bg-cyan-600 data-[highlighted]:bg-cyan-600 data-[highlighted]:text-white mb-2 cursor-pointer"
                     onClick={() => handleStatusChange(category.id, "Active")}
                   >
                     Active
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    className="cursor-pointer"
+                    className="w-full bg-cyan-500 text-white rounded-md px-4 py-2 hover:bg-cyan-600 focus:bg-cyan-600 data-[highlighted]:bg-cyan-600 data-[highlighted]:text-white cursor-pointer"
                     onClick={() => handleStatusChange(category.id, "Inactive")}
                   >
                     Inactive
@@ -396,8 +380,7 @@ export default function FAQCategoryPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-32">
-                    {/* Edit Dialog Tri
-					gger */}
+                    {/* Edit Dialog Trigger */}
                     <DropdownMenuItem
                       className="flex items-center gap-2 cursor-pointer "
                       onSelect={(e) => {
@@ -423,7 +406,6 @@ export default function FAQCategoryPage() {
           </Card>
         ))}
       </div>
-
       {/* Dialogs controlled by state */}
       <ConfirmDeleteDialog
         open={showConfirmDeleteDialog}
