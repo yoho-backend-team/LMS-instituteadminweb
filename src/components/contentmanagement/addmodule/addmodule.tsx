@@ -13,6 +13,7 @@ interface Props {
 		fileName: string;
 		title: string;
 		videoUri: string;
+		
 	}) => void;
 }
 
@@ -51,6 +52,9 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 		console.log(moduleData,"Module Data")
 		onSubmit(moduleData);
 	};
+
+
+	
 
 	return (
 		<div className=" text-[#716F6F] p-3 h-full shadow-[4px_4px_24px_0px_#0000001A]">

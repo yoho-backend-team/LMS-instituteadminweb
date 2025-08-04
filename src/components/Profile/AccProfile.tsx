@@ -173,7 +173,7 @@ const AccountProfile: React.FC = () => {
 				)}
 				{/* Security Page Content */}
 				{activePanel === 'second' && (
-					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_0_10px_rgba(0,1,1,0.1)] shadow-md p-2">
+					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] shadow p-2">
 						<div className="flex flex-col md:flex-row bg-white p-1 rounded-lg  max-w-5xl">
 							<div className=" lg:w-1/2 mb-5 md:mb-0">
 								<h2 className="mb-2 mt-8 text-[#000000] " style={{ ...FONTS.heading_11 }}>Change Password</h2>
@@ -260,7 +260,7 @@ const AccountProfile: React.FC = () => {
 				)}
 				{/* TimeLine Page Content */}
 				{activePanel === 'third' && (
-					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_0_10px_rgba(0,1,1,0.1)]  rounded-lg shadow-md p-6">
+					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
 						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(100vh-180px)] scrollbar-hidden">
 							
 							{timelineData.map((item, index) => (
