@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { DropdownMenu } from "./DropdownMenu";
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
-
-import type { Note } from '../../components/StudyMaterial/Note';
+import type { Note } from "../../components/StudyMaterial/Note";
 
 interface NoteCardProps {
   note: Note;
   onView: (note: Note) => void;
   onEdit: (note: Note) => void;
-  onDelete: (id: number) => void;
-  onToggleStatus?: (id: number, status: "Active" | "Completed") => void; // Optional callback
+  onDelete: (uuid: string) => void; 
+  onToggleStatus?: (uuid: string, status: "Active" | "Completed") => void;
   fileIcon: string;
   titleIcon: string;
 }
@@ -28,7 +27,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   const handleToggle = () => {
     const newStatus = status === "Active" ? "Completed" : "Active";
     setStatus(newStatus);
-    onToggleStatus?.(note.id, newStatus); // Call parent handler if provided
+    onToggleStatus?.(note.uuid, newStatus); // ✅ use uuid instead of id
   };
 
   return (
@@ -37,14 +36,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         <DropdownMenu
           onView={() => onView(note)}
           onEdit={() => onEdit(note)}
-          onDelete={() => onDelete(note.id)}
+          onDelete={() => onDelete(note.uuid)} // ✅ use uuid here
         />
       </div>
 
       {note.file && (
-        <div
-          className="flex gap-2 mt-2 bg-[#F7F7F7] h-12 text-xl items-center cursor-pointer rounded px-2"
-        >
+        <div className="flex gap-2 mt-2 bg-[#F7F7F7] h-12 text-xl items-center cursor-pointer rounded px-2">
           <img
             src={fileIcon || "/placeholder.svg"}
             alt="file"
@@ -68,7 +65,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         ) : (
           <div className="flex items-center gap-1 text-gray-500 font-medium text-lg">
             <span>Completed</span>
-             <span className="h-3 w-3 mt-1 rounded-full bg-gray-400 inline-block" />
+            <span className="h-3 w-3 mt-1 rounded-full bg-gray-400 inline-block" />
           </div>
         )}
 

@@ -7,20 +7,20 @@ import { SlOptionsVertical } from "react-icons/sl";
 
 const NoteCard = ({
   title,
+  course,
   isActive,
-  fileName,
   index,
   openIndex,
   setOpenIndex,
   onEdit,
   onDelete,
-  onView
+  onView,
 }: {
   title: string;
-  course: string;
+  course: {course_name: string;
+  [key: string]: any;};
   isActive: boolean;
   index: number;
-  fileName: string;
   openIndex: number | null;
   setOpenIndex: (i: number | null) => void;
   onEdit: () => void;
@@ -66,8 +66,8 @@ const NoteCard = ({
             <div
               className="hover:bg-[#00CFFF] hover:text-white border px-4 py-2 rounded-md cursor-pointer mb-2 flex items-center gap-2"
               onClick={() => {
-                onView(); 
-                setOpenIndex(null); 
+                onView();
+                setOpenIndex(null);
               }}
             >
               <IoIosEye size={20} />
@@ -92,14 +92,15 @@ const NoteCard = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2 text-[#716F6F]">
-        <IoDocument />
-        <p className="font-semibold">{fileName?.split('/').pop() || "No file uploaded"}</p>
-      </div>
-
-      <div className="flex items-center gap-2 text-[#716F6F]">
-        <MdCastForEducation />
-        <p>{title}</p>
+      <div className="flex flex-col gap-1 text-[#716F6F]">
+        <div className="flex items-center gap-2">
+          <IoDocument />
+          <p className="font-semibold">{title}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <MdCastForEducation />
+        <p>{course.course_name}</p>
+        </div>
       </div>
 
       <div className="flex justify-between items-center pt-2">

@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
+import { useDispatch, useSelector } from 'react-redux';
+import { getActivityData } from '../../features/staff/reducers/thunks';
+import { selectActivity } from '../../features/staff/reducers/selector';
 
 interface TimelineItemProps {
   title: string;
@@ -16,37 +19,29 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, description, timesta
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-1">
-          <h3 style={{...FONTS.heading_07,color:COLORS.gray_dark_03}} >{title}</h3>
-          <span style={{...FONTS.heading_09,color:COLORS.gray_dark_03}} className="whitespace-nowrap ml-4">{timestamp}</span>
+          <h3 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_03 }}>{title}</h3>
+          <span style={{ ...FONTS.heading_09, color: COLORS.gray_dark_03 }} className="whitespace-nowrap ml-4">{timestamp}</span>
         </div>
-        <p style={{...FONTS.heading_08,color:COLORS.gray_dark_03}} className="leading-relaxed">{description} <br />{timestamp}</p>
+        <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_03 }} className="leading-relaxed">
+          {description}
+        </p>
       </div>
     </div>
   );
 };
 
 const Activitypage: React.FC = () => {
-  const activities = [
-    {
-      title: "Password Reset Request",
-      description: "Password reset requested for user with email vicog76659@tubaceo.com ",
-      timestamp: "5/7/2026 - 5:59:50 PM"
-    },
-    {
-      title: "Password Reset Successfully",
-      description: "Password reset successfully for user with email vicog76659@tubaceo.com",
-      timestamp: "4/7/2026 - 5:59:50 PM"
-    },
-    {
-      title: "Password Reset Request",
-      description: "Password reset requested for user with email vicog76659@tubaceo.com ",
-      timestamp: "4/7/2026 - 5:59:50 PM"
-    }
-  ];
+  const dispatch = useDispatch<any>();
+  const activity = useSelector(selectActivity);
+  const activityData = activity?.data?.logs || [];
+
+  useEffect(() => {
+    dispatch(getActivityData({ staff: "someStaffId" })); // ✅ replace with actual staff ID
+  }, [dispatch]);
 
   return (
     <div className="bg-white p-6 min-h-screen">
-      <h1 style={{...FONTS.heading_04,color:COLORS.gray_dark_02}} className=" mb-6">User Activity Timeline</h1>
+      <h1 style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }} className="mb-6">User Activity Timeline</h1>
       
       <div className="relative">
         {/* Vertical line */}
@@ -54,12 +49,12 @@ const Activitypage: React.FC = () => {
         
         {/* Timeline items */}
         <div className="relative">
-          {activities.map((activity, index) => (
+          {activityData.map((act: any, index: number) => (
             <TimelineItem
               key={index}
-              title={activity.title}
-              description={activity.description}
-              timestamp={activity.timestamp}
+              title={act.action}
+              description={act.details}
+              timestamp={`${new Date(act.timestamp).toLocaleDateString('en-US')} - ${new Date(act.timestamp).toLocaleTimeString('en-US', { hour12: true })}`}
             />
           ))}
         </div>

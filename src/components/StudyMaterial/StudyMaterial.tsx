@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { HeaderActions } from "./HeaderAction";
 import { FilterSection } from "./FilterSection";
-import type { Note } from '../../components/StudyMaterial/Note';
 
 import { NoteModal } from "./StudyModal";
 import { IoMdAdd } from "react-icons/io";
@@ -21,6 +20,17 @@ import {
   updateStudyMaterial,
 } from "../../features/StudyMaterials/service";
 
+interface Note {
+  id: number;
+  title: string;
+  description: string;
+  course: string;
+  branch: string;
+  status: "Active" | "Completed";
+  file?: File;
+  video?: string;
+}
+
 const NotesManagement = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -35,7 +45,6 @@ const NotesManagement = () => {
       branch: "CSE",
       status: "Active",
       file: undefined,
-      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
     {
@@ -46,7 +55,6 @@ const NotesManagement = () => {
       branch: "CSE",
       status: "Completed",
       file: undefined,
-      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
   ]);
@@ -181,24 +189,25 @@ const NotesManagement = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (uuid?: string) => {
-    if (!uuid) {
-      console.error("Cannot delete: UUID is missing");
-      return;
-    }
+ const handleDelete = async (uuid?: string) => {
+  if (!uuid) {
+    console.error("Cannot delete: UUID is missing");
+    return;
+  }
 
-    try {
-      await deleteStudyMaterial(uuid);
-      dispatch(
-        fetchStudyMaterialsThunk({
-          branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          page: 1,
-        })
-      );
-    } catch (error) {
-      console.error("Failed to delete:", error);
-    }
-  };
+  try {
+    await deleteStudyMaterial(uuid);
+    dispatch(
+      fetchStudyMaterialsThunk({
+        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        page: 1,
+      })
+    );
+  } catch (error) {
+    console.error("Failed to delete:", error);
+  }
+};
+
 
   const handleAddClick = () => {
     setShowModal(true);
@@ -258,7 +267,7 @@ const NotesManagement = () => {
                 key={note.id}
                 note={note}
                 onView={(note: any) => setSelectedNote(note)}
-                onEdit={(note) => setSelectedNote(note)}
+                onEdit={handleEdit}
                 onDelete={() => handleDelete(note.uuid)}
                 fileIcon={fileIcon}
                 titleIcon={titleIcon}

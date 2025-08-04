@@ -8,6 +8,7 @@ interface Props {
   onDelete: (refundId: string) => void;
   onEdit: (data: RefundData) => void;
 }
+
 const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
   const [sortKey, setSortKey] = useState<keyof RefundData | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -45,7 +46,7 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
   ];
 
   return (
-    <div className="p-4 bg-white  shadow-lg overflow-x-auto max-h-[75vh]">
+    <div className="p-4 bg-white shadow-lg overflow-x-auto max-h-[75vh]">
       <table className="w-full text-left border-collapse table-auto">
         <thead className="bg-[#F8F8F8] text-[#716F6F] font-semibold text-sm">
           <tr>
@@ -54,7 +55,7 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
                 key={key}
                 className={`py-3 px-4 cursor-pointer select-none ${
                   key === "studentInfo"
-                    ? "w-[250px] "
+                    ? "w-[250px]"
                     : key === "refundId" || key === "studentId"
                     ? "w-[120px]"
                     : "w-[150px]"
@@ -78,33 +79,45 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
             <th className="px-4 py-3 w-[100px]">Actions</th>
           </tr>
         </thead>
+
         <tbody className="text-[#716F6F] text-sm">
-          {sortedData.map((item) => (
-            <tr key={item.refundId} className="border-t">
-              <td className="px-4 py-4">{item.refundId}</td>
-              <td className="px-4 py-4">{item.studentId}</td>
-              <td className="px-4 py-4">{item.studentInfo}</td>
-              <td className="px-4 py-4">{item.paid}</td>
-              <td className="px-4 py-4">{item.payment}</td>
-              <td className="px-4 py-4">{item.status}</td>
-              <td className="px-4 py-4">
-                <div className="flex items-center gap-3">
-                  <button
-                    className="text-[#1BBFCA]"
-                    onClick={() => onEdit(item)}
-                  >
-                    <FaEdit size={18} />
-                  </button>
-                  <button
-                    className="text-red-400"
-                    onClick={() => onDelete(item.refundId)}
-                  >
-                    <FaTrashAlt size={18} />
-                  </button>
-                </div>
+          {sortedData.length === 0 ? (
+            <tr>
+              <td
+                colSpan={sortableColumns.length + 1}
+                className="text-center py-6 text-gray-400"
+              >
+                No data available
               </td>
             </tr>
-          ))}
+          ) : (
+            sortedData.map((item) => (
+              <tr key={item.refundId} className="border-t">
+                <td className="px-4 py-4">{item.refundId}</td>
+                <td className="px-4 py-4">{item.studentId}</td>
+                <td className="px-4 py-4">{item.studentInfo}</td>
+                <td className="px-4 py-4">{item.paid}</td>
+                <td className="px-4 py-4">{item.payment}</td>
+                <td className="px-4 py-4">{item.status}</td>
+                <td className="px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <button
+                      className="text-[#1BBFCA]"
+                      onClick={() => onEdit(item)}
+                    >
+                      <FaEdit size={18} />
+                    </button>
+                    <button
+                      className="text-red-400"
+                      onClick={() => onDelete(item.refundId)}
+                    >
+                      <FaTrashAlt size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

@@ -1,6 +1,6 @@
 export interface Note {
   id: number;
-  uuid: string;
+  uuid: string; 
   title: string;
   description: string;
   course: string;

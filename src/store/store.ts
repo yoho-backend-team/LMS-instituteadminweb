@@ -1,13 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import noteReducer from '../features/ContentMangement/Notes/Reducer/noteSlice';
 import staffattendance from '../features/teachingstaffAttendance/slice';
-import studyMaterial from "../features/StudyMaterials/slice"
-import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
-		studyMaterial: studyMaterial,
-		addQuestion: addQuestion,
 	},
 });
 
