@@ -1,0 +1,1 @@
+export const selectAllNotification = (state:any) => state.allNotificationReducer.allNotification; 

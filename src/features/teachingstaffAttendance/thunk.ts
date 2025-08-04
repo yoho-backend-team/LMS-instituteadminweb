@@ -7,6 +7,7 @@ export const GetStaffAttendanceThunk = () => async (dispatch: any) => {
     try {
         const response = await getStaffAttendaceAll();
         dispatch(setStaffAttendance(response.data))
+        return response
     } catch (error) {
         console.log(error)
     }

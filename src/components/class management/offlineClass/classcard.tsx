@@ -1,12 +1,10 @@
-import {  MoreVertical } from 'lucide-react';
-
-import { Eye, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Eye, Pencil, Trash2, CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import profileImg1 from '../../../assets/Frame 427321451.png';
 import profileImg2 from '../../../assets/Frame 427321452.png';
-import { CalendarDays } from 'lucide-react';
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -22,14 +20,18 @@ import EditOfflineClass from './editOfflineClass';
 
 interface BatchCardProps {
 	title: string;
-	students: number;
+	students: any;
 	startDate: string;
+	endTime: string;
+	startTime: string;
 }
 
 const offlineClassCard: React.FC<BatchCardProps> = ({
 	title,
 	students,
 	startDate,
+	endTime,
+	startTime,
 }) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -44,15 +46,29 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 	};
 
 	const navigate = useNavigate();
+	const data = { title, students, startDate, endTime, startTime };
 
-	const data = { title, students, startDate };
+	// Format date as DD/MM/YYYY
+	const formattedDate = new Date(startDate);
+	const displayDate = `${formattedDate.getDate()}/${formattedDate.getMonth() + 1}/${formattedDate.getFullYear()}`;
+
+	// Function to format time as 1.00 AM/PM
+	const getFormattedTime = (timeString: string) => {
+		const time = new Date(timeString);
+		const hours = time.getHours();
+		const minutes = time.getMinutes().toString().padStart(2, '0');
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+		const formattedHour = hours % 12 === 0 ? 12 : hours % 12;
+		return `${formattedHour}.${minutes} ${ampm}`;
+	};
+
+	const displayTimeRange = `${getFormattedTime(startTime)} - ${getFormattedTime(endTime)}`;
 
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
 				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
 					<div>
-						{/* <img src={profileImg1} alt='dummy-image' /> */}
 						<img
 							src={students === 1 ? profileImg1 : profileImg2}
 							alt='student profile'
@@ -61,7 +77,7 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<button
-								className='absolute top-2 right-2  '
+								className='absolute top-2 right-2'
 								aria-label='More options'
 							>
 								<MoreVertical className='w-5 h-5 text-[#1BBFCA]' />
@@ -72,9 +88,7 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 							<DropdownMenuItem
 								onClick={() =>
 									navigate(`/view-student/${title}`, {
-										state: {
-											data,
-										},
+										state: { data },
 									})
 								}
 								className='group border border-gray-300 text-black font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer'
@@ -90,8 +104,8 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 							</DropdownMenuItem>
 
 							<DropdownMenuItem
-								className='group border border-gray-300 text-black font-medium text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer'
 								onClick={openEditModal}
+								className='group border border-gray-300 text-black font-medium text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer'
 								onMouseEnter={(e: any) =>
 									(e.currentTarget.style.backgroundColor = '#1BBFCA')
 								}
@@ -119,41 +133,43 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
+
 				<div className='pr-12'>
-					<div>
-						<p
-							className=' mt-4'
-							style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}
-						>
-							{title}
-						</p>
-					</div>
+					<p
+						className='mt-4'
+						style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
+					>
+						{title}
+					</p>
 
 					<div className='flex items-center justify-between mt-3'>
-						<p
-							className=''
-							style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}
-						>
-							{`${students} students on this Class`}
+					<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
+						{students?.length == 0
+						? 'No students in this class'
+						: `${students} students on this class`}
+					</p>
+					</div>
+
+
+					<div className='mt-2 flex gap-2'>
+						<CalendarDays color={COLORS.gray_light} />
+						<p style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}>
+							{displayDate}
 						</p>
 					</div>
 
-					<div className='mt-2 flex gap-2'>
-						<div>
-							<CalendarDays color={COLORS.gray_light} />
-						</div>
+					<div className='mt-2 flex gap2'>
 						<p style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}>
-							{startDate}
+							{displayTimeRange}
 						</p>
 					</div>
 				</div>
+
 				<div className='mt-5 flex justify-end'>
 					<Button
 						onClick={() =>
 							navigate(`/view-student/${title}`, {
-								state: {
-									data,
-								},
+								state: { data },
 							})
 						}
 						className='bg-[#3ABE65] p-3 text-white hover:bg-[#3ABE65]'
@@ -163,8 +179,8 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 					</Button>
 				</div>
 			</CardContent>
-			<EditOfflineClass isOpen={isEditModalOpen} onClose={closeEditModal} />
 
+			<EditOfflineClass isOpen={isEditModalOpen} onClose={closeEditModal} />
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}
 				onClose={closeDeleteModal}
@@ -173,4 +189,5 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 		</Card>
 	);
 };
+
 export default offlineClassCard;

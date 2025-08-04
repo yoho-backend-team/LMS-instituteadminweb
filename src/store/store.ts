@@ -1,11 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
+import noteReducer from '../features/ContentMangement/Notes/Reducer/noteSlice';
 import staffattendance from '../features/teachingstaffAttendance/slice';
-import subscriptionReducer from '../components/subscription/slice'
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
-		subscription : subscriptionReducer
 	},
 });
 
