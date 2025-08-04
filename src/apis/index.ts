@@ -386,7 +386,7 @@ class Client {
         institute: {
             add_institute_notification: (data: any) =>
                 HttpClient.post(
-                    HTTP_END_POINTS.notification.institute_notification,
+                    HTTP_END_POINTS.notification.create_all_notification,
                     data
                 ),
             get_institute_notification: (query: any) =>

@@ -210,6 +210,7 @@ const generateEndpoints = () => {
             staff_notification: `/api/institutes/staff/notifications/all`,
             create_staff_notification: `/api/institutes/staff/notifications/`,
             institute_notification: `/api/institutes/branch/notifications`,
+            create_all_notification: `/api/institutes/branch/notifications`,
         },
         institute_notification: {
             get_all: `/api/notification/institute/`,
