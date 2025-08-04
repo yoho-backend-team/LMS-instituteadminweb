@@ -193,7 +193,7 @@ const Modules = () => {
 							description={selectedModule.description ?? ""}
 							isActive={selectedModule.isActive ?? false}
 							fileUrl={selectedModule.fileUrl}
-							fileName={selectedModule.fileName}
+							fileName={selectedModule.fileName?"":""}
 							branch={selectedModule.branch ?? ""}
 						/>
 					</div>
