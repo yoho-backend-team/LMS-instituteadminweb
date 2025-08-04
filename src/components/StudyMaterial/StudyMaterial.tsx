@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { HeaderActions } from "./HeaderAction";
 import { FilterSection } from "./FilterSection";
+import type { Note } from '../../components/StudyMaterial/Note';
 
 import { NoteModal } from "./StudyModal";
 import { IoMdAdd } from "react-icons/io";
@@ -20,17 +21,6 @@ import {
   updateStudyMaterial,
 } from "../../features/StudyMaterials/service";
 
-interface Note {
-  id: number;
-  title: string;
-  description: string;
-  course: string;
-  branch: string;
-  status: "Active" | "Completed";
-  file?: File;
-  video?: string;
-}
-
 const NotesManagement = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -45,6 +35,7 @@ const NotesManagement = () => {
       branch: "CSE",
       status: "Active",
       file: undefined,
+      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
     {
@@ -55,6 +46,7 @@ const NotesManagement = () => {
       branch: "CSE",
       status: "Completed",
       file: undefined,
+      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
   ]);
@@ -260,14 +252,14 @@ const NotesManagement = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4">
           {filteredNotes.map((note: any) => {
-            console.log("Mapped Note:", note); 
+            console.log("Mapped Note:", note.uuid); 
             return (
               <NoteCard
                 key={note.id}
                 note={note}
                 onView={(note: any) => setSelectedNote(note)}
-                onEdit={handleEdit}
-                onDelete={() => handleDelete(note.id)}
+                onEdit={(note) => setSelectedNote(note)}
+                onDelete={() => handleDelete(note.uuid)}
                 fileIcon={fileIcon}
                 titleIcon={titleIcon}
               />

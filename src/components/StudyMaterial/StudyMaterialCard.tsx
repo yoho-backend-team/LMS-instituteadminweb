@@ -2,15 +2,7 @@ import React, { useState } from "react";
 import { DropdownMenu } from "./DropdownMenu";
 import { MdToggleOn, MdToggleOff } from "react-icons/md";
 
-interface Note {
-  id: number;
-  title: string;
-  description: string;
-  course: string;
-  branch: string;
-  status: "Active" | "Completed";
-  file?: File;
-}
+import type { Note } from '../../components/StudyMaterial/Note';
 
 interface NoteCardProps {
   note: Note;
