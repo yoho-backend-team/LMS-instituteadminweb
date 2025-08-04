@@ -206,7 +206,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 				<div className='flex justify-end mt-12'>
 					<Select
 						value={status}
-						onValueChange={() => handleStatusChange(status)}
+						onValueChange={() => handleStatusChange(status === 'active' ? 'inactive' : 'active')}
 					>
 						<SelectTrigger
 							className={`w-[100px] h-[40px] border border-gray px-2 bg-transparent shadow-none ${

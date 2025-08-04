@@ -33,11 +33,11 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
   const [branches, setBranches] = useState<any[]>([]);
   const dispatch = useDispatch<any>();
 
-  // store both UUID and ObjectId for course
+  
   const [courseUUID, setCourseUUID] = useState("");
   const [courseObjectId, setCourseObjectId] = useState("");
 
-  // Fetch courses
+  
   const fetchAllCourses = async () => {
     try {
       const response = await getCourseService({});
@@ -49,7 +49,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     }
   };
 
-  // Fetch branches
+
   const fetchAllBranches = async () => {
     try {
       const response = await getBranchService({});
@@ -61,7 +61,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     }
   };
 
-  // Fetch students using UUID
+  
   const fetchAllStudents = async () => {
     if (!courseUUID) return;
     try {
@@ -80,7 +80,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     }
   };
 
-  // Fetch staff using ObjectId
+  
   const fetchAllStaff = async () => {
     if (!courseObjectId) return;
     try {
@@ -109,7 +109,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
     fetchAllStaff();
   }, [courseUUID, courseObjectId]);
 
-  // Validation schema
+
   const validationSchema = Yup.object({
     batchName: Yup.string().required("Batch name is required"),
     startDate: Yup.date().required("Start date is required"),
@@ -153,7 +153,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
         start_date: values.startDate,
         end_date: values.endDate,
         branch_id: values.branch,
-        course: values.course, // this is UUID
+        course: values.course, 
         instructor: values.staffs,
         student: values.students,
         institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
@@ -187,7 +187,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
 
         <form onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-            {/* Batch Name */}
+      
             <div className="md:col-span-2">
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Batch Name
@@ -207,7 +207,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* Start Date */}
+            
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Start Date
@@ -227,7 +227,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* End Date */}
+        
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 End Date
@@ -247,7 +247,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* Branch */}
+      
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Branch
@@ -273,7 +273,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* Course */}
+      
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Course
@@ -304,7 +304,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* Students */}
+  
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Students
@@ -331,7 +331,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
               )}
             </div>
 
-            {/* Teachers */}
+        
             <div>
               <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                 Teacher
@@ -359,7 +359,7 @@ export const CreateBatchModal = ({ isOpen, setIsOpen }: CreateBatchModalProps) =
             </div>
           </div>
 
-          {/* Actions */}
+          
           <div className="flex justify-end gap-4 mt-8 mb-4 px-4">
             <Button
               type="button"
