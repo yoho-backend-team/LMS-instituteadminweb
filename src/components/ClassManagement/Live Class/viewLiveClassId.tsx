@@ -2,17 +2,9 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
-import avatarImg from '../../../assets/image 109.png';
 import { Card } from '../../ui/card';
 import { GetImageUrl } from '../../../utils/helper';
-interface Student {
-	id: number;
-	name: string;
-	email: string;
-	avatar: string;
-	city: string;
-	address: string;
-}
+
 
 const ViewLiveClassId: React.FC = () => {
 	const [searchStudent, setSearchStudent] = useState('');
@@ -20,38 +12,9 @@ const ViewLiveClassId: React.FC = () => {
 	const location = useLocation();
 	const { data } = location.state;
 
-	const students: Student[] = [
-		{
-			id: 1,
-			name: 'Vijay',
-			email: 'vijay.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-		{
-			id: 2,
-			name: 'Ajith',
-			email: 'ajith.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-		{
-			id: 3,
-			name: 'Suriya',
-			email: 'suriya.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-	];
-
 	const filteredStudents = data?.batch?.student?.filter((student: any) =>
 		student.full_name.toLowerCase().includes(searchStudent.toLowerCase())
 	);
-
-	console.log(data, 'class data');
 
 	return (
 		<div className='p-6 bg-white min-h-screen'>
