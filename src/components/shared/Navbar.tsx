@@ -1,11 +1,17 @@
 import { FiBell } from "react-icons/fi";
 import titleIcon from "../../assets/navbar/titleIcon.png";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect,useCallback } from "react";
 import { Link } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
+import { useAuth } from "../../pages/Auth/AuthContext";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AuthThunks } from '../../features/Auth/reducer/thunks';
+import toast from "react-hot-toast";
+
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,6 +20,21 @@ const Navbar = () => {
 
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
+  const { logout } = useAuth();
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
+
+  const handleLogout = useCallback(() => {
+    setActiveTab("logout");
+    setDropdownOpen(false);
+    // your logout logic here
+    localStorage.removeItem("token");
+    logout();
+    dispatch(AuthThunks.logOutUser?.());
+    toast.success("Logged out Successfully");
+    navigate("/login", { replace: true });
+  }, [logout, dispatch, navigate]);
+
 
   const notifications = [
     {
@@ -157,9 +178,15 @@ const Navbar = () => {
                           : ""
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <TbLogout /> Logout
-                      </div>
+                     <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={`w-full text-left rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${
+                      activeTab === "logout" && "bg-[#1BBFCA] text-white"
+                    }`}
+                  >
+                    <div className="flex gap-2"><TbLogout /> Logout</div>
+                  </button>
                     </Link>
                   </li>
                 </ul>
