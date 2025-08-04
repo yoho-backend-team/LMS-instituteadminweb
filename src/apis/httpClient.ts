@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
+import { ClearLocalStorage } from '../utils/localStorage';
 
 const Axios = axios.create({
 	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -11,9 +11,10 @@ const Axios = axios.create({
 });
 
 Axios.interceptors.request.use((config) => {
-	const token = GetLocalStorage('token');
-	if (token) {
-		config.headers['Authorization'] = `Token ${token ? token : ''}`;
+	// const token = GetLocalStorage('token');
+	if (true) {
+		// config.headers['Authorization'] = `Token ${token ? token : ''}`;
+		config.headers['Authorization'] = `Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoYW5kcmFuMUBnbWFpbC5jb20iLCJyb2xlIjoiNjdhMDY4ODU0MDBmZmFlMmQyMDZhYmZiIiwiaW5zdGl0dXRlX2lkIjoiNjdmM2EyNmRmNGIyYzUzMGFjZDE2NDE5IiwidXVpZCI6Ijg3MjcyMjVkLWM5ZDUtNGQ0MC1hYjAyLTZhYzUyOGEyM2Q1MiIsInVzZXJfdHlwZSI6Imluc3RpdHV0ZSIsImlhdCI6MTc1Mzk2NTU3OSwiZXhwIjoxNzU0MDUxOTc5fQ.GlTTAks9g_Xg_2pTZMDY5cRv9ZWnevakjIu0nRKbn6g`;
 	}
 	return config;
 });
