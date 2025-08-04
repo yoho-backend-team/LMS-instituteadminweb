@@ -7,40 +7,98 @@ import TrichyImg from "../../assets/trichy.png";
 import EditIcon from "../../assets/edit.png";
 import DeleteIcon from "../../assets/delete.png";
 import ViewIcon from "../../assets/vieweye.png";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../app/store';
+import { updateBranchStatus, deleteBranch, fetchBranches, createNewBranch } from '../../featuresbranch/branch/branchSlice';
 
-interface LocationCardProps {
-  imageSrc: string;
+interface Branch {
+  id: string;
+  imageSrc?: string;
   cityName: string;
   address: string;
-  status: string;
+  status: "Active" | "Inactive";
+  phoneNumber: string;
+  pinCode: string;
+  city: string;
+  state: string;
+  alternateNumber?: string;
+  landMark?: string;
+}
+
+// Sample branches data
+const sampleBranches: Branch[] = [
+  {
+    id: "sample-1",
+    cityName: "Chennai",
+    address: "123 Mount Road, Chennai",
+    status: "Active",
+    phoneNumber: "9876543210",
+    pinCode: "600001",
+    city: "Chennai",
+    state: "Tamil Nadu",
+    imageSrc: TrichyImg,
+    alternateNumber: "9876543211",
+    landMark: "Near Spencer Plaza"
+  },
+  {
+    id: "sample-2",
+    cityName: "Coimbatore",
+    address: "456 Gandhipuram, Coimbatore",
+    status: "Active",
+    phoneNumber: "8765432109",
+    pinCode: "641001",
+    city: "Coimbatore",
+    state: "Tamil Nadu",
+    imageSrc: TrichyImg,
+    landMark: "Opposite to Bus Stand"
+  },
+  {
+    id: "sample-3",
+    cityName: "Madurai",
+    address: "789 Temple Road, Madurai",
+    status: "Inactive",
+    phoneNumber: "7654321098",
+    pinCode: "625001",
+    city: "Madurai",
+    state: "Tamil Nadu",
+    imageSrc: TrichyImg,
+    alternateNumber: "7654321099"
+  }
+];
+
+interface LocationCardProps {
+  id: string;
+  imageSrc?: string;
+  cityName: string;
+  address: string;
+  status: "Active" | "Inactive";
   onViewDetails: () => void;
   onEdit: () => void;
-  onDelete: () => void;
-  onStatusChange?: (newStatus: string) => void;
 }
 
 export function LocationCard({ 
+  id,
   imageSrc, 
   cityName, 
   address, 
   status: initialStatus, 
   onViewDetails,
   onEdit,
-  onDelete,
-  onStatusChange
 }: LocationCardProps) {
+  const dispatch = useDispatch<AppDispatch>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(initialStatus);
   const [hoveredButton, setHoveredButton] = useState<"view" | "edit" | "delete" | null>(null);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [pendingStatus, setPendingStatus] = useState<string | null>(null);
+  const [pendingStatus, setPendingStatus] = useState<"Active" | "Inactive" | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
-  const statusOptions = ["Active", "Inactive"];
+  const statusOptions: ("Active" | "Inactive")[] = ["Active", "Inactive"];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -52,7 +110,7 @@ export function LocationCard({
     setIsMenuOpen(false);
   };
 
-  const requestStatusChange = (newStatus: string) => {
+  const requestStatusChange = (newStatus: "Active" | "Inactive") => {
     setPendingStatus(newStatus);
     setShowConfirmPopup(true);
   };
@@ -60,8 +118,9 @@ export function LocationCard({
   const confirmStatusChange = () => {
     if (pendingStatus) {
       setCurrentStatus(pendingStatus);
-      if (onStatusChange) {
-        onStatusChange(pendingStatus);
+      // Only dispatch to Redux if it's not a sample branch
+      if (!id.startsWith("sample-")) {
+        dispatch(updateBranchStatus({ id, status: pendingStatus }));
       }
       setShowConfirmPopup(false);
       setShowSuccessPopup(true);
@@ -69,6 +128,20 @@ export function LocationCard({
     }
   };
 
+  const handleDelete = () => {
+    setShowDeleteConfirm(true);
+    setIsMenuOpen(false);
+  };
+
+  const confirmDelete = () => {
+    // Only dispatch to Redux if it's not a sample branch
+    if (!id.startsWith("sample-")) {
+      dispatch(deleteBranch(id));
+    }
+    setShowDeleteConfirm(false);
+    setShowSuccessPopup(true);
+  };
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -88,16 +161,20 @@ export function LocationCard({
   return (
     <>
       <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
-        <div className="w-full rounded-xl overflow-hidden relative">
+        <div className="w-full rounded-xl overflow-hidden relative h-48">
           <img
-            src={imageSrc}
+            src={imageSrc || TrichyImg}
             alt={cityName}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = TrichyImg;
+            }}
           />
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-4 right-2">
             <button 
               onClick={toggleMenu}
               className="flex justify-center items-center p-2 w-10 h-10 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
             >
               <MoreVertical className="w-5 h-5 text-[#716F6F]" />
             </button>
@@ -121,6 +198,7 @@ export function LocationCard({
               }}
               onMouseEnter={() => setHoveredButton("view")}
               onMouseLeave={() => setHoveredButton(null)}
+              aria-label="View branch details"
             >
               <img 
                 src={ViewIcon} 
@@ -149,6 +227,7 @@ export function LocationCard({
               }}
               onMouseEnter={() => setHoveredButton("edit")}
               onMouseLeave={() => setHoveredButton(null)}
+              aria-label="Edit branch"
             >
               <img 
                 src={EditIcon} 
@@ -171,12 +250,10 @@ export function LocationCard({
                   ? "bg-[#1BBFCA] border-transparent text-white" 
                   : "border-[#716F6F] bg-white text-[#716F6F]"
               } transition-colors`}
-              onClick={() => {
-                setIsMenuOpen(false);
-                onDelete();
-              }}
+              onClick={handleDelete}
               onMouseEnter={() => setHoveredButton("delete")}
               onMouseLeave={() => setHoveredButton(null)}
+              aria-label="Delete branch"
             >
               <img 
                 src={DeleteIcon} 
@@ -209,6 +286,8 @@ export function LocationCard({
                   ? "bg-[#1BBFCA] text-white" 
                   : "border border-[#716F6F] text-[#716F6F]"
               }`}
+              aria-label="Change status"
+              aria-expanded={isStatusDropdownOpen}
             >
               <div className="flex items-center gap-[10px]">
                 <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
@@ -259,10 +338,20 @@ export function LocationCard({
         />
       )}
 
+      {showDeleteConfirm && (
+        <ConfirmationPopup 
+          type="confirm" 
+          message="Are you sure you want to delete this branch?" 
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDeleteConfirm(false)}
+          onClose={() => setShowDeleteConfirm(false)}
+        />
+      )}
+
       {showSuccessPopup && (
         <ConfirmationPopup 
           type="success" 
-          message="Status changed successfully." 
+          message="Operation completed successfully." 
           onClose={() => setShowSuccessPopup(false)}
         />
       )}
@@ -271,75 +360,19 @@ export function LocationCard({
 }
 
 export function LocationCardsGrid() {
-  const [locations, setLocations] = useState([
-    {
-      imageSrc: TrichyImg,
-      cityName: "Tiruchirappalli",
-      address: "No 3, Salman Complex, Tiruchirappalli, Tamil Nadu, 621014",
-      status: "Active",
-      phoneNumber: "9876543210",
-      alternateNumber: "9876543211",
-      pinCode: "621014",
-      landMark: "Near Salman Complex",
-    },
-    {
-      imageSrc: TrichyImg,
-      cityName: "Chennai",
-      address: "No 5, Gandhi Nagar, Chennai, Tamil Nadu, 600001",
-      status: "Active",
-      phoneNumber: "9876543220",
-      alternateNumber: "9876543221",
-      pinCode: "600001",
-      landMark: "Near Gandhi Nagar",
-    },
-    {
-      imageSrc: TrichyImg,
-      cityName: "Coimbatore",
-      address: "No 10, Nehru Street, Coimbatore, Tamil Nadu, 641001",
-      status: "Inactive",
-      phoneNumber: "9876543230",
-      alternateNumber: "9876543231",
-      pinCode: "641001",
-      landMark: "Near Nehru Street",
-    },
-    {
-      imageSrc: TrichyImg,
-      cityName: "Madurai",
-      address: "No 7, Meenakshi Road, Madurai, Tamil Nadu, 625001",
-      status: "Active",
-      phoneNumber: "9876543240",
-      alternateNumber: "9876543241",
-      pinCode: "625001",
-      landMark: "Near Meenakshi Temple",
-    },
-    {
-      imageSrc: TrichyImg,
-      cityName: "Salem",
-      address: "No 15, Fort Road, Salem, Tamil Nadu, 636001",
-      status: "Inactive",
-      phoneNumber: "9876543250",
-      alternateNumber: "9876543251",
-      pinCode: "636001",
-      landMark: "Near Fort Road",
-    },
-    {
-      imageSrc: TrichyImg,
-      cityName: "Erode",
-      address: "No 22, Bazaar Street, Erode, Tamil Nadu, 638001",
-      status: "Active",
-      phoneNumber: "9876543260",
-      alternateNumber: "9876543261",
-      pinCode: "638001",
-      landMark: "Near Bazaar Street",
-    },
-  ]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { branches: reduxBranches, loading, error } = useSelector((state: RootState) => state.branch);
+
+  // Combine Redux branches with sample branches
+  const allBranches = [...sampleBranches, ...reduxBranches];
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [formData, setFormData] = useState({
     branchName: '',
     phoneNumber: '',
@@ -351,70 +384,65 @@ export function LocationCardsGrid() {
     state: 'Tamil Nadu'
   });
 
-  // Filter locations based on search term
-  const filteredLocations = searchTerm
-    ? locations.filter(location =>
-        location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : locations;
+  useEffect(() => {
+    dispatch(fetchBranches());
+  }, [dispatch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData((currInput) => ({
+      ...currInput,
       [name]: value
     }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = {...prev};
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.branchName.trim()) newErrors.branchName = "Branch name is required";
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Phone number is required";
+    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.pinCode.trim()) newErrors.pinCode = "Pincode is required";
+    if (!formData.city.trim()) newErrors.city = "City is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.trim());
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Filtering happens automatically through state updates
-  };
-
-  const handleEditBranch = (index: number) => {
-    const branch = locations[index];
-    setEditingIndex(index);
-    setFormData({
-      branchName: branch.cityName,
-      phoneNumber: branch.phoneNumber,
-      alternateNumber: branch.alternateNumber,
-      address: branch.address,
-      pinCode: branch.pinCode,
-      landMark: branch.landMark,
-      city: branch.cityName.split(',')[0],
-      state: 'Tamil Nadu'
-    });
-    setIsModalOpen(true);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const newBranch = {
-      imageSrc: TrichyImg,
+    if (!validateForm()) return;
+
+    const branchData = {
       cityName: formData.branchName,
-      address: formData.address,
-      status: "Active",
       phoneNumber: formData.phoneNumber,
       alternateNumber: formData.alternateNumber,
+      address: formData.address,
       pinCode: formData.pinCode,
-      landMark: formData.landMark
+      landMark: formData.landMark,
+      city: formData.city,
+      state: formData.state,
+      imageSrc: TrichyImg // Set default image for new branches
     };
 
-    if (editingIndex !== null) {
-      const updatedLocations = [...locations];
-      updatedLocations[editingIndex] = newBranch;
-      setLocations(updatedLocations);
-      setShowSuccessPopup(true);
+    if (editingId) {
+      // Handle update logic here if needed
     } else {
-      setLocations([...locations, newBranch]);
-      setShowSuccessPopup(true);
+      dispatch(createNewBranch(branchData));
     }
-
+    
+    setShowSuccessPopup(true);
     resetForm();
     setIsModalOpen(false);
   };
@@ -430,36 +458,58 @@ export function LocationCardsGrid() {
       city: '',
       state: 'Tamil Nadu'
     });
-    setEditingIndex(null);
+    setEditingId(null);
+    setErrors({});
   };
 
-  const handleBackFromBranchDetails = () => {
-    setViewingBranch(null);
+  const handleEdit = (branchId: string) => {
+    const branch = allBranches.find(b => b.id === branchId);
+    if (branch) {
+      setFormData({
+        branchName: branch.cityName,
+        phoneNumber: branch.phoneNumber,
+        alternateNumber: branch.alternateNumber || '',
+        address: branch.address,
+        pinCode: branch.pinCode,
+        landMark: branch.landMark || '',
+        city: branch.city,
+        state: branch.state
+      });
+      setEditingId(branchId);
+      setIsModalOpen(true);
+    }
   };
 
- if (viewingBranch) {
-  console.log("Viewing Branch:", viewingBranch); // Debug log
-  return (
-    <BranchDetailsPage 
-      locationName={viewingBranch} 
-      onBack={handleBackFromBranchDetails} 
-    />
-  );
-}
+  const filteredLocations = searchTerm
+    ? allBranches.filter(location =>
+        location.cityName.toLowerCase().includes(searchTerm.toLowerCase()))
+    : allBranches;
+
+  if (viewingBranch) {
+    const branch = allBranches.find(b => b.cityName === viewingBranch);
+    return (
+      <BranchDetailsPage 
+        locationName={viewingBranch} 
+        onBack={() => setViewingBranch(null)}
+        branchDetails={branch}
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-       <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
-  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
-  <input
-    type="text"
-    placeholder="Search Branch by City"
-    value={searchTerm}
-    onChange={handleSearchChange}
-    className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
-  />
-</form>
+        <form onSubmit={(e) => e.preventDefault()} className="w-full md:w-[360px] h-[48px] relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
+          <input
+            type="text"
+            placeholder="Search Branch by City"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
+            aria-label="Search branches"
+          />
+        </form>
 
         <button 
           onClick={() => {
@@ -467,6 +517,7 @@ export function LocationCardsGrid() {
             setIsModalOpen(true);
           }}
           className="w-full md:w-[200px] h-[48px] bg-[#1BBFCA] rounded-lg flex items-center justify-center gap-2 px-4 hover:bg-[#15a9b4] transition-colors"
+          aria-label="Add new branch"
         >
           <Plus className="w-6 h-6 text-white" />
           <span className="text-white font-poppins font-medium text-base capitalize">
@@ -475,40 +526,42 @@ export function LocationCardsGrid() {
         </button>
       </div>
 
+      {loading && (
+        <div className="col-span-full text-center py-10">
+          <p className="text-lg text-[#716F6F]">Loading branches...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="col-span-full text-center py-10 text-red-500">
+          <p className="text-lg">Error: {error}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-        {filteredLocations.length > 0 ? (
-          filteredLocations.map((location, index) => {
-            const originalIndex = locations.findIndex(
-              loc => loc.cityName === location.cityName
-            );
-            
-            return (
-              <LocationCard 
-                key={index} 
-                {...location} 
-                onViewDetails={() => setViewingBranch(location.cityName)}
-                onEdit={() => handleEditBranch(originalIndex)}
-                onDelete={() => {
-                  const updatedLocations = locations.filter((_, i) => i !== originalIndex);
-                  setLocations(updatedLocations);
-                  setShowSuccessPopup(true);
-                }}
-                onStatusChange={(newStatus) => {
-                  const updatedLocations = [...locations];
-                  updatedLocations[originalIndex].status = newStatus;
-                  setLocations(updatedLocations);
-                }}
-              />
-            );
-          })
+        {!loading && !error && filteredLocations.length > 0 ? (
+          filteredLocations.map((location) => (
+            <LocationCard 
+              key={location.id}
+              id={location.id}
+              imageSrc={location.imageSrc}
+              cityName={location.cityName}
+              address={location.address}
+              status={location.status}
+              onViewDetails={() => setViewingBranch(location.cityName)}
+              onEdit={() => handleEdit(location.id)}
+            />
+          ))
         ) : (
-          <div className="col-span-full text-center py-10">
-            <p className="text-lg text-[#716F6F]">
-              {searchTerm 
-                ? `No branches found matching "${searchTerm}"` 
-                : "No branches available"}
-            </p>
-          </div>
+          !loading && !error && (
+            <div className="col-span-full text-center py-10">
+              <p className="text-lg text-[#716F6F]">
+                {searchTerm 
+                  ? `No branches found matching "${searchTerm}"` 
+                  : "No branches available"}
+              </p>
+            </div>
+          )
         )}
       </div>
 
@@ -519,10 +572,10 @@ export function LocationCardsGrid() {
               <div className="flex justify-between items-center">
                 <div className="flex flex-col gap-3">
                   <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
-                    {editingIndex !== null ? "Edit Branch" : "Create a New Branch"}
+                    {editingId ? "Edit Branch" : "Create a New Branch"}
                   </h2>
                   <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
-                    {editingIndex !== null 
+                    {editingId 
                       ? "Update the branch details below" 
                       : "Fill in the details below to add a new branch"}
                   </p>
@@ -533,130 +586,157 @@ export function LocationCardsGrid() {
                     resetForm();
                   }}
                   className="text-gray-500 hover:text-gray-700"
+                  aria-label="Close modal"
                 >
                   <X size={24} />
                 </button>
               </div>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      Branch Name
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="branchName" className="text-sm font-medium text-[#7D7D7D]">
+                      Branch Name*
                     </label>
                     <input
                       type="text"
+                      id="branchName"
                       name="branchName"
                       value={formData.branchName}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
+                        errors.branchName ? 'border-red-500' : 'border-[#D9D9D9]'
+                      }`}
                       placeholder="Enter branch name"
-                      required
                     />
+                    {errors.branchName && (
+                      <p className="text-red-500 text-xs">{errors.branchName}</p>
+                    )}
                   </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      Phone Number
+
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="phoneNumber" className="text-sm font-medium text-[#7D7D7D]">
+                      Phone Number*
                     </label>
                     <input
                       type="tel"
+                      id="phoneNumber"
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
+                        errors.phoneNumber ? 'border-red-500' : 'border-[#D9D9D9]'
+                      }`}
                       placeholder="Enter phone number"
-                      required
                     />
+                    {errors.phoneNumber && (
+                      <p className="text-red-500 text-xs">{errors.phoneNumber}</p>
+                    )}
                   </div>
-                </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="alternateNumber" className="text-sm font-medium text-[#7D7D7D]">
                       Alternate Number
                     </label>
                     <input
                       type="tel"
+                      id="alternateNumber"
                       name="alternateNumber"
                       value={formData.alternateNumber}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
                       placeholder="Enter alternate number"
                     />
                   </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      Address
+
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="address" className="text-sm font-medium text-[#7D7D7D]">
+                      Address*
                     </label>
                     <input
                       type="text"
+                      id="address"
                       name="address"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
+                        errors.address ? 'border-red-500' : 'border-[#D9D9D9]'
+                      }`}
                       placeholder="Enter address"
-                      required
                     />
+                    {errors.address && (
+                      <p className="text-red-500 text-xs">{errors.address}</p>
+                    )}
                   </div>
-                </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      Pin Code
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="pinCode" className="text-sm font-medium text-[#7D7D7D]">
+                      Pincode*
                     </label>
                     <input
                       type="text"
+                      id="pinCode"
                       name="pinCode"
                       value={formData.pinCode}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
-                      placeholder="Enter pin code"
-                      required
+                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
+                        errors.pinCode ? 'border-red-500' : 'border-[#D9D9D9]'
+                      }`}
+                      placeholder="Enter pincode"
                     />
+                    {errors.pinCode && (
+                      <p className="text-red-500 text-xs">{errors.pinCode}</p>
+                    )}
                   </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      Land Mark
+
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="landMark" className="text-sm font-medium text-[#7D7D7D]">
+                      Landmark
                     </label>
                     <input
                       type="text"
+                      id="landMark"
                       name="landMark"
                       value={formData.landMark}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
-                      placeholder="Enter land mark"
+                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
+                      placeholder="Enter landmark"
                     />
                   </div>
-                </div>
 
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
-                      City
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="city" className="text-sm font-medium text-[#7D7D7D]">
+                      City*
                     </label>
                     <input
                       type="text"
+                      id="city"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className={`px-4 py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA] ${
+                        errors.city ? 'border-red-500' : 'border-[#D9D9D9]'
+                      }`}
                       placeholder="Enter city"
-                      required
                     />
+                    {errors.city && (
+                      <p className="text-red-500 text-xs">{errors.city}</p>
+                    )}
                   </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
+
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="state" className="text-sm font-medium text-[#7D7D7D]">
                       State
                     </label>
                     <input
                       type="text"
+                      id="state"
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg"
+                      className="px-4 py-3 border border-[#D9D9D9] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
                       placeholder="Enter state"
-                      required
+                      readOnly
                     />
                   </div>
                 </div>
@@ -668,15 +748,15 @@ export function LocationCardsGrid() {
                       setIsModalOpen(false);
                       resetForm();
                     }}
-                    className="px-6 py-2 border border-[#1BBFCA] text-[#1BBFCA] font-poppins font-medium rounded-lg bg-[rgba(27,191,202,0.1)]"
+                    className="px-6 py-2 border border-[#1BBFCA] text-[#1BBFCA] font-poppins font-medium rounded-lg bg-[rgba(27,191,202,0.1)] hover:bg-[rgba(27,191,202,0.2)] transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-[#1BBFCA] text-white font-poppins font-medium rounded-lg"
+                    className="px-6 py-2 bg-[#1BBFCA] text-white font-poppins font-medium rounded-lg hover:bg-[#15a9b4] transition-colors"
                   >
-                    {editingIndex !== null ? "Update Branch" : "Create Branch"}
+                    {editingId ? "Update Branch" : "Create Branch"}
                   </button>
                 </div>
               </form>
@@ -689,10 +769,9 @@ export function LocationCardsGrid() {
         <ConfirmationPopup 
           type="success" 
           message={
-            editingIndex !== null 
+            editingId 
               ? "Branch updated successfully!" 
               : "Branch created successfully!"
-              
           } 
           onClose={() => setShowSuccessPopup(false)}
         />

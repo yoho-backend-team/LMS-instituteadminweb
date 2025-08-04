@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { Provider } from 'react-redux'
-import store from './store/store';
+import {store }from '../src/app/store';
 
 function App() {
 	return (
