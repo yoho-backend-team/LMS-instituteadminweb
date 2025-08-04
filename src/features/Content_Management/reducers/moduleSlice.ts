@@ -6,11 +6,17 @@ const ModuleSlice = createSlice({
     data: [],
     upload_editdata: [],
     branch:[],
+    branch_course:[],
   },
   reducers: {
     getModule: (state, action) => {
       state.data = action.payload;
     },
+
+     getBranchCourse: (state, action) => {
+      state.branch_course = action.payload;
+    },
+
     addModules: (state: any, action) => {
       state.data = [...state.data, ...action.payload];
     },
@@ -49,7 +55,7 @@ const ModuleSlice = createSlice({
       state.upload_editdata = action.payload;
     },
         getBranches(state, action) {
-      state.data = action.payload;
+      state.branch = action.payload;
     },
 
   },
@@ -62,5 +68,6 @@ export const {
   updateModuleStatus,
   addModules,
   getBranches,
+  getBranchCourse,
 } = ModuleSlice.actions;
 export default ModuleSlice.reducer;

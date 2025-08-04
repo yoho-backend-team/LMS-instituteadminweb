@@ -5,12 +5,14 @@ import {
   EditModule,
   GetAllModule,
   GetBranch,
+  GetBranchCourse,
   ToggleModuleStatus,
   UploadFile,
 } from "../services/index";
 import {
   addModules,
   deleteModule,
+  getBranchCourse,
   getBranches,
   getModule,
   updateModuleStatus,
@@ -30,8 +32,8 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
 export const DeletemoduleThunks =
   (params: { id: string }) => async (dispatch: any) => {
     try {
-      await DeleteModule(params); // no response expected
-      dispatch(deleteModule(params.id)); // pass just the ID to reducer
+      await DeleteModule(params); 
+      dispatch(deleteModule(params.id)); 
       console.log("Deleted module ID:", params.id);
     } catch (error) {
       console.error("Error in thunks", error);
@@ -95,10 +97,27 @@ export const GetBranchThunks =
   (params: any) => async (dispatch: any) => {
     try {
       const result = await GetBranch(params);
-      dispatch(getBranches(result)); 
-      console.log("Fetched branches:", result);
-      return result;
+      dispatch(getBranches(result.data)); 
+      // console.log("Fetched branches:", result.data);
+      return result.data;
     } catch (error) {
       console.error("Error in GetBranchThunks", error);
     }
   };
+
+ 
+
+export const GetBranchCourseThunks = (branchname: string) => async (dispatch: any) => {
+  try {
+    const response = await GetBranchCourse(branchname);
+    dispatch(getBranchCourse(response.data));
+    console.log("Branch course data in thunk", response.data);
+  } catch (error) {
+    console.error("Error fetching branch courses in thunk", error);
+  }
+};
+
+
+
+
+

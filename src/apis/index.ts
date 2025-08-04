@@ -150,7 +150,7 @@ class Client {
         },
         getWithBranch: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.course.withBranch + data.branch_id + '/courses'
+                HTTP_END_POINTS.course.withBranch + data + '/courses'
             ),
         update: (data: any) =>
             HttpClient.update(
@@ -242,6 +242,10 @@ class Client {
             create: (data: any) =>
                 HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
         },
+         staff_salary: {
+            getall: (params: any) => HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
+            create: (data: any) => HttpClient.post(HTTP_END_POINTS.payment.salary.create, data)
+        }
     };
     nonTeachingStaff = {
         get: (data: any) =>

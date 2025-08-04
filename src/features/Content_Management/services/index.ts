@@ -48,11 +48,26 @@ export const AddModule = async (data: any) => {
 
 export const GetBranch = async (params: any) => {
   const response = await Client.branch.getAll(params);
-  console.log("Branch data getting", response);
+  // console.log("Branch data getting", response);
   if (response) {
     return response;
   }
 };
+
+export const GetBranchCourse = async (branchname: string) => {
+  try {
+    const response = await Client.course.getWithBranch(branchname); // <-- pass as object
+    console.log("Branch course data getting in services", response);
+    return response;
+  } catch (error: any) {
+    console.error("Error in GetBranchCourse:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+
+
 
 
 

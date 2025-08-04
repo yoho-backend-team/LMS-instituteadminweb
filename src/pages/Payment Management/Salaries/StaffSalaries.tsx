@@ -1,6 +1,4 @@
 
-
-
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
@@ -121,7 +119,95 @@ const StaffSalaries = () => {
 						<p className="font-semibold text-2xl">Add Salary</p>
 
 						<form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmitAndClose}>
-							{/* ... inputs unchanged ... */}
+							<div className="flex flex-col gap-2">
+								<label>Select Branch</label>
+								<select
+									className="border p-2 rounded h-10"
+									value={newSalary.branchId}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, branchId: e.target.value })
+									}
+								>
+									<option value=""></option>
+									<option value="1">Chennai</option>
+									<option value="2">Madurai</option>
+								</select>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Select Staff Type</label>
+								<select
+									className="border p-2 rounded h-10"
+									value={newSalary.staffType}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, staffType: e.target.value })
+									}
+								>
+									<option value=""></option>
+									<option value="Teaching">Teaching</option>
+									<option value="NonTeaching">Non Teaching</option>
+								</select>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Staff Name</label>
+								<input
+									type="text"
+									className="border p-2 rounded h-10"
+									value={newSalary.name}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, name: e.target.value })
+									}
+								/>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Payment Date</label>
+								<input
+									type="date"
+									className="border p-2 rounded h-10"
+									value={newSalary.paymentDate}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, paymentDate: e.target.value })
+									}
+								/>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Transaction ID</label>
+								<input
+									type="text"
+									className="border p-2 rounded h-10"
+									value={newSalary.transactionId}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, transactionId: e.target.value })
+									}
+								/>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Salary Amount</label>
+								<input
+									type="text"
+									className="border p-2 rounded h-10"
+									value={newSalary.salaryAmount}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, salaryAmount: e.target.value })
+									}
+								/>
+							</div>
+
+							<div className="flex flex-col">
+								<label>Balance</label>
+								<textarea
+									className="border p-2 rounded h-10 resize-none"
+									value={newSalary.balance}
+									onChange={(e) =>
+										setNewSalary({ ...newSalary, balance: e.target.value })
+									}
+								></textarea>
+							</div>
+
 							<div className="flex justify-end items-center gap-4 mt-4">
 								<button
 									className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"
@@ -141,16 +227,7 @@ const StaffSalaries = () => {
 					</div>
 				</div>
 			)}
-
-			{/* <SalaryTable
-        search={filters.search}
-        branch={filters.branch}
-        startDate={filters.startDate}
-        endDate={filters.endDate}
-        cardData={cardData}
-        setCardData={setCardData}
-      /> */}
-
+			
 			<SalaryTable
 				search={filters.search}
 				branch={filters.branch}
