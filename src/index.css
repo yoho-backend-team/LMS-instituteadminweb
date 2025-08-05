@@ -6,8 +6,8 @@ body.modal-open,
 html.modal-open {
   overflow: hidden ;
   height: 100%;
-  max-width: 100%
-  
+  /* max-width: 100% */
+  font:poppins ;
 }
 
 

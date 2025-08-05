@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
 import cancel from "../../assets/icons/Cancel.png";
 
-
-
 interface Note {
-  id: number
-  title: string
-  description: string
-  course: string
-  branch: string
-  status: "Active" | "Completed"
-  file?: File
-  video?: string
+  id: number;
+  title: string;
+  description: string;
+  course: string;
+  branch: string;
+  status: "Active" | "Completed";
+  file?: File | { name: string; type: string }; // handles File or fetched object
+  video?: string;
 }
 
 interface NoteDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  note: Note;
+  note: Note | null;
 }
 
 const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
@@ -28,17 +26,22 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
   const [fileURL, setFileURL] = useState<string | null>(null);
 
   useEffect(() => {
-    if (note.file) {
+    if (!note || !note.file) return;
+
+    if (note.file instanceof File) {
       const url = URL.createObjectURL(note.file);
       setFileURL(url);
 
       return () => {
         URL.revokeObjectURL(url);
       };
+    } else if (typeof note.file === "object" && "name" in note.file) {
+      // Assume it's already uploaded and accessible
+      setFileURL(`/uploads/${note.file.name}`);
     }
   }, [note]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !note) return null;
 
   const renderFilePreview = () => {
     if (!note.file || !fileURL) {
@@ -49,7 +52,7 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
       );
     }
 
-    const fileType = note.file.type;
+    const fileType = note.file instanceof File ? note.file.type : note.file.type;
 
     if (fileType.startsWith("image/")) {
       return (
@@ -73,36 +76,35 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
 
     if (fileType === "application/pdf") {
       return (
-        <div className="w-full rounded mb-4 cursor-pointer group"
-             onClick={() => window.open(fileURL, '_blank', 'noopener,noreferrer')}>
+        <div
+          className="w-full rounded mb-4 cursor-pointer group"
+          onClick={() =>
+            window.open(fileURL, "_blank", "noopener,noreferrer")
+          }
+        >
           <div className="relative w-full bg-white border-2 border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-           
             <div className="w-full h-60 bg-gray-100 flex items-center justify-center relative">
               <iframe
                 src={`${fileURL}`}
                 className="w-full h-full border-0 pointer-events-none"
                 title="PDF Preview"
               />
-             
               <div className="absolute inset-0 bg-transparent group-hover:bg-black/5 transition-colors flex items-center justify-center">
                 <div className="bg-black/80 text-white px-4 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
                   Click to open full PDF
                 </div>
               </div>
             </div>
-         
             <div className="px-4 py-3 bg-gray-50 border-t">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                  <span className="text-sm font-medium text-gray-700">{note.file.name}</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {note.title}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">PDF</span>
+                <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
+                  PDF
+                </span>
               </div>
             </div>
           </div>
@@ -114,7 +116,9 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
       <div className="w-full h-40 bg-gray-100 rounded mb-4 flex items-center gap-3 px-4">
         <img src="/file-icon.svg" alt="file" className="w-6 h-6" />
         <div className="flex flex-col">
-          <span className="text-sm text-gray-800">{note.file.name}</span>
+          <span className="text-sm text-gray-800">
+            {note.file instanceof File ? note.file.name : note.file.name}
+          </span>
           <a
             href={fileURL}
             target="_blank"
@@ -131,7 +135,6 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 text-[#716F6F] flex items-center justify-center">
       <div className="bg-white grid rounded-2xl p-12 w-2/5 h-4/5 relative shadow-xl overflow-y-auto">
-       
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-xl hover:text-black"
@@ -139,13 +142,11 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
           <img src={cancel} alt="close" />
         </button>
 
-       
         {renderFilePreview()}
 
-       
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold flex items-center gap-2">
-            {note.title}
+            {note.description}
             <span className="text-yellow-400">★</span>
           </h1>
           <span
@@ -155,11 +156,10 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
                 : "bg-gray-500 text-white"
             }`}
           >
-            {note.status}
+            {note.course}
           </span>
         </div>
 
-     
         <div className="mt-4 space-y-2 text-sm">
           <p>
             <span className="font-medium">Title :</span> {note.title}
@@ -168,8 +168,7 @@ const StudyDetailModal: React.FC<NoteDetailModalProps> = ({
             <span className="font-medium">Course Name :</span> {note.course}
           </p>
           <p>
-            <span className="font-medium">Description :</span>{" "}
-            {note.description}
+            <span className="font-medium">Description :</span> {note.description}
           </p>
         </div>
       </div>
