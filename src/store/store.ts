@@ -44,9 +44,7 @@ const store = configureStore({
 		AllNotificationReducer: AllNotificationReducer,
 		CertificateManagemetSlice: CertificateManagemetSlice,
 		usersSlice: usersSlice,
-		Coursedata: Coursedata
-
-
+		Coursedata: Coursedata,
 		subscription:subscriptionReducer,
 	},
 })
