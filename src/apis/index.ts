@@ -406,6 +406,7 @@ class Client {
                     HTTP_END_POINTS.notification.student_notification,
                     query
                 ),
+
         },
         staff: {
             add_staff_notification: (data: any) =>

@@ -169,7 +169,7 @@ const generateEndpoints = () => {
 			getClasses: "/api/institutes/class/staff/67f3bebeb8d2634300cc8aec",
 			update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/:staffId`,
 			create: 'api/institutes/auth/teaching-staff/register',
-			delete: `api/institutes/${instituteId}/branches/${branchId}/teaching-staff`
+			delete: `api/institutes/${instituteId}/branches/${branchId}/teaching-staff/:staffId`
 		},
 		nonstaff: {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,

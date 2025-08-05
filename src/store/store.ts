@@ -21,6 +21,7 @@ import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 import subscriptionReducer from '../components/subscription/slice'
 import StudentTicketReducer from '../features/StudentTicket/Reducers/slices';
+import StaffNotificationSlice from '../features/staffNotification/reducers/slices'
 
 
 const store = configureStore({
@@ -47,7 +48,8 @@ const store = configureStore({
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
 		subscription: subscriptionReducer,
-		StudentTicketReducer: StudentTicketReducer
+		StudentTicketReducer: StudentTicketReducer,
+		StaffNotificationSlice: StaffNotificationSlice
 
 
 	},
