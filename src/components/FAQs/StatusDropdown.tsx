@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { UpdateStatusCard } from "../../../features/Users_Management/Group/reducers/service.ts";
+import { UpdateStatusFaq } from "../../features/Faq/service";
 
 type StatusDropdownProps = {
   idx: number;
   initialStatus: string;
   options: string[];
-  itemId: string;
+  itemId: string; // This should be the FAQ's UUID
 };
+
 export function StatusDropdown({
   idx,
   initialStatus,
@@ -19,28 +20,28 @@ export function StatusDropdown({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const toggle = () => setOpen((o) => !o);
+  const toggle = () => setOpen((prev) => !prev);
 
   const handleSelect = async (option: string) => {
-    console.log("clicked", option)
+    console.log("Clicked:", option);
     setOpen(false);
+
     if (option === currentStatus) return;
-    const previous = currentStatus;
-    setCurrentStatus(option); // optimistic
+
+    const previousStatus = currentStatus;
+    setCurrentStatus(option); // optimistic UI update
     setError(null);
 
     try {
       setIsSaving(true);
-    await UpdateStatusCard({
+ await UpdateStatusFaq({
   id: itemId,
-  is_active: option === "Active",
+  is_active: option === "Active" ? true : false,
 });
-
-
-      console.log("Status updated to", option);
+  console.log("Status updated to", option);
     } catch (e: any) {
       console.error("Failed to update status", e);
-      setCurrentStatus(previous); // rollback
+      setCurrentStatus(previousStatus); // rollback
       setError(
         e?.response?.data?.message || "Failed to update status. Try again."
       );
@@ -50,8 +51,8 @@ export function StatusDropdown({
   };
 
   useEffect(() => {
-  setCurrentStatus(initialStatus);
-}, [initialStatus]);
+    setCurrentStatus(initialStatus);
+  }, [initialStatus]);
 
   return (
     <div className="flex flex-col items-end">
@@ -73,34 +74,32 @@ export function StatusDropdown({
         </button>
 
         {open && (
-          <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-xl shadow-lg z-10 min-w-[140px] p-3">
-            <div className="space-y-2">
-              {options.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleSelect(option)}
-                  className="w-full"
-                  disabled={isSaving}
-                >
-                  <span className="block px-4 py-2 rounded-xl text-black text-sm font-medium text-center border border-gray-300 hover:bg-[#1BBFCA] hover:text-white transition-colors duration-150">
-                    {option}
-                  </span>
-                </button>
-              ))}
+          <>
+            <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-xl shadow-lg z-10 min-w-[140px] p-3">
+              <div className="space-y-2">
+                {options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleSelect(option)}
+                    className="w-full"
+                    disabled={isSaving}
+                  >
+                    <span className="block px-4 py-2 rounded-xl text-black text-sm font-medium text-center border border-gray-300 hover:bg-[#1BBFCA] hover:text-white transition-colors duration-150">
+                      {option}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-
-        {open && (
-          <div
-            className="fixed inset-0 z-0"
-            onClick={() => setOpen(false)}
-          />
+            <div
+              className="fixed inset-0 z-0"
+              onClick={() => setOpen(false)}
+            />
+          </>
         )}
       </div>
-      {error && (
-        <div className="mt-1 text-xs text-red-500">{error}</div>
-      )}
+
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );
 }

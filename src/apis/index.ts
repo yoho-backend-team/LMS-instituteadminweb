@@ -73,6 +73,12 @@ class Client {
                 HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
                 data
             ),
+         statusupdate: (uuid: string, data: any) =>
+            HttpClient.update(
+                HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
+                data
+            ),
+            
     };
     faq_category = {
         create: (data: any) =>
