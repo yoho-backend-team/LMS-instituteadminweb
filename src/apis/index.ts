@@ -507,6 +507,9 @@ class Client {
 				),
 				params
 			),
+       update:(params:any)=>HttpClient.update(HTTP_END_POINTS.certificate.put.replace(':certificateid',params?.certificateid),params),
+        create:(data:any)=>HttpClient.post(HTTP_END_POINTS.certificate.create,data) ,
+        delete:(data:any)=>HttpClient.delete(HTTP_END_POINTS.certificate.delete.replace(':certificateid',data?.certificateid),data)  
 	};
 }
 export default new Client();
