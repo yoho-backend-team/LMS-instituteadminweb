@@ -35,8 +35,6 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
   onDelete,
   onDownload
 }) => {
-
-  console.log(certificates, 'certificates')
   return (
     <div className="bg-white shadow-2xl p-4 mt-5 rounded-2xl">
       <div className="bg-white rounded-xl overflow-hidden">
