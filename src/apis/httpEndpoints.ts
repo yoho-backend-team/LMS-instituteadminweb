@@ -231,6 +231,11 @@ const generateEndpoints = () => {
             update: `/api/placements/update`,
             getById: `/api/placements/fetch`,
         },
+        helpcenter:{
+            getall:'/api/helpcenter/',
+            delete:'/api/helpcenter/delete/',
+           update:'/api/helpcenter/update/',
+        }
     };
 };
 

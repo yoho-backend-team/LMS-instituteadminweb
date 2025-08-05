@@ -456,5 +456,12 @@ class Client {
         getById: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.placements.getById, params),
     };
+    helpcenter={
+        getall:(data: any)=>HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
+        post:(data:any)=>HttpClient.post(HTTP_END_POINTS.helpcenter.getall,data),
+        delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
+        update: (data: any, id: string) =>
+  HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
+    }
 }
 export default new Client();
