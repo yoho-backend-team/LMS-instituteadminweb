@@ -7,7 +7,7 @@ import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProfileThunk } from "../../features/Auth/reducer/thunks";
+import { GetBranchThunks, GetProfileThunk } from "../../features/Auth/reducer/thunks";
 import { GetImageUrl } from "../../utils/helper";
 import { useAuth } from "../../pages/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -92,6 +92,7 @@ const Navbar = () => {
     }
 
     dispatch(GetProfileThunk())
+    dispatch(GetBranchThunks())
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);

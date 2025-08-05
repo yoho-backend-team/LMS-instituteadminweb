@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { get } from 'http';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
 
@@ -260,7 +259,7 @@ class Client {
             create: (data: any) =>
                 HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
         },
-         staff_salary: {
+        staff_salary: {
             getall: (params: any) => HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
             create: (data: any) => HttpClient.post(HTTP_END_POINTS.payment.salary.create, data)
         }
@@ -289,6 +288,7 @@ class Client {
     };
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getWithCourse: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
         getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
         getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
         getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
@@ -302,8 +302,8 @@ class Client {
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
         get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
-        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
-        
+        getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
+
     };
     community = {
         getAll: (data: any) =>
