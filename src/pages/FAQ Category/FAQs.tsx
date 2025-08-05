@@ -1,7 +1,5 @@
 "use client"
-
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -21,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog" // New import for Dialog
 
 interface FAQItem {
   id: number
@@ -124,7 +123,7 @@ function AddFAQDrawer({
               type="button"
               onClick={handleCancel}
               variant="outline"
-              className="border-cyan-500 text-cyan-500 hover:bg-cyan-50  bg-transparent"
+              className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 bg-transparent"
             >
               Cancel
             </Button>
@@ -138,7 +137,7 @@ function AddFAQDrawer({
   )
 }
 
-// Converted EditFAQDialog to Drawer
+// Converted EditFAQDialog to Drawer (kept as is from user's code)
 function EditFAQDialog({
   open,
   onOpenChange,
@@ -215,7 +214,7 @@ function EditFAQDialog({
   )
 }
 
-// Converted ConfirmDialog to Drawer
+// Converted ConfirmDialog to Dialog
 function ConfirmDialog({
   open,
   onOpenChange,
@@ -234,14 +233,14 @@ function ConfirmDialog({
   onConfirm: () => void
 }) {
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
-        <DrawerHeader className="flex flex-col items-center gap-4">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px] p-6 bg-white rounded-lg shadow-lg">
+        <DialogHeader className="flex flex-col items-center gap-4 text-center">
           <TriangleAlert className="h-16 w-16 text-red-500 fill-red-500" />
-          <DrawerTitle className="text-xl font-bold">{title}</DrawerTitle>
+          <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
           <p className="text-gray-600">{message}</p>
-        </DrawerHeader>
-        <div className="flex justify-center gap-4 mt-6">
+        </DialogHeader>
+        <DialogFooter className="flex justify-center gap-4 mt-6">
           <Button
             variant="outline"
             className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 hover:text-cyan-600 bg-transparent px-6 py-2 rounded-md"
@@ -252,13 +251,13 @@ function ConfirmDialog({
           <Button className="bg-green-500 text-white hover:bg-green-600 px-6 py-2 rounded-md" onClick={onConfirm}>
             {confirmButtonText}
           </Button>
-        </div>
-      </DrawerContent>
-    </Drawer>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
-// Converted SuccessDialog to Drawer
+// Converted SuccessDialog to Dialog
 function SuccessDialog({
   open,
   onOpenChange,
@@ -271,21 +270,21 @@ function SuccessDialog({
   onOk: () => void
 }) {
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
-        <DrawerHeader className="flex flex-col items-center gap-4">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px] p-6 bg-white rounded-lg shadow-lg">
+        <DialogHeader className="flex flex-col items-center gap-4 text-center">
           <div className="flex items-center justify-center h-20 w-20 rounded-full bg-green-500">
             <CheckCircle className="h-12 w-12 text-white" />
           </div>
-          <DrawerTitle className="text-xl font-bold">{title}</DrawerTitle>
-        </DrawerHeader>
-        <div className="flex justify-center mt-6">
+          <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
+        </DialogHeader>
+        <DialogFooter className="flex justify-center mt-6">
           <Button className="bg-green-500 text-white hover:bg-green-600 px-6 py-2 rounded-md" onClick={onOk}>
             Ok
           </Button>
-        </div>
-      </DrawerContent>
-    </Drawer>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -502,7 +501,7 @@ export default function Page() {
           onSave={handleEditFAQ}
         />
       )}
-      {/* Confirm Delete Drawer */}
+      {/* Confirm Delete Dialog */}
       <ConfirmDialog
         open={isConfirmDeleteModalOpen}
         onOpenChange={setIsConfirmDeleteModalOpen}
@@ -512,7 +511,7 @@ export default function Page() {
         cancelButtonText="Cancel"
         onConfirm={handleConfirmDelete}
       />
-      {/* Success Drawer */}
+      {/* Success Dialog */}
       <SuccessDialog
         open={isSuccessModalOpen}
         onOpenChange={setIsSuccessModalOpen}

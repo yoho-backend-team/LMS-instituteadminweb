@@ -1,8 +1,9 @@
-import { DashboardCards } from '../Categories/Category';
-const Categories = () => {
-	return <div>
-		<DashboardCards/>
-	</div>
-};
+import AdminDashboard from "../../Course Management/Categories/Category"
 
-export default Categories;
+export default function Page() {
+  return (
+    <div>
+      <AdminDashboard />
+    </div>
+  )
+}
