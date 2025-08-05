@@ -432,11 +432,10 @@ class Client {
             HttpClient.get(
                 HTTP_END_POINTS.subscription.status_check + params.institute
             ),
-        upgrade_request: (params: any) =>
+        upgrade_request: ({ institute, body }: { institute: string, body: any }) =>
             HttpClient.update(
                 HTTP_END_POINTS.subscription.upgrade_request +
-                params.institute +
-                '/request'
+                institute + '/request', body
             ),
     };
     activity = {
