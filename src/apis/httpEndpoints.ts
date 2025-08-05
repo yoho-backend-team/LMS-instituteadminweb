@@ -130,6 +130,7 @@ const generateEndpoints = () => {
 		student: {
 			// get: `/api/institutes/${instituteId}/branches/${branchId}/students`,
 			get: `/api/institutes/${instituteId}/branches/${branchId}/students`,
+			getall: `/api/institutes/${instituteId}/branches/${branchId}/:courseUUID/students`,
 			getWithId: `/api/institutes/auth/student/${instituteId}/students/`,
 			getWithBatch: `/api/institutes/${instituteId}/branches/`,
 			getWithCourse: `/api/institutes/${instituteId}/branches/`,
@@ -180,8 +181,8 @@ const generateEndpoints = () => {
 		},
 		ticket: {
 			student_ticket: `/api/institutes/student-ticket/getalll`,
-			update_student_status_ticket: `/api/institutes/student-ticket/updatestatus/`,
-			update: `/api/institutes/student-ticket/update/`,
+			update_student_status_ticket: `/api/institutes/student-ticket/update/`,
+			// update: `/api/institutes/student-ticket/update/`,
 			student_ticket_with_id: `/api/institutes/student-ticket/`,
 			staff_ticket: `/api/institutes/staff/ticket/all`,
 			staff_ticket_with_id: `/api/institutes/staff/ticket/`,
@@ -210,6 +211,7 @@ const generateEndpoints = () => {
 			staff_notification: `/api/institutes/staff/notifications/all`,
 			create_staff_notification: `/api/institutes/staff/notifications/`,
 			institute_notification: `/api/institutes/branch/notifications`,
+			all_notification_resend: `api/notification/student-notification-resend`
 		},
 		institute_notification: {
 			get_all: `/api/notification/institute/`,

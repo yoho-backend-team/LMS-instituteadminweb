@@ -20,6 +20,7 @@ import CertificateManagemetSlice from '../features/certificateManagement/reducer
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 import subscriptionReducer from '../components/subscription/slice'
+import StudentTicketReducer from '../features/StudentTicket/Reducers/slices';
 
 
 const store = configureStore({
@@ -45,7 +46,10 @@ const store = configureStore({
 		CertificateManagemetSlice: CertificateManagemetSlice,
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
-		subscription:subscriptionReducer,
+		subscription: subscriptionReducer,
+		StudentTicketReducer: StudentTicketReducer
+
+
 	},
 })
 
