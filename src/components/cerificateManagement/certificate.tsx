@@ -7,6 +7,7 @@ import { CertificateModal } from '../../components/cerificateManagement/certific
 import { useDispatch, useSelector } from "react-redux"
 import { getStudentCertificate } from "../../features/certificateManagement/reducers/thunks"
 import { selectCertificate } from "../../features/certificateManagement/reducers/selectors"
+import { GetImageUrl } from "../../utils/helper"
 
 export interface Certificate {
   id: number
@@ -16,6 +17,7 @@ export interface Certificate {
   batch: string
   student: string
   email: string
+   image?: string
 }
 
 const initialCertificates: Certificate[] = [
@@ -130,27 +132,37 @@ console.log(certificateData,'certificate management...................')
     }
     setIsModalOpen(false)
   }
-  const filteredCertificates = certificateData?.data?.flatMap((cert: any, certIndex: number) => {
-    return cert.student?.map((student: any, studentIndex: number) => {
-      const mapped = {
-        id: certIndex * 1000 + studentIndex,
-        title: cert.certificate_name,
-        description: cert.description,
-        branch: cert.branch_id,
-        batch: cert.batch_id,
-        student: student.name,
-        email: student.email,
+  const filteredCertificates = certificateData?.data?.flatMap((cert: any) => 
+    {
+    if (!cert.student || !Array.isArray(cert.student)) return [];
+
+    console.log(cert, 'cert')
+
+    return cert.student.map((student: any) => {
+      const fullName = student.full_name || `${student.first_name || ""} ${student.last_name || ""}`.trim();
+      const email = student.email || "N/A";
+
+      const mapped: Certificate = {
+        id: cert.id,
+        title: cert?.certificate_name,
+        description: cert?.description,
+        branch: cert?.branch_id,
+        batch: cert?.batch_id,
+        student: fullName,
+        email: email,
+        image: cert?.student[0]?.image
       };
 
       const matchesFilter =
         (!selectedCourse || cert.description?.toLowerCase().includes(selectedCourse.toLowerCase())) &&
         (!selectedBranch || cert.branch_id === selectedBranch) &&
         (!selectedBatch || cert.batch_id === selectedBatch) &&
-        (!selectedStudent || student.name?.toLowerCase().includes(selectedStudent.toLowerCase()));
+        (!selectedStudent || fullName.toLowerCase().includes(selectedStudent.toLowerCase()));
 
       return matchesFilter ? mapped : null;
     }).filter(Boolean);
   }) || [];
+
 
 
   useEffect(() => {

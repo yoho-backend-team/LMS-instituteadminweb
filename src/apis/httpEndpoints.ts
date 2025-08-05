@@ -233,7 +233,11 @@ const generateEndpoints = () => {
             getById: `/api/placements/fetch`,
         },
         certificate:{
-            get :'/api/certificate/973195c0-66ed-47c2-b098-d8989d3e4529/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22',
+            // get :'/api/certificate/973195c0-66ed-47c2-b098-d8989d3e4529/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22',
+            get:`/api/certificate/${instituteId}/${branchId}/`,
+            put:'/api/certificate/update/:certificateid',
+            create:'/api/certificate/create',
+            delete:'/api/certificate/delete/:certificateid'
         }
     };
 };
