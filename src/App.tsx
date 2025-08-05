@@ -5,8 +5,8 @@ import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
 
-import { store } from './app/store';
-import { Provider } from 'react-redux';
+// import { store } from './app/store';
+// import { Provider } from 'react-redux';
 
 
 function App() {
@@ -15,7 +15,6 @@ function App() {
 			<BrowserRouter>
 				<AuthProvider>
 					<TicketProvider>
-						  <Provider store={store}>
 						
 					<AppRoutes />
 					<Toaster
@@ -42,7 +41,6 @@ function App() {
 							},
 						}}
 					/>
-					</Provider>
 					</TicketProvider>
 				</AuthProvider>
 			</BrowserRouter>
