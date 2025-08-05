@@ -25,6 +25,9 @@ import StaffNotificationSlice from '../features/staffNotification/reducers/slice
 import StudentNotificationSlice from '../features/StudentNotification/reducer/NotificationSlice';
 import helpCenterFaqs from '../features/HelpCenter/slice'
 import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
+import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSlice"
+
+
 
 const store = configureStore({
 	reducer: {
@@ -54,7 +57,11 @@ const store = configureStore({
 		StaffNotificationSlice: StaffNotificationSlice,
 		StudentNotificationSlice: StudentNotificationSlice,
 		helpCenterFaqs: helpCenterFaqs,
-		ticketAdmin: ticketAdmin
+		ticketAdmin: ticketAdmin,
+		StaffSalary: StaffSalary,
+
+
+
 	},
 })
 
@@ -62,3 +69,7 @@ const store = configureStore({
 
 
 export default store;
+
+
+
+

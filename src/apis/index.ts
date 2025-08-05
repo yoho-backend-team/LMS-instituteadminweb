@@ -289,7 +289,7 @@ class Client {
             ),
         getWithBranch: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.staff.getWithBranch + data.branch + '/teaching-staff/'
+                HTTP_END_POINTS.staff.getWithBranch + data + '/teaching-staff/'
             ),
         getActivtiy: (params: any) =>
             HttpClient.get(HTTP_END_POINTS.staff.getActivtiy + params?.staff, params),
