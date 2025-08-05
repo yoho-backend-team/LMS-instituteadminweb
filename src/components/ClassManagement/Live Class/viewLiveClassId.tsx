@@ -27,8 +27,6 @@ const ViewLiveClassId: React.FC = () => {
 		return time12hr;
 	};
 
-	console.log('data:', data);
-
 	return (
 		<div className='p-6 bg-white min-h-screen'>
 			<button
