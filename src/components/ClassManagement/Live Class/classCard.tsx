@@ -56,7 +56,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 			console.error('Error deleting live class:', error);
 		} finally {
 			closeDeleteModal();
-			if(fetchAllLiveClasses) {
+			if (fetchAllLiveClasses) {
 				fetchAllLiveClasses();
 			}
 		}

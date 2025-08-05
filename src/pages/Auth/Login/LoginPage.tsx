@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EyeIcon, EyeOff } from 'lucide-react';
-import image from '../../../assets/Login/image.png'
+import image from '../../../assets/Login/image.png';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { data, Link, useNavigate } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
@@ -14,66 +14,88 @@ import { AuthThunks } from '../../../features/Auth/reducer/thunks';
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const dispatch = useDispatch<any>()
-	const { login } = useAuth()
-	const navigate = useNavigate()
+	const dispatch = useDispatch<any>();
+	const { login } = useAuth();
+	const navigate = useNavigate();
 
-	const Inputpassword = useRef<HTMLInputElement>(null)
-	const Inputemail = useRef<HTMLInputElement>(null)
+	const Inputpassword = useRef<HTMLInputElement>(null);
+	const Inputemail = useRef<HTMLInputElement>(null);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const email = Inputemail?.current?.value
-		const password = Inputpassword?.current?.value
+		e.preventDefault();
+		const email = Inputemail?.current?.value;
+		const password = Inputpassword?.current?.value;
 
-		const response = await AuthLogin({ email, password })
+		const response = await AuthLogin({ email, password });
 
 		if (response?.status == 'success' || response?.status == 'success') {
 			if (response?.data?.otpVerify) {
-				toast.success(response?.message)
-				navigate('/otp-verify')
-				StoreLocalStorage('OtpToken', response?.data?.token)
-				StoreLocalStorage('otp', response?.data?.otp)
-				StoreLocalStorage('email', response?.data?.email)
+				toast.success(response?.message);
+				navigate('/otp-verify');
+				StoreLocalStorage('OtpToken', response?.data?.token);
+				StoreLocalStorage('otp', response?.data?.otp);
+				StoreLocalStorage('email', response?.data?.email);
 			} else {
-				dispatch(AuthThunks(data))
-				login(response?.data?.token)
-				toast.success(response?.message)
+				dispatch(AuthThunks(data));
+				login(response?.data?.token);
+				toast.success(response?.message);
 			}
 		} else {
-			toast.error(response?.message)
+			toast.error(response?.message);
 		}
-	}
+	};
 
 	return (
 		<div className='h-screen w-screen grid grid-cols-2'>
-			<div className="w-full h-screen grid items-center">
+			<div className='w-full h-screen grid items-center'>
 				<section className=' px-14 '>
-					<h1 style={{ ...FONTS.login_heading, color: COLORS.primary }} className='tracking-[20px] text-center'>LMS</h1>
+					<h1
+						style={{ ...FONTS.login_heading, color: COLORS.primary }}
+						className='tracking-[20px] text-center'
+					>
+						LMS
+					</h1>
 					<div className='mt-12'>
-						<h1 style={{ ...FONTS.login_heading_02, color: COLORS.primary }}>Hi, Welcome Back</h1>
-						<p style={{ ...FONTS.login_description }} className='text-[#969696]'>Enter your Credentials to continue</p>
+						<h1 style={{ ...FONTS.login_heading_02, color: COLORS.primary }}>
+							Hi, Welcome Back
+						</h1>
+						<p
+							style={{ ...FONTS.login_description }}
+							className='text-[#969696]'
+						>
+							Enter your Credentials to continue
+						</p>
 					</div>
 
 					<div>
 						<form className='w-full my-4' onSubmit={handleSubmit}>
 							<div className='w-full'>
-								<label style={{ ...FONTS.login_input_head }} className='text-[#716F6F]'>Email Or Username</label>
+								<label
+									style={{ ...FONTS.login_input_head }}
+									className='text-[#716F6F]'
+								>
+									Email Or Username
+								</label>
 								<input
 									type='email'
 									ref={Inputemail}
-									defaultValue="chandran1@gmail.com"
+									defaultValue='chandran1@gmail.com'
 									className='w-full mb-3 mt-2 rounded-md px-4 py-2 outline-none border border-[#716F6F] text-[#716F6F]'
 								/>
 							</div>
 
 							<div className='flex flex-col '>
-								<label style={{ ...FONTS.login_input_head }} className='text-[#716F6F]'>Password</label>
+								<label
+									style={{ ...FONTS.login_input_head }}
+									className='text-[#716F6F]'
+								>
+									Password
+								</label>
 								<div className='relative'>
 									<input
 										type={showPassword ? 'text' : 'password'}
 										ref={Inputpassword}
-										defaultValue="Testpass@2024"
+										defaultValue='Testpass@2024'
 										className='w-full mb-3 mt-2 rounded-md px-4 py-2 outline-none border border-[#716F6F] text-[#716F6F]'
 									/>
 									<span
@@ -102,7 +124,11 @@ const LoginPage = () => {
 							<button
 								type='submit'
 								className={`w-full my-6 mt-8 py-2 rounded-md transition cursor-pointer`}
-								style={{ ...FONTS.bold_heading, background: COLORS.primary, color: COLORS.white }}
+								style={{
+									...FONTS.bold_heading,
+									background: COLORS.primary,
+									color: COLORS.white,
+								}}
 							>
 								Sign In
 							</button>
@@ -113,13 +139,12 @@ const LoginPage = () => {
 								</p>
 							</div>
 						</form>
-
 					</div>
 				</section>
 			</div>
 
-			<div className="h-screen w-full ">
-				<img src={image} alt="" className='object-cover w-full h-screen ' />
+			<div className='h-screen w-full '>
+				<img src={image} alt='' className='object-cover w-full h-screen ' />
 			</div>
 		</div>
 	);
