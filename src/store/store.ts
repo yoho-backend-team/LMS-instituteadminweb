@@ -15,6 +15,7 @@ import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
 import StaffSlice from '../features/staff/reducers/slices'
 import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
+import StaffSalary from"../features/Payment_Managemant/salary/reducers/moduleSlice"
 
 
 const store = configureStore({
@@ -35,6 +36,7 @@ const store = configureStore({
 		GroupCardSlice: GroupCardSlice,
 		StaffSlice: StaffSlice,
 		AllNotificationReducer: AllNotificationReducer,
+		StaffSalary:StaffSalary,
 	},
 })
 

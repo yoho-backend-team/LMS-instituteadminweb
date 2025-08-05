@@ -140,6 +140,10 @@ const generateEndpoints = () => {
             fee: {
                 create: '/api/institutes/payments/student-fee/create',
             },
+              salary: {
+                getall: '/api/institutes/payments/staff-salary/all',
+                create: '/api/institutes/payments/staff-salary',
+            }
         },
         id_cards: {
             student: {
