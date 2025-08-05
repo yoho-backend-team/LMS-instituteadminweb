@@ -1,43 +1,40 @@
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import { useDispatch } from "react-redux"
-import { ArrowLeft, ChevronDown } from "lucide-react" // Import Lucide icons
-
-import { Button } from "@/components/ui/button"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { ArrowLeft, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service";
+import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks";
 
-// Assuming these are available in your project
-import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service"
-import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks"
+const normalizeIdentity = (s: string) =>
+  s.trim().toLowerCase().replace(/\s+/g, "_").replace(/-/, "_");
 
-const normalizeIdentity = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "_").replace(/-/, "_")
-
-// Define the types of permissions
-const permissionTypes = ["Read", "Create", "Update", "Delete"] as const
-type PermissionType = (typeof permissionTypes)[number]
+const permissionTypes = ["Read", "Create", "Update", "Delete"] as const;
+type PermissionType = (typeof permissionTypes)[number];
 
 interface PermissionItem {
-  id: number
-  identity: string
-  selectedPermissions: Record<PermissionType, boolean>
+  id: number;
+  identity: string;
+  selectedPermissions: Record<PermissionType, boolean>;
 }
 
 interface OutputPermission {
-  id: number
-  identity: string
-  permission: Array<{ permission: string; granted: boolean }>
+  id: number;
+  identity: string;
+  permission: Array<{ permission: string; granted: boolean }>;
 }
 
 interface AddNewGroupProps {
-  institute_id?: string
-  defaultIdentity?: string
+  institute_id?: string;
+  defaultIdentity?: string;
 }
 
 function AddNewGroup({
@@ -50,49 +47,11 @@ function AddNewGroup({
     "Users",
     "User Details",
     "Categories",
-    "Courses",
-    "Course Details",
-    "Branch Details",
-    "Course Notes",
-    "Course Modules",
-    "Teaching Staffs",
-    "Branches",
-    "Non Teaching Staffs",
-    "Students Details",
-    "Batches",
-    "Batch Details",
-    "Offline Classes",
-    "Offline Class Details",
-    "Live Classes",
-    "Live Class Details",
-    "Student Attendance",
-    "Student Attendance Details",
-    "Study Materials",
-    "Teaching Staff Details",
-    "Non Teaching Staff Attendances",
-    "Student Fee Details",
-    "Non Teaching Staff Attendances Details",
-    "Student Fees",
-    "Staff Salaries",
-    "Subscription Details",
-    "Staff Notification",
-    "All Notification",
-    "Student Certificate",
-    "Student Certificate Details",
-    "Student_Idcards",
-    "Student Idcards",
-    "Teaching Staff Attendances",
-    "Teaching Staff Attendance Details",
-    "FAQS",
-    "Staff-Ticket",
-    "FAQ Categories",
-    "Help FAQs",
-    "Fees",
-  ]
+  ];
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch<any>()
-  const [groupName, setGroupName] = useState(defaultIdentity)
+  const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const [groupName, setGroupName] = useState(defaultIdentity);
   const [permissions, setPermissions] = useState<PermissionItem[]>(
     permissionsList.map((p, i) => ({
       id: i + 1,
@@ -103,9 +62,9 @@ function AddNewGroup({
         Update: false,
         Delete: false,
       },
-    })),
-  )
-  const [selectAll, setSelectAll] = useState(false)
+    }))
+  );
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     setPermissions((prev) =>
@@ -117,86 +76,90 @@ function AddNewGroup({
           Update: selectAll,
           Delete: selectAll,
         },
-      })),
-    )
+      }))
+    );
     if (selectAll) {
-      toast.success("All permissions selected")
+      toast.success("All permissions selected");
     } else {
-      toast.info("All permissions deselected")
+      toast.info("All permissions deselected");
     }
-  }, [selectAll])
+  }, [selectAll]);
 
-  const handlePermissionChange = (moduleIndex: number, permissionType: PermissionType, isChecked: boolean) => {
+  const handlePermissionChange = (
+    moduleIndex: number,
+    permissionType: PermissionType,
+    isChecked: boolean
+  ) => {
     setPermissions((prev) => {
-      const newPermissions = [...prev]
+      const newPermissions = [...prev];
       newPermissions[moduleIndex] = {
         ...newPermissions[moduleIndex],
         selectedPermissions: {
           ...newPermissions[moduleIndex].selectedPermissions,
           [permissionType]: isChecked,
         },
-      }
-      const allSelected = newPermissions.every((module) => Object.values(module.selectedPermissions).every(Boolean))
+      };
+      const allSelected = newPermissions.every((module) =>
+        Object.values(module.selectedPermissions).every(Boolean)
+      );
       const noneSelected = newPermissions.every((module) =>
-        Object.values(module.selectedPermissions).every((val) => !val),
-      )
+        Object.values(module.selectedPermissions).every((val) => !val)
+      );
       if (selectAll && !allSelected) {
-        setSelectAll(false)
+        setSelectAll(false);
       } else if (!selectAll && allSelected && !noneSelected) {
-        setSelectAll(true)
+        setSelectAll(true);
       }
-      return newPermissions
-    })
-  }
+      return newPermissions;
+    });
+  };
 
   const buildPayload = () => {
     const formattedPermissions: OutputPermission[] = permissions
       .filter((p) => Object.values(p.selectedPermissions).some(Boolean))
       .map((p) => {
-        const permissionArray: Array<{ permission: string; granted: boolean }> = []
+        const permissionArray: Array<{ permission: string; granted: boolean }> =
+          [];
         if (p.selectedPermissions.Read) {
-          permissionArray.push({ permission: "read", granted: true })
+          permissionArray.push({ permission: "read", granted: true });
         }
         if (p.selectedPermissions.Create) {
-          permissionArray.push({ permission: "create", granted: true })
+          permissionArray.push({ permission: "create", granted: true });
         }
         if (p.selectedPermissions.Update) {
-          permissionArray.push({ permission: "update", granted: true })
+          permissionArray.push({ permission: "update", granted: true });
         }
         if (p.selectedPermissions.Delete) {
-          permissionArray.push({ permission: "delete", granted: true })
+          permissionArray.push({ permission: "delete", granted: true });
         }
         return {
           id: p.id,
           identity: normalizeIdentity(p.identity),
           permission: permissionArray,
-        }
-      })
+        };
+      });
     return {
       identity: groupName,
       institute_id,
       permissions: formattedPermissions,
-    }
-  }
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const payload = buildPayload()
-    console.log("Payload being sent:", JSON.stringify(payload, null, 2))
+    e.preventDefault();
+    const payload = buildPayload();
     try {
-      const response = await CreateGroup(payload)
-      console.log("group created", response)
-      toast.success("Group created successfully")
-      dispatch(GetGroupCardthunks({}))
-      navigate("/group")
+      const response = await CreateGroup(payload);
+      toast.success("Group created successfully");
+      dispatch(GetGroupCardthunks({}));
+      navigate("/group");
     } catch (err) {
-      console.error("err creating group", err)
-      toast.error("Error creating group")
+      toast.error("Error creating group");
     }
-  }
+  };
 
   const reset = () => {
-    setGroupName(defaultIdentity)
+    setGroupName(defaultIdentity);
     setPermissions(
       permissionsList.map((p, i) => ({
         id: i + 1,
@@ -207,14 +170,16 @@ function AddNewGroup({
           Update: false,
           Delete: false,
         },
-      })),
-    )
-    setSelectAll(false)
-  }
+      }))
+    );
+    setSelectAll(false);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md">
-      {/* Back Button */}
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 p-6 bg-white rounded-lg shadow-md"
+    >
       <Button
         variant="ghost"
         size="icon"
@@ -225,13 +190,17 @@ function AddNewGroup({
         <span className="sr-only">Go back</span>
       </Button>
 
-      {/* Header */}
-      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">Add New Group</h1>
+      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">
+        Add New Group
+      </h1>
       <p className="text-[#7D7D7D] mb-6">Set Group Permissions</p>
 
       {/* Group Name */}
       <div className="mb-6">
-        <label htmlFor="group-name" className="block mb-2 text-sm font-medium text-[#7D7D7D]">
+        <label
+          htmlFor="group-name"
+          className="block mb-2 text-sm font-medium text-[#7D7D7D]"
+        >
           Group Name
         </label>
         <input
@@ -244,15 +213,13 @@ function AddNewGroup({
         />
       </div>
 
-      {/* Group Permissions Header */}
-      <div className="mb-2">
-        <div className="text-lg font-semibold text-[#1F2D3A]">Group Permissions</div>
-      </div>
-
-      {/* Administrator Access + Select All */}
+      {/* Select All */}
       <div className="flex items-center justify-between mb-1">
         <div className="text-sm text-[#7D7D7D]">Administrator Access</div>
-        <label htmlFor="select-all" className="text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer">
+        <label
+          htmlFor="select-all"
+          className="text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer"
+        >
           <input
             id="select-all"
             type="checkbox"
@@ -265,14 +232,17 @@ function AddNewGroup({
       </div>
       <hr className="border-t border-gray-200 mb-4" />
 
-      {/* Permission Grid with Dropdowns */}
+      {/* Permission Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {permissions.map((item, moduleIndex) => (
           <div
             key={item.id}
             className="flex flex-col gap-2 bg-white rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
           >
-            <label className="text-base font-semibold text-[#1F2D3A] mb-2">{item.identity}</label>
+            <label className="text-base font-semibold text-[#1F2D3A] mb-2">
+              {item.identity}
+            </label>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -288,8 +258,9 @@ function AddNewGroup({
                   <DropdownMenuCheckboxItem
                     key={type}
                     checked={item.selectedPermissions[type]}
-                    onCheckedChange={(checked) => handlePermissionChange(moduleIndex, type, checked)}
-                    // Apply custom styling for the checked state to match the accent color
+                    onCheckedChange={(checked: any) =>
+                      handlePermissionChange(moduleIndex, type, checked)
+                    }
                     className="data-[state=checked]:bg-[#1BBFCA] data-[state=checked]:text-white"
                   >
                     {type}
@@ -297,11 +268,34 @@ function AddNewGroup({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Pill tags */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {permissionTypes
+                .filter((perm) => item.selectedPermissions[perm])
+                .map((perm) => (
+                  <span
+                    key={perm}
+                    className="flex items-center gap-1 bg-[#1BBFCA] text-white text-xs font-medium px-2 py-1 rounded-full"
+                  >
+                    {perm}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handlePermissionChange(moduleIndex, perm, false)
+                      }
+                      className="text-white hover:text-gray-200"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Buttons */}
+      {/* Submit Buttons */}
       <div className="flex justify-end gap-5">
         <button
           type="button"
@@ -318,7 +312,7 @@ function AddNewGroup({
         </button>
       </div>
     </form>
-  )
+  );
 }
 
-export default AddNewGroup
+export default AddNewGroup;

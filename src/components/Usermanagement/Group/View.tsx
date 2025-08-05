@@ -168,12 +168,13 @@ export default function View() {
                     <input
                       type="checkbox"
                       checked={state[moduleKey]?.[permission] || false}
-                      onChange={() => toggleCheckbox(moduleKey, permission)}
+                      disabled
                       className="w-5 h-5 appearance-none rounded-md border border-gray-300 bg-white
-                        checked:bg-green-500 checked:border-green-500
-                        checked:before:content-['✓'] checked:before:block checked:before:text-white
-                        checked:before:text-center checked:before:font-bold checked:before:leading-[1.1rem]"
+             checked:bg-green-500 checked:border-green-500
+    checked:before:content-['✓'] checked:before:block checked:before:text-white
+    checked:before:text-center checked:before:font-bold checked:before:leading-[1.1rem]"
                     />
+
                     <label
                       htmlFor={`${moduleKey}-${permission}`}
                       className="text-sm text-gray-600 cursor-pointer"
