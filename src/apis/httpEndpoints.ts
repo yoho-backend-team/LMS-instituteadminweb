@@ -32,7 +32,7 @@ const generateEndpoints = () => {
 			verfiy_otp: '/api/institutes/auth/admin/verify-otp/',
 			reset_password: `/api/institutes/auth/admin/update-password`,
 			login: '/api/institutes/auth/admin/login/',
-			logout: '/api/institutes/admin/institute-user/logout'
+			logout: '/api/institutes/admin/institute-user/logout',
 		},
 		permission: {
 			getAll: `/api/admin/institutes/permissions/all`,
@@ -110,6 +110,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/class/online/`,
 			create: `/api/institutes/class/online`,
 			update: `/api/institutes/class/online/update/:classId`,
+			delete: `/api/institutes/class/online/`,
 		},
 		offline_class: {
 			create: `/api/institutes/class/offline`,
