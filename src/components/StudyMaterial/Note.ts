@@ -1,6 +1,7 @@
 export interface Note {
+  is_active: any;
   id: number;
-  uuid: string;
+  uuid: string; 
   title: string;
   description: string;
   course: string;

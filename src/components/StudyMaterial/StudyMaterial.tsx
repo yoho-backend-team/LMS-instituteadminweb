@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { HeaderActions } from "./HeaderAction";
 import { FilterSection } from "./FilterSection";
-import type { Note } from '../../components/StudyMaterial/Note';
 
 import { NoteModal } from "./StudyModal";
 import { IoMdAdd } from "react-icons/io";
@@ -13,46 +12,87 @@ import filterIcon from "../../assets/icons/filter.png";
 import StudyDetailModal from "./StudyDetailModal";
 import { NoteCard } from "./StudyMaterialCard";
 import { useDispatch, useSelector } from "react-redux";
-import { selectStudyMaterials } from "../../features/StudyMaterials/selector";
-import { fetchStudyMaterialsThunk } from "../../features/StudyMaterials/thunk";
 import {
-  createStudyMaterial,
-  deleteStudyMaterial,
-  updateStudyMaterial,
-} from "../../features/StudyMaterials/service";
+  selectBranches,
+  selectCourses,
+  selectStudyMaterials,
+} from "../../features/StudyMaterials/selector";
+import {
+  createStudyMaterialThunk,
+  deleteStudyMaterialThunk,
+  fetchStudyMaterialsThunk,
+  GetBranchThunks,
+  GetCourseThunks,
+  updateStudyMaterialThunk,
+} from "../../features/StudyMaterials/thunk";
+import { updateStudyMaterialStatus } from "../../features/StudyMaterials/service";
+
+interface Note {
+  id: number;
+  title: string;
+  uuid: string;
+  description: string;
+  course: string;
+  branch: string;
+  status: "Active" | "Completed";
+  file?: File;
+  video?: string;
+}
 
 const NotesManagement = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [selectedNote, setSelectedNote] = useState<null | Note>(null);
+  const [localBranches, setLocalBranches] = useState([]);
   const [notes, setNotes] = useState<Note[]>([
     {
       id: 1,
       title: "React",
+      uuid: "",
       description: "Introduction to React components and JSX",
       course: "React Full Stack",
       branch: "CSE",
       status: "Active",
       file: undefined,
-      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
     {
       id: 2,
       title: "Leo",
+       uuid: "",
       description: "Introduction to React components and JSX",
       course: "React Full Stack",
       branch: "CSE",
       status: "Completed",
       file: undefined,
-      uuid: "",
       video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     },
   ]);
 
   const dispatch = useDispatch<any>();
   const studyMaterials = useSelector(selectStudyMaterials);
+  const branches = useSelector(selectBranches);
+
+  useEffect(() => {
+    const params = {
+      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+    };
+    dispatch(GetBranchThunks(params));
+    dispatch(GetCourseThunks(params));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (branches && branches.length > 0) {
+      const firstBranchId = branches[0].uuid || branches[0].branch_identity;
+
+      const params = {
+        branch_id: firstBranchId,
+      };
+
+      dispatch(GetCourseThunks(params));
+    }
+  }, [dispatch, branches]);
 
   useEffect(() => {
     const paramsData = {
@@ -83,74 +123,88 @@ const NotesManagement = () => {
     { label: "Course", value: "course", options: ["", "React", "Node.js"] },
   ];
 
+  const courses = useSelector(selectCourses);
+  console.log("courses", courses);
+
   const formFields = [
     {
       label: "Branch",
       key: "branch",
       type: "select" as const,
-      options: ["", "CSE", "ECE"],
+      options:
+        branches?.map((branch: any) => ({
+          label: branch.branch_identity,
+          value: branch.uuid,
+        })) || [],
     },
     {
       label: "Course",
       key: "course",
       type: "select" as const,
-      options: ["", "React", "Node"],
+      options:
+        courses?.map((course: any) => ({
+          label: course.course_name,
+          value: course._id,
+        })) || [],
     },
     { label: "Title", key: "title", type: "input" as const },
     { label: "Description", key: "description", type: "input" as const },
-    { label: "Video URL", key: "video", type: "input" as const },
   ];
 
-  const handleSubmit = async () => {
-    if (editingNote) {
-      setNotes((prev) =>
-        prev.map((note) =>
-          note.id === editingNote.id
-            ? {
-                ...note,
-                ...formData,
-                file: uploadedFile || note.file,
-              }
-            : note
-        )
-      );
-      resetForm();
-    } else {
-      try {
-        let fileString = "";
-        if (uploadedFile) {
-          fileString = await toBase64(uploadedFile);
-        }
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-        const payload = {
-          title: formData.title,
-          description: formData.description,
-          course: formData.course,
-          branch: formData.branch,
-          institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
-          file: fileString,
-        };
-
-        console.log("Payload:", payload);
-
-        const newNote = await createStudyMaterial(payload);
-
-        setNotes((prev) => [newNote, ...prev]);
-        resetForm();
-      } catch (error) {
-        console.error("Error creating study material:", error);
+    const response = await fetch(
+      "https://lms-node-backend-v1.onrender.com/api/upload",
+      {
+        method: "POST",
+        body: formData,
       }
+    );
+
+    if (!response.ok) {
+      throw new Error("File upload failed");
     }
+
+    const result = await response.json();
+
+    return result?.data?.file || "";
   };
 
-  // helper to convert File to base64
-  const toBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-    });
+  const handleSubmit = async () => {
+    try {
+      let filePath = "";
+
+      if (uploadedFile instanceof File) {
+        filePath = await uploadFile(uploadedFile);
+      }
+
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        course: formData.course,
+        branch: formData.branch,
+        institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        file: filePath,
+      };
+
+      if (editingNote) {
+        const updatedData = {
+          ...editingNote,
+          ...payload,
+          uuid: (editingNote as any).uuid,
+        };
+
+        await dispatch(updateStudyMaterialThunk(updatedData));
+      } else {
+        await dispatch(createStudyMaterialThunk(payload));
+      }
+
+      resetForm();
+    } catch (error) {
+      console.error("Error in submission:", error);
+    }
   };
 
   const resetForm = () => {
@@ -181,20 +235,9 @@ const NotesManagement = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (uuid?: string) => {
-    if (!uuid) {
-      console.error("Cannot delete: UUID is missing");
-      return;
-    }
-
+  const handleDelete = async (id: string) => {
     try {
-      await deleteStudyMaterial(uuid);
-      dispatch(
-        fetchStudyMaterialsThunk({
-          branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          page: 1,
-        })
-      );
+      await dispatch(deleteStudyMaterialThunk(id));
     } catch (error) {
       console.error("Failed to delete:", error);
     }
@@ -218,6 +261,32 @@ const NotesManagement = () => {
   const handleFilterChange = (key: string, value: string) => {
     setFilterValues((prev) => ({ ...prev, [key]: value }));
   };
+
+const handleToggleStatus = async (
+  uuid: string,
+  currentStatus: "Active" | "Completed"
+) => {
+  try {
+    const toggledStatus = currentStatus === "Active" ? true : false;
+
+    const payload = {
+      id: uuid,
+      is_active: toggledStatus, // true if toggled to Active
+    };
+
+    await updateStudyMaterialStatus(payload);
+
+    dispatch(fetchStudyMaterialsThunk({
+      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      page: 1
+    }));
+  } catch (error) {
+    console.error("Status update failed:", error);
+  }
+};
+
+
+
 
   const filteredNotes = Array.isArray(studyMaterials)
     ? studyMaterials.filter((note: Note) => {
@@ -252,13 +321,13 @@ const NotesManagement = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4">
           {filteredNotes.map((note: any) => {
-            console.log("Mapped Note:", note.uuid); 
             return (
               <NoteCard
                 key={note.id}
                 note={note}
                 onView={(note: any) => setSelectedNote(note)}
-                onEdit={(note) => setSelectedNote(note)}
+                onEdit={handleEdit}
+                  onToggleStatus={handleToggleStatus}
                 onDelete={() => handleDelete(note.uuid)}
                 fileIcon={fileIcon}
                 titleIcon={titleIcon}
@@ -283,13 +352,12 @@ const NotesManagement = () => {
         />
 
         {selectedNote && (
-  <StudyDetailModal
-    isOpen={!!selectedNote}
-    note={selectedNote} // ✅ pass single note
-    onClose={() => setSelectedNote(null)}
-  />
-)}
-
+          <StudyDetailModal
+            isOpen={!!selectedNote}
+            note={selectedNote}
+            onClose={() => setSelectedNote(null)}
+          />
+        )}
       </div>
     </div>
   );
