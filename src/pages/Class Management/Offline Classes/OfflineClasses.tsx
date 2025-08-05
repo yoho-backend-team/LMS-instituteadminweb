@@ -8,11 +8,24 @@ import OfflineClassCard from '../../../components/class management/offlineClass/
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllOffline } from '../../../features/Class Management/offlineClass/redures/thunks';
 import { selectOfflineClass } from '../../../features/Class Management/offlineClass/redures/selectors';
+import { getAllBatches } from '../../../features/Class Management/offlineClass/services';
 
 const OfflineClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
+const [allCourses, setAllCourses] = useState([]);
+	const [allBatches, setAllBatches] = useState([]);
+	const [filteredClasses, setFilteredClasses] = useState([]);
+	const [searchTerms, setSearchTerms] = useState({
+		status: '',
+		course: '',
+		batch: '',
+		startDate: '',
+		endDate: '',
+		searchText: '',
+	});
 
+	
 		const dispatch = useDispatch<any>();
 		const offlineClassData =useSelector(selectOfflineClass)
 
@@ -119,18 +132,14 @@ const OfflineClasses = () => {
 					startDate={offlineClass?.createdAt }
 					endTime={offlineClass?.end_time}
 					startTime={offlineClass?.start_time}
-				
-					// 'Thu, July 12, 2025 | 12:00 PM - 01:00 PM'
+					// data={offlineClass}
+					// fetchAllLiveClasses={fetchAllofflineClasses}
 				/>
 
 				))}
 				
-				{/* <OfflineClassCard
-					title='MEAN'
-					students={1}
-					startDate='Fri, August 4, 2025 | 12:00 PM - 01:00 PM'
-				/> */}
-			</div>
+				
+			</div> 
 
 			<CreateOfflineClassModal
 				isOpen={showCreateModal}

@@ -4,6 +4,9 @@ import { downloadCertificate } from '../../components/cerificateManagement/certi
 import { CertificateFilter } from '../../components/cerificateManagement/certificateFilter'
 import { CertificateTable } from '../../components/cerificateManagement/certificateTable'
 import { CertificateModal } from '../../components/cerificateManagement/certificateModal'
+import { useDispatch, useSelector } from "react-redux"
+import { getStudentCertificate } from "../../features/certificateManagement/reducers/thunks"
+import { selectCertificate } from "../../features/certificateManagement/reducers/selectors"
 
 export interface Certificate {
   id: number
@@ -47,6 +50,9 @@ const initialCertificates: Certificate[] = [
 
 export const CertificateManager: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch= useDispatch<any>()
+  const certificateData = useSelector(selectCertificate)
+
   const [certificates, setCertificates] = useState(initialCertificates)
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null)
   const [showFilter, setShowFilter] = useState(false)
@@ -57,6 +63,24 @@ export const CertificateManager: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editingCertificate, setEditingCertificate] = useState<Certificate | null>(null)
+
+  const fetchgetStudentCertificate = async () =>{
+  try{
+     const params_data ={
+      branchid:'90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+      InstituteId:'973195c0-66ed-47c2-b098-d8989d3e4529',
+      page:1,
+     };
+     dispatch(getStudentCertificate (params_data))
+  }
+  catch(error){
+console.log(error)
+  }
+}
+  useEffect(()=>{
+    fetchgetStudentCertificate()
+  },[dispatch])
+console.log(certificateData,'certificate management...................')
 
   const handleAdd = () => {
     setIsEditing(false)
@@ -106,15 +130,28 @@ export const CertificateManager: React.FC = () => {
     }
     setIsModalOpen(false)
   }
+  const filteredCertificates = certificateData?.data?.flatMap((cert: any, certIndex: number) => {
+    return cert.student?.map((student: any, studentIndex: number) => {
+      const mapped = {
+        id: certIndex * 1000 + studentIndex,
+        title: cert.certificate_name,
+        description: cert.description,
+        branch: cert.branch_id,
+        batch: cert.batch_id,
+        student: student.name,
+        email: student.email,
+      };
 
-  const filteredCertificates = certificates.filter(cert => {
-    return (
-      (!selectedCourse || cert.description.includes(selectedCourse)) &&
-      (!selectedBranch || cert.branch === selectedBranch) &&
-      (!selectedBatch || cert.batch === selectedBatch) &&
-      (!selectedStudent || cert.student.toLowerCase().includes(selectedStudent.toLowerCase()))
-    )
-  })
+      const matchesFilter =
+        (!selectedCourse || cert.description?.toLowerCase().includes(selectedCourse.toLowerCase())) &&
+        (!selectedBranch || cert.branch_id === selectedBranch) &&
+        (!selectedBatch || cert.batch_id === selectedBatch) &&
+        (!selectedStudent || student.name?.toLowerCase().includes(selectedStudent.toLowerCase()));
+
+      return matchesFilter ? mapped : null;
+    }).filter(Boolean);
+  }) || [];
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -144,7 +181,7 @@ export const CertificateManager: React.FC = () => {
       />
 
       <CertificateTable
-        certificates={filteredCertificates}
+        certificates={filteredCertificates || []}
         openDropdownId={openDropdownId}
         setOpenDropdownId={setOpenDropdownId}
         onEdit={handleEdit}

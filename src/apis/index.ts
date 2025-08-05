@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { get } from 'http';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
 
 class Client {
     admin = {
-        me: (data: any) => HttpClient.get(HTTP_END_POINTS.admin.me, data),
+        me: () => HttpClient.get(HTTP_END_POINTS.admin.me),
         change_password: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.admin.change_password, data),
         forget_password: (data: any) =>
@@ -109,14 +110,14 @@ class Client {
                 data
             ),
         delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.course_module.get + data.id),
+            HttpClient.delete(HTTP_END_POINTS.course_module.get + data.uuid),
     };
     study_material = {
         getAll: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.study_material.get, params),
         create: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.study_material.get, data),
-        update: (data: any) =>
+        update: (data: any, id: string) =>
             HttpClient.update(HTTP_END_POINTS.study_material.get + data.uuid, data),
         delete: (data: any) =>
             HttpClient.delete(HTTP_END_POINTS.study_material.get + data.id),
@@ -150,7 +151,7 @@ class Client {
         },
         getWithBranch: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.course.withBranch + data.branch_id + '/courses'
+                HTTP_END_POINTS.course.withBranch + data + '/courses'
             ),
         update: (data: any) =>
             HttpClient.update(
@@ -167,11 +168,28 @@ class Client {
     batch = {
         // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create, data),
-        getInstructors: (data: any) => HttpClient.get(HTTP_END_POINTS.batch.create + `${data.branch_id}/instructors/${data.course_id}`),
-        getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all', params),
-        getWithId: (params: string) => HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
-        update: (data: any) => HttpClient.update(HTTP_END_POINTS.batch.update.replace(":batchId", data?.uuid), data),
-        delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.batch.delete.replace(":batchId", data?.uuid), data),
+        getInstructors: (data: any) =>
+            HttpClient.get(
+                HTTP_END_POINTS.batch.create +
+                `${data.branch_id}/instructors/${data.course_id}`
+            ),
+        getAll: (params: any) =>
+            HttpClient.get(
+                HTTP_END_POINTS.batch.getAll + params.branch_id + '/batches/all',
+                params
+            ),
+        getWithId: (params: string) =>
+            HttpClient.get(HTTP_END_POINTS.batch.getWithId, params),
+        update: (data: any) =>
+            HttpClient.update(
+                HTTP_END_POINTS.batch.update.replace(':batchId', data?.uuid),
+                data
+            ),
+        delete: (data: any) =>
+            HttpClient.delete(
+                HTTP_END_POINTS.batch.delete.replace(':batchId', data?.uuid),
+                data
+            ),
     };
     online_class = {
         getAll: (params: string) =>
@@ -242,6 +260,10 @@ class Client {
             create: (data: any) =>
                 HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
         },
+         staff_salary: {
+            getall: (params: any) => HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
+            create: (data: any) => HttpClient.post(HTTP_END_POINTS.payment.salary.create, data)
+        }
     };
     nonTeachingStaff = {
         get: (data: any) =>
@@ -275,14 +297,13 @@ class Client {
         delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
     };
     student = {
-        activity: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.student.activity + data.id),
-        class: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.student.classess + data.uuid, data),
-        update: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
-        delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
+        activity: (data: any) => HttpClient.get(HTTP_END_POINTS.student.activity + data.id),
+        class: (data: any) => HttpClient.get(HTTP_END_POINTS.student.classess, data),
+        update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
+        delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
+        get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
+        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
+        
     };
     community = {
         getAll: (data: any) =>
@@ -456,5 +477,16 @@ class Client {
         getById: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.placements.getById, params),
     };
+    notificatinsubscription = {
+        post: (data: any) =>
+            HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
+    };
+    certificate = {
+        getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId', params?.certificateId), params),
+
+
+    }
+
+
 }
 export default new Client();
