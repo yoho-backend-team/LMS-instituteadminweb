@@ -161,7 +161,7 @@ const generateEndpoints = () => {
             // update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/`,
             update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22/teaching-staff/update/:staffId`,
             create: 'api/institutes/auth/teaching-staff/register',
-            delete: 'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff'
+            delete: 'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff/:staffId'
         },
         nonstaff: {
             getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,

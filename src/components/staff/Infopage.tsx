@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getStaffDetailsDataId } from "../../features/staff/reducers/thunks"
 import { selectStaffId } from "../../features/staff/reducers/selector"
 import { GetImageUrl } from "../../utils/helper"
-import { updateStaff } from "../../features/staff/services"
+import { deleteStaff, updateStaff } from "../../features/staff/services"
 
 interface Staff {
   id: number
@@ -151,6 +151,14 @@ try{
 
   const id = staff.uuid
   console.log("id", id)
+
+  const handleDelete = async () => {
+    const response = deleteStaff({
+      staffId: id,
+    })
+  }
+  
+
   const dispatch = useDispatch<any>()
   const fetchClassDataId = () => {
     dispatch(
@@ -163,6 +171,9 @@ try{
   useEffect(() => {
     fetchClassDataId()
   }, [])
+
+
+  
 
   // Update formData when staffIdData changes
   useEffect(() => {
@@ -478,7 +489,7 @@ try{
             </div>
           </div>
           <div className="flex justify-end gap-4 mb-8">
-            <Button variant="destructive" className="text-[#1bbfca] border border-[#1bbfca] bg-[#1bbfca]/20">
+            <Button onClick={handleDelete} variant="destructive" className="text-[#1bbfca] border border-[#1bbfca] bg-[#1bbfca]/20">
               Delete
             </Button>
             <Button className="bg-[#1bbfca] text-white" onClick={handleEditClick}>

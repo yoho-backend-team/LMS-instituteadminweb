@@ -35,3 +35,8 @@ export const deleteStaff = async (query: any) => {
     const response = await Client.staff.delete(query);
    if (response) return response; 
 }
+
+export const uploadFile = async (data: any) => {
+    const response = await Client.file.upload(data)
+   if (response) return response; 
+}
