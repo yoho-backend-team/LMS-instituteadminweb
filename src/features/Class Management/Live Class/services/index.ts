@@ -14,7 +14,7 @@ export const getAllLiveClassService = async (params: any) => {
 
 export const getAllCourses = async (params: any) => {
 	try {
-		const response = await Client.staff.getCourse(params);
+		const response = await Client.staff.getWithCourse(params);
 		if (response) {
 			return response;
 		}

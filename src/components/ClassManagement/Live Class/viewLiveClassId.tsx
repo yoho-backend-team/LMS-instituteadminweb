@@ -5,7 +5,6 @@ import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Card } from '../../ui/card';
 import { GetImageUrl } from '../../../utils/helper';
 
-
 const ViewLiveClassId: React.FC = () => {
 	const [searchStudent, setSearchStudent] = useState('');
 	const navigate = useNavigate();
@@ -15,6 +14,18 @@ const ViewLiveClassId: React.FC = () => {
 	const filteredStudents = data?.batch?.student?.filter((student: any) =>
 		student.full_name.toLowerCase().includes(searchStudent.toLowerCase())
 	);
+
+	const formattedTime = (isoTime: string) => {
+		const date = new Date(isoTime);
+
+		const time12hr = date.toLocaleTimeString('en-US', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		});
+
+		return time12hr;
+	};
 
 	return (
 		<div className='p-6 bg-white min-h-screen'>
@@ -90,7 +101,7 @@ const ViewLiveClassId: React.FC = () => {
 						Started At
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						{data?.start_time.split('T')[0]}
+						{formattedTime(data?.start_time)}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -98,7 +109,7 @@ const ViewLiveClassId: React.FC = () => {
 						Ended At
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						{data?.end_time.split('T')[0]}
+						{formattedTime(data?.end_time)}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>

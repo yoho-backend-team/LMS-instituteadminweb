@@ -1,11 +1,16 @@
 import type React from "react"
 import cancel from '../../assets/icons/Cancel.png'
 
+interface FormFieldOption {
+  label: string;
+  value: string;
+}
+
 interface FormField {
-  label: string
-  key: string
-  type: "input" | "select"
-  options?: string[]
+  label: string;
+  key: string;
+  type: "input" | "select";
+  options?: FormFieldOption[];
 }
 
 interface NoteModalProps {
@@ -79,12 +84,13 @@ export const NoteModal: React.FC<NoteModalProps> = ({
                   value={formData[field.key] || ""}
                   onChange={(e) => onFormChange(field.key, e.target.value)}
                 >
-                 
-                  {field.options?.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
+                   <option value="">Select {field.label}</option>
+               {field.options?.map((option: any) => (
+  <option key={option.value} value={option.value}>
+  
+    {option.label}
+  </option>
+))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
                   <svg

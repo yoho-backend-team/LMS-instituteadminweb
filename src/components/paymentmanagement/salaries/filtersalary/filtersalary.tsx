@@ -46,7 +46,7 @@ function Filtersalary(props: FilterProps): JSX.Element {
           type="text"
           value={search}
           onChange={handleSearchChange}
-          placeholder="Search..."
+          placeholder="Search by name ... amount ... id"
           className="border p-2 rounded w-full"
         />
       </div>

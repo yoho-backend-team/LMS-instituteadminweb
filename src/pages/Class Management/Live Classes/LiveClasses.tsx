@@ -189,7 +189,7 @@ const LiveClasses = () => {
 							</h3>
 							<button
 								onClick={resetFilters}
-								className='bg-[#1BBFCA] text-white'
+								className='bg-[#1BBFCA] text-white p-2 rounded-md'
 								style={{ ...FONTS.heading_08 }}
 							>
 								Reset Filters

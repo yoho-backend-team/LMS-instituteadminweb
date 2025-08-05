@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import mask from '../../../assets/navbar/Mask-1.png';
 import prfimg from '../../../assets/navbar/image.png';
 import { FONTS } from '../../../constants/uiConstants';
+import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
 
 type TicketCardProps = {
     name: string;
@@ -27,7 +28,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const popupRef = useRef<HTMLDivElement>(null);
 
-    // Optional: Close popup if clicked outside
+    
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
@@ -49,7 +50,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 : "bg-gray-400";
 
     return (
-        <div className="bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-lg p-4 w-80 relative">
+        <div className="bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-lg p-4 w-full relative">
             <div className="flex items-center mb-2">
                 <img
                     src={prfimg}
@@ -58,7 +59,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 />
                 <div>
                     <h2 className="text-gray-500" style={{ ...FONTS.heading_07_bold }}>{name}</h2>
-                    <p className="text-gray-500" style={{ ...FONTS.heading_07_light }}>Email: {email}</p>
+                    <p className="text-gray-500" style={{ ...FONTS.heading_12 }}>Email: {email}</p>
                 </div>
 
                 {/* ⋮ icon */}
@@ -72,11 +73,10 @@ const TicketCard: React.FC<TicketCardProps> = ({
 
                     {/* Popup Button */}
                     {isPopupOpen && (
-                        <div className="absolute right-0 left-3 top-5  bg-white  rounded shadow z-3">
+                        <div className="absolute right-0 left-[-3] top-7  bg-gray-100  rounded shadow z-3">
                             <button
                                 onClick={() => {
-                                    // alert("Button clicked");
-                                    // setIsPopupOpen(false);
+                                    
                                     onView();
                                 }}
                                 className=" w-[90px] ml-1 mt-1 mr-1 border mb-1 h-[34px] text-sm text-white bg-[#1BBFCA] hover:bg-[#1BBFCA] rounded-md hover:text-white"
@@ -88,20 +88,27 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 </div>
             </div>
 
-            <p className="text-gray-500 mb-6 mt-8" style={{ ...FONTS.heading_07_bold }}>{message}</p>
+            <p className="text-gray-500 mb-6 mt-4" style={{ ...FONTS.heading_13 }}>{message}</p>
             <div className="flex items-center justify-between text-xs text-gray-500">
-                <div className="flex justify-between items-center w-full" style={{ ...FONTS.heading_08 }}>
-                    <span>📅 {date}</span>
-                    <span>🕕 {time}</span>
+                <div className="flex justify-between items-center w-full" style={{ ...FONTS.heading_10 }}>
+                    <span className="flex items-center gap-1">
+                        <FiCalendar />
+                        {date}
+                    </span>
+                    <span className="flex items-center gap-1">
+                        <FiClock />
+                        {time}
+                    </span>
                 </div>
+
             </div>
             <div
-                className={`flex mt-8 px-3 w-[140px] h-[34px] py-1 text-white text-xs rounded ${priorityColor}`} 
+                className={`flex mt-4 px-3 w-[150px] h-[34px] py-1 text-white text-xs rounded ${priorityColor}`}
             >
                 <span>
                     <img src={mask} />
                 </span>
-                <span className="mt-1 ml-1" style={{ ...FONTS.heading_08 }}>Priority: {priority}</span>
+                <span className="mt-1 ml-1" style={{ ...FONTS.heading_09 }}>Priority: {priority}</span>
             </div>
         </div>
     );
