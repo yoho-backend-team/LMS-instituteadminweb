@@ -290,11 +290,21 @@ class Client {
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
         getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
+        	getCourse: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
         getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
         getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.staff.update, data),
         delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
+        getall: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.staff.getWithBranch.replace(
+					':courseUUID',
+					params?.uuid
+				),
+				{}
+			),
     };
     student = {
         activity: (data: any) => HttpClient.get(HTTP_END_POINTS.student.activity + data.id),
@@ -302,7 +312,12 @@ class Client {
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
         get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
-        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
+        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
+        getall: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.student.getall.replace(':courseUUID', params?.uuid),
+				{}
+			),
         
     };
     community = {
@@ -318,17 +333,17 @@ class Client {
             ),
     };
     ticket = {
-        student_tickets: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.ticket.student_ticket, data),
+        student_tickets: (params: any) =>
+            HttpClient.get(HTTP_END_POINTS.ticket.student_ticket, params),
         update_student_status_ticket: (params: any) =>
             HttpClient.update(
-                HTTP_END_POINTS.ticket.update_student_status_ticket + params?.id
+                HTTP_END_POINTS.ticket.update_student_status_ticket + params?.uuid,params
             ),
         update_student_ticket: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.ticket.update + data?.uuid, data),
         student_ticket_with_id: (params: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.ticket.student_ticket_with_id + params?.id
+                HTTP_END_POINTS.ticket.student_ticket_with_id + params?.uuid
             ),
         staff_ticket: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.ticket.staff_ticket, data),
@@ -412,6 +427,10 @@ class Client {
                     HTTP_END_POINTS.notification.institute_notification,
                     query
                 ),
+
+            resend_all_notification: (data: any) =>
+                HttpClient.post(
+                    HTTP_END_POINTS.notification.all_notification_resend, data),
         },
     };
     institute_notification = {
