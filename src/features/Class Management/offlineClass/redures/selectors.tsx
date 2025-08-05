@@ -1,1 +1,1 @@
-export const selectOfflineClass = (state:any)=>state.OfflineClassSlice.data;
+export const selectOfflineClass = (state:any)=>state.OfflineClassSlice.offlineclass;

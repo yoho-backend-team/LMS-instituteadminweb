@@ -14,7 +14,7 @@ export const getAllLiveClassService = async (params: any) => {
 
 export const getAllCourses = async (params: any) => {
 	try {
-		const response = await Client.staff.getCourse(params);
+		const response = await Client.staff.getWithCourse(params);
 		if (response) {
 			return response;
 		}
@@ -63,6 +63,18 @@ export const createLiveClass = async (data: any) => {
 export const updateLiveClass = async (data: any) => {
 	try {
 		const response = await Client.online_class.update(data);
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
+
+export const deleteLiveClass = async (params: any) => {
+	try {
+		const response = await Client.online_class.delete(params);
 		if (response) {
 			return response;
 		}

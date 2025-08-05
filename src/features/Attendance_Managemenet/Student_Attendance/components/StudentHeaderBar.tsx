@@ -4,11 +4,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Input } from "../../../../components/ui/input"
 import { useState } from "react"
 import { IoClose } from "react-icons/io5"
-import filterImg from '../../../../assets/filter.png'
-import { FiFilter } from "react-icons/fi"
+
+type batch = {
+   batch_name: string;
+   [key: string] : any;
+}
 
 type props = {
-    batches: ()=> void;
+    batches: batch[]
 }
 
 const StudentHeaderBar:React.FC<props> = ({batches}) => {

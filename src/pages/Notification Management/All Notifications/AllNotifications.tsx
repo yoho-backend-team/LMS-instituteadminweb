@@ -8,7 +8,7 @@ import instructorImg from "../../../assets/image 108.png";
 import studentImg from "../../../assets/image 109.png";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getAllNotificationsService } from "../../../features/AllNotifications/Services";
 import { useDispatch } from "react-redux";
 
@@ -17,24 +17,27 @@ export default function AllNotifications() {
   const dispatch = useDispatch();
 
 
-  const fetchAllNotifications = async () => {
-    try {
-		const params = {
-			branch:"90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-			institute:"973195c0-66ed-47c2-b098-d8989d3e4529",
-			page:1
-		}
-      const response = await getAllNotificationsService(params);
-      if (response && Array.isArray(response.data)) {
-        setNotifications(response.data);
-      } else {
+  const fetchAllNotifications = useCallback(
+    async () => {
+      try {
+        const params = {
+          branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+          institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          page: 1,
+        };
+        const response = await getAllNotificationsService(params);
+        if (response && Array.isArray(response.data)) {
+          setNotifications(response.data);
+        } else {
+          setNotifications([]);
+        }
+      } catch (error) {
+        console.log("Error fetching notifications:", error);
         setNotifications([]);
       }
-    } catch (error) {
-      console.log("Error fetching notifications:", error);
-      setNotifications([]);
-    }
-  };
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchAllNotifications();
@@ -74,7 +77,7 @@ export default function AllNotifications() {
     <div className="p-6 w-full">
       {/* Add Notification Button */}
       <div className="flex justify-end mb-4">
-        <AddNotificationDrawer />
+        <AddNotificationDrawer fetchAllNotifications ={fetchAllNotifications} />
       </div>
       <div className="flex gap-6 flex-wrap">
         {stats.map((stat, index) => (
@@ -120,8 +123,8 @@ export default function AllNotifications() {
         Notifications
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {notifications.length > 0 ? (
-          notifications.map((n: any, index) => (
+        {notifications?.length > 0 ? (
+          notifications?.map((n: any, index) => (
             <Card key={index} className="p-4 rounded-2xl shadow-md">
               <CardContent className="p-0 flex flex-col items-start">
                 <div className="flex items-center w-full mb-2">
