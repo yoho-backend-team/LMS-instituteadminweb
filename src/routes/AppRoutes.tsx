@@ -53,13 +53,13 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
 import TicketDetailsPage from '../pages/Ticket Management/Student/TicketDetailsPage';
-import { TicketProvider } from '../components/StudentTickets/TicketContext';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import CertificateView from '../components/cerificateManagement/certificateView';
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
+import LogoutRoute from '../components/shared/Navbar';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -73,6 +73,7 @@ const AppRoutes = () => {
 			<Route path='/otp-verify' element={<OtpVerification />} />
 			<Route path='/reset-password' element={<ChangePassword />} />
 			<Route path='*' element={<Navigate to='/login' />} />
+			<Route path="/logout" element={<LogoutRoute />} />
 		</Routes>
 	);
 
@@ -82,9 +83,9 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
-				<Route path="/tickets/:id" element={<TicketProvider><TicketDetailsPage /></TicketProvider>} />
+				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
 
-				<Route path="noti/msg" element={<NotificationPage />} />
+				<Route path='noti/msg' element={<NotificationPage />} />
 
 				{/* <Route path="/" element={<HomePage />} /> */}
 

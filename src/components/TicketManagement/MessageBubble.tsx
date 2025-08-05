@@ -13,7 +13,7 @@ const MessageBubble: React.FC<MessageProps> = ({ text, time, fromUser = false })
   return (
     <div className={`flex flex-col ${fromUser ? "items-end" : "items-start"} mb-4`}>
       {/* Row with avatar + message bubble */}
-      <div className={`flex ${fromUser ? "flex-row-reverse" : "flex-row"} items-start gap-2`}>
+      <div className={`flex ${fromUser ? "flex-row-reverse" : "flex-row"} items-start gap-2 `}>
 
         <img
           src={contact} // Icon path
@@ -22,7 +22,7 @@ const MessageBubble: React.FC<MessageProps> = ({ text, time, fromUser = false })
         />
 
         {/* Chat bubble */}
-        <div className={`max-w-xs p-3 rounded-lg text-sm ${fromUser ? "bg-[#1BBFCA] text-white" : "bg-white text-[#7D7D7D]"}`} style={{ ...FONTS.heading_09 }}>
+        <div className={`shadow-[0_4px_10px_3px_rgba(0,0,0,0.3)] max-w-xs p-3 rounded-lg text-sm ${fromUser ? "bg-[#1BBFCA] text-white" : "bg-white text-[#7D7D7D]"}`} style={{ ...FONTS.heading_09 }}>
           <p>{text}</p>
         </div>
       </div>

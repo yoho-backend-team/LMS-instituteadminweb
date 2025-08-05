@@ -13,7 +13,7 @@ interface EditBatchModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	data: any;
-	refreshData?: () => void; // Add refreshData prop
+	fetchAllLiveClasses?: () => void;
 }
 
 interface FormValues {
@@ -36,7 +36,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 	isOpen,
 	onClose,
 	data,
-	refreshData,
+	fetchAllLiveClasses,
 }) => {
 	const [instructorOptions, setInstructorOptions] = useState<
 		InstructorOption[]
@@ -45,7 +45,6 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		InstructorOption[]
 	>([]);
 
-	// Format time to 12-hour format with AM/PM
 	const formatTimeTo12Hour = (timeString: string) => {
 		if (!timeString || !timeString.includes('T')) return '';
 		const timePart = timeString.split('T')[1].split(':');
@@ -53,11 +52,10 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		const minutes = timePart[1];
 		const ampm = hours >= 12 ? 'PM' : 'AM';
 		hours = hours % 12;
-		hours = hours ? hours : 12; // the hour '0' should be '12'
+		hours = hours ? hours : 12;
 		return `${hours}:${minutes} ${ampm}`;
 	};
 
-	// Convert 12-hour format back to 24-hour format for submission
 	const convertTo24Hour = (time12h: string) => {
 		if (!time12h) return '';
 		const [time, modifier] = time12h.split(' ');
@@ -74,7 +72,6 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		return `${hours.padStart(2, '0')}:${minutes}`;
 	};
 
-	// Initialize form values and instructor options
 	useEffect(() => {
 		if (data && data.instructors) {
 			const options = data.instructors.map((instructor: any) => ({
@@ -114,9 +111,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 					/^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$/i,
 					'Time must be in HH:MM AM/PM format'
 				),
-			liveLink: Yup.string()
-				.required('Live Link is required')
-				.url('Must be a valid URL'),
+			liveLink: Yup.string().required('Live Link is required'),
 			instructors: Yup.array()
 				.min(1, 'At least one instructor is required')
 				.required('Instructor is required'),
@@ -167,7 +162,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 				const response = await updateLiveClass(params_data);
 				if (response) {
 					toast.success('Live Class updated successfully');
-					if (refreshData) refreshData(); // Refresh parent data if callback provided
+					if (fetchAllLiveClasses) fetchAllLiveClasses();
 					onClose();
 				}
 			} catch (error) {

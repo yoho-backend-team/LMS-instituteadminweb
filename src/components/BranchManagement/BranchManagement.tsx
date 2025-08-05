@@ -7,6 +7,7 @@ import TrichyImg from "../../assets/trichy.png";
 import EditIcon from "../../assets/edit.png";
 import DeleteIcon from "../../assets/delete.png";
 import ViewIcon from "../../assets/vieweye.png";
+import ContentLoader from "react-content-loader";
 
 interface LocationCardProps {
   imageSrc: string;
@@ -19,11 +20,11 @@ interface LocationCardProps {
   onStatusChange?: (newStatus: string) => void;
 }
 
-export function LocationCard({ 
-  imageSrc, 
-  cityName, 
-  address, 
-  status: initialStatus, 
+export function LocationCard({
+  imageSrc,
+  cityName,
+  address,
+  status: initialStatus,
   onViewDetails,
   onEdit,
   onDelete,
@@ -95,7 +96,7 @@ export function LocationCard({
             className="w-full h-full object-cover"
           />
           <div className="absolute top-4 right-4">
-            <button 
+            <button
               onClick={toggleMenu}
               className="flex justify-center items-center p-2 w-10 h-10 bg-white rounded-lg hover:bg-gray-100 transition-colors"
             >
@@ -105,16 +106,15 @@ export function LocationCard({
         </div>
 
         {isMenuOpen && (
-          <div 
+          <div
             ref={menuRef}
             className="flex flex-col items-start p-3 gap-4 w-[170px] bg-white rounded-xl absolute right-4 top-16 shadow-lg z-20"
           >
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "view" 
-                  ? "bg-[#1BBFCA] border-transparent text-white" 
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "view"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
               onClick={() => {
                 setIsMenuOpen(false);
                 onViewDetails();
@@ -122,13 +122,13 @@ export function LocationCard({
               onMouseEnter={() => setHoveredButton("view")}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <img 
-                src={ViewIcon} 
-                alt="View" 
-                className="w-5 h-5" 
-                style={{ 
-                  filter: hoveredButton === "view" 
-                    ? "brightness(0) invert(1)" 
+              <img
+                src={ViewIcon}
+                alt="View"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "view"
+                    ? "brightness(0) invert(1)"
                     : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
                 }}
               />
@@ -138,11 +138,10 @@ export function LocationCard({
             </button>
 
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "edit" 
-                  ? "bg-[#1BBFCA] border-transparent text-white" 
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "edit"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
               onClick={() => {
                 setIsMenuOpen(false);
                 onEdit();
@@ -150,13 +149,13 @@ export function LocationCard({
               onMouseEnter={() => setHoveredButton("edit")}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <img 
-                src={EditIcon} 
-                alt="Edit" 
-                className="w-5 h-5" 
-                style={{ 
-                  filter: hoveredButton === "edit" 
-                    ? "brightness(0) invert(1)" 
+              <img
+                src={EditIcon}
+                alt="Edit"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "edit"
+                    ? "brightness(0) invert(1)"
                     : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
                 }}
               />
@@ -166,11 +165,10 @@ export function LocationCard({
             </button>
 
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "delete" 
-                  ? "bg-[#1BBFCA] border-transparent text-white" 
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "delete"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
               onClick={() => {
                 setIsMenuOpen(false);
                 onDelete();
@@ -178,13 +176,13 @@ export function LocationCard({
               onMouseEnter={() => setHoveredButton("delete")}
               onMouseLeave={() => setHoveredButton(null)}
             >
-              <img 
-                src={DeleteIcon} 
-                alt="Delete" 
-                className="w-5 h-5" 
-                style={{ 
-                  filter: hoveredButton === "delete" 
-                    ? "brightness(0) invert(1)" 
+              <img
+                src={DeleteIcon}
+                alt="Delete"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "delete"
+                    ? "brightness(0) invert(1)"
                     : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
                 }}
               />
@@ -200,45 +198,41 @@ export function LocationCard({
             <h3 className="text-lg font-semibold capitalize text-[#716F6F]">{cityName}</h3>
             <p className="text-xs font-light capitalize text-[#7D7D7D]">{address}</p>
           </div>
-          
+
           <div className="relative" ref={statusRef}>
-            <button 
+            <button
               onClick={toggleStatusDropdown}
-              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
-                currentStatus === "Active" || currentStatus === "Inactive" 
-                  ? "bg-[#1BBFCA] text-white" 
-                  : "border border-[#716F6F] text-[#716F6F]"
-              }`}
+              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${currentStatus === "Active" || currentStatus === "Inactive"
+                ? "bg-[#1BBFCA] text-white"
+                : "border border-[#716F6F] text-[#716F6F]"
+                }`}
             >
               <div className="flex items-center gap-[10px]">
                 <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
                   {currentStatus}
                 </span>
                 <div className="w-5 h-5 flex items-center justify-center">
-                  <ArrowRight 
-                    className={`w-full h-full transform ${
-                      isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
-                    } ${
-                      currentStatus === "Active" || currentStatus === "Inactive" 
-                        ? "text-white" 
+                  <ArrowRight
+                    className={`w-full h-full transform ${isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
+                      } ${currentStatus === "Active" || currentStatus === "Inactive"
+                        ? "text-white"
                         : "text-[#716F6F]"
-                    }`}
+                      }`}
                   />
                 </div>
               </div>
             </button>
-            
+
             {isStatusDropdownOpen && (
               <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg overflow-hidden">
                 {statusOptions.map((option) => (
                   <button
                     key={option}
                     onClick={() => requestStatusChange(option)}
-                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${
-                      currentStatus === option 
-                        ? 'bg-[#1BBFCA] text-white font-medium' 
-                        : 'text-[#7D7D7D] hover:bg-gray-50'
-                    }`}
+                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${currentStatus === option
+                      ? 'bg-[#1BBFCA] text-white font-medium'
+                      : 'text-[#7D7D7D] hover:bg-gray-50'
+                      }`}
                   >
                     {option}
                   </button>
@@ -250,9 +244,9 @@ export function LocationCard({
       </div>
 
       {showConfirmPopup && (
-        <ConfirmationPopup 
-          type="confirm" 
-          message="Are you sure you want to change the status?" 
+        <ConfirmationPopup
+          type="confirm"
+          message="Are you sure you want to change the status?"
           onConfirm={confirmStatusChange}
           onCancel={() => setShowConfirmPopup(false)}
           onClose={() => setShowConfirmPopup(false)}
@@ -260,9 +254,9 @@ export function LocationCard({
       )}
 
       {showSuccessPopup && (
-        <ConfirmationPopup 
-          type="success" 
-          message="Status changed successfully." 
+        <ConfirmationPopup
+          type="success"
+          message="Status changed successfully."
           onClose={() => setShowSuccessPopup(false)}
         />
       )}
@@ -339,7 +333,8 @@ export function LocationCardsGrid() {
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  
+  const [isLoad, setisLoad] = useState(true);
+
   const [formData, setFormData] = useState({
     branchName: '',
     phoneNumber: '',
@@ -351,11 +346,17 @@ export function LocationCardsGrid() {
     state: 'Tamil Nadu'
   });
 
+  useEffect(() => {
+    setInterval(() => {
+      setisLoad(false)
+    }, 1500);
+  }, [])
+
   // Filter locations based on search term
   const filteredLocations = searchTerm
     ? locations.filter(location =>
-        location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : locations;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -393,7 +394,7 @@ export function LocationCardsGrid() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newBranch = {
       imageSrc: TrichyImg,
       cityName: formData.branchName,
@@ -437,31 +438,31 @@ export function LocationCardsGrid() {
     setViewingBranch(null);
   };
 
- if (viewingBranch) {
-  console.log("Viewing Branch:", viewingBranch); // Debug log
-  return (
-    <BranchDetailsPage 
-      locationName={viewingBranch} 
-      onBack={handleBackFromBranchDetails} 
-    />
-  );
-}
+  if (viewingBranch) {
+    console.log("Viewing Branch:", viewingBranch);
+    return (
+      <BranchDetailsPage
+        locationName={viewingBranch}
+        onBack={handleBackFromBranchDetails}
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-       <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
-  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
-  <input
-    type="text"
-    placeholder="Search Branch by City"
-    value={searchTerm}
-    onChange={handleSearchChange}
-    className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
-  />
-</form>
+        <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
+          <input
+            type="text"
+            placeholder="Search Branch by City"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
+          />
+        </form>
 
-        <button 
+        <button
           onClick={() => {
             resetForm();
             setIsModalOpen(true);
@@ -475,17 +476,45 @@ export function LocationCardsGrid() {
         </button>
       </div>
 
+      {
+        isLoad &&
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          {
+            Array(6).fill(null).map((_, index) => (
+              <div className="w-full h-[340px] shadow-lg rounded-lg p-2">
+                <ContentLoader
+                  speed={1}
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 390 330"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                  className="w-full h-[310px] rounded-lg"
+                  key={index}
+                >
+                  <rect x="0" y="0" rx="10" ry="10" width="400" height="200" />
+
+                  <rect x="0" y="220" rx="8" ry="8" width="60%" height="20" />
+                  <rect x="0" y="250" rx="8" ry="8" width="100%" height="28" />
+                  <rect x="0" y="290" rx="8" ry="8" width="30%" height="58" />
+                </ContentLoader>
+              </div>
+            ))
+          }
+        </div>
+      }
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-        {filteredLocations.length > 0 ? (
+        {!isLoad && filteredLocations.length > 0 ? (
           filteredLocations.map((location, index) => {
             const originalIndex = locations.findIndex(
               loc => loc.cityName === location.cityName
             );
-            
+
             return (
-              <LocationCard 
-                key={index} 
-                {...location} 
+              <LocationCard
+                key={index}
+                {...location}
                 onViewDetails={() => setViewingBranch(location.cityName)}
                 onEdit={() => handleEditBranch(originalIndex)}
                 onDelete={() => {
@@ -504,8 +533,8 @@ export function LocationCardsGrid() {
         ) : (
           <div className="col-span-full text-center py-10">
             <p className="text-lg text-[#716F6F]">
-              {searchTerm 
-                ? `No branches found matching "${searchTerm}"` 
+              {searchTerm
+                ? `No branches found matching "${searchTerm}"`
                 : "No branches available"}
             </p>
           </div>
@@ -522,12 +551,12 @@ export function LocationCardsGrid() {
                     {editingIndex !== null ? "Edit Branch" : "Create a New Branch"}
                   </h2>
                   <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
-                    {editingIndex !== null 
-                      ? "Update the branch details below" 
+                    {editingIndex !== null
+                      ? "Update the branch details below"
                       : "Fill in the details below to add a new branch"}
                   </p>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setIsModalOpen(false);
                     resetForm();
@@ -686,14 +715,14 @@ export function LocationCardsGrid() {
       )}
 
       {showSuccessPopup && (
-        <ConfirmationPopup 
-          type="success" 
+        <ConfirmationPopup
+          type="success"
           message={
-            editingIndex !== null 
-              ? "Branch updated successfully!" 
+            editingIndex !== null
+              ? "Branch updated successfully!"
               : "Branch created successfully!"
-              
-          } 
+
+          }
           onClose={() => setShowSuccessPopup(false)}
         />
       )}
