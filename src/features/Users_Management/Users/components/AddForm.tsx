@@ -5,183 +5,283 @@ import upload from '../../../../assets/cloud.png'
 import close from '../../../../assets/Cancel.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
+import { ChevronDownIcon } from 'lucide-react'
+import { addUser } from '../service'
+import Client from '../../../../apis/index'
+import { getInstituteDetails } from '../../../../apis/httpEndpoints'
+import { GetImageUrl } from '../../../../utils/helper'
+import { useState } from 'react'
 
-const AddForm = () => {
+type props = {
+    setShowForm: (show: boolean) => void;
+}
+
+const AddForm: React.FC<props> = ({ setShowForm }) => {
+    const [imgSrc, setImgSrc] = useState(null)
+
     const formik = useFormik({
         initialValues: {
-            firstName: '',
-            lastName: '',
+            first_name: '',
+            last_name: '',
             email: '',
             contact: '',
             password: '',
-            confirmPassword: '',
+            confirm_password: '',
             designation: '',
             branch: '',
             role: '',
-            image:'',
+            file: '',
+            institute_id: '',
+            user_name: ''
         },
         validationSchema: Yup.object({
-            firstName: Yup.string().required('First name is required'),
-            lastName: Yup.string().required('Last name is required'),
-            email: Yup.string().email('Invalid Email').required('Email is required').matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Invalid Email Format'),
+            first_name: Yup.string().required('First name is required').min(3, 'Minimum 3 characters to first_name'),
+            last_name: Yup.string().required('Last name is required'),
+            user_name: Yup.string().required('User name is required'),
+            email: Yup.string().required('Email is required').matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Invalid Email Format'),
             contact: Yup.string().min(10, 'Phone number must be a 10 digit').required('Phone number is required').matches(/^[6-9]\d{9}$/, 'Invalid Phone Number'),
             branch: Yup.string().required('Select a branch'),
             role: Yup.string().required('Select a role'),
             password: Yup.string().min(6, 'Password is minimum 6 characters').required('Password is required'),
-            confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match').required('Confirm Password is required'),
-            image: Yup.string().required('Profile is required')
+            confirm_password: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match').required('Confirm Password is required'),
+            file: Yup.mixed()
+                .required('Profile image is required')
+                .test('fileType', 'Unsupported file format', (value) => {
+                    return value && ['image/jpeg', 'image/png', 'image/jpg'].includes(value.type);
+                }),
+            designation: Yup.string().required('Designation is required')
         }),
-        onSubmit: (values) => {
-            console.log('Form Values', values)
+        onSubmit: async (values) => {
+            const formData = new FormData();
+            const institute_id = getInstituteDetails() ?? "973195c0-66ed-47c2-b098-d8989d3e4529"
+            formData.append('first_name', values.first_name);
+            formData.append('last_name', values.last_name);
+            formData.append('email', values.email);
+            formData.append('phone_number', "+91" + values.contact);
+            formData.append('branch', "67f3a26ef4b2c530acd16425");
+            formData.append('role', 21);
+            formData.append('password', values.password);
+            formData.append('confirm_password', values.confirm_password);
+            formData.append('designation', values.designation);
+            formData.append('username', values.user_name)
+            formData.append('institute_id', institute_id);
+
+            if (values.file) {
+                formData.append('image', imgSrc);
+            }
+
+            try {
+                const response = await addUser(formData);
+                console.log('Submitted FormData', [...formData.entries()]);
+                setShowForm(false);
+            } catch (err) {
+                console.error("Submission error:", err);
+            }
         }
     })
+
+    const handleImageChange = async(e: any) => {
+        if (e.currentTarget.files && e.currentTarget.files[0]) {
+            const file = e.currentTarget.files[0];
+            formik.setFieldValue('file', file);
+
+            const data = new FormData();
+            data.append('file', file);
+
+            try {
+                const upload = await Client.file.upload(data);
+                setImgSrc(upload?.data?.file)
+            } catch (err) {
+                console.error("File upload failed", err);
+            }
+        }
+    }
+
     return (
         <div className={`p-4`}>
             <div className='flex justify-between pb-5 pt-2'>
                 <h1 className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_04_bold }}>Add User</h1>
-                <button className="text-gray-500 font-bold text-lg"><img src={close}></img></button>
+                <button onClick={() => setShowForm(false)} className="text-gray-500 font-bold text-lg"><img src={close}></img></button>
             </div>
 
             <form onSubmit={formik.handleSubmit} className='grid gap-4'>
                 <div className=' p-1  grid justify-center ml-15'>
-                    <img className={`w-[100px] h-[100px] ml-8`} src={upload}></img>
-                    <Input
-                    name='image'
-                    value={formik.values.firstName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    type='file'
-                    className='border-none text-left'
-                     />
+                    {formik.values.file && typeof formik.values.file !== 'string' && (<img className={`w-[100px] h-[100px] ml-8`} src={imgSrc ? GetImageUrl(imgSrc) : upload} alt='Preview'></img>)}
+                    <input
+                        name='image'
+                        type='file'
+                        accept='image/*'
+                        onChange={handleImageChange}
+                        onBlur={formik.handleBlur}
+                        className='border-none text-left'
+                    />
                 </div>
 
                 <div className='grid gap-1'>
                     <label htmlFor='branch' className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Branch</label>
-                    <Select 
-                    onValueChange={(val)=> formik.setFieldValue('branch',val)}
-                    onBlur={()=> formik.setFieldTouched('branch', true)}
+                    <Select
+                        onValueChange={(val) => { formik.setFieldValue('branch', val); formik.setFieldTouched('branch', true) }}
                     >
                         <SelectTrigger style={{ height: '45px' }} className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                             <SelectValue placeholder='Select branch' />
+                            <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                         </SelectTrigger>
                         <SelectContent className='bg-[#FFFFFF]'>
                             <SelectItem value='branch' className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
                                 style={{ ...FONTS.heading_08 }}>No options</SelectItem>
                         </SelectContent>
                     </Select>
+                    {formik.touched.branch && formik.errors.branch && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.branch}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>First Name</label>
                     <Input
-                    name='firstName'
-                    value={formik.values.firstName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter your first name" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                        name='first_name'
+                        value={formik.values.first_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        minLength={3}
+                        placeholder="Enter your first name"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
-                    {formik.touched.firstName && formik.errors.firstName && (
-                        <p className='text-red-500'>{formik.errors.firstName}</p>
+                    {formik.touched.first_name && formik.errors.first_name && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.first_name}</p>
                     )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Last Name</label>
                     <Input
-                    name='lastName'
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} 
-                    placeholder="Enter your last name" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                        name='last_name'
+                        value={formik.values.last_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your last name"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
-                    {formik.touched.lastName && formik.errors.lastName && (
-                        <p className='text-red-500'>{formik.errors.lastName}</p>
+                    {formik.touched.last_name && formik.errors.last_name && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.last_name}</p>
+                    )}
+                </div>
+
+                <div className='grid gap-1'>
+                    <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Username</label>
+                    <Input
+                        name='user_name'
+                        value={formik.values.user_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your email"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                    </Input>
+                    {formik.touched.user_name && formik.errors.user_name && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.user_name}</p>
                     )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Email</label>
-                    <Input 
-                    name='email'
-                    onChange={formik.handleChange}
-                    value={formik.values.email}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter your email" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                    <Input
+                        name='email'
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your email"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
+                    {formik.touched.email && formik.errors.email && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.email}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Designation</label>
-                    <Input 
-                    name='designation'
-                    value={formik.values.designation}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter your designation" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                    <Input
+                        name='designation'
+                        value={formik.values.designation}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your designation"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
+                    {formik.touched.designation && formik.errors.designation && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.designation}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Contact</label>
                     <Input
-                    name='contact'
-                    value={formik.values.contact}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} 
-                    placeholder="Enter your contact number" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                        name='contact'
+                        value={formik.values.contact}
+                        // maxLength={10}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your contact number"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
+                    {formik.touched.contact && formik.errors.contact && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.contact}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label htmlFor='role' className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Role</label>
-                    <Select 
-                    onValueChange={(val)=> formik.setFieldValue('role', val)}
-                    onBlur={()=> formik.setFieldTouched('role', true)}
+                    <Select
+                        onValueChange={(val) => { formik.setFieldValue('role', val); formik.setFieldTouched('role', true) }}
                     >
                         <SelectTrigger style={{ height: '45px' }} className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                             <SelectValue placeholder='Select role' />
+                            <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                         </SelectTrigger>
                         <SelectContent className='bg-[#FFFFFF]'>
                             <SelectItem value='role' className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
                                 style={{ ...FONTS.heading_08 }}>No options</SelectItem>
                         </SelectContent>
                     </Select>
+                    {formik.touched.role && formik.errors.role && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.role}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Password</label>
                     <Input
-                    name='password'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password} 
-                    placeholder="Enter your password" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                        name='password'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                        placeholder="Enter your password"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
+                    {formik.touched.password && formik.errors.password && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.password}</p>
+                    )}
                 </div>
 
                 <div className='grid gap-1'>
                     <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Confirm Password</label>
                     <Input
-                    name='confirmPassword'
-                    value={formik.values.confirmPassword}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} 
-                    placeholder="Enter your confirm password" 
-                    className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
+                        name='confirm_password'
+                        value={formik.values.confirm_password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="Enter your confirm password"
+                        className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}>
                     </Input>
+                    {formik.touched.confirm_password && formik.errors.confirm_password && (
+                        <p className={`text-red-400`} style={{ ...FONTS.heading_12 }}>{formik.errors.confirm_password}</p>
+                    )}
                 </div>
 
                 <div className='flex justify-end gap-2'>
-                    <button style={{ ...FONTS.heading_08_bold }} className={`bg-[#D7F6F5] border border-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#1BBFCA]`}>Cancel</button>
+                    <button onClick={() => setShowForm(false)} style={{ ...FONTS.heading_08_bold }} className={`bg-[#D7F6F5] border border-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#1BBFCA]`}>Cancel</button>
                     <button type='submit' style={{ ...FONTS.heading_08_bold }} className='bg-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]'>Save</button>
                 </div>
-                
+
             </form>
 
         </div>

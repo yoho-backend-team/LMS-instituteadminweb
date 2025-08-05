@@ -40,3 +40,8 @@ export const uploadFile = async (data: any) => {
     const response = await Client.file.upload(data)
    if (response) return response; 
 }
+
+export const getBranchData = async (data: any) => {
+    const response = await Client.staff.getWithBranch(data)
+    if (response) return response; 
+}

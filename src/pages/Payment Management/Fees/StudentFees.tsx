@@ -1,7 +1,13 @@
-import React from 'react';
+import { FeesTable } from "../../../components/Fees/fees-table"
 
-const StudentFees = () => {
-	return <div>StudentFees</div>;
-};
 
-export default StudentFees;
+export default function Home() {
+  return (
+    
+    
+      <>
+        <FeesTable />
+      </>
+    
+  )
+}

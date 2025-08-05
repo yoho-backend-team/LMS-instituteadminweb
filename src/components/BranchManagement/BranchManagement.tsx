@@ -1,8 +1,13 @@
 "use client";
-import { ArrowRight, Plus, X, MoreVertical } from "lucide-react";
-import { useState } from "react";
+import { Plus, MoreVertical, X, ArrowRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ConfirmationPopup } from "../BranchManagement/ConfirmationPopup";
 import { BranchDetailsPage } from "./BranchDetailsPage";
 import TrichyImg from "../../assets/trichy.png";
+import EditIcon from "../../assets/edit.png";
+import DeleteIcon from "../../assets/delete.png";
+import ViewIcon from "../../assets/vieweye.png";
+import ContentLoader from "react-content-loader";
 
 interface LocationCardProps {
   imageSrc: string;
@@ -11,130 +16,254 @@ interface LocationCardProps {
   status: string;
   onViewDetails: () => void;
   onEdit: () => void;
+  onDelete: () => void;
+  onStatusChange?: (newStatus: string) => void;
 }
 
-export function LocationCard({ 
-  imageSrc, 
-  cityName, 
-  address, 
-  status: initialStatus, 
+export function LocationCard({
+  imageSrc,
+  cityName,
+  address,
+  status: initialStatus,
   onViewDetails,
-  onEdit
+  onEdit,
+  onDelete,
+  onStatusChange
 }: LocationCardProps) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(initialStatus);
+  const [hoveredButton, setHoveredButton] = useState<"view" | "edit" | "delete" | null>(null);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<string | null>(null);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
 
   const statusOptions = ["Active", "Inactive"];
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    setIsStatusDropdownOpen(false);
   };
 
-  const handleStatusChange = (newStatus: string) => {
-    setCurrentStatus(newStatus);
-    setIsDropdownOpen(false);
+  const toggleStatusDropdown = () => {
+    setIsStatusDropdownOpen(!isStatusDropdownOpen);
+    setIsMenuOpen(false);
   };
+
+  const requestStatusChange = (newStatus: string) => {
+    setPendingStatus(newStatus);
+    setShowConfirmPopup(true);
+  };
+
+  const confirmStatusChange = () => {
+    if (pendingStatus) {
+      setCurrentStatus(pendingStatus);
+      if (onStatusChange) {
+        onStatusChange(pendingStatus);
+      }
+      setShowConfirmPopup(false);
+      setShowSuccessPopup(true);
+      setPendingStatus(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+      if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
+        setIsStatusDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px]">
-      <div className="relative w-full rounded-xl overflow-hidden">
-        <img
-          src={imageSrc}
-          alt={cityName}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute top-4 right-4">
-          <button 
-            onClick={toggleMenu}
-            className="flex justify-center items-center p-2 w-10 h-10 bg-white rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <MoreVertical className="w-5 h-5 text-[#716F6F]" />
-          </button>
-          
-          {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-              <div className="py-1">
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    onEdit();
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => {
-                    onViewDetails();
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
-          )}
+    <>
+      <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
+        <div className="w-full rounded-xl overflow-hidden relative">
+          <img
+            src={imageSrc}
+            alt={cityName}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute top-4 right-4">
+            <button
+              onClick={toggleMenu}
+              className="flex justify-center items-center p-2 w-10 h-10 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <MoreVertical className="w-5 h-5 text-[#716F6F]" />
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col items-start gap-4 w-full">
-        <div className="flex flex-col items-start gap-3 w-full">
-          <h3 className="text-lg font-semibold capitalize text-[#716F6F]">{cityName}</h3>
-          <p className="text-xs font-light capitalize text-[#7D7D7D]">{address}</p>
-        </div>
-        
-        <div className="relative">
-          <button 
-            onClick={toggleDropdown}
-            className="flex justify-center items-center px-4 py-2 w-[111px] h-[40px] border border-[#716F6F] rounded-lg"
+
+        {isMenuOpen && (
+          <div
+            ref={menuRef}
+            className="flex flex-col items-start p-3 gap-4 w-[170px] bg-white rounded-xl absolute right-4 top-16 shadow-lg z-20"
           >
-            <div className="flex items-center gap-[10px]">
-              <span className="text-xs font-medium capitalize text-[#716F6F] font-poppins leading-[18px]">
-                {currentStatus}
+            <button
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "view"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
+              onClick={() => {
+                setIsMenuOpen(false);
+                onViewDetails();
+              }}
+              onMouseEnter={() => setHoveredButton("view")}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <img
+                src={ViewIcon}
+                alt="View"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "view"
+                    ? "brightness(0) invert(1)"
+                    : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
+                }}
+              />
+              <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
+                View
               </span>
-              <div className="w-5 h-5 flex items-center justify-center">
-                <ArrowRight 
-                  className={`w-full h-full text-[#716F6F] transform ${isDropdownOpen ? 'rotate-270' : 'rotate-90'}`}
-                />
+            </button>
+
+            <button
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "edit"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
+              onClick={() => {
+                setIsMenuOpen(false);
+                onEdit();
+              }}
+              onMouseEnter={() => setHoveredButton("edit")}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <img
+                src={EditIcon}
+                alt="Edit"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "edit"
+                    ? "brightness(0) invert(1)"
+                    : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
+                }}
+              />
+              <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
+                Edit
+              </span>
+            </button>
+
+            <button
+              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${hoveredButton === "delete"
+                ? "bg-[#1BBFCA] border-transparent text-white"
+                : "border-[#716F6F] bg-white text-[#716F6F]"
+                } transition-colors`}
+              onClick={() => {
+                setIsMenuOpen(false);
+                onDelete();
+              }}
+              onMouseEnter={() => setHoveredButton("delete")}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <img
+                src={DeleteIcon}
+                alt="Delete"
+                className="w-5 h-5"
+                style={{
+                  filter: hoveredButton === "delete"
+                    ? "brightness(0) invert(1)"
+                    : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)"
+                }}
+              />
+              <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
+                Delete
+              </span>
+            </button>
+          </div>
+        )}
+
+        <div className="flex flex-col items-start gap-4 w-full">
+          <div className="flex flex-col items-start gap-3 w-full">
+            <h3 className="text-lg font-semibold capitalize text-[#716F6F]">{cityName}</h3>
+            <p className="text-xs font-light capitalize text-[#7D7D7D]">{address}</p>
+          </div>
+
+          <div className="relative" ref={statusRef}>
+            <button
+              onClick={toggleStatusDropdown}
+              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${currentStatus === "Active" || currentStatus === "Inactive"
+                ? "bg-[#1BBFCA] text-white"
+                : "border border-[#716F6F] text-[#716F6F]"
+                }`}
+            >
+              <div className="flex items-center gap-[10px]">
+                <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
+                  {currentStatus}
+                </span>
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <ArrowRight
+                    className={`w-full h-full transform ${isStatusDropdownOpen ? 'rotate-270' : 'rotate-90'
+                      } ${currentStatus === "Active" || currentStatus === "Inactive"
+                        ? "text-white"
+                        : "text-[#716F6F]"
+                      }`}
+                  />
+                </div>
               </div>
-            </div>
-          </button>
-          
-          {isDropdownOpen && (
-            <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg">
-              {statusOptions.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleStatusChange(option)}
-                  className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${
-                    currentStatus === option 
-                      ? 'bg-gray-100 text-[#716F6F] font-medium' 
+            </button>
+
+            {isStatusDropdownOpen && (
+              <div className="absolute z-10 mt-1 w-[111px] bg-white border border-[#716F6F] rounded-lg shadow-lg overflow-hidden">
+                {statusOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => requestStatusChange(option)}
+                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${currentStatus === option
+                      ? 'bg-[#1BBFCA] text-white font-medium'
                       : 'text-[#7D7D7D] hover:bg-gray-50'
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
+                      }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {showConfirmPopup && (
+        <ConfirmationPopup
+          type="confirm"
+          message="Are you sure you want to change the status?"
+          onConfirm={confirmStatusChange}
+          onCancel={() => setShowConfirmPopup(false)}
+          onClose={() => setShowConfirmPopup(false)}
+        />
+      )}
+
+      {showSuccessPopup && (
+        <ConfirmationPopup
+          type="success"
+          message="Status changed successfully."
+          onClose={() => setShowSuccessPopup(false)}
+        />
+      )}
+    </>
   );
 }
+
 export function LocationCardsGrid() {
   const [locations, setLocations] = useState([
     {
@@ -203,7 +332,9 @@ export function LocationCardsGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingBranch, setViewingBranch] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [isLoad, setisLoad] = useState(true);
+
   const [formData, setFormData] = useState({
     branchName: '',
     phoneNumber: '',
@@ -215,10 +346,18 @@ export function LocationCardsGrid() {
     state: 'Tamil Nadu'
   });
 
+  useEffect(() => {
+    setInterval(() => {
+      setisLoad(false)
+    }, 1500);
+  }, [])
+
   // Filter locations based on search term
-  const filteredLocations = locations.filter(location =>
-    location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredLocations = searchTerm
+    ? locations.filter(location =>
+      location.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    : locations;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -229,12 +368,12 @@ export function LocationCardsGrid() {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(e.target.value.trim());
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Filtering is already handled by the filteredLocations array
+    // Filtering happens automatically through state updates
   };
 
   const handleEditBranch = (index: number) => {
@@ -255,7 +394,7 @@ export function LocationCardsGrid() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newBranch = {
       imageSrc: TrichyImg,
       cityName: formData.branchName,
@@ -268,16 +407,15 @@ export function LocationCardsGrid() {
     };
 
     if (editingIndex !== null) {
-      // Update existing branch
       const updatedLocations = [...locations];
       updatedLocations[editingIndex] = newBranch;
       setLocations(updatedLocations);
+      setShowSuccessPopup(true);
     } else {
-      // Add new branch
       setLocations([...locations, newBranch]);
+      setShowSuccessPopup(true);
     }
 
-    // Reset form and close modal
     resetForm();
     setIsModalOpen(false);
   };
@@ -301,10 +439,11 @@ export function LocationCardsGrid() {
   };
 
   if (viewingBranch) {
+    console.log("Viewing Branch:", viewingBranch);
     return (
-      <BranchDetailsPage 
-        locationName={viewingBranch} 
-        onBack={handleBackFromBranchDetails} 
+      <BranchDetailsPage
+        locationName={viewingBranch}
+        onBack={handleBackFromBranchDetails}
       />
     );
   }
@@ -313,17 +452,17 @@ export function LocationCardsGrid() {
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <form onSubmit={handleSearchSubmit} className="w-full md:w-[360px] h-[48px] relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
           <input
             type="text"
             placeholder="Search Branch by City"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none"
+            className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
           />
         </form>
 
-        <button 
+        <button
           onClick={() => {
             resetForm();
             setIsModalOpen(true);
@@ -337,26 +476,67 @@ export function LocationCardsGrid() {
         </button>
       </div>
 
+      {
+        isLoad &&
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          {
+            Array(6).fill(null).map((_, index) => (
+              <div className="w-full h-[340px] shadow-lg rounded-lg p-2">
+                <ContentLoader
+                  speed={1}
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 390 330"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                  className="w-full h-[310px] rounded-lg"
+                  key={index}
+                >
+                  <rect x="0" y="0" rx="10" ry="10" width="400" height="200" />
+
+                  <rect x="0" y="220" rx="8" ry="8" width="60%" height="20" />
+                  <rect x="0" y="250" rx="8" ry="8" width="100%" height="28" />
+                  <rect x="0" y="290" rx="8" ry="8" width="30%" height="58" />
+                </ContentLoader>
+              </div>
+            ))
+          }
+        </div>
+      }
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-        {filteredLocations.length > 0 ? (
+        {!isLoad && filteredLocations.length > 0 ? (
           filteredLocations.map((location, index) => {
-            // Find the original index in the full locations array for editing
             const originalIndex = locations.findIndex(
               loc => loc.cityName === location.cityName
             );
-            
+
             return (
-              <LocationCard 
-                key={index} 
-                {...location} 
+              <LocationCard
+                key={index}
+                {...location}
                 onViewDetails={() => setViewingBranch(location.cityName)}
                 onEdit={() => handleEditBranch(originalIndex)}
+                onDelete={() => {
+                  const updatedLocations = locations.filter((_, i) => i !== originalIndex);
+                  setLocations(updatedLocations);
+                  setShowSuccessPopup(true);
+                }}
+                onStatusChange={(newStatus) => {
+                  const updatedLocations = [...locations];
+                  updatedLocations[originalIndex].status = newStatus;
+                  setLocations(updatedLocations);
+                }}
               />
             );
           })
         ) : (
           <div className="col-span-full text-center py-10">
-            <p className="text-lg text-[#716F6F]">No branches found matching "{searchTerm}"</p>
+            <p className="text-lg text-[#716F6F]">
+              {searchTerm
+                ? `No branches found matching "${searchTerm}"`
+                : "No branches available"}
+            </p>
           </div>
         )}
       </div>
@@ -371,12 +551,12 @@ export function LocationCardsGrid() {
                     {editingIndex !== null ? "Edit Branch" : "Create a New Branch"}
                   </h2>
                   <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
-                    {editingIndex !== null 
-                      ? "Update the branch details below" 
+                    {editingIndex !== null
+                      ? "Update the branch details below"
                       : "Fill in the details below to add a new branch"}
                   </p>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     setIsModalOpen(false);
                     resetForm();
@@ -532,6 +712,19 @@ export function LocationCardsGrid() {
             </div>
           </div>
         </div>
+      )}
+
+      {showSuccessPopup && (
+        <ConfirmationPopup
+          type="success"
+          message={
+            editingIndex !== null
+              ? "Branch updated successfully!"
+              : "Branch created successfully!"
+
+          }
+          onClose={() => setShowSuccessPopup(false)}
+        />
       )}
     </div>
   );

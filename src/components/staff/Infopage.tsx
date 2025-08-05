@@ -152,11 +152,16 @@ try{
   const id = staff.uuid
   console.log("id", id)
 
-  const handleDelete = async () => {
-    const response = deleteStaff({
-      staffId: id,
-    })
+const handleDelete = async () => {
+  try {
+    await deleteStaff({
+      staffId: id
+    });
+    // Add any success handling or navigation here
+  } catch (error) {
+    console.error("Delete failed:", error);
   }
+}
   
 
   const dispatch = useDispatch<any>()

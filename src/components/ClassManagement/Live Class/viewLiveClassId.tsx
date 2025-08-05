@@ -2,16 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
-import avatarImg from '../../../assets/image 109.png';
 import { Card } from '../../ui/card';
-interface Student {
-	id: number;
-	name: string;
-	email: string;
-	avatar: string;
-	city: string;
-	address: string;
-}
+import { GetImageUrl } from '../../../utils/helper';
 
 const ViewLiveClassId: React.FC = () => {
 	const [searchStudent, setSearchStudent] = useState('');
@@ -19,36 +11,23 @@ const ViewLiveClassId: React.FC = () => {
 	const location = useLocation();
 	const { data } = location.state;
 
-	const students: Student[] = [
-		{
-			id: 1,
-			name: 'Vijay',
-			email: 'vijay.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-		{
-			id: 2,
-			name: 'Ajith',
-			email: 'ajith.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-		{
-			id: 3,
-			name: 'Suriya',
-			email: 'suriya.yoho@gmail.com',
-			avatar: avatarImg,
-			city: 'Chennai',
-			address: 'K.K. Nagar, Chennai',
-		},
-	];
-
-	const filteredStudents = students.filter((student) =>
-		student.name.toLowerCase().includes(searchStudent.toLowerCase())
+	const filteredStudents = data?.batch?.student?.filter((student: any) =>
+		student.full_name.toLowerCase().includes(searchStudent.toLowerCase())
 	);
+
+	const formattedTime = (isoTime: string) => {
+		const date = new Date(isoTime);
+
+		const time12hr = date.toLocaleTimeString('en-US', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		});
+
+		return time12hr;
+	};
+
+	console.log('data:', data);
 
 	return (
 		<div className='p-6 bg-white min-h-screen'>
@@ -64,19 +43,19 @@ const ViewLiveClassId: React.FC = () => {
 					style={{ ...FONTS.heading_05_bold }}
 					className='bg-[#1BBFCA] p-1 px-3 text-white rounded-xl'
 				>
-					{data?.title}
+					{data?.class_name}
 				</h2>
 				<div className='flex gap-4 items-center'>
 					<span
 						style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}
 					>
-						Duration: 6 Months
+						Duration: {data?.duration} days
 					</span>
 					<button
 						style={{ ...FONTS.heading_08_bold }}
 						className='bg-[#3ABE65] p-2 px-3 text-white rounded-xl'
 					>
-						Offline
+						Live
 					</button>
 				</div>
 			</div>
@@ -88,7 +67,7 @@ const ViewLiveClassId: React.FC = () => {
 						Course
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						MEAN STACK 2025
+						{data?.course?.course_name ?? 'N/A'}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -96,7 +75,7 @@ const ViewLiveClassId: React.FC = () => {
 						Batch
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						MERN BATCH 1
+						{data?.batch?.batch_name}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -104,7 +83,7 @@ const ViewLiveClassId: React.FC = () => {
 						Duration
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						8 Hrs 30 Min
+						{data?.duration} days
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -112,7 +91,7 @@ const ViewLiveClassId: React.FC = () => {
 						Date
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						2025-06-12
+						{data?.start_date.split('T')[0]}
 					</p>
 				</div>
 			</div>
@@ -124,7 +103,7 @@ const ViewLiveClassId: React.FC = () => {
 						Started At
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						2025-05-18
+						{formattedTime(data?.start_time)}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -132,7 +111,7 @@ const ViewLiveClassId: React.FC = () => {
 						Ended At
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						2025-08-31
+						{formattedTime(data?.end_time)}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
@@ -140,16 +119,20 @@ const ViewLiveClassId: React.FC = () => {
 						Instructor
 					</p>
 					<p style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}>
-						Abdul Kalam
+						{data?.instructors[0]?.full_name}
 					</p>
 				</div>
 				<div className='flex flex-col gap-1 break-words'>
 					<p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
 						Class Link
 					</p>
-					<p style={{ ...FONTS.heading_07_bold, color: COLORS.blue }}>
-						https://www.mernstack2025.com
-					</p>
+					<a
+						href={data?.video_url}
+						target='_blank'
+						style={{ ...FONTS.heading_09, color: COLORS.blue }}
+					>
+						{data?.video_url}
+					</a>
 				</div>
 			</div>
 
@@ -166,6 +149,7 @@ const ViewLiveClassId: React.FC = () => {
 					/>
 					<div className='flex items-center gap-30 bg-white p-4  shadow rounded-md'>
 						<p
+							className='w-50'
 							style={{
 								...FONTS.heading_06_bold,
 								color: COLORS.gray_dark_02,
@@ -175,6 +159,7 @@ const ViewLiveClassId: React.FC = () => {
 							Student ID
 						</p>
 						<p
+							className='w-50'
 							style={{
 								...FONTS.heading_06_bold,
 								color: COLORS.gray_dark_02,
@@ -189,7 +174,7 @@ const ViewLiveClassId: React.FC = () => {
 								color: COLORS.gray_dark_02,
 								width: '20%',
 							}}
-							className='ml-16'
+							className='ml-16 w-50'
 						>
 							City
 						</p>
@@ -199,25 +184,26 @@ const ViewLiveClassId: React.FC = () => {
 								color: COLORS.gray_dark_02,
 								width: '20%',
 							}}
-							className='ml-16'
+							className='ml-16 w-50'
 						>
 							Address
 						</p>
 					</div>
-					{filteredStudents.map((student) => (
+					{filteredStudents?.map((student: any) => (
 						<div
-							key={student.id}
+							key={student._id}
 							className='flex items-center justify-between bg-white p-4 mb-3 shadow rounded-md'
 						>
 							<p
 								style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}
 							>
-								{student.id}
+								{student?.id}
 							</p>
-							<div className='flex'>
+							<div className='flex w-50'>
 								<img
-									src={student.avatar}
-									alt={student.name}
+									src={GetImageUrl(student?.image) ?? undefined}
+									alt={student?.full_name}
+									title={student?.full_name}
 									className='w-12 h-12 rounded-full mr-4'
 								/>
 								<div>
@@ -227,7 +213,7 @@ const ViewLiveClassId: React.FC = () => {
 											color: COLORS.gray_dark_02,
 										}}
 									>
-										{student.name}
+										{student?.full_name}
 									</p>
 									<p
 										style={{
@@ -235,19 +221,21 @@ const ViewLiveClassId: React.FC = () => {
 											color: COLORS.gray_dark_01,
 										}}
 									>
-										{student.email}
+										{student?.email}
 									</p>
 								</div>
 							</div>
 							<p
+								className='w-10 text-center'
 								style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}
 							>
-								{student.city}
+								{student?.contact_info?.city || '-'}
 							</p>
 							<p
+								className='w-50'
 								style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_02 }}
 							>
-								{student.address}
+								{`${student?.contact_info?.address1}, ${student?.contact_info?.address2}`}
 							</p>
 						</div>
 					))}

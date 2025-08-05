@@ -38,6 +38,10 @@ import FAQs from '../pages/FAQ Category/FAQs';
 import Category from '../pages/FAQ Category/Category';
 import { MainLayout } from '../layout/MainLayout';
 import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/StaffsAttendance';
+import AddNewGroup from '../components/Usermanagement/Group/AddNewGroup';
+import View from '../components/Usermanagement/Group/View';
+import Edit from '../components/Usermanagement/Group/Edit';
+
 import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
@@ -48,19 +52,20 @@ import NotificationPage from '../pages/Notification/NotificationPage';
 // import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
+import TicketDetailsPage from '../pages/Ticket Management/Student/TicketDetailsPage';
 import AddAttendance from '../pages/Attendance Management/Staffs Attendance/AddAttendance';
 import StudentCertificate from '../pages/Certificate Management/Student Certificate/StudentCertificate';
 import CertificateView from '../components/cerificateManagement/certificateView';
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
+import LogoutRoute from '../components/shared/Navbar';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
-	// const { isAuthenticated, isLoading } = useAuth();
-	const isAuthenticated = true;
+	const { isAuthenticated, isLoading } = useAuth();
 
-	// if (isLoading) return null;
+	if (isLoading) return null;
 
 	const AuthRoutes = () => (
 		<Routes>
@@ -68,6 +73,7 @@ const AppRoutes = () => {
 			<Route path='/otp-verify' element={<OtpVerification />} />
 			<Route path='/reset-password' element={<ChangePassword />} />
 			<Route path='*' element={<Navigate to='/login' />} />
+			<Route path="/logout" element={<LogoutRoute />} />
 		</Routes>
 	);
 
@@ -77,7 +83,10 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
+				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
+
 				<Route path='noti/msg' element={<NotificationPage />} />
+
 				{/* <Route path="/" element={<HomePage />} /> */}
 
 				{/* <Route path='profile' element={<SecurityProfile />} /> */}
@@ -100,6 +109,9 @@ const AppRoutes = () => {
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
 				<Route path='group' element={<Group />} />
+				<Route path='group/add' element={<AddNewGroup />} />
+				<Route path='group/view/:id' element={<View />} />
+				<Route path='group/edit' element={<Edit />} />
 
 				{/* Course Management */}
 				<Route path='courses' element={<Courses />} />
@@ -126,12 +138,12 @@ const AppRoutes = () => {
 				<Route path='offine-classes' element={<OfflineClasses />} />
 				<Route path='view-student/:id' element={<StudentClassBatch />} />
 				<Route path='live-classes' element={<LiveClasses />} />
-				<Route path='live-classes/:id' element={<ViewLiveClassId />} />
+				<Route path='/live-classes/:uuid' element={<ViewLiveClassId />} />
 
 				{/* Attendance Management */}
 				<Route path='students-attendance' element={<StudentsAttendance />} />
 				<Route
-					path='students-attendance/details'
+					path='students-attendance/details/:id'
 					element={<StudentDetails />}
 				/>
 				<Route path='staffs-attendance' element={<StaffsAttendance />} />

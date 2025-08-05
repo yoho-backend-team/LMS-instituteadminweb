@@ -4,10 +4,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import { Button } from '../ui/button';
+import { updateBatches } from '../../features/batchManagement/services';
+import toast from 'react-hot-toast';
 
 interface EditBatchModalProps {
 	isOpen: boolean;
 	onClose: () => void;
+	data: any;
+	fetchBatchData?: () => void;
 }
 
 interface FormValues {
@@ -16,35 +20,53 @@ interface FormValues {
 	endDate: string;
 }
 
-const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
+const EditBatchModal: React.FC<EditBatchModalProps> = ({
+	isOpen,
+	onClose,
+	data,
+	fetchBatchData,
+}) => {
 	if (!isOpen) return null;
-
-	const selectedStudents = ['Elon Muck', 'John William'];
 
 	const formik = useFormik<FormValues>({
 		initialValues: {
-			batchName: '',
-			startDate: '',
-			endDate: '',
+			batchName: data?.batch_name || '',
+			startDate: data?.start_date?.split('T')[0] || '',
+			endDate: data?.end_date?.split('T')[0] || '',
 		},
 		validationSchema: Yup.object({
 			batchName: Yup.string().required('Batch Name is required'),
 			startDate: Yup.string().required('Start Date is required'),
-			endDate: Yup.string()
-				.required('End Date is required')
-				.test(
-					'is-after-start',
-					'End Date must be after Start Date',
-					function (value: any) {
-						return (
-							!value || !this.parent.startDate || value >= this.parent.startDate
-						);
-					}
-				),
+			endDate: Yup.string().required('End Date is required'),
 		}),
-		onSubmit: (values) => {
-			console.log('Form Data', values);
-			onClose();
+		onSubmit: async (values, { setSubmitting }) => {
+			const payload = {
+				uuid: data?.uuid,
+				batch_name: values.batchName,
+				start_date: new Date(values.startDate).toISOString(),
+				end_date: new Date(values.endDate).toISOString(),
+				student: Array.isArray(data?.student)
+					? data.student.map((s: any) => (typeof s === 'string' ? s : s._id))
+					: [],
+			};
+
+			try {
+				const response = await updateBatches(payload);
+
+				if (response) {
+					onClose();
+					toast.success('Batch updated successfully!');
+
+					if (fetchBatchData) {
+						fetchBatchData();
+					}
+				}
+			} catch (error) {
+				console.error('Error updating batch:', error);
+				toast.error('Failed to update batch');
+			} finally {
+				setSubmitting(false);
+			}
 		},
 	});
 
@@ -62,7 +84,7 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 						</h2>
 						<button
 							onClick={onClose}
-							className='p-1 rounded-full hover:bg-white/20 transition-colors'
+							className='p-1 rounded-full bg-white/20 transition-colors'
 							aria-label='Close modal'
 						>
 							<X className='w-5 h-5' />
@@ -153,20 +175,13 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 								Students
 							</label>
 							<div className='w-full border border-gray-300 rounded-md px-4 py-2 flex flex-wrap gap-2 min-h-[44px]'>
-								{selectedStudents.length > 0 ? (
-									selectedStudents.map((student, idx) => (
+								{data?.student?.length > 0 ? (
+									data?.student?.map((student: any, idx: number) => (
 										<div
 											key={idx}
 											className='flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm'
 										>
-											{student}
-											<button
-												type='button'
-												className='focus:outline-none'
-												onClick={() => console.log('Remove student', student)}
-											>
-												<X className='w-3 h-3 cursor-pointer text-green-700 hover:text-red-600' />
-											</button>
+											{student?.full_name || student}
 										</div>
 									))
 								) : (
@@ -188,10 +203,11 @@ const EditBatchModal: React.FC<EditBatchModalProps> = ({ isOpen, onClose }) => {
 							</Button>
 							<Button
 								type='submit'
+								disabled={formik.isSubmitting}
 								className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA] hover:opacity-90'
 								style={{ ...FONTS.heading_07_bold }}
 							>
-								Update
+								{formik.isSubmitting ? 'Updating...' : 'Update'}
 							</Button>
 						</div>
 					</form>
