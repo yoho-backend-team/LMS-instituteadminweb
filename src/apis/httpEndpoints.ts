@@ -82,6 +82,7 @@ const generateEndpoints = () => {
             withBranch: `/api/institutes/${instituteId}/branches/`,
             add: `/api/institutes/${instituteId}/categories/`,
             template: `/api/institutes/${instituteId}/branches/${branchId}/course-template`,
+            getcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
         },
         course_module: {
             get: '/api/institutes/course-module/',
@@ -133,7 +134,7 @@ const generateEndpoints = () => {
             getWithBatch: `/api/institutes/${instituteId}/branches/`,
             getWithCourse: `/api/institutes/${instituteId}/branches/`,
             update: `/api/institutes/:instituteId/students/update/`,
-            delete: `/api/institutes/student/student/`,
+            delete: `/api/institutes/${instituteId}/student/student/`,
             activity: `/api/institutes/${instituteId}/students/student/activity/`,
             // classess: `/api/institutes/:instituteId/students/student/classes/`
             classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/students/`
@@ -207,7 +208,7 @@ const generateEndpoints = () => {
         },
         notification: {
             student_notification: `/api/institutes/students/notifications/all`,
-            student_notification_get: `/api/institutes/students/notifications`,
+            create_student_notification: `/api/institutes/students/notifications`,
             staff_notification: `/api/institutes/staff/notifications/all`,
             create_staff_notification: `/api/institutes/staff/notifications/`,
             institute_notification: `/api/institutes/branch/notifications`,

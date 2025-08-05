@@ -2,6 +2,8 @@
 import { get } from 'http';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
+import { data } from 'react-router-dom';
+import httpClient from './httpClient';
 
 class Client {
     admin = {
@@ -164,6 +166,13 @@ class Client {
             ),
         add_template: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.course.template, data),
+    
+        get_course_data: (data:any)=>
+            HttpClient.get(
+                HTTP_END_POINTS.course.getcourse,data),
+            
+        
+         
     };
     batch = {
         // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
@@ -207,8 +216,8 @@ class Client {
     users = {
         verifyOtp: (data: any, options: any) =>
             HttpClient.post(HTTP_END_POINTS.users.valiateOtp, data, options),
-        studentRegister: (data: any, options: any) =>
-            HttpClient.post(HTTP_END_POINTS.users.studentRegister, data, options),
+        studentRegister: (data: any) =>
+            HttpClient.post(HTTP_END_POINTS.users.studentRegister, data),
         studentsAll: (params: any) =>
             HttpClient.get(
                 HTTP_END_POINTS.student.get + `${params.branch_id}/students`,
@@ -362,7 +371,7 @@ class Client {
         student: {
             add_student_notification: (data: any) =>
                 HttpClient.post(
-                    HTTP_END_POINTS.notification.student_notification_get,
+                    HTTP_END_POINTS.notification.create_student_notification,
                     data
                 ),
             get_student_notification: (query: any) =>
