@@ -1,38 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
-import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service";
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import { useDispatch } from "react-redux"
+import { ArrowLeft, ChevronDown } from "lucide-react" // Import Lucide icons
 
-// Helper to normalize identity strings (e.g., "Student Idcards" -> "student_idcards")
-const normalizeIdentity = (s: string) =>
-  s
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "_")
-    .replace(/-/, "_");
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-type AccessType = "" | "Read" | "Create" | "Update" | "Delete";
+// Assuming these are available in your project
+import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service"
+import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks"
+
+const normalizeIdentity = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "_").replace(/-/, "_")
+
+// Define the types of permissions
+const permissionTypes = ["Read", "Create", "Update", "Delete"] as const
+type PermissionType = (typeof permissionTypes)[number]
 
 interface PermissionItem {
-  id: number;
-  identity: string;
-  access: AccessType;
+  id: number
+  identity: string
+  selectedPermissions: Record<PermissionType, boolean>
 }
 
 interface OutputPermission {
-  id: number;
-  identity: string;
-  permission: Array<Record<string, any>>; // e.g., [{ read: true, _id: "..." }]
+  id: number
+  identity: string
+  permission: Array<{ permission: string; granted: boolean }>
 }
 
 interface AddNewGroupProps {
-  institute_id?: string;
-  defaultIdentity?: string; // group identity/name
+  institute_id?: string
+  defaultIdentity?: string
 }
 
 function AddNewGroup({
   institute_id = "973195c0-66ed-47c2-b098-d8989d3e4529",
-  defaultIdentity = "vtgyhunun",
+  defaultIdentity = "",
 }: AddNewGroupProps) {
   const permissionsList = [
     "Dashboard",
@@ -78,190 +88,215 @@ function AddNewGroup({
     "FAQ Categories",
     "Help FAQs",
     "Fees",
-  ];
+  ]
 
-  const navigate = useNavigate();
-
-  // State
-  const [groupName, setGroupName] = useState(defaultIdentity);
+  const navigate = useNavigate()
+  const dispatch = useDispatch<any>()
+  const [groupName, setGroupName] = useState(defaultIdentity)
   const [permissions, setPermissions] = useState<PermissionItem[]>(
     permissionsList.map((p, i) => ({
       id: i + 1,
       identity: p,
-      access: "",
-    }))
-  );
-  const [selectAll, setSelectAll] = useState(false);
-  const [selectAllAccess, setSelectAllAccess] = useState<AccessType>("Read");
+      selectedPermissions: {
+        Read: false,
+        Create: false,
+        Update: false,
+        Delete: false,
+      },
+    })),
+  )
+  const [selectAll, setSelectAll] = useState(false)
 
-  // Effect: when selectAll toggled, apply to all
   useEffect(() => {
+    setPermissions((prev) =>
+      prev.map((p) => ({
+        ...p,
+        selectedPermissions: {
+          Read: selectAll,
+          Create: selectAll,
+          Update: selectAll,
+          Delete: selectAll,
+        },
+      })),
+    )
     if (selectAll) {
-      setPermissions((prev) =>
-        prev.map((p) => ({ ...p, access: selectAllAccess }))
-      );
+      toast.success("All permissions selected")
+    } else {
+      toast.info("All permissions deselected")
     }
-  }, [selectAll, selectAllAccess]);
+  }, [selectAll])
 
-  const handleSingleAccessChange = (idx: number, value: AccessType) => {
+  const handlePermissionChange = (moduleIndex: number, permissionType: PermissionType, isChecked: boolean) => {
     setPermissions((prev) => {
-      const copy = [...prev];
-      copy[idx] = { ...copy[idx], access: value };
-      return copy;
-    });
-  };
+      const newPermissions = [...prev]
+      newPermissions[moduleIndex] = {
+        ...newPermissions[moduleIndex],
+        selectedPermissions: {
+          ...newPermissions[moduleIndex].selectedPermissions,
+          [permissionType]: isChecked,
+        },
+      }
+      const allSelected = newPermissions.every((module) => Object.values(module.selectedPermissions).every(Boolean))
+      const noneSelected = newPermissions.every((module) =>
+        Object.values(module.selectedPermissions).every((val) => !val),
+      )
+      if (selectAll && !allSelected) {
+        setSelectAll(false)
+      } else if (!selectAll && allSelected && !noneSelected) {
+        setSelectAll(true)
+      }
+      return newPermissions
+    })
+  }
 
   const buildPayload = () => {
     const formattedPermissions: OutputPermission[] = permissions
-      .filter((p) => p.access) // skip if no access selected
+      .filter((p) => Object.values(p.selectedPermissions).some(Boolean))
       .map((p) => {
-        const key = p.access.toLowerCase(); // e.g., "read"
-        const permissionObj: Record<string, any> = {
-          _id: crypto.randomUUID(),
-        };
-        permissionObj[key] = true;
+        const permissionArray: Array<{ permission: string; granted: boolean }> = []
+        if (p.selectedPermissions.Read) {
+          permissionArray.push({ permission: "read", granted: true })
+        }
+        if (p.selectedPermissions.Create) {
+          permissionArray.push({ permission: "create", granted: true })
+        }
+        if (p.selectedPermissions.Update) {
+          permissionArray.push({ permission: "update", granted: true })
+        }
+        if (p.selectedPermissions.Delete) {
+          permissionArray.push({ permission: "delete", granted: true })
+        }
         return {
           id: p.id,
           identity: normalizeIdentity(p.identity),
-          permission: [permissionObj],
-        };
-      });
-
+          permission: permissionArray,
+        }
+      })
     return {
       identity: groupName,
       institute_id,
       permissions: formattedPermissions,
-    };
-  };
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const payload = buildPayload();
-    try{
-     const response = CreateGroup(payload)
-     console.log("group created",response)
-    }catch(err){
-      console.log("err")
+    e.preventDefault()
+    const payload = buildPayload()
+    console.log("Payload being sent:", JSON.stringify(payload, null, 2))
+    try {
+      const response = await CreateGroup(payload)
+      console.log("group created", response)
+      toast.success("Group created successfully")
+      dispatch(GetGroupCardthunks({}))
+      navigate("/group")
+    } catch (err) {
+      console.error("err creating group", err)
+      toast.error("Error creating group")
     }
-    console.log("Group Payload:", payload);
-    // You can replace the console.log with actual API call here.
-  };
+  }
+
+  const reset = () => {
+    setGroupName(defaultIdentity)
+    setPermissions(
+      permissionsList.map((p, i) => ({
+        id: i + 1,
+        identity: p,
+        selectedPermissions: {
+          Read: false,
+          Create: false,
+          Update: false,
+          Delete: false,
+        },
+      })),
+    )
+    setSelectAll(false)
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md">
       {/* Back Button */}
-      <div
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => navigate("/group")}
-        className="mb-4 cursor-pointer text-xl text-[#7D7D7D] hover:text-gray-500 w-fit"
+        className="mb-4 text-xl text-[#7D7D7D] hover:text-gray-500"
       >
-        <IoMdArrowRoundBack />
-      </div>
+        <ArrowLeft />
+        <span className="sr-only">Go back</span>
+      </Button>
 
       {/* Header */}
-      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">
-        Add New Group
-      </h1>
+      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">Add New Group</h1>
       <p className="text-[#7D7D7D] mb-6">Set Group Permissions</p>
 
-      {/* Group Name / Identity */}
+      {/* Group Name */}
       <div className="mb-6">
-        <label className="block mb-2 text-sm font-medium text-[#7D7D7D]">
+        <label htmlFor="group-name" className="block mb-2 text-sm font-medium text-[#7D7D7D]">
           Group Name
         </label>
         <input
+          id="group-name"
           type="text"
           placeholder="Group Name"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 w-96 mb-1 hover:border-[#1BBFCA] outline-none"
+          className="border border-gray-300 rounded-lg p-2 w-96 mb-1 hover:border-[#1BBFCA] outline-none focus:ring focus:ring-[#1BBFCA]"
         />
-        <p className="text-xs text-gray-500">
-          This will be used as <code>identity</code> in payload.
-        </p>
       </div>
 
-      {/* Group Permissions / Select All */}
-      <div className="flex flex-col gap-2 mb-2">
-        <div className="flex justify-between gap-3 mb-2 text-[#7D7D7D] items-center">
-          <div className="flex items-center gap-2">
-            <input
-              id="admin-access-checkbox"
-              type="checkbox"
-              checked={selectAll}
-              onChange={(e) => setSelectAll(e.target.checked)}
-              className="w-5 h-5 rounded-md border border-gray-300"
-            />
-            <label htmlFor="admin-access-checkbox" className="text-sm">
-              Administrator Access (Select All)
-            </label>
-          </div>
-          {selectAll && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[#7D7D7D]">Apply access:</span>
-              <select
-                value={selectAllAccess}
-                onChange={(e) =>
-                  setSelectAllAccess(e.target.value as AccessType)
-                }
-                className="appearance-none rounded border border-gray-300 p-1 pr-6 text-sm outline-none"
-              >
-                <option value="Read">Read</option>
-                <option value="Create">Create</option>
-                <option value="Update">Update</option>
-                <option value="Delete">Delete</option>
-              </select>
-            </div>
-          )}
-        </div>
-        <hr />
+      {/* Group Permissions Header */}
+      <div className="mb-2">
+        <div className="text-lg font-semibold text-[#1F2D3A]">Group Permissions</div>
       </div>
 
-      {/* Permission Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        {permissions.map((item, index) => (
+      {/* Administrator Access + Select All */}
+      <div className="flex items-center justify-between mb-1">
+        <div className="text-sm text-[#7D7D7D]">Administrator Access</div>
+        <label htmlFor="select-all" className="text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer">
+          <input
+            id="select-all"
+            type="checkbox"
+            checked={selectAll}
+            onChange={(e) => setSelectAll(e.target.checked)}
+            className="w-4 h-4 rounded border border-gray-300 accent-[#1BBFCA]"
+          />
+          <span>Select All</span>
+        </label>
+      </div>
+      <hr className="border-t border-gray-200 mb-4" />
+
+      {/* Permission Grid with Dropdowns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        {permissions.map((item, moduleIndex) => (
           <div
-            key={index}
-            className="flex flex-col gap-1 bg-white rounded-lg p-3 shadow-sm"
+            key={item.id}
+            className="flex flex-col gap-2 bg-white rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
           >
-            <label className="text-sm font-medium text-[#7D7D7D]">
-              {item.identity}
-            </label>
-            <div className="relative">
-              <select
-                className="appearance-none w-full rounded-lg border border-gray-300 p-2 pr-8 text-sm text-[#7D7D7D] outline-none focus:ring focus:ring-[#1BBFCA]"
-                value={item.access}
-                onChange={(e) =>
-                  handleSingleAccessChange(
-                    index,
-                    e.target.value as AccessType
-                  )
-                }
-              >
-                <option value="">Select access</option>
-                <option value="Read">Read</option>
-                <option value="Create">Create</option>
-                <option value="Update">Update</option>
-                <option value="Delete">Delete</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="text-gray-400"
+            <label className="text-base font-semibold text-[#1F2D3A] mb-2">{item.identity}</label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between text-[#7D7D7D] border-gray-300 hover:border-[#1BBFCA] hover:text-[#1BBFCA] bg-transparent"
                 >
-                  <path
-                    d="M6 8L10 12L14 8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </div>
+                  Select Permissions
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48">
+                {permissionTypes.map((type) => (
+                  <DropdownMenuCheckboxItem
+                    key={type}
+                    checked={item.selectedPermissions[type]}
+                    onCheckedChange={(checked) => handlePermissionChange(moduleIndex, type, checked)}
+                    // Apply custom styling for the checked state to match the accent color
+                    className="data-[state=checked]:bg-[#1BBFCA] data-[state=checked]:text-white"
+                  >
+                    {type}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ))}
       </div>
@@ -270,27 +305,20 @@ function AddNewGroup({
       <div className="flex justify-end gap-5">
         <button
           type="button"
-          onClick={() => {
-            // reset behavior if needed
-            setGroupName(defaultIdentity);
-            setPermissions((prev) =>
-              prev.map((p) => ({ ...p, access: "" as AccessType }))
-            );
-            setSelectAll(false);
-          }}
-          className="w-24 h-10 rounded-xl bg-[#1BBFCA1A] border text-sm text-[#1BBFCA] border-[#1BBFCA]"
+          onClick={reset}
+          className="w-28 h-10 rounded-xl bg-[#1BBFCA1A] border text-sm text-[#1BBFCA] border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="w-24 h-10 rounded-xl text-white text-sm bg-[#1BBFCA]"
+          className="w-28 h-10 rounded-xl text-white text-sm bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 transition-colors"
         >
           Submit
         </button>
       </div>
     </form>
-  );
+  )
 }
 
-export default AddNewGroup;
+export default AddNewGroup

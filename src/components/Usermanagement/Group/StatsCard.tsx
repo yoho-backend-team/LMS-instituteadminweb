@@ -7,7 +7,10 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroup } from "../../../features/Users_Management/Group/reducers/selectors";
-import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks";
+import {
+  deleteGroupThunk,
+  GetGroupCardthunks,
+} from "../../../features/Users_Management/Group/reducers/thunks";
 import { StatusDropdown } from "./StatusDropdown";
 
 function StatsCard() {
@@ -17,25 +20,36 @@ function StatsCard() {
   };
 
   const navigate = useNavigate();
-  
 
   //integration
- const dispatch = useDispatch<any>();
-const groupCard = useSelector(selectGroup);
+  const dispatch = useDispatch<any>();
+  const groupCard = useSelector(selectGroup);
+  const [currentPage, setcurrentPage] = useState(1);
 
-useEffect(() => {
-  const ParamsData = {
-    institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",  
+  useEffect(() => {
+    const ParamsData = {
+      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: currentPage,
+    };
+    dispatch(GetGroupCardthunks(ParamsData));
+  }, [dispatch, currentPage]);
+
+  console.log(groupCard.data, "response");
+
+  const handledelete = async (id: any) => {
+    try {
+      console.log(id, "id");
+      await dispatch(deleteGroupThunk({ id }));
+      console.log("group deleted");
+    } catch (error) {
+      console.error("failed to delete", error);
+    }
   };
-  dispatch(GetGroupCardthunks(ParamsData));
-}, [dispatch]);
-
-console.log(groupCard.data, "response");
 
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {groupCard.map((card:any, idx:any) => (
+        {groupCard.map((card: any, idx: any) => (
           <div
             key={idx}
             className="relative rounded-lg bg-white shadow-md p-4 pt-6"
@@ -49,19 +63,26 @@ console.log(groupCard.data, "response");
                 <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg border rounded-lg text-sm p-2 space-y-2 z-30">
                   <button
                     className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition"
-                    onClick={() => navigate(`/group/view/${card.id}`) }
+                    onClick={() => navigate(`/group/view/${card.id}`)}
                   >
                     <FaEye className="w-5 h-5" />
                     <span>View</span>
                   </button>
                   <button
                     className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition"
-                    onClick={() => navigate("/group/edit")}
+                    onClick={() => navigate(`/group/edit/${card.id}`, {
+                      state: {
+                        grpName: card?.identity
+                      }
+                    })}
                   >
                     <LuNotebookPen className="w-5 h-5" />
                     <span>Edit</span>
                   </button>
-                  <button className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition">
+                  <button
+                    className="flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition"
+                    onClick={() => handledelete(card.uuid)} // ✅ use uuid here
+                  >
                     <AiOutlineDelete className="w-5 h-5" />
                     <span>Delete</span>
                   </button>
@@ -79,12 +100,11 @@ console.log(groupCard.data, "response");
 
             {/* Status Dropdown */}
             <StatusDropdown
-  idx={idx}
-  initialStatus={card.is_active ? "Active" : "Inactive"}
-  options={["Active", "Inactive"]}
-  itemId={card.id}
-/>
-
+              idx={idx}
+              initialStatus={card.is_active ? "Active" : "Inactive"}
+              options={["Active", "Inactive"]}
+              itemId={card.id}
+            />
           </div>
         ))}
       </div>
