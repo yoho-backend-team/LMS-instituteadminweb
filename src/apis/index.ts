@@ -26,9 +26,12 @@ class Client {
     group = {
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.group.create, data),
         getAll: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id),
+            HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id, data),
         permissionWithRole: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.group.permissions, data),
+        permissionWithRoleEdit: (data: any) =>
+            HttpClient.update(HTTP_END_POINTS.group.permissions, 
+                data),
         updateStatus: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.group.update_status, data),
         delete: (data: any) =>
