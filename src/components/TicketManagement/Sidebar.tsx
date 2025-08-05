@@ -6,9 +6,9 @@ interface SidebarProps {
     description: string;
     is_active: boolean;
     status: string;
-    email: string;
+    priority: string;
     institute_name?: string;
-    gallery_images: string;
+    query: string;
   };
 }
 
@@ -19,21 +19,21 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         Description:
       </h2>
       <p className="mb-15 text-[#716F6F]" style={{ ...FONTS.heading_09 }}>
-        {user.institute_name}
+        {user.description}
       </p>
 
       <h3 className="mt-8 text-[#716F6F]" style={{ ...FONTS.heading_08_bold }}>
-       Issue Category:
+      Priority:
       </h3>
       <p className="mb-2 text-[#716F6F]" style={{ ...FONTS.heading_09 }}>
-        {user.email}
+        {user.priority}
       </p>
 
       <h3 className="mt-14 text-[#716F6F]" style={{ ...FONTS.heading_08_bold }}>
-       Attachment:
+      Query:
       </h3>
       <p className="cursor-pointer text-[#716F6F]" style={{ ...FONTS.heading_09 }}>
-        {user.gallery_images}
+        {user.query}
       </p>
 
       <h3 className="mt-4 mb-4 text-[#716F6F]" style={{ ...FONTS.heading_08_bold }}>

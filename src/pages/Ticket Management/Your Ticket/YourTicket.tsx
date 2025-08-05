@@ -185,7 +185,7 @@ const TicketsPage: React.FC = () => {
                 avatarUrl={ticket.avatarUrl}
                onView={() => {
   setSelectedTicketUser(ticket.user);
-  setSelectedTicketUserDetails(ticket.institute); 
+  setSelectedTicketUserDetails(ticket); 
   setShowChatWindow(true);
   setShowbuttonWindow(false);
   setShowCreateButton(false);
