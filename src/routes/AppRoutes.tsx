@@ -60,6 +60,7 @@ import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
 import LogoutRoute from '../components/shared/Navbar';
+import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -108,6 +109,7 @@ const AppRoutes = () => {
 
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
+				<Route path='users/details/:id' element={<UsersDetails />} />
 				<Route path='group' element={<Group />} />
 				<Route path='group/add' element={<AddNewGroup />} />
 				<Route path='group/view/:id' element={<View />} />
