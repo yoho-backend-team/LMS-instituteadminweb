@@ -244,6 +244,11 @@ const generateEndpoints = () => {
 			put: '/api/certificate/update/:certificateid',
 			create: '/api/certificate/create',
 			delete: '/api/certificate/delete/:certificateid'
+		},
+		helpcenter: {
+			getall: '/api/helpcenter/',
+			delete: '/api/helpcenter/delete/',
+			update: '/api/helpcenter/update/',
 		}
 	};
 };

@@ -30,7 +30,7 @@ class Client {
         permissionWithRole: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.group.permissions, data),
         permissionWithRoleEdit: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.group.permissions, 
+            HttpClient.update(HTTP_END_POINTS.group.permissions,
                 data),
         updateStatus: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.group.update_status, data),
@@ -168,13 +168,13 @@ class Client {
             ),
         add_template: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.course.template, data),
-    
-        get_course_data: (data:any)=>
+
+        get_course_data: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.course.getcourse,data),
-            
-        
-         
+                HTTP_END_POINTS.course.getcourse, data),
+
+
+
     };
     batch = {
         // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
@@ -519,5 +519,12 @@ class Client {
     }
 
 
+    helpcenter = {
+        getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
+        post: (data: any) => HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
+        delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
+        update: (data: any, id: string) =>
+            HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
+    }
 }
 export default new Client();

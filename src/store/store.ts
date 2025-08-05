@@ -23,7 +23,8 @@ import subscriptionReducer from '../components/subscription/slice'
 import StudentTicketReducer from '../features/StudentTicket/Reducers/slices';
 import StaffNotificationSlice from '../features/staffNotification/reducers/slices'
 import StudentNotificationSlice from '../features/StudentNotification/reducer/NotificationSlice';
-
+import helpCenterFaqs from '../features/HelpCenter/slice'
+import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
 
 const store = configureStore({
 	reducer: {
@@ -51,9 +52,9 @@ const store = configureStore({
 		subscription: subscriptionReducer,
 		StudentTicketReducer: StudentTicketReducer,
 		StaffNotificationSlice: StaffNotificationSlice,
-		StudentNotificationSlice: StudentNotificationSlice
-
-
+		StudentNotificationSlice: StudentNotificationSlice,
+		helpCenterFaqs: helpCenterFaqs,
+		ticketAdmin: ticketAdmin
 	},
 })
 
