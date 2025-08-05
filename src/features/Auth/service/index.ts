@@ -39,3 +39,12 @@ export const GetProfileDetail = async () => {
         console.log(error)
     }
 }
+
+export const ForgetPassword = async (data: any) => {
+    try {
+        const response = await Client.admin.forget_password(data)
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
