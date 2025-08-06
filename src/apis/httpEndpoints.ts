@@ -234,6 +234,7 @@ const generateEndpoints = () => {
 			getAll: `/api/placements/all`,
 			update: `/api/placements/update`,
 			getById: `/api/placements/fetch`,
+			delete:`/api/placements/delete/`
 		},
 		notificationSubscription: {
 			post: '/notification/subscribe',
