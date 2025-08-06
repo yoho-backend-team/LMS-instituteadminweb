@@ -178,7 +178,7 @@ const StudentNotifications = () => {
       branch: branchId,
       course: selectedCourse,
       batch: "688deb796f788de6b9237c44",
-      student: ["67f3b8feb8d2634300cc8819"], 
+      student: ["67f3b8feb8d2634300cc8810"], 
       type: notificationType,
       title,
       body,
