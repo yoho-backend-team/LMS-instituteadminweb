@@ -57,6 +57,7 @@ import CertificateView from '../components/cerificateManagement/certificateView'
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
+import TicketDetail from '../pages/Ticket Management/Staff/TicketDetail';
 import LogoutRoute from '../components/shared/Navbar';
 import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
 
@@ -82,6 +83,7 @@ const AppRoutes = () => {
 				{/* Profile Management */}
 
 				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
+				<Route path='/staff-tickets/:id' element={<TicketDetail />} />
 
 				<Route path='noti/msg' element={<NotificationPage />} />
 

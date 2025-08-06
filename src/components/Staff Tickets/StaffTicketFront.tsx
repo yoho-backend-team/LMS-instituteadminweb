@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import TicketCard from "./TicketCard";
 import ticket1 from "../../assets/ticket1.png";
-import { useTicketContext } from "../../components/StudentTickets/TicketContext";
+import { useTicketContext } from "../../components/Staff Tickets/StaffTicketContext";
 
 const StudTicketFront: React.FC = () => {
   const [filter, setFilter] = useState<"opened" | "closed">("opened");
@@ -14,7 +14,7 @@ const StudTicketFront: React.FC = () => {
     <div>
       <div className="bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6 w-full">
         <img src={ticket1} alt="Ticket Icon" className="w-5 h-5" />
-        STUDENT TICKETS
+        STAFF TICKETS
       </div>
 
       <div className="flex gap-4 mb-6">
