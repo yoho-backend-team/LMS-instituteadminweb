@@ -1,13 +1,20 @@
 import { COLORS, FONTS } from "../../../../constants/uiConstants"
-
-import { Calendar } from "lucide-react"
-import StudentCard from "./StudentCard"
+import { Calendar, ChevronDownIcon } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
 import { Input } from "../../../../components/ui/input"
 import { useState } from "react"
 import { IoClose } from "react-icons/io5"
 
-const StudentHeaderBar = () => {
+type batch = {
+   batch_name: string;
+   [key: string] : any;
+}
+
+type props = {
+    batches: batch[]
+}
+
+const StudentHeaderBar:React.FC<props> = ({batches}) => {
     const [filterShow, setFilterShow] = useState<boolean>(false)
 
     return (
@@ -15,7 +22,7 @@ const StudentHeaderBar = () => {
             <div className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}>
                 <h1 className='flex gap-[10px] text-[#FFFFFF] !font-bold' style={{ ...FONTS.heading_05 }}><Calendar />
                     STUDENT ATTENDANCE</h1>
-                {!filterShow ? (<button onClick={() => setFilterShow(true)} className={`pt-[8px] pb-[8px] pr-[16px] pl-[16px] bg-[#FFFFFF] text-[#3ABE65] w-[67px] h-[48px] rounded-[8px]`}>Show</button>) : (<button onClick={() => setFilterShow(false)} className={`pt-[8px] pb-[8px] pr-[16px] pl-[16px] bg-[#FFFFFF] text-[#3ABE65] w-[67px] h-[48px] rounded-[8px]`}><IoClose className="w-[35px]" /></button>)}
+                {!filterShow ? (<button onClick={() => setFilterShow(true)} className={`bg-[#FFFFFF] text-[#3ABE65] w-[88px] h-[48px] rounded-[8px] flex items-center justify-center gap-1.5`}>Show</button>) : (<button onClick={() => setFilterShow(false)} className={`pt-[8px] pb-[8px] pr-[16px] pl-[16px] bg-[#FFFFFF] text-[#3ABE65] w-[67px] h-[48px] rounded-[8px]`}><IoClose className="w-[33px] h-[30px]" /></button>)}
             </div>
 
             {/* Filter */}
@@ -29,15 +36,17 @@ const StudentHeaderBar = () => {
 
                         >
                             <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+                            <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
-                            <SelectItem
+                        <SelectContent  className="bg-white text-white border w-full rounded-[8px] p-1">
+                            {batches?.map((batch, index)=>(<SelectItem
+                            key={index}
                                 value="batch"
-                                className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
+                                className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}]   my-1.5 focus:text-white cursor-pointer`}
                                 style={{ ...FONTS.heading_08 }}
                             >
-                                Mern Stack 2025
-                            </SelectItem>
+                                {batch?.batch_name}
+                            </SelectItem>))}
                         </SelectContent>
                     </Select>
 
@@ -46,7 +55,7 @@ const StudentHeaderBar = () => {
                     </Input>
                 </div>
             </div>}
-            <StudentCard />
+            {/* <StudentCard /> */}
         </div>
     )
 }

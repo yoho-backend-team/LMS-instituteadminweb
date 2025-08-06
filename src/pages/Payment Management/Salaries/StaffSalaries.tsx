@@ -1,12 +1,27 @@
-import { useState } from "react";
+
+
+
+import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
 import SalaryTable from "../../../components/paymentmanagement/salaries/salarytable/salarytable";
 import Filtersalary from "../../../components/paymentmanagement/salaries/filtersalary/filtersalary";
+import {
+	AddSalaryThunks,
+	GetAllSalaryThunks,
+	GetBranchThunks,
+} from "../../../features/Payment_Managemant/salary/reducers/thunks";
+import { useDispatch, useSelector } from "react-redux";
+import { GetStaffName_Branch } from "../../../features/Payment_Managemant/salary/services/index";
 
 const StaffSalaries = () => {
+	const dispatch = useDispatch();
+
 	const [showFilter, setShowFilter] = useState(false);
 	const [showAddsalary, setAddsalary] = useState(false);
+	const [cardData, setCardData] = useState<any[]>([]);
+	const [branches, setBranches] = useState<any[]>([]);
+	const [staffList, setStaffList] = useState<any[]>([]);
 
 	const [filters, setFilters] = useState({
 		search: "",
@@ -15,68 +30,98 @@ const StaffSalaries = () => {
 		endDate: "",
 	});
 
-	const [cardData, setCardData] = useState([
-		{
-			id: 1,
-			name: "Prakash",
-			transactionId: "TXN123456",
-			salaryAmount: 50000,
-			paymentDate: "2025-07-31",
-			status: "Active",
-			image: "https://i.pravatar.cc/150?img=5",
-			email: "john@example.com",
-			branchId: "1",
-		},
-	]);
-
 	const [newSalary, setNewSalary] = useState({
-		branchId: "",
-		staffType: "",
-		name: "",
-		paymentDate: "",
-		transactionId: "",
-		salaryAmount: "",
+		institute_id: "",
+		branch_id: "",
+		staff_type: "",
+		staff: "", // ✅ will now hold staff ID
+		payment_date: "",
+		transaction_id: "",
+		salary_amount: "",
 		balance: "",
 	});
 
-	const branches = [
-		{ id: "1", name: "Chennai" },
-		{ id: "2", name: "Bangalore" },
-	];
+	useEffect(() => {
+		const fetchData = async () => {
+			const result = await dispatch<any>(GetAllSalaryThunks({}));
+			if (result?.payload && Array.isArray(result.payload)) {
+				setCardData(result.payload);
+			}
+		};
 
-	function handleFilterChange(updatedFilters: typeof filters) {
-		setFilters(updatedFilters);
-	}
+		const fetchBranches = async () => {
+			const branchRes = await dispatch<any>(GetBranchThunks({}));
+			if (branchRes?.payload && Array.isArray(branchRes.payload)) {
+				setBranches(branchRes.payload);
+			}
+		};
+
+		fetchData();
+		fetchBranches();
+	}, [dispatch]);
+
+	const fetchStaffNamesByBranch = async (branchId: string) => {
+		try {
+			const res = await GetStaffName_Branch(branchId);
+			if (Array.isArray(res)) {
+				setStaffList(res);
+			} else {
+				setStaffList([]);
+			}
+		} catch (error) {
+			console.error("Failed to fetch staff names:", error);
+			setStaffList([]);
+		}
+	};
 
 	const handleCancel = () => {
 		setAddsalary(false);
 		setNewSalary({
-			branchId: "",
-			staffType: "",
-			name: "",
-			paymentDate: "",
-			transactionId: "",
-			salaryAmount: "",
+			institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+			branch_id: "",
+			staff_type: "",
+			staff: "",
+			payment_date: "",
+			transaction_id: "",
+			salary_amount: "",
 			balance: "",
 		});
+		setStaffList([]);
 	};
 
-	const handleSubmitAndClose = (e: React.FormEvent) => {
+	const handleSubmitAndClose = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const newEntry = {
-			id: cardData.length + 1,
-			...newSalary,
-			status: "Active",
-			image: "https://i.pravatar.cc/150?img=7",
-			email: `${newSalary.name.toLowerCase().replace(/\s/g, "")}@example.com`,
-			salaryAmount: parseFloat(newSalary.salaryAmount),
+		if (!newSalary.institute_id) {
+			alert("Institute ID missing. Please select a branch again.");
+			return;
+		}
+
+		const payload = {
+			institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+			branch_id: newSalary.branch_id,
+			staff_type: newSalary.staff_type,
+			staff: newSalary.staff, // ✅ Send staff ID
+			payment_date: newSalary.payment_date,
+			transaction_id: newSalary.transaction_id,
+			salary_amount: parseFloat(newSalary.salary_amount),
+			balance: newSalary.balance,
 		};
 
-		setCardData([...cardData, newEntry]);
-		alert("Form submitted successfully!");
-		handleCancel();
+		const result = await dispatch<any>(AddSalaryThunks(payload));
+
+		if (result?.payload) {
+			setCardData((prev) => [...prev, result.payload]);
+			alert("Salary added successfully!");
+			handleCancel();
+		} else {
+			alert("Failed to add salary.");
+		}
 	};
+
+	function handleFilterChange(updatedFilters: typeof filters) {
+		setFilters(updatedFilters);
+	}
 
 	return (
 		<div>
@@ -113,84 +158,110 @@ const StaffSalaries = () => {
 						<p className="font-semibold text-2xl">Add Salary</p>
 
 						<form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmitAndClose}>
+							{/* Branch */}
 							<div className="flex flex-col gap-2">
 								<label>Select Branch</label>
 								<select
 									className="border p-2 rounded h-10"
-									value={newSalary.branchId}
-									onChange={(e) =>
-										setNewSalary({ ...newSalary, branchId: e.target.value })
-									}
+									value={newSalary.branch_id}
+									onChange={(e) => {
+										const branchId = e.target.value;
+										const selectedBranch = branches.find((b) => b.uuid === branchId);
+										const instituteId = selectedBranch?.institute_id || "";
+										setNewSalary({
+											...newSalary,
+											branch_id: branchId,
+											institute_id: instituteId,
+										});
+										fetchStaffNamesByBranch(branchId);
+									}}
 								>
-									<option value=""></option>
-									<option value="1">Chennai</option>
-									<option value="2">Madurai</option>
+									<option value="">Select Branch</option>
+									{branches.map((branch) => (
+										<option key={branch.id} value={branch.uuid}>
+											{branch.branch_identity}
+										</option>
+									))}
 								</select>
 							</div>
 
+							{/* Staff Type */}
 							<div className="flex flex-col">
 								<label>Select Staff Type</label>
 								<select
 									className="border p-2 rounded h-10"
-									value={newSalary.staffType}
+									value={newSalary.staff_type}
 									onChange={(e) =>
-										setNewSalary({ ...newSalary, staffType: e.target.value })
+										setNewSalary({ ...newSalary, staff_type: e.target.value })
 									}
 								>
-									<option value=""></option>
+									<option value="">Select</option>
 									<option value="Teaching">Teaching</option>
 									<option value="NonTeaching">Non Teaching</option>
 								</select>
 							</div>
+					
 
+							{/* Staff Name */}
 							<div className="flex flex-col">
-								<label>Staff Name</label>
-								<input
-									type="text"
+								<label>Select Staff Name</label>
+								<select
 									className="border p-2 rounded h-10"
-									value={newSalary.name}
+									value={newSalary.staff}
 									onChange={(e) =>
-										setNewSalary({ ...newSalary, name: e.target.value })
+										setNewSalary({ ...newSalary, staff: e.target.value })
 									}
-								/>
+								>
+									<option value="">Select Staff</option>
+									{staffList.map((staff) => (
+										<option key={staff._id} value={staff._id}>
+											{staff.full_name}
+										</option>
+									))}
+								</select>
 							</div>
 
+
+							{/* Payment Date */}
 							<div className="flex flex-col">
 								<label>Payment Date</label>
 								<input
 									type="date"
 									className="border p-2 rounded h-10"
-									value={newSalary.paymentDate}
+									value={newSalary.payment_date}
 									onChange={(e) =>
-										setNewSalary({ ...newSalary, paymentDate: e.target.value })
+										setNewSalary({ ...newSalary, payment_date: e.target.value })
 									}
 								/>
 							</div>
 
+							{/* Transaction ID */}
 							<div className="flex flex-col">
 								<label>Transaction ID</label>
 								<input
 									type="text"
 									className="border p-2 rounded h-10"
-									value={newSalary.transactionId}
+									value={newSalary.transaction_id}
 									onChange={(e) =>
-										setNewSalary({ ...newSalary, transactionId: e.target.value })
+										setNewSalary({ ...newSalary, transaction_id: e.target.value })
 									}
 								/>
 							</div>
 
+							{/* Salary Amount */}
 							<div className="flex flex-col">
 								<label>Salary Amount</label>
 								<input
-									type="text"
+									type="number"
 									className="border p-2 rounded h-10"
-									value={newSalary.salaryAmount}
+									value={newSalary.salary_amount}
 									onChange={(e) =>
-										setNewSalary({ ...newSalary, salaryAmount: e.target.value })
+										setNewSalary({ ...newSalary, salary_amount: e.target.value })
 									}
 								/>
 							</div>
 
+							{/* Balance */}
 							<div className="flex flex-col">
 								<label>Balance</label>
 								<textarea
@@ -202,6 +273,7 @@ const StaffSalaries = () => {
 								></textarea>
 							</div>
 
+							{/* Buttons */}
 							<div className="flex justify-end items-center gap-4 mt-4">
 								<button
 									className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"
@@ -222,6 +294,7 @@ const StaffSalaries = () => {
 				</div>
 			)}
 
+			{/* Table */}
 			<SalaryTable
 				search={filters.search}
 				branch={filters.branch}

@@ -1,11 +1,7 @@
 import { Link, MoreVertical } from 'lucide-react';
-
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import profileImg1 from '../../../assets/Frame 427321451.png';
-import profileImg2 from '../../../assets/Frame 427321452.png';
 import { CalendarDays } from 'lucide-react';
 import {
 	DropdownMenu,
@@ -19,44 +15,105 @@ import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
 import { Button } from '../../ui/button';
 import EditLiveClass from './editLiveClass';
+import { GetImageUrl } from '../../../utils/helper';
+import { deleteLiveClass } from '../../../features/Class Management/Live Class/services';
+import toast from 'react-hot-toast';
 
 interface BatchCardProps {
 	title: string;
-	students: number;
-	startDate: string;
+	data: any;
+	fetchAllLiveClasses?: () => void;
 }
 
 export const LiveClassCard: React.FC<BatchCardProps> = ({
 	title,
-	students,
-	startDate,
+	data,
+	fetchAllLiveClasses,
 }) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const openEditModal = () => setIsEditModalOpen(true);
 	const closeEditModal = () => setIsEditModalOpen(false);
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = () => {
-		console.log('Deleted');
+	const handleConfirmDelete = async () => {
+		try {
+			const response = await deleteLiveClass({ uuid: data?.uuid });
+			if (response) {
+				toast.success('Live class deleted successfully');
+				if (fetchAllLiveClasses) {
+					fetchAllLiveClasses();
+				}
+				closeDeleteModal();
+			} else {
+				toast.success('Live class deleted successfully');
+				closeDeleteModal();
+			}
+		} catch (error) {
+			console.error('Error deleting live class:', error);
+		} finally {
+			closeDeleteModal();
+			if(fetchAllLiveClasses) {
+				fetchAllLiveClasses();
+			}
+		}
 	};
 
-	const navigate = useNavigate();
+	const getFormattedTime = (timeString: string) => {
+		const time = new Date(timeString);
+		const hours = time.getHours();
+		const minutes = time.getMinutes().toString().padStart(2, '0');
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+		const formattedHour = hours % 12 === 0 ? 12 : hours % 12;
+		return `${formattedHour}.${minutes} ${ampm}`;
+	};
 
-	const data = { title, students, startDate };
+	const displayTimeRange = `${getFormattedTime(
+		data?.start_time
+	)} - ${getFormattedTime(data?.end_time)}`;
 
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
 				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
-					<div>
-						{/* <img src={profileImg1} alt='dummy-image' /> */}
-						<img
-							src={students === 1 ? profileImg1 : profileImg2}
-							alt='student profile'
-						/>
+					<div className='flex justify-between gap-35'>
+						<div className='flex flex-col items-center gap-2'>
+							<p style={{ ...FONTS.heading_09 }}>
+								{data?.batch?.student?.length}{' '}
+								{data?.batch?.student?.length === 1 ? 'student' : 'students'}
+							</p>
+							<div className='flex'>
+								{data?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
+									<img
+										key={studentImg?._id}
+										src={GetImageUrl(studentImg?.image) ?? undefined}
+										alt={studentImg?.full_name}
+										title={studentImg?.full_name}
+										className='w-10 h-10 rounded-full object-cover'
+									/>
+								))}
+							</div>
+						</div>
+						<div className='flex flex-col items-center gap-2'>
+							<p style={{ ...FONTS.heading_09 }}>
+								{data?.instructors?.length}{' '}
+								{data?.instructors?.length === 1 ? 'instructor' : 'instructors'}
+							</p>
+							<div className='flex'>
+								{data?.instructors?.slice(0, 3)?.map((studentImg: any) => (
+									<img
+										key={studentImg?._id}
+										src={GetImageUrl(studentImg?.image) ?? undefined}
+										alt={studentImg?.full_name}
+										title={studentImg?.full_name}
+										className='w-10 h-10 rounded-full object-cover'
+									/>
+								))}
+							</div>
+						</div>
 					</div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -71,7 +128,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 						<DropdownMenuContent className='bg-white rounded-lg shadow-xl w-[120px] p-2 z-20 space-y-2'>
 							<DropdownMenuItem
 								onClick={() =>
-									navigate(`/live-classes/${data?.title}`, {
+									navigate(`/live-classes/${data?.uuid}`, {
 										state: {
 											data,
 										},
@@ -123,46 +180,50 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 					<div>
 						<p
 							className=' mt-4'
-							style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}
+							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
 						>
-							{title}
+							{`${title.substring(0, 25)}${title.length > 25 ? '...' : ''}`}
 						</p>
 					</div>
 
 					<div className='flex items-center justify-between mt-3'>
 						<p
 							className=''
-							style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}
+							style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_01 }}
 						>
-							{`${students} students on this Class`}
+							{`${data?.batch?.student?.length} students on this Class`}
 						</p>
 					</div>
 
-					<div className='mt-2 flex gap-2'>
+					<div className='mt-2 flex gap-2 items-center'>
 						<div>
-							<CalendarDays color={COLORS.gray_light} />
+							<CalendarDays color={COLORS.gray_light} className='w-5 h-5' />
 						</div>
 						<p style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}>
-							{startDate}
+							{data?.start_date?.split('T')[0]} | {displayTimeRange}
 						</p>
 					</div>
 
-					<div className='mt-3 flex gap-2'>
+					<div className='mt-3 flex gap-2 items-center'>
 						<div>
 							<Link color={COLORS.blue} />
 						</div>
-						<p
+						<a
+							href={data?.video_url}
 							style={{ ...FONTS.heading_08_bold, color: COLORS.blue }}
 							className='cursor-pointer underline'
+							target='_blank'
 						>
-							{startDate}
-						</p>
+							{`${data?.video_url.substring(0, 30)} ${
+								data?.video_url?.length > 30 ? '...' : ''
+							}`}
+						</a>
 					</div>
 				</div>
 				<div className='mt-5 flex justify-end'>
 					<Button
 						onClick={() =>
-							navigate(`/live-classes/${data?.title}`, {
+							navigate(`/live-classes/${data?.uuid}`, {
 								state: {
 									data,
 								},
@@ -175,7 +236,12 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClass isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClass
+				data={data}
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				fetchAllLiveClasses={fetchAllLiveClasses}
+			/>
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

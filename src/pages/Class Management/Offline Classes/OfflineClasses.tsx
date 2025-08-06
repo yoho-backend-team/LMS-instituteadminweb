@@ -1,15 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../../components/ui/button';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import plus from '../../../assets/Add.png';
 import filter from '../../../assets/Filter.png';
 import { CreateOfflineClassModal } from '../../../components/class management/offlineClass/createOfflineClass';
 import OfflineClassCard from '../../../components/class management/offlineClass/classcard';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllOffline } from '../../../features/Class Management/offlineClass/redures/thunks';
+import { selectOfflineClass } from '../../../features/Class Management/offlineClass/redures/selectors';
+import { getAllBatches } from '../../../features/Class Management/offlineClass/services';
 
 const OfflineClasses = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
+const [allCourses, setAllCourses] = useState([]);
+	const [allBatches, setAllBatches] = useState([]);
+	const [filteredClasses, setFilteredClasses] = useState([]);
+	const [searchTerms, setSearchTerms] = useState({
+		status: '',
+		course: '',
+		batch: '',
+		startDate: '',
+		endDate: '',
+		searchText: '',
+	});
 
+	
+		const dispatch = useDispatch<any>();
+		const offlineClassData =useSelector(selectOfflineClass)
+
+	const fetchAllofflineClasses = async () => {
+		try {
+			const params_data = {
+				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				institute: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				page: 1,
+			};
+			dispatch(getAllOffline(params_data));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAllofflineClasses();
+	}, [dispatch]);
+
+	console.log(offlineClassData,"offlineClass........")
 	return (
 		<div className='min-h-screen bg-cover bg-no-repeat bg-center p-4'>
 			<div className='mb-8'>
@@ -87,17 +124,22 @@ const OfflineClasses = () => {
 			)}
 
 			<div className='flex gap-6 flex-wrap'>
-				<OfflineClassCard
-					title='MERN'
-					students={2}
-					startDate='Thu, July 12, 2025 | 12:00 PM - 01:00 PM'
+				{offlineClassData?.data?.length && offlineClassData?.data?.map((offlineClass:any)=>(
+						<OfflineClassCard
+						key={offlineClass?._id}
+					title={offlineClass?.class_name}
+					students={offlineClass?.students ?? '0'}
+					startDate={offlineClass?.createdAt }
+					endTime={offlineClass?.end_time}
+					startTime={offlineClass?.start_time}
+					// data={offlineClass}
+					// fetchAllLiveClasses={fetchAllofflineClasses}
 				/>
-				<OfflineClassCard
-					title='MEAN'
-					students={1}
-					startDate='Fri, August 4, 2025 | 12:00 PM - 01:00 PM'
-				/>
-			</div>
+
+				))}
+				
+				
+			</div> 
 
 			<CreateOfflineClassModal
 				isOpen={showCreateModal}

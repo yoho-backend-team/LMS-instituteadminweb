@@ -9,10 +9,18 @@ import filter from '../../../../assets/SHFilter.png'
 import add from '../../../../assets/Add.png'
 import AddForm from './AddForm'
 import { useState } from 'react'
+import { ChevronDownIcon } from 'lucide-react'
 
+type props = {
+    Users: ()=> void;
+}
 
-const UserCard = () => {
+const UserCard:React.FC<props> = ({Users}) => {
     const [showForm, SetShowForm] = useState<boolean>(false)
+    const [showFilter, SetShowFilter] = useState<boolean>(false)
+
+    const filterToggle = () => SetShowFilter(!showFilter)
+
     return (
         <div className='grid gap-5'>
             <div className='grid gap-7 p-1.5'>
@@ -24,7 +32,7 @@ const UserCard = () => {
                             <h3 className={`text-[${COLORS.gray_dark_02}]`}>Total Users</h3>
                         </div>
                         <div className='flex justify-end'>
-                            <h1 className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`} style={{ ...FONTS.heading_01 }}>0</h1>
+                            <h1 className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`} style={{ ...FONTS.heading_01 }}>{Users?.length}</h1>
                         </div>
                     </div>
 
@@ -60,14 +68,14 @@ const UserCard = () => {
                 </div>
             </div>
 
-            <div className='grid gap-7'>
+            <div className='grid gap-7 p-1.5'>
                 <div className='flex justify-between w-full'>
-                    <button className='bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2'><img src={filter} className='w-[18px] h-[18px]' />Show Filter</button>
+                   <button onClick={filterToggle} className='bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2' style={{...FONTS.heading_08}}><img src={filter} className='w-[18px] h-[18px]' />{showFilter ? 'Hide': 'Show Filter'}</button>
 
-                    <button onClick={() => SetShowForm(true)} className='bg-[#1BBFCA] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]'><img src={add} className='w-[18px] h-[18px]' />Add User</button>
+                    <button onClick={() => SetShowForm(true)} className='bg-[#1BBFCA] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]' style={{...FONTS.heading_08}}><img src={add} className='w-[18px] h-[18px]' />Add User</button>
                 </div>
 
-                <div className='grid gap-5'>
+                {showFilter && (<div className='grid gap-5'>
                     <Input className={`w-1/4 border-2 border-[${COLORS.primary}]`} placeholder='Search Admin User'></Input>
                     <div className='flex justify-between gap-5 w-full p-5 shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px]'>
                         <div className='w-full grid gap-2'>
@@ -78,6 +86,7 @@ const UserCard = () => {
 
                                 >
                                     <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+                                    <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
                                     <SelectItem
@@ -97,6 +106,7 @@ const UserCard = () => {
                                 <SelectTrigger style={{ height: '45px' }}
                                     className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}>
                                     <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+                                    <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
                                     <SelectItem
@@ -110,10 +120,12 @@ const UserCard = () => {
                             </Select>
                         </div>
                     </div>
-                </div>
+                </div>)}
             </div>
-            {showForm && <div className={`fixed top-0 right-0 rounded-[8px] overflow-y-auto h-full w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${showForm ? 'translate-x-0' : 'translate-x-full'}`}>
-                <AddForm />
+            {showForm && <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" >
+             <div className={`fixed top-0 right-0 rounded-[8px] overflow-y-auto h-full w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${showForm ? 'translate-x-0' : 'translate-x-full'}`}>
+                <AddForm setShowForm={SetShowForm} />
+            </div>
             </div>
             }
         </div>

@@ -47,7 +47,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {certificates.map((cert) => (
+            {certificates.map((cert:any) => (
               <tr key={cert.id} className="text-[#716F6F]">
                 <td className="px-6 py-4" style={{ ...FONTS.heading_08}}>{cert.id}</td>
                 <td className="px-6 py-4 flex items-center gap-3">

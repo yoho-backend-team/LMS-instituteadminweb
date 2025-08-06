@@ -1,87 +1,137 @@
 
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddModule from "../../../components/contentmanagement/addmodule/addmodule";
 import EditModule from "../../../components/contentmanagement/editmodule/editmodule";
 import { FaFileAlt, FaGraduationCap, FaEllipsisV } from 'react-icons/fa';
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import ViewModule from "../../../components/contentmanagement/viewmodule/viewmodule"
+import { useDispatch, useSelector } from "react-redux";
+import { GetModule } from "../../../features/Content_Management/reducers/selectors";
+import { DeletemoduleThunks, GetallModuleThunks, UpdateModuleStatusThunk } from "../../../features/Content_Management/reducers/thunks";
+
 interface ModuleCardProps {
+	id: string;
 	title: string;
-	courseName: string;
-	description: string;
+	courseName?: string;
+	description?: string;
 	isActive: boolean;
-	fileUrl: string;
+	fileUrl?: string;
 	fileName: string;
-	branch: string;
+	branch?: string;
+	course?: {
+		course_name: string;
+	};
 }
-
-
 
 const Modules = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showPanel, setShowPanel] = useState(false);
 	const [showEditPanel, setShowEditPanel] = useState(false);
-	const [openCardId, setOpenCardId] = useState<number | null>(null);
+	const [openCardId, setOpenCardId] = useState<number | string | null>(null);
 	const [showViewModule, setShowViewModule] = useState(false);
 	const [selectedModule, setSelectedModule] = useState<ModuleCardProps | null>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const [toggleStatusMap, setToggleStatusMap] = useState<{ [key: string]: boolean }>({});
 
+
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+				setOpenCardId(null);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [dropdownRef]);
+
+
+	const dispatch = useDispatch<any>();
+	const Module = useSelector(GetModule);
+
+	useEffect(() => {
+		const paramsData = {
+			branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+			institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+			page: 1
+		};
+		dispatch(GetallModuleThunks(paramsData));
+	}, [dispatch]);
 
 	const handleViewClick = (card: any) => {
 		setSelectedModule(card);
 		setShowViewModule(true);
 	};
 
-
-	const cardDatas = [
-		{ id: 1, fileName: 'RVR', courseName: 'Manual Testing Basic', isActive: true },
-		{ id: 2, fileName: 'ABC', courseName: 'Automation Testing', isActive: false },
-	];
-
-	const [cardData, setCardData] = useState(cardDatas);
-
-	const handleToggle = (id: number) => {
-		const updatedData = cardData.map((card) =>
-			card.id === id ? { ...card, isActive: !card.isActive } : card
-		);
-		setCardData(updatedData);
+	const handleDelete = (id: string, uuid: string) => {
+		if (selectedModule?.id === id) {
+			setShowViewModule(false);
+			setSelectedModule(null);
+		}
+		dispatch(DeletemoduleThunks({ id, uuid }));
 	};
+
+
+	const handleToggle = (module: any) => {
+		const currentLocal = toggleStatusMap[module.module_id];
+		const currentStatus =
+			currentLocal !== undefined ? currentLocal : module.status === "active" || module.status === true;
+
+		const updatedStatus = !currentStatus;
+
+		setToggleStatusMap((prev) => ({
+			...prev,
+			[module.module_id]: updatedStatus,
+		}));
+
+		const payload = {
+			module_id: module.module_id,
+			status: updatedStatus ? "active" : "inactive",
+		};
+
+		dispatch(UpdateModuleStatusThunk(payload));
+	};
+
+
 
 	return (
 		<div className="relative flex flex-col h-fit max-h-fit w-full gap-6">
-
 			{showPanel && (
 				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowPanel(false)}>
 					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
 						<AddModule
 							onClose={() => setShowPanel(false)}
 							onSubmit={(newModule) => {
-								setCardData((prev) => [
-									...prev,
-									{
-										id: prev.length + 1,
-										fileName: newModule.fileName,
-										courseName: newModule.course,
-										isActive: true,
-									},
-								]);
 								setShowPanel(false);
+								console.log(newModule, "new module added successfully")
 							}}
 						/>
 					</div>
 				</div>
 			)}
 
-
-			{showEditPanel && (
-				<div className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20" onClick={() => setShowEditPanel(false)}>
-					<div className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50" onClick={(e) => e.stopPropagation()}>
-						<EditModule onClose={() => setShowEditPanel(false)} />
+			{showEditPanel && selectedModule && (
+				<div
+					className="fixed inset-0 z-40 flex justify-end backdrop-blur-sm bg-black/20"
+					onClick={() => setShowEditPanel(false)}
+				>
+					<div
+						className="h-[95%] mt-4 w-1/3 bg-white shadow-xl rounded-xl z-50"
+						onClick={(e) => e.stopPropagation()}
+					>
+						<EditModule
+							onClose={() => setShowEditPanel(false)}
+							existingModule={selectedModule}
+						/>
 					</div>
 				</div>
 			)}
-
 
 			<div className="flex flex-col gap-4">
 				<h3 className="text-xl font-semibold">Module</h3>
@@ -120,16 +170,16 @@ const Modules = () => {
 					<div className="flex-1 p-1 flex flex-col gap-2">
 						<label htmlFor="status2">Courses</label>
 						<select id="status2" className="border h-10 rounded-lg px-2">
-							<option value="">Select Status</option>
+							<option value="">Select Course</option>
 							<option value="dummy">Dummy</option>
 						</select>
 					</div>
 				</div>
 			)}
 
-			{showViewModule && selectedModule && (
+			{showViewModule && selectedModule?.title && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg p-6  max-w-3xl relative">
+					<div className="bg-white rounded-lg p-6 max-w-3xl relative">
 						<button
 							onClick={() => setShowViewModule(false)}
 							className="absolute top-2 right-2 text-gray-600 hover:text-black"
@@ -138,23 +188,29 @@ const Modules = () => {
 						</button>
 
 						<ViewModule
-							branch={selectedModule.branch}
-							courseName={selectedModule.courseName}
-							description={selectedModule.description}
-							fileName={selectedModule.fileName}
-							fileUrl={selectedModule.fileUrl}
-							isActive={selectedModule.isActive}
 							title={selectedModule.title}
+							courseName={selectedModule.course?.course_name ?? ""}
+							description={selectedModule.description ?? ""}
+							isActive={
+								toggleStatusMap[selectedModule.id] !== undefined
+									? toggleStatusMap[selectedModule.id]
+									: selectedModule.isActive
+							}
+							fileUrl={selectedModule.fileUrl}
+							fileName={selectedModule.fileName ? "" : ""}
+							branch={selectedModule.branch ?? ""}
+							onStatusChange={() =>
+								handleToggle({ module_id: selectedModule.id, status: selectedModule.isActive })
+							}
 						/>
+
+
 					</div>
 				</div>
 			)}
 
-
-
-
 			<div className="flex flex-wrap gap-4">
-				{cardData.map((card) => (
+				{Module?.map((card: ModuleCardProps) => (
 					<div
 						key={card.id}
 						className="relative w-80 p-4 border rounded-lg shadow-[4px_4px_24px_0px_#0000001A] bg-white"
@@ -165,38 +221,83 @@ const Modules = () => {
 
 						<div className="flex items-center gap-2 bg-gray-100 p-3 rounded mt-5">
 							<FaFileAlt className="text-gray-600 text-lg" />
-							<span className="text-sm font-medium text-gray-700">{card.fileName}</span>
+							<span className="text-sm font-medium text-gray-700">{card?.title}</span>
 						</div>
 
 						<div className="mt-4 flex items-center gap-2">
 							<FaGraduationCap className="text-gray-600 text-xl" />
-							<span className="text-base font-semibold text-gray-700">{card.courseName}</span>
+							<span className="text-base font-semibold text-gray-700">{card.course?.course_name}</span>
 						</div>
 
 						<div className="mt-4 flex justify-between items-center">
 							<div
-								className={`flex items-center gap-1 font-medium ${card.isActive ? 'text-green-500' : 'text-red-500'}`}
+								className={`flex items-center gap-1 font-medium ${toggleStatusMap[card.id] !== undefined
+									? toggleStatusMap[card.id]
+										? 'text-green-500'
+										: 'text-red-500'
+									: card.isActive
+										? 'text-green-500'
+										: 'text-red-500'
+									}`}
 							>
-								<span className="text-sm">{card.isActive ? 'Active' : 'Inactive'}</span>
+								<span className="text-sm">
+									{toggleStatusMap[card.id] !== undefined
+										? toggleStatusMap[card.id]
+											? 'Active'
+											: 'Inactive'
+										: card.isActive
+											? 'Active'
+											: 'Inactive'}
+								</span>
 								<span
-									className={`w-2 h-2 rounded-full ${card.isActive ? 'bg-green-500' : 'bg-red-500'}`}
+									className={`w-2 h-2 rounded-full ${toggleStatusMap[card.id] !== undefined
+										? toggleStatusMap[card.id]
+											? 'bg-green-500'
+											: 'bg-red-500'
+										: card.isActive
+											? 'bg-green-500'
+											: 'bg-red-500'
+										}`}
 								/>
 							</div>
+
 
 							<label className="relative inline-block w-11 h-6 cursor-pointer">
 								<input
 									type="checkbox"
 									className="sr-only peer"
-									checked={card.isActive}
-									onChange={() => handleToggle(card.id)}
+									checked={
+										toggleStatusMap[card.id] !== undefined
+											? toggleStatusMap[card.id]
+											: card.isActive
+									}
+
+									onChange={() =>
+										handleToggle({
+											module_id: card.id,
+											status:
+												toggleStatusMap[card.id] !== undefined
+													? toggleStatusMap[card.id]
+														? "active"
+														: "inactive"
+													: card.isActive
+														? "active"
+														: "inactive",
+										})
+									}
+
 								/>
 								<div className="w-full h-full bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors duration-300" />
 								<div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-2.5" />
 							</label>
 						</div>
 
+
 						{openCardId === card.id && (
-							<div className="absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2">
+							<div
+								ref={dropdownRef}
+								className="absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2"
+							>
 								<button
 									className="flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600"
 									onClick={() => handleViewClick(card)}
@@ -205,9 +306,11 @@ const Modules = () => {
 									View
 								</button>
 
-
 								<button
-									onClick={() => setShowEditPanel(true)}
+									onClick={() => {
+										setSelectedModule(card);
+										setShowEditPanel(true);
+									}}
 									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaEdit />
@@ -215,17 +318,16 @@ const Modules = () => {
 								</button>
 
 								<button
-									onClick={() => {
-										setCardData((prev) => prev.filter((c) => c.id !== card.id));
-										setOpenCardId(null);
-									}}
-									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-red-100 text-gray-700"
+									onClick={() => handleDelete(card.id, card.uuid)}
+									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaTrash />
 									Delete
 								</button>
+
 							</div>
 						)}
+
 					</div>
 				))}
 			</div>

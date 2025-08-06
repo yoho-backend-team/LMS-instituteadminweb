@@ -24,11 +24,6 @@ import classImg from "../../../assets/classimg (1).png";
 import instructorImg from "../../../assets/image 108.png";
 import { X } from "lucide-react";
 
-
-
-
-
-
 const stats = [
   {
     title: "Total Notifications",

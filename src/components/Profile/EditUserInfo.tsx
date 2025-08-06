@@ -1,5 +1,5 @@
 // EditUserInfo.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef, type ChangeEvent } from 'react';
 import { useNavigate } from "react-router-dom"
 import profileimg from '../../assets/navbar/Editprofile.png';
 import { FONTS } from '../../../src/constants/uiConstants';
@@ -14,6 +14,19 @@ interface UserInfo {
 
 const EditUserInfo: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            console.log('Selected file:', file);
+            e.target.value = '';
+        }
+    };
 
     const navigate = useNavigate();
     const handleBack = () => {
@@ -51,7 +64,16 @@ const EditUserInfo: React.FC = () => {
                     alt="Profile"
                     className="rounded-full w-24 h-24 object-cover"
                 />
-                <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>
+                {/* <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>*/}
+
+                <span onClick={handleUploadClick} className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer">Upload</span>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                        accept="image/*"
+                                        />
             </div>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 px-4">
