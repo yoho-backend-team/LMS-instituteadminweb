@@ -59,8 +59,6 @@ import CertificateView from '../components/cerificateManagement/certificateView'
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
-
-// import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
@@ -81,9 +79,9 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
-				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
+				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
 
-				<Route path="noti/msg" element={<NotificationPage />} />
+				<Route path='noti/msg' element={<NotificationPage />} />
 
 				{/* <Route path="/" element={<HomePage />} /> */}
 

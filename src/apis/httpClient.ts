@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
-import { ClearLocalStorage, GetLocalStorage } from "../utils/localStorage";
+import axios from 'axios';
+import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 
 const Axios = axios.create({
     baseURL: import.meta.env.VITE_PUBLIC_API_URL,

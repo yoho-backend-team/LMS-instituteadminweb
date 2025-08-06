@@ -1,19 +1,56 @@
 import { FiBell } from "react-icons/fi";
 import titleIcon from "../../assets/navbar/titleIcon.png";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
+import { useDispatch, useSelector } from "react-redux";
+import { GetProfileThunk } from "../../features/Auth/reducer/thunks";
+import { GetImageUrl } from "../../utils/helper";
+import { useAuth } from "../../pages/Auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { AuthThunks } from '../../features/Auth/reducer/thunks';
+import toast from "react-hot-toast";
+
 
 const Navbar = () => {
+  const dispatch = useDispatch<any>()
+  const profile = useSelector((state: any) => state.authuser?.user)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = useCallback(() => {
+    setActiveTab("logout");
+    setDropdownOpen(false);
+    // your logout logic here
+    localStorage.removeItem("token");
+    logout();
+    // dispatch(AuthThunks.logOutUser?.());
+    toast.success("Logged out Successfully");
+    navigate("/login", { replace: true });
+  }, [logout, dispatch, navigate]);
+
+
+  const nowDate = new Date().getHours()
+
+  function GetWelcomeType(hour: number) {
+    if (hour < 12) {
+      return 'Good morning';
+    } else if (hour < 18) {
+      return 'Good afternoon';
+    } else {
+      return 'Good evening'
+    }
+  }
 
   const notifications = [
     {
@@ -55,9 +92,11 @@ const Navbar = () => {
       }
     }
 
+    dispatch(GetProfileThunk())
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
@@ -91,7 +130,7 @@ const Navbar = () => {
               className="h-[40px] w-[40px] rounded-full overflow-hidden border-2 border-gray-300"
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT75N_tftPWlyK4Q5-QDx_QZtLFJAG7JiDM3A&s"
+                src={GetImageUrl(profile?.image) ?? undefined}
                 alt="Profile"
                 className="h-full w-full object-cover"
               />
@@ -100,11 +139,11 @@ const Navbar = () => {
               <div className="absolute right-0 mt-2 w-60 bg-white rounded-md shadow-lg z-50">
                 <div className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-sm text-gray-500">Good evening</p>
-                    <p className="text-lg font-bold text-gray-800">Surya S</p>
+                    <p className="text-sm text-gray-500">{GetWelcomeType(nowDate)}</p>
+                    <p className="text-lg font-bold text-gray-800">{profile?.first_name + ' ' + profile?.last_name}</p>
                   </div>
                   <button className="bg-green-500 text-white text-xs px-2 py-1 rounded-sm">
-                    Active
+                    {profile.is_active ? 'Active' : 'Inactive'}
                   </button>
                 </div>
                 <ul className="p-2">
@@ -115,11 +154,10 @@ const Navbar = () => {
                         setActiveTab("profile");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
-                        activeTab === "profile"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "profile"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <FaRegUser /> Profile
@@ -133,11 +171,10 @@ const Navbar = () => {
                         setActiveTab("settings");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
-                        activeTab === "settings"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "settings"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <IoSettingsOutline /> Settings
@@ -150,21 +187,51 @@ const Navbar = () => {
                       onClick={() => {
                         setActiveTab("logout");
                         setDropdownOpen(false);
+                        setShowModal(true);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${
-                        activeTab === "logout"
-                          ? "bg-[#1BBFCA] text-white font-semibold"
-                          : ""
-                      }`}
+                      className={`block rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout"
+                        ? "bg-[#1BBFCA] text-white font-semibold"
+                        : ""
+                        }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <TbLogout /> Logout
-                      </div>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className={`w-full text-left rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout" && "bg-[#1BBFCA] text-white"
+                          }`}
+                      >
+                        <div className="flex gap-2"><TbLogout /> Logout</div>
+                      </button>
                     </Link>
                   </li>
                 </ul>
               </div>
             )}
+            {/* Logout modal message .......[start]........... */}
+            {showModal && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="logout-modal-title"
+                onClick={() => setShowModal(false)}
+              >
+                <div
+                  className="bg-white p-6 rounded-md max-w-xs w-full shadow"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <h2 id="logout-modal-title" className="text-lg font-semibold mb-2">Success</h2>
+                  <p className="text-gray-700">Logged out successfully.</p>
+                  <button
+                    onClick={() => navigate("/login", { replace: true })}
+                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  >
+                    OK
+                  </button>
+                </div>
+              </div>
+            )}
+            {/* Logout modal message .......[End]........... */}
           </div>
         </div>
       </nav>

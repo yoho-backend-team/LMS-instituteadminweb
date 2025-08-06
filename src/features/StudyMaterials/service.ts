@@ -13,46 +13,71 @@ export const getStudyMaterialsAll = async (params:any) => {
 }
 
 
+
+export const updateStudyMaterial = async (data: { uuid: string; [key: string]: any }) => {
+  try {
+    const response = await Client.study_material.update(data, data.uuid);
+    console.log("Study material updated successfully", response.data);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to update study material");
+  }
+};
+
+
+
+export const getBranch = async (params: any) => {
+  try {
+    const response = await Client.branch.getAll(params);
+    console.log("branches",response)
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch branches");
+  }
+};
+
+export const getCourse = async (params: any) => {
+  try {
+    const response = await Client.course.getWithBranch(params);
+    console.log("courses", response);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch courses");
+  }
+};
+
+
+
 export const createStudyMaterial = async (data: any) => {
   try {
-    const response = await Client.study_material.create(data)
-    console.log("Created Study Material:", response)
-    return response
-  } catch (error) {
-    console.error("Error in createStudyMaterial:", error)
-    throw error
+    const response = await Client.study_material.create(data);
+    console.log("Study material created successfully", response.data);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to create study material");
   }
-}
+};
 
-export const updateStudyMaterial = async (data: any, id: string) => {
-  try {
-    const response = await  Client.study_material.update(data, id)
-    console.log("Updated Study Material:", response)
-    return response
-  } catch (error) {
-    console.error("Error in updateStudyMaterial:", error)
-    throw error
-  }
-}
 
 export const deleteStudyMaterial = async (id: string) => {
   try {
-    const response = await  Client.study_material.delete(id)
-    console.log("Deleted Study Material:", response)
-    return response
-  } catch (error) {
-    console.error("Error in deleteStudyMaterial:", error)
-    throw error
+    const response = await Client.study_material.delete({ id });
+    console.log("Deleted study material:", response);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to delete study material");
   }
-}
+};
 
-export const updateStudyMaterialStatus = async (data: { id: string; status: string }) => {
+
+
+
+export const updateStudyMaterialStatus = async (data: { id: string; is_active: boolean }) => {
   try {
-    const response = await  Client.study_material.update_status(data)
-    console.log("Updated Study Material Status:", response)
-    return response
+    const response = await Client.study_material.update_status(data);
+    return response;
   } catch (error) {
-    console.error("Error in updateStudyMaterialStatus:", error)
-    throw error
+    console.error("Failed to update status:", error);
+    throw error;
   }
-}
+};

@@ -10,19 +10,20 @@ import * as Yup from 'yup';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../ui/button';
 import {
+	createLiveClass,
 	getAllBatches,
 	getAllBranches,
 	getAllCourses,
 } from '../../../features/Class Management/Live Class/services';
 import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
-import { getAllLiveClasses } from '../../../features/Class Management/Live Class/reducers/thunks';
 import { getStaffService } from '../../../features/batchManagement/services';
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface CreateBatchModalProps {
 	isOpen: boolean;
 	setIsOpen: Dispatch<SetStateAction<boolean>>;
+	fetchAllLiveClasses?: () => void;
 }
 
 interface FormValues {
@@ -40,6 +41,7 @@ interface FormValues {
 export const CreateLiveClassModal = ({
 	isOpen,
 	setIsOpen,
+	fetchAllLiveClasses,
 }: CreateBatchModalProps) => {
 	const dispatch = useDispatch<any>();
 	const [allCourses, setAllCourses] = useState<any[]>([]);
@@ -48,6 +50,7 @@ export const CreateLiveClassModal = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
 	const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+	const [courseId, setCourseId] = useState<string>('');
 
 	// Initial form values
 	const initialValues: FormValues = {
@@ -72,20 +75,7 @@ export const CreateLiveClassModal = ({
 			.required('Class date is required')
 			.min(new Date(), 'Class date cannot be in the past'),
 		startTime: Yup.string().required('Start time is required'),
-		endTime: Yup.string()
-			.required('End time is required')
-			.test(
-				'is-after-start',
-				'End time must be after start time',
-				function (endTime) {
-					const { startTime } = this.parent;
-					if (!startTime || !endTime) return true;
-					return (
-						new Date(`1970-01-01T${endTime}`) >
-						new Date(`1970-01-01T${startTime}`)
-					);
-				}
-			),
+		endTime: Yup.string().required('End time is required'),
 		instructors: Yup.array()
 			.min(1, 'At least one instructor is required')
 			.required('Instructor selection is required'),
@@ -132,7 +122,7 @@ export const CreateLiveClassModal = ({
 	const fetchAvailableInstructors = useCallback(
 		async (courseId: string, date: string) => {
 			try {
-				const response = await getStaffService({});
+				const response = await getStaffService({ uuid: courseId });
 				if (response) {
 					setAvailableInstructors(response.data);
 				}
@@ -154,22 +144,35 @@ export const CreateLiveClassModal = ({
 			async (values, { resetForm }) => {
 				setIsSubmitting(true);
 				try {
+					const startDateTime = new Date(
+						`${values.classDate}T${values.startTime}`
+					);
+					const endDateTime = new Date(`${values.classDate}T${values.endTime}`);
+
 					const classData = {
 						class_name: values.className,
-						branch_id: values.branch,
-						course_id: values.course,
-						batch_id: values.batch,
-						start_date: `${values.classDate}T00:00:00.000Z`,
-						start_time: values.startTime,
-						end_time: values.endTime,
-						instructor_ids: values.instructors,
+						branch: values.branch,
+						course: values.course,
+						batch: values.batch,
+						start_date: startDateTime.toISOString(),
+						start_time: startDateTime,
+						end_time: endDateTime,
+						institute: '973195c0-66ed-47c2-b098-d8989d3e4529',
+						instructors: values.instructors,
 						video_url: values.videoUrl,
+						coordinators: [],
 					};
-
-					console.log('Form submitted with:', classData);
-					toast.success('Live class created successfully! (Demo)');
-					setIsOpen(false);
-					resetForm();
+					const response = await createLiveClass(classData);
+					if (response) {
+						toast.success('Live class created successfully!');
+						if (fetchAllLiveClasses) {
+							fetchAllLiveClasses();
+						}
+						setIsOpen(false);
+						resetForm();
+					} else {
+						toast.error('Failed to create live class');
+					}
 				} catch (error) {
 					console.error('Error creating live class:', error);
 					toast.error('Failed to create live class');
@@ -204,15 +207,9 @@ export const CreateLiveClassModal = ({
 			fetchAllBranches();
 			fetchAllCourses();
 			fetchAllBatches();
-			fetchAvailableInstructors('courseId', 'date');
+			fetchAvailableInstructors(courseId, 'date');
 		}
-	}, [
-		isOpen,
-		fetchAllBranches,
-		fetchAllCourses,
-		fetchAllBatches,
-		fetchAvailableInstructors,
-	]);
+	}, [isOpen]);
 
 	// Filter courses based on selected branch
 	useEffect(() => {
@@ -336,7 +333,10 @@ export const CreateLiveClassModal = ({
 										name='course'
 										className='w-full border border-gray-300 rounded-md px-3 py-2 mt-2'
 										value={formik.values.course}
-										onChange={formik.handleChange}
+										onChange={(e) => {
+											formik.handleChange(e);
+											setCourseId(e.target.value);
+										}}
 										onBlur={formik.handleBlur}
 										disabled={!formik.values.branch}
 									>
