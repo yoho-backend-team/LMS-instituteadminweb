@@ -48,3 +48,53 @@ catch(error){
     return null;
 }
 }
+
+
+export const getCourseService = async (params: any) => {
+    try {
+        const response = await Client.staff.getCourse(params);
+        if (response) {
+            return response;
+        }
+    } catch (error) {
+        console.error('Error in getcourseService:', error);
+        return null;
+    }
+};
+
+export const getBranchService = async (params: any) => {
+    try {
+        const response = await Client.branch.getAll(params);
+        if (response) {
+            return response;
+        }
+    } catch (error) {
+        console.error('Error in getbranchService:', error);
+        return null;
+    }
+};
+
+export const getAllBatches = async (params: any) => {
+    try {
+        const response = await Client.batch.getWithId(params);
+        if (response) {
+            return response;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+export const getStudentService = async (params: any) => {
+	try {
+		const response = await Client.student.getall(params);
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.error('Error in getstudentService:', error);
+		return null;
+	}
+};
+
