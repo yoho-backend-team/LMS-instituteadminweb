@@ -201,7 +201,7 @@ class Client {
 				data
 			),
 		delete: (data: any) =>
-			HttpClient.delete(HTTP_END_POINTS.online_class.delete + data?.uuid),
+			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.id),
 	};
 	offline_class = {
 		create: (data: any) =>
@@ -277,7 +277,7 @@ class Client {
 			),
 		getWithBranch: (data: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.staff.getWithBranch + data.branch + '/teaching-staff/'
+				HTTP_END_POINTS.staff.getWithBranch + data + '/teaching-staff/'
 			),
 		getActivtiy: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getActivtiy + params?.staff, params),
@@ -293,10 +293,6 @@ class Client {
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
 			),
-		getWithName: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithName, params),
-		getWithCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 		getclasses: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
 		getactivity: (params: any) =>
@@ -319,8 +315,6 @@ class Client {
 		get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
 		getWithId: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
-		getWithCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.student.getWithCourse, params),
 	};
 	community = {
 		getAll: (data: any) =>
@@ -498,6 +492,7 @@ class Client {
 		post: (data: any) =>
 			HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
 	};
+
 	certificate = {
 		getAll: (params: any) =>
 			HttpClient.get(

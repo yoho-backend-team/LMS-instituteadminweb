@@ -19,6 +19,8 @@ import AllNotificationReducer from '../features/AllNotifications/Reducers/slices
 import CertificateManagemetSlice from '../features/certificateManagement/reducers/slice'
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
+import StaffSalary from"../features/Payment_Managemant/salary/reducers/moduleSlice"
+
 
 
 const store = configureStore({
@@ -43,7 +45,9 @@ const store = configureStore({
 		AllNotificationReducer: AllNotificationReducer,
 		CertificateManagemetSlice: CertificateManagemetSlice,
 		usersSlice: usersSlice,
-		Coursedata: Coursedata
+		Coursedata: Coursedata,
+		StaffSalary:StaffSalary,
+
 
 
 	},
@@ -53,3 +57,7 @@ const store = configureStore({
 
 
 export default store;
+
+
+
+
