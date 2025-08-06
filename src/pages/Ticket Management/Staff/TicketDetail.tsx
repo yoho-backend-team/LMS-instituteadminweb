@@ -80,7 +80,7 @@ const TicketDetail: React.FC = () => {
           >
             <FiArrowLeft className="text-lg" /> Back
           </button>
-          <h1 className="text-xl font-bold">Student Ticket</h1>
+          <h1 className="text-xl font-bold">Staff Ticket</h1>
         </div>
       </div>
 
