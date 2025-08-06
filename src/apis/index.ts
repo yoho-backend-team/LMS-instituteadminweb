@@ -289,6 +289,7 @@ class Client {
 	staff = {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+		getCourse:(params:any)=>HttpClient.get(HTTP_END_POINTS.staff.getWithcourse,params),
 		getWithId: (params: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
@@ -321,6 +322,11 @@ class Client {
 			HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
 		getWithCourse: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.student.getWithCourse, params),
+		getall: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.student.getall.replace(':courseUUID', params?.uuid),
+				{}
+			),
 	};
 	community = {
 		getAll: (data: any) =>
