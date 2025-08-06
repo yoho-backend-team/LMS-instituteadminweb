@@ -308,7 +308,7 @@ class Client {
     community = {
         getAll: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.community.all + data.branchid + '/all-community/'
+                HTTP_END_POINTS.community.all + '/all-community/'
             ),
         getCommunityMessage: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.community.messages + data.chatId),
