@@ -1,9 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import image from '../../../assets/Login/image.png'
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { BsInfoCircle } from 'react-icons/bs';
+import React, { useRef } from 'react';
+import { ForgetPassword } from '../../../features/Auth/service';
+import { StoreLocalStorage } from '../../../utils/localStorage';
+import toast from 'react-hot-toast';
 
 const ChangePassword = () => {
+	const navigate = useNavigate()
+
+	const inputEmail = useRef<HTMLInputElement | null>(null)
+
+	async function handelsubmit(e: React.FormEvent) {
+		e.preventDefault()
+		const email = inputEmail.current?.value
+		const response = await ForgetPassword({ email })
+		console.log(response, "forget pass")
+		StoreLocalStorage('otp', response?.otp)
+		StoreLocalStorage('OtpToken', response?.token)
+		StoreLocalStorage('email', response?.email)
+		if (response?.status == 'failed') {
+			toast.error(response?.message)
+		} else {
+			navigate('/otp-verify')
+		}
+	}
+
 	return (
 		<div className='h-screen w-screen grid grid-cols-2'>
 			<div className="w-full h-screen grid items-center">
@@ -15,13 +38,14 @@ const ChangePassword = () => {
 					</div>
 
 					<div>
-						<form className='w-full my-4'>
+						<form className='w-full my-4' onSubmit={handelsubmit}>
 
 							{/* Email */}
 							<div className='w-full'>
 								<label style={{ ...FONTS.login_input_head }} className='text-[#716F6F]'>Email Or Username</label>
 								<input
 									type='email'
+									ref={inputEmail}
 									className='w-full mb-3 mt-2 rounded-md px-4 py-2 outline-none border border-[#716F6F] text-[#716F6F]'
 								/>
 							</div>

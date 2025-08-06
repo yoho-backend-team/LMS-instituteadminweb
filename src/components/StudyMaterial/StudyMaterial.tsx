@@ -9,7 +9,6 @@ import fileIcon from "../../assets/icons/FileIcon.svg";
 import titleIcon from "../../assets/icons/Mask group (2).svg";
 import uploadIcon from "../../assets/icons/upload (2).svg";
 import filterIcon from "../../assets/icons/filter.png";
-import StudyDetailModal from "./StudyDetailModal";
 import { NoteCard } from "./StudyMaterialCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -117,14 +116,15 @@ const NotesManagement = () => {
   });
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const courses = useSelector(selectCourses);
+  console.log("courses", courses);
 
   const filterOptions = [
     { label: "Status", value: "status", options: ["", "Active", "Completed"] },
-    { label: "Course", value: "course", options: ["", "React", "Node.js"] },
+    { label: "Course", value: "course", options: ["", ...courses.map((course: any) => course.course_name)], },
   ];
 
-  const courses = useSelector(selectCourses);
-  console.log("courses", courses);
+
 
   const formFields = [
     {
@@ -287,18 +287,18 @@ const handleToggleStatus = async (
 
 
 
+ const filteredNotes = Array.isArray(studyMaterials)
+  ? studyMaterials.filter((note: Note) => {
+      const statusMatch = filterValues.status
+        ? note.status === filterValues.status
+        : true;
+      const courseMatch = filterValues.course
+        ? note.course === filterValues.course
+        : true;
+      return statusMatch && courseMatch;
+    })
+  : [];
 
-  const filteredNotes = Array.isArray(studyMaterials)
-    ? studyMaterials.filter((note: Note) => {
-        const statusMatch = filterValues.status
-          ? note.status === filterValues.status
-          : true;
-        const courseMatch = filterValues.course
-          ? note.course === filterValues.course
-          : true;
-        return statusMatch && courseMatch;
-      })
-    : [];
 
   return (
     <div className="min-h-screen p-3 w-full bg-cover bg-center">
@@ -325,8 +325,8 @@ const handleToggleStatus = async (
               <NoteCard
                 key={note.id}
                 note={note}
-                onView={(note: any) => setSelectedNote(note)}
                 onEdit={handleEdit}
+                 onView={(note: any) => setSelectedNote(note)}
                   onToggleStatus={handleToggleStatus}
                 onDelete={() => handleDelete(note.uuid)}
                 fileIcon={fileIcon}
@@ -351,13 +351,8 @@ const handleToggleStatus = async (
           fields={formFields}
         />
 
-        {selectedNote && (
-          <StudyDetailModal
-            isOpen={!!selectedNote}
-            note={selectedNote}
-            onClose={() => setSelectedNote(null)}
-          />
-        )}
+     
+
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
 import Client from '../../apis/index'
 import { GetLocalStorage } from '../../utils/localStorage'
 
-
 const institute = GetLocalStorage('institute') ?? '973195c0-66ed-47c2-b098-d8989d3e4529'
-
 
 export const getAllPlan = async()=>{
     try{
@@ -27,7 +25,6 @@ export const getInstituteSubscription = async(params:any)=>{
 export const getSubscriptionStatus = async(params:any)=>{
     try{
         const data = { ...params, institute };
-        console.log("Status Payload:", data);
         if (!institute) throw new Error("Missing institute ID");
         const response = await Client.subscription.get_subscription_status(data)
         return response
@@ -37,14 +34,32 @@ export const getSubscriptionStatus = async(params:any)=>{
     }
 }
 
-export const updateRequest = async (params: any) => {
+// export const upgradeRequest = async (params: any) => {
+//   try {
+//     const data = { ...params, institute };
+//     console.log(data)
+//     if(!data.plan_id) throw new Error("Missing plan ID");
+//     const response = await Client.subscription.upgrade_request(data);
+//     return response;
+//     console.log("Upgrade request sent:", response);
+//   } catch (error: any) {
+//     console.error("Backend Error Response for status:", error?.response?.data || error.message);
+//     throw new Error(error.message);
+//   }
+// };
+
+export const upgradeRequest = async (planId: string, actualInstituteId: string) => {
   try {
-    const data = { ...params, institute };
-    console.log("Final Upgrade Payload:", data);
-    const response = await Client.subscription.upgrade_request(data);
+    const response = await Client.subscription.upgrade_request({
+      institute: actualInstituteId,
+      body: { planId },
+    });
     return response;
   } catch (error: any) {
-    console.error("Backend Error Response:", error?.response?.data || error.message);
-    throw new Error(error.message);
+    console.error("Backend Error Response for status:", error?.response?.data || error.message);
+    throw new Error(error?.response?.data?.message || error.message || "Upgrade failed");
   }
 };
+
+
+
