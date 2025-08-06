@@ -19,7 +19,14 @@ import AllNotificationReducer from '../features/AllNotifications/Reducers/slices
 import CertificateManagemetSlice from '../features/certificateManagement/reducers/slice'
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
+import subscriptionReducer from '../components/subscription/slice'
+import StudentTicketReducer from '../features/StudentTicket/Reducers/slices';
 import StaffNotificationSlice from '../features/staffNotification/reducers/slices'
+import StudentNotificationSlice from '../features/StudentNotification/reducer/NotificationSlice';
+import helpCenterFaqs from '../features/HelpCenter/slice'
+import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
+import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSlice"
+
 
 
 const store = configureStore({
@@ -45,7 +52,14 @@ const store = configureStore({
 		CertificateManagemetSlice: CertificateManagemetSlice,
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
-		StaffNotificationSlice: StaffNotificationSlice
+		subscription: subscriptionReducer,
+		StudentTicketReducer: StudentTicketReducer,
+		StaffNotificationSlice: StaffNotificationSlice,
+		StudentNotificationSlice: StudentNotificationSlice,
+		helpCenterFaqs: helpCenterFaqs,
+		ticketAdmin: ticketAdmin,
+		StaffSalary: StaffSalary,
+
 
 
 	},
@@ -55,3 +69,7 @@ const store = configureStore({
 
 
 export default store;
+
+
+
+

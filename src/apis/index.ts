@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { get } from 'http';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
+import { data } from 'react-router-dom';
+import httpClient from './httpClient';
 
 class Client {
     admin = {
@@ -15,7 +16,7 @@ class Client {
         reset_password: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.admin.reset_password, data),
         login: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.login, data),
-        logout: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.logout, data)
+        logout: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.logout, data),
     };
     permission = {
         getAll: () => HttpClient.get(HTTP_END_POINTS.permission.getAll),
@@ -25,9 +26,12 @@ class Client {
     group = {
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.group.create, data),
         getAll: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id),
+            HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id, data),
         permissionWithRole: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.group.permissions, data),
+        permissionWithRoleEdit: (data: any) =>
+            HttpClient.update(HTTP_END_POINTS.group.permissions,
+                data),
         updateStatus: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.group.update_status, data),
         delete: (data: any) =>
@@ -164,6 +168,13 @@ class Client {
             ),
         add_template: (data: any) =>
             HttpClient.post(HTTP_END_POINTS.course.template, data),
+
+        get_course_data: (data: any) =>
+            HttpClient.get(
+                HTTP_END_POINTS.course.getcourse, data),
+
+
+
     };
     batch = {
         // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
@@ -224,8 +235,8 @@ class Client {
     users = {
         verifyOtp: (data: any, options: any) =>
             HttpClient.post(HTTP_END_POINTS.users.valiateOtp, data, options),
-        studentRegister: (data: any, options: any) =>
-            HttpClient.post(HTTP_END_POINTS.users.studentRegister, data, options),
+        studentRegister: (data: any) =>
+            HttpClient.post(HTTP_END_POINTS.users.studentRegister, data),
         studentsAll: (params: any) =>
             HttpClient.get(
                 HTTP_END_POINTS.student.get + `${params.branch_id}/students`,
@@ -260,7 +271,7 @@ class Client {
             create: (data: any) =>
                 HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
         },
-         staff_salary: {
+        staff_salary: {
             getall: (params: any) => HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
             create: (data: any) => HttpClient.post(HTTP_END_POINTS.payment.salary.create, data)
         }
@@ -278,7 +289,7 @@ class Client {
             ),
         getWithBranch: (data: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.staff.getWithBranch + data.branch + '/teaching-staff/'
+                HTTP_END_POINTS.staff.getWithBranch + data + '/teaching-staff/'
             ),
         getActivtiy: (params: any) =>
             HttpClient.get(HTTP_END_POINTS.staff.getActivtiy + params?.staff, params),
@@ -289,6 +300,7 @@ class Client {
     };
     staff = {
         get: (query: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+        getWithCourse: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
         getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithid.replace(":staffId", params?.staffId)),
         getWithBranch: (data: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithBranch, data), 
         // getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
@@ -296,7 +308,15 @@ class Client {
         getactivity: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
         create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.staff.update, data),
-        delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete.replace(":staffId",query?.staffId)),
+        delete: (query: any) => HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
+        getall: (params: any) =>
+            HttpClient.get(
+                HTTP_END_POINTS.staff.getWithBranch.replace(
+                    ':courseUUID',
+                    params?.uuid
+                ),
+                {}
+            ),
     };
     student = {
         activity: (data: any) => HttpClient.get(HTTP_END_POINTS.student.activity + data.id),
@@ -304,8 +324,13 @@ class Client {
         update: (data: any) => HttpClient.update(HTTP_END_POINTS.student.update + data?.uuid, data),
         delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
         get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
-        getWithId: (params:any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid)
-        
+        getWithId: (params: any) => HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
+        getall: (params: any) =>
+            HttpClient.get(
+                HTTP_END_POINTS.student.getall.replace(':courseUUID', params?.uuid),
+                {}
+            ),
+
     };
     community = {
         getAll: (data: any) =>
@@ -320,17 +345,17 @@ class Client {
             ),
     };
     ticket = {
-        student_tickets: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.ticket.student_ticket, data),
+        student_tickets: (params: any) =>
+            HttpClient.get(HTTP_END_POINTS.ticket.student_ticket, params),
         update_student_status_ticket: (params: any) =>
             HttpClient.update(
-                HTTP_END_POINTS.ticket.update_student_status_ticket + params?.id
+                HTTP_END_POINTS.ticket.update_student_status_ticket + params?.uuid, params
             ),
         update_student_ticket: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.ticket.update + data?.uuid, data),
         student_ticket_with_id: (params: any) =>
             HttpClient.get(
-                HTTP_END_POINTS.ticket.student_ticket_with_id + params?.id
+                HTTP_END_POINTS.ticket.student_ticket_with_id + params?.uuid
             ),
         staff_ticket: (data: any) =>
             HttpClient.get(HTTP_END_POINTS.ticket.staff_ticket, data),
@@ -385,7 +410,7 @@ class Client {
         student: {
             add_student_notification: (data: any) =>
                 HttpClient.post(
-                    HTTP_END_POINTS.notification.student_notification_get,
+                    HTTP_END_POINTS.notification.create_student_notification,
                     data
                 ),
             get_student_notification: (query: any) =>
@@ -393,7 +418,7 @@ class Client {
                     HTTP_END_POINTS.notification.student_notification,
                     query
                 ),
-             
+
         },
         staff: {
             add_staff_notification: (data: any) =>
@@ -420,6 +445,10 @@ class Client {
                     HTTP_END_POINTS.notification.institute_notification,
                     query
                 ),
+
+            resend_all_notification: (data: any) =>
+                HttpClient.post(
+                    HTTP_END_POINTS.notification.all_notification_resend, data),
         },
     };
     institute_notification = {
@@ -461,11 +490,10 @@ class Client {
             HttpClient.get(
                 HTTP_END_POINTS.subscription.status_check + params.institute
             ),
-        upgrade_request: (params: any) =>
+        upgrade_request: ({ institute, body }: { institute: string, body: any }) =>
             HttpClient.update(
                 HTTP_END_POINTS.subscription.upgrade_request +
-                params.institute +
-                '/request'
+                institute + '/request', body
             ),
     };
     activity = {
@@ -496,5 +524,12 @@ class Client {
     }
 
 
+    helpcenter = {
+        getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
+        post: (data: any) => HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
+        delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
+        update: (data: any, id: string) =>
+            HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
+    }
 }
 export default new Client();

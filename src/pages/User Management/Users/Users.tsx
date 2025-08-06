@@ -5,6 +5,8 @@ import { selectLoading, selectUsers } from '../../../features/Users_Management/U
 import { useEffect } from 'react';
 import { fetchAllUsers } from '../../../features/Users_Management/Users/redux/thunk';
 import { getInstituteDetails, getSelectedBranchId } from '../../../apis/httpEndpoints';
+import UsersList from '../../../features/Users_Management/Users/components/UsersList';
+import UsersDetails from '../../../features/Users_Management/Users/components/UsersDetails';
 
 const Users = () => {
   const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
@@ -14,13 +16,18 @@ const Users = () => {
   const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
 
   useEffect(() => {
-    const data = {page: 1, institute_id: instituteId, branch_id: branchId}
+    const data = { page: 1, institute_id: instituteId, branch_id: branchId }
     dispatch(fetchAllUsers(data))
-  },[dispatch])
+  }, [dispatch])
 
   console.log("Users", Users)
   return (
-    <div><UserCard Users={Users?.data}/></div>
+    <div className='grid gap-4'>
+      <UserCard Users={Users?.data} />
+      <div>
+        <UsersList Users={Users?.data}/>
+      </div>
+    </div>
   );
 };
 

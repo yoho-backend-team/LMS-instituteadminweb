@@ -4,6 +4,7 @@ import { FaEye } from "react-icons/fa"
 import { MdEditDocument, MdDelete } from "react-icons/md"
 import { IoMdDownload } from "react-icons/io"
 import {  FONTS } from '../../constants/uiConstants';
+import { GetImageUrl } from '../../utils/helper'
 
 export interface Certificate {
   id: number
@@ -51,9 +52,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
               <tr key={cert.id} className="text-[#716F6F]">
                 <td className="px-6 py-4" style={{ ...FONTS.heading_08}}>{cert.id}</td>
                 <td className="px-6 py-4 flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#1BBFCA] text-white flex items-center justify-center font-semibold">
-                    
-                  </div>
+                  <img src={GetImageUrl(cert.image) ?? undefined} alt={cert.student} className='w-10 h-10 rounded-full object-cover' />
                   <div>
                     <div className="font-bold text-lg" style={{ ...FONTS.heading_07_bold}}>{cert.student}</div>
                     <div className="text-sm" style={{ ...FONTS.heading_08}}>{cert.email}</div>
