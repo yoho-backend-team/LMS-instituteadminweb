@@ -2,8 +2,10 @@ import { useEffect, useState } from "react"
 import { COLORS, FONTS } from "../../../../constants/uiConstants"
 import EditDetails from "./EditDetails"
 import { getUserById } from "../service";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GetImageUrl } from "../../../../utils/helper";
+import back from "../../../../assets/arrow-left.png"
+import { IoIosArrowBack } from "react-icons/io";
 
 interface UserDetail {
   image?: string;
@@ -26,7 +28,8 @@ interface UserDetail {
 const UsersDetails = () => {
     const [showEditModal, setShowEditModal] = useState<boolean>(false)
     const [userDetail, setUserDetail] = useState<UserDetail>();
-    const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -41,19 +44,25 @@ const UsersDetails = () => {
         fetchUserProfile();
     },[id])
 
-
+    const handleBack = () => {
+        navigate("/users")
+    }
 
     return (
-        <div className="">
+        <div>
+            <div className="pb-4">
+                <button onClick={handleBack} className="w-[30px] h-[30px] shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white rounded-lg flex items-center justify-center"><IoIosArrowBack className="w-[25px] h-[35px]"/></button>
+            </div>
+        <div className="p-4 border rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white">
             <div className="flex justify-between p-2 pb-8 border-b">
                 <div className={`flex gap-8`}>
-                    <img src={GetImageUrl(userDetail?.image)} className="w-[60px] h-[60px] rounded-full" alt="profile"></img>
+                    <img src={GetImageUrl(userDetail?.image) ?? ""} className="w-[60px] h-[60px] rounded-full" alt="profile"></img>
                     <div>
                         <h1 className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_04_bold }}>{userDetail?.first_name + " " + userDetail?.last_name}</h1>
                         <p className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_07 }}>{userDetail?.role?.identity}</p>
                     </div>
                 </div>
-                <div className={`bg-[${COLORS.light_green}] w-[78px] h-[40px] flex justify-center items-center rounded-lg`}><span className="text-white">{userDetail?.is_active ? "Active" : "Inactive"}</span></div>
+                <div className={`w-[70px] h-[30px]  flex justify-center items-center rounded-md ${userDetail?.is_active ? `bg-[${COLORS.light_green}]` : "bg-red-500"}`} style={{...FONTS.heading_13}}><span className="text-white">{userDetail?.is_active ? "Active" : "Inactive"}</span></div>
             </div>
             <div className="p-2 mt-10 grid gap-4">
                 <h1 className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_05_bold }}>Profile Details</h1>
@@ -81,10 +90,11 @@ const UsersDetails = () => {
                 </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end" style={{...FONTS.heading_07}}>
                 <button onClick={() => setShowEditModal(true)} className={`bg-[${COLORS.light_green}] text-white w-[112px] h-[40px] flex justify-center items-center rounded-lg`}>Edit Details</button>
             </div>
             {showEditModal && <div className="fixed inset-0 backdrop-blur-sm bg-black/30 "><div className="fixed top-0 right-110"><EditDetails setShowEditModal={setShowEditModal} userDetail={userDetail}/></div></div>}
+        </div>
         </div>
     )
 }

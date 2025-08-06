@@ -61,6 +61,7 @@ import LogoutRoute from '../components/shared/Navbar';
 import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
 import HistoryPage from '../components/subscription/HistoryPage';
 
+// import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
