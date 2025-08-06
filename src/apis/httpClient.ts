@@ -23,6 +23,7 @@ Axios.interceptors.response.use(
     (error) => {
         if (error?.response && error?.response?.status === 401 && error?.response?.data?.status === "session_expired") {
             ClearLocalStorage()
+            window.location.reload()
         }
         return Promise.reject(error);
     }

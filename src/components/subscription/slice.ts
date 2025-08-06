@@ -13,14 +13,14 @@ interface SubscriptionState {
   plans: PlanType[];
   insitituteSubscription: any | null;
   status: any;
-  upgradeResponse: any | null;
+  upgradeRequest:any | null;
 }
 
 const initialState: SubscriptionState = {
   plans: [],
   insitituteSubscription: null,
   status: null,
-  upgradeResponse: null
+  upgradeRequest:null
 };
 
 const subscriptionSlice = createSlice({
@@ -36,11 +36,11 @@ const subscriptionSlice = createSlice({
     setSubscriptionStatus: (state, action: PayloadAction<any>) => {
       state.status = action.payload
     },
-    setUpgradeResponse: (state, action: PayloadAction<any>) => {
-      state.upgradeResponse = action.payload;
+    setUpgradeRequest: (state, action: PayloadAction<any>) =>{
+      state.upgradeRequest = action.payload
     }
   },
 });
 
-export const { setAllPlan, setInstituteSubscription, setSubscriptionStatus,setUpgradeResponse } = subscriptionSlice.actions;
+export const { setAllPlan, setInstituteSubscription, setSubscriptionStatus, setUpgradeRequest} = subscriptionSlice.actions;
 export default subscriptionSlice.reducer;

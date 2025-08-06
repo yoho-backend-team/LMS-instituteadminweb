@@ -2,17 +2,25 @@ import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
-import success from '../../assets/tick.png'
-import warning from '../../assets/warning.png'
+import success from "../../assets/tick.png";
+import warning from "../../assets/warning.png";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAddQuestion } from "../../features/HelpManagement/AddQuestion/selector";
 import { fetchAddQuestionThunk } from "../../features/HelpManagement/AddQuestion/thunks";
+import { faqCategory } from "../../features/Faq_Category/selector";
+import { fetchHelpCenterThunk } from "../../features/HelpCenter/thunks";
+import { selectFaq } from "../../features/HelpCenter/selector";
+import { createHelpCenter, deleteHelpCenter, updateHelpCenter } from "../../features/HelpCenter/service";
 
 interface FAQItem {
   id: number;
+  uuid: string; // Add UUID field
   category: string;
   videoLink: string;
+  videolink: string; // Backend field name
+  question: string; // Backend field name
+  answer: string; // Backend field name
   status: string;
   description: string;
 }
@@ -21,33 +29,26 @@ const AddQuestion = () => {
   const [faqList, setFaqList] = useState<FAQItem[]>([
     {
       id: 1,
+      uuid: "", // Add UUID to initial state
       category: "Classes",
       videoLink: "https://youtu.be/sample1",
+      videolink: "https://youtu.be/sample1",
+      question: "How to Learn",
+      answer: "Sample Video",
       status: "How to Learn",
       description: "Sample Video",
     },
-    {
-      id: 2,
-      category: "Classes",
-      videoLink: "https://youtu.be/sample2",
-      status: "Classes",
-      description: "Class videos to learn",
-    },
-    {
-      id: 3,
-      category: "Profile",
-      videoLink: "https://youtu.be/9551ymfFXdA?si=5zepu6cwEMD5LT45",
-      status: "How to correct",
-      description: "Profile",
-    },
+    // ... other items
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState<number | null>(null);
+  const [editUuid, setEditUuid] = useState<string | null>(null); // Change to UUID
   const [dropdownOpenId, setDropdownOpenId] = useState<number | null>(null);
-  const [modalStage, setModalStage] = useState<"confirm" | "processing" | "success" | "dialog"| null>(null);
+  const [modalStage, setModalStage] = useState<
+    "confirm" | "processing" | "success" | "dialog" | null
+  >(null);
 
   const [formData, setFormData] = useState({
     category: "",
@@ -55,71 +56,94 @@ const AddQuestion = () => {
     status: "",
     description: "",
   });
-const dispatch = useDispatch<any>();
-  const faqLists = useSelector(selectAddQuestion);
+  
+  const dispatch = useDispatch<any>();
+  const questions = useSelector(selectFaq);
+  console.log("help center question", questions);
 
   useEffect(() => {
-   const paramsData = {branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", page: 1}
-    dispatch(fetchAddQuestionThunk(paramsData));
+    const params = {
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    };
+
+    dispatch(fetchHelpCenterThunk(params));
   }, [dispatch]);
 
+  const handleAddFAQ = async () => {
+    setModalStage("processing");
 
+    const payload = {
+      category: formData.category,
+      videolink: formData.videoLink,
+      question: formData.status,
+      answer: formData.description,
+      branch_id: '"90c93163-01cf-4f80-b88b-4bc5a5dd8ee4"',
+      institute_id: "67f3a26df4b2c530acd16419",
+    };
 
-  const handleAddFAQ = () => {
-    setModalStage(null);
-
-    setTimeout(() => {
-      if (isEditing && editId !== null) {
-        setFaqList((prev) =>
-          prev.map((item) =>
-            item.id === editId ? { ...item, ...formData } : item
-          )
-        );
-      } else {
-        const newItem: FAQItem = {
-          id: faqList.length + 1,
-          ...formData,
-        };
-        setFaqList((prev) => [...prev, newItem]);
-      }
-
-      setModalStage(null);
-
-      setTimeout(() => {
-        resetForm();
-        setModalStage(null);
-      }, 1500);
-    }, 1000);
+    try {
+      await createHelpCenter(payload);
+      setModalStage("success");
+      dispatch(
+        fetchHelpCenterThunk({
+          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          page: 1,
+          perPage: 10,
+        })
+      );
+    } catch (err) {
+      console.error("Error creating FAQ:", err);
+      alert("Failed to create FAQ.");
+      setModalStage("confirm");
+    }
   };
 
-  const handleEdit = (item: FAQItem) => {
+
+  const handleEdit = (item: any) => {
     setIsEditing(true);
-    setEditId(item.id);
+    setEditUuid(item.uuid); 
+    console.log("Edit UUID:", item.uuid);
     setFormData({
       category: item.category,
-      videoLink: item.videoLink,
-      status: item.status,
-      description: item.description,
+      videoLink: item.videolink, 
+      status: item.question,
+      description: item.answer, 
     });
     setShowModal(true);
     setDropdownOpenId(null);
     setModalStage("confirm");
   };
 
-  const handleDelete = (id: number) => {
-    setFaqList((prev) => prev.filter((item) => item.id !== id));
-    setDropdownOpenId(null);
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteHelpCenter(id);
+      dispatch(fetchHelpCenterThunk({
+        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        page: 1,
+        perPage: 10,
+      }));
+    } catch (error) {
+      console.error("Failed to delete FAQ:", error);
+    } finally {
+      setDropdownOpenId(null);
+    }
   };
 
+  // Updated resetForm function
   const resetForm = () => {
     setFormData({ category: "", videoLink: "", status: "", description: "" });
     setIsEditing(false);
-    setEditId(null);
+    setEditUuid(null); // Reset UUID instead of editId
     setShowModal(false);
     setModalStage("confirm");
   };
 
-  const filteredList = faqLists.filter((faq: any) =>
+  const filteredList = questions.filter((faq: any) =>
     faq.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -142,7 +166,7 @@ const dispatch = useDispatch<any>();
             setShowModal(true);
           }}
         >
-          <FaPlus className="mt-1.5 mr-2"/> Add Question
+          <FaPlus className="mt-1.5 mr-2" /> Add Question
         </button>
       </div>
 
@@ -160,25 +184,25 @@ const dispatch = useDispatch<any>();
           <tbody>
             {filteredList.map((faq: any) => (
               <tr
-                key={faq.id}
+                key={faq.uuid || faq.id} // Use UUID as key if available
                 className="bg-white/30 shadow-xl backdrop-blur-xl text-md h-22 rounded-xl font-semibold relative overflow-visible"
               >
                 <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
                 <td className="px-6 py-4 text-lg">{faq.category}</td>
                 <td className="px-6 py-4 text-lg">
                   <a
-                    href={faq.videoLink}
+                    href={faq.videolink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[#1BBFCA]"
                   >
-                    {faq.videoLink}
+                    {faq.videolink}
                   </a>
                 </td>
                 <td className="px-6 py-4">
                   <div>
-                    <div className="text-lg font-semibold">{faq.status}</div>
-                    <div className="text-md">{faq.description}</div>
+                    <div className="text-lg font-semibold">{faq.question}</div>
+                    <div className="text-md">{faq.answer}</div>
                   </div>
                 </td>
                 <td className="px-6 py-4 rounded-r-xl relative overflow-visible">
@@ -205,7 +229,7 @@ const dispatch = useDispatch<any>();
                         </button>
                         <button
                           className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                          onClick={() => handleDelete(faq.id)}
+                          onClick={() => handleDelete(faq.uuid)} 
                         >
                           <MdDelete /> Delete
                         </button>
@@ -220,171 +244,202 @@ const dispatch = useDispatch<any>();
       </div>
 
       {/* Modal */}
-    {showModal && (
-   <div
-   className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
-  modalStage === "success" || modalStage === "dialog"
-    ? "justify-center"
-    : "justify-end"
-} z-50`}
+      {showModal && (
+        <div
+          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
+            modalStage === "success" || modalStage === "dialog"
+              ? "justify-center"
+              : "justify-end"
+          } z-50`}
+        >
+          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
+            {/* Form Stage */}
+            {modalStage === "confirm" && (
+              <div>
+                <div className="flex">
+                  <h2 className="text-2xl justify-start font-bold">
+                    {isEditing ? "Edit Question" : "Add Question"}
+                  </h2>
+                  <button
+                    onClick={resetForm}
+                    className="ml-auto h-6 w-6 bg-gray-500 rounded-full right-4 text-black"
+                  >
+                    <IoMdClose size={20} className="ml-0.5" />
+                  </button>
+                </div>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (isEditing) {
+                      setModalStage("dialog");
+                    } else {
+                      handleAddFAQ();
+                    }
+                  }}
+                  className="space-y-4 mt-5 text-left"
+                >
+                  <div>
+                    <label className="block font-semibold mb-1">Category</label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      value={formData.category}
+                      onChange={(e) =>
+                        setFormData({ ...formData, category: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold mb-1">Video Link</label>
+                    <input
+                      type="url"
+                      required
+                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      value={formData.videoLink}
+                      onChange={(e) =>
+                        setFormData({ ...formData, videoLink: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold mb-1">Question</label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      value={formData.status}
+                      onChange={(e) =>
+                        setFormData({ ...formData, status: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold mb-1">Answer</label>
+                    <textarea
+                      required
+                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="pt-4 flex justify-end gap-4">
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="bg-gray-200 text-gray-800 px-4 py-2 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#1BBFCA] text-white px-4 py-2 rounded"
+                    >
+                      {isEditing ? "Update" : "Submit"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
-  >
-    <div className="bg-white rounded-xl w-[500px]  p-6 text-center space-y-6 relative">
-      
+            {/* Confirmation Dialog - Updated to use UUID */}
+            {modalStage === "dialog" && (
+              <div className="flex flex-col items-center justify-center p-6">
+                <img src={warning} alt="Warning" className="w-12 h-12 mb-4" />
+                <p className="text-lg font-semibold mb-2">Are you sure?</p>
+                <p className="text-sm text-gray-600 mb-6">You want to update status of this question.</p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setModalStage("confirm")}
+                    className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (isEditing && editUuid !== null) { 
+                        try {
+                          console.log("editUuid value:", editUuid); 
+                          console.log("editUuid type:", typeof editUuid);
+                          
+                         
+                          const updateData = {
+                            category: formData.category,
+                            videolink: formData.videoLink,
+                            question: formData.status,
+                            answer: formData.description,
+                          };
 
-      {/* 🟡 Stage 1: Form */}
-      {modalStage === "confirm" && (
-        <div>
-         <div className="flex"> <h2 className="text-2xl justify-start font-bold">{isEditing ? "Edit Question" : "Add Question"}</h2>
-         <button
-        onClick={resetForm}
-        className="ml-auto h-6 w-6 bg-gray-500 rounded-full right-4 text-black"
-      >
-        <IoMdClose size={20} className="ml-0.5"/>
-      </button>
-         </div>
-          <form
-           onSubmit={(e) => {
-  e.preventDefault();
-  if (isEditing) {
-    setModalStage("dialog");
-  } else {
-    handleAddFAQ(); 
-  }
-}}
+                         
+                          const uuidString = String(editUuid);
+                          console.log("UUID string:", uuidString); 
 
-            className="space-y-4 mt-5 text-left"
-          >
-            <div>
-              <label className="block font-semibold mb-1">Category</label>
-              <input
-                type="text"
-                required
-                className="w-full border h-18 px-4 py-2 rounded-md"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block font-semibold mb-1">Video Link</label>
-              <input
-                type="url"
-                required
-                className="w-full border  h-18 px-4 py-2 rounded-md"
-                value={formData.videoLink}
-                onChange={(e) =>
-                  setFormData({ ...formData, videoLink: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block font-semibold mb-1">Status</label>
-              <input
-                type="text"
-                required
-                className="w-full border h-18 px-4 py-2 rounded-md"
-                value={formData.status}
-                onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block font-semibold mb-1">Description</label>
-              <textarea
-                required
-                className="w-full border h-18 px-4 py-2 rounded-md"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-              />
-            </div>
-            <div className="pt-4 flex justify-end gap-4">
-              <button
-                type="button"
-                onClick={resetForm}
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-[#1BBFCA] text-white px-4 py-2 rounded"
-              >
-                {isEditing ? "Update" : "Submit"}
-              </button>
-            </div>
-          </form>
+                          
+                          await updateHelpCenter(updateData, editUuid);
+
+                         
+                          dispatch(fetchHelpCenterThunk({
+                            branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+                            instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+                            page: 1,
+                            perPage: 10,
+                          }));
+
+                          
+                          setModalStage("success");
+                          setIsEditing(false);
+                          setEditUuid(null); 
+                          setFormData({
+                            category: "",
+                            status: "",
+                            description: "",
+                            videoLink: ""
+                          });
+
+                        } catch (error) {
+                          console.error("Update failed:", error);
+                          alert("Update failed. Please try again.");
+                          setModalStage("confirm");
+                        }
+                      }
+                    }}
+                    className="bg-[#2AAA94] hover:bg-[#28907f] text-white px-4 py-2 rounded-md"
+                  >
+                    Yes Status
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {modalStage === "processing" && (
+              <div className="flex flex-col items-center justify-center p-6">
+                <div className="loader mb-4"></div>
+                <p className="text-lg font-semibold mb-2">Processing...</p>
+                <p className="text-sm text-gray-600">Please wait while we update your request.</p>
+              </div>
+            )}
+
+            {modalStage === "success" && (
+              <div className="flex flex-col items-center justify-center p-6">
+                <img src={success} alt="Success" className="w-12 h-12 mb-4" />
+                <p className="text-lg font-semibold mb-2">Status Updated</p>
+                <p className="text-sm text-gray-600 mb-6">The status has been successfully updated.</p>
+                <button
+                  onClick={resetForm} // Use resetForm to properly close modal
+                  className="bg-[#2AAA94] hover:bg-[#28907f] text-white px-4 py-2 rounded-md"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-     
-     {modalStage === "dialog" && (
-  <div className="">
-    <img src={warning} alt="" className="ml-28" />
-    <h2 className="text-xl h-20 mt-5 font-bold text-gray-800">Confirm Action</h2>
-    <p className="text-gray-600 mb-5">Are you sure you want to change the status</p>
-    <div className="flex justify-center gap-8 pt-4">
-      <button
-        onClick={() => {
-          setModalStage("success");
-          setTimeout(() => {
-            if (isEditing && editId !== null) {
-              setFaqList((prev) =>
-                prev.map((item) =>
-                  item.id === editId ? { ...item, ...formData } : item
-                )
-              );
-            } else {
-              const newItem: FAQItem = {
-                id: faqList.length + 1,
-                ...formData,
-              };
-              setFaqList((prev) => [...prev, newItem]);
-            }
-          }, 500); // Just for effect, not closing anything now
-        }}
-        className="px-4 py-2 bg-[#1BBFCA] focus:bg-green-600 text-white rounded"
-      >
-        Yes Status
-      </button>
-      <button
-        onClick={() => setModalStage("confirm")}
-        className="px-4 py-2 bg-gray-300 rounded"
-      >
-        No
-      </button>
-    </div>
-  </div>
-)}
-
-{modalStage === "success" && (
-  <div className="text-cente p-6">
-    <img
-      src={success}
-      alt="Success"
-      className="w-16 mx-auto mb-4"
-    />
-    <h2 className="text-xl font-bold text-green-600 mb-2">Success!</h2>
-    <p className="text-gray-500 mb-4">FAQ item saved successfully.</p>
-    <button
-      className="bg-green-500 text-white px-6 py-2 rounded"
-      onClick={() => {
-        setModalStage(null);
-        resetForm(); 
-      }}
-    >
-      OK
-    </button>
-  </div>
-)}
-
-    </div>
-  </div>
-)}
-
     </div>
   );
 };
