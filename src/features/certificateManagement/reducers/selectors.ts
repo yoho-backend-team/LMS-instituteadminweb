@@ -1,0 +1,1 @@
+export const selectCertificate = (state:any)=>state.CertificateManagemetSlice.data;

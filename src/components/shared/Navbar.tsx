@@ -6,13 +6,17 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
+import { useDispatch, useSelector } from "react-redux";
+import { GetProfileThunk } from "../../features/Auth/reducer/thunks";
+import { GetImageUrl } from "../../utils/helper";
 import { useAuth } from "../../pages/Auth/AuthContext";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
 const Navbar = () => {
+  const dispatch = useDispatch<any>()
+  const profile = useSelector((state: any) => state.authuser?.user)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -20,7 +24,6 @@ const Navbar = () => {
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
   const { logout } = useAuth();
-  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -39,6 +42,17 @@ const Navbar = () => {
   }, [logout, dispatch, navigate]);
 
 
+  const nowDate = new Date().getHours()
+
+  function GetWelcomeType(hour: number) {
+    if (hour < 12) {
+      return 'Good morning';
+    } else if (hour < 18) {
+      return 'Good afternoon';
+    } else {
+      return 'Good evening'
+    }
+  }
 
   const notifications = [
     {
@@ -80,9 +94,11 @@ const Navbar = () => {
       }
     }
 
+    dispatch(GetProfileThunk())
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
@@ -116,7 +132,7 @@ const Navbar = () => {
               className="h-[40px] w-[40px] rounded-full overflow-hidden border-2 border-gray-300"
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT75N_tftPWlyK4Q5-QDx_QZtLFJAG7JiDM3A&s"
+                src={GetImageUrl(profile?.image) ?? undefined}
                 alt="Profile"
                 className="h-full w-full object-cover"
               />
@@ -125,11 +141,11 @@ const Navbar = () => {
               <div className="absolute right-0 mt-2 w-60 bg-white rounded-md shadow-lg z-50">
                 <div className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-sm text-gray-500">Good evening</p>
-                    <p className="text-lg font-bold text-gray-800">Surya S</p>
+                    <p className="text-sm text-gray-500">{GetWelcomeType(nowDate)}</p>
+                    <p className="text-lg font-bold text-gray-800">{profile?.first_name + ' ' + profile?.last_name}</p>
                   </div>
                   <button className="bg-green-500 text-white text-xs px-2 py-1 rounded-sm">
-                    Active
+                    {profile.is_active ? 'Active' : 'Inactive'}
                   </button>
                 </div>
                 <ul className="p-2">

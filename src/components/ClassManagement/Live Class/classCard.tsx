@@ -16,13 +16,20 @@ import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
 import { Button } from '../../ui/button';
 import EditLiveClass from './editLiveClass';
 import { GetImageUrl } from '../../../utils/helper';
+import { deleteLiveClass } from '../../../features/Class Management/Live Class/services';
+import toast from 'react-hot-toast';
 
 interface BatchCardProps {
 	title: string;
 	data: any;
+	fetchAllLiveClasses?: () => void;
 }
 
-export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
+export const LiveClassCard: React.FC<BatchCardProps> = ({
+	title,
+	data,
+	fetchAllLiveClasses,
+}) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const navigate = useNavigate();
@@ -32,8 +39,27 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = () => {
-		console.log('Deleted');
+	const handleConfirmDelete = async () => {
+		try {
+			const response = await deleteLiveClass({ uuid: data?.uuid });
+			if (response) {
+				toast.success('Live class deleted successfully');
+				if (fetchAllLiveClasses) {
+					fetchAllLiveClasses();
+				}
+				closeDeleteModal();
+			} else {
+				toast.success('Live class deleted successfully');
+				closeDeleteModal();
+			}
+		} catch (error) {
+			console.error('Error deleting live class:', error);
+		} finally {
+			closeDeleteModal();
+			if(fetchAllLiveClasses) {
+				fetchAllLiveClasses();
+			}
+		}
 	};
 
 	const getFormattedTime = (timeString: string) => {
@@ -66,7 +92,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -83,7 +109,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -156,7 +182,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 							className=' mt-4'
 							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
 						>
-							{title}
+							{`${title.substring(0, 25)}${title.length > 25 ? '...' : ''}`}
 						</p>
 					</div>
 
@@ -188,7 +214,9 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 							className='cursor-pointer underline'
 							target='_blank'
 						>
-							{data?.video_url}
+							{`${data?.video_url.substring(0, 30)} ${
+								data?.video_url?.length > 30 ? '...' : ''
+							}`}
 						</a>
 					</div>
 				</div>
@@ -208,7 +236,12 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClass data={data} isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClass
+				data={data}
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				fetchAllLiveClasses={fetchAllLiveClasses}
+			/>
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

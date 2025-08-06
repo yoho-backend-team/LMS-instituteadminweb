@@ -1,9 +1,10 @@
 import { MoreVertical, Eye, Pencil, Trash2, CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GetImageUrl } from '../../../utils/helper';
 
-import profileImg1 from '../../../assets/Frame 427321451.png';
-import profileImg2 from '../../../assets/Frame 427321452.png';
+// import profileImg1 from '../../../assets/Frame 427321451.png';
+// import profileImg2 from '../../../assets/Frame 427321452.png';
 
 import {
 	DropdownMenu,
@@ -20,18 +21,22 @@ import EditOfflineClass from './editOfflineClass';
 
 interface BatchCardProps {
 	title: string;
-	students: any;
-	startDate: string;
-	endTime: string;
-	startTime: string;
+	 students: any;
+	 startDate: string;
+	 endTime: string;
+	 startTime: string;
+	// data:any;
+	// fetchAllOfflineClasses?.()=>void;
 }
 
 const offlineClassCard: React.FC<BatchCardProps> = ({
 	title,
-	students,
-	startDate,
-	endTime,
+	 students,
+	 startDate,
+    endTime,
 	startTime,
+	// data,
+	// fetchAllofflineClasses,
 }) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -47,7 +52,7 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 
 	const navigate = useNavigate();
 	const data = { title, students, startDate, endTime, startTime };
-
+console.log(data,'dataaaaaaaaaaaaaaaaa')
 	// Format date as DD/MM/YYYY
 	const formattedDate = new Date(startDate);
 	const displayDate = `${formattedDate.getDate()}/${formattedDate.getMonth() + 1}/${formattedDate.getFullYear()}`;
@@ -64,16 +69,48 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 
 	const displayTimeRange = `${getFormattedTime(startTime)} - ${getFormattedTime(endTime)}`;
 
+	console.log(data, 'data1')
+
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
-				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
-					<div>
-						<img
-							src={students === 1 ? profileImg1 : profileImg2}
-							alt='student profile'
-						/>
-					</div>
+			<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
+								<div className='flex justify-between gap-35'>
+									<div className='flex flex-col items-center gap-2'>
+										<p style={{ ...FONTS.heading_09 }}>
+											{data?.batch?.student?.length}{' '}
+											{data?.batch?.student?.length === 1 ? 'student' : 'students'}
+										</p>
+										<div className='flex'>
+											{data?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
+												<img
+													key={studentImg?._id}
+													src={GetImageUrl(studentImg?.image) ?? undefined}
+													alt={studentImg?.full_name}
+													title={studentImg?.full_name}
+													className='w-12 h-12 rounded-full '
+												/>
+											))}
+										</div>
+									</div>
+									<div className='flex flex-col items-center gap-2'>
+										<p style={{ ...FONTS.heading_09 }}>
+											{data?.instructors?.length}{' '}
+											{data?.instructors?.length === 1 ? 'instructor' : 'instructors'}
+										</p>
+										<div className='flex'>
+											{data?.instructors?.slice(0, 3)?.map((studentImg: any) => (
+												<img
+													key={studentImg?._id}
+													src={GetImageUrl(studentImg?.image) ?? undefined}
+													alt={studentImg?.full_name}
+													title={studentImg?.full_name}
+													className='w-12 h-12 rounded-full '
+												/>
+											))}
+										</div>
+									</div>
+								</div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<button

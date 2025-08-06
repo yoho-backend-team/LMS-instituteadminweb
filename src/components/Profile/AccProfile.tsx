@@ -11,6 +11,13 @@ import { FONTS } from '../../../src/constants/uiConstants';
 import noteimg from '../../assets/navbar/notescreated.png';
 
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { GetImageUrl } from '../../utils/helper';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectTimeline } from '../../features/Profile_Security/reducer/selector';
+import { fetchTimeline } from '../../features/Profile_Security/reducer/thunks';
+import { getsecurity } from '../../features/Profile_Security/services';
+
 
 const AccountProfile: React.FC = () => {
 	const [activePanel, setActivePanel] = useState<'first' | 'second' | 'third'>('first');
@@ -18,6 +25,8 @@ const AccountProfile: React.FC = () => {
 	const handleEdit = () => {
 		navigate('/Editprof'); // Replace with your desired route
 	};
+
+	const profile = useSelector((state: any) => state.authuser?.user)
 
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
@@ -30,6 +39,8 @@ const AccountProfile: React.FC = () => {
 	const toggleVisibility = (field: 'current' | 'new' | 'confirm') => {
 		setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
 	};
+
+
 
 	type TimelineItem = {
 		title: string;
@@ -55,8 +66,30 @@ const AccountProfile: React.FC = () => {
 
 	];
 	const [activeIndex, setActiveIndex] = useState<number | null>(0);
+
+	const dispatch = useDispatch<any>();
+	const timeline = useSelector(selectTimeline);
+
+	useEffect(() => {
+		if (activePanel === "third") {
+			dispatch(fetchTimeline({page:1}));
+		}
+	}, [activePanel]);
+
+	const handleChangePassword = async() => {
+		try {
+			const data= { confirm_password: confirmPassword, current_password: currentPassword
+, new_password: newPassword
+}
+			const response = await getsecurity(data)
+			console.log(response)
+		} catch (error) {
+			
+		}
+	}
 	return (
 		<div>
+			{/* <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Account</span> */}
 			<div>
 				{activeIndex === 0 && (
 					<span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Account</span>
@@ -115,24 +148,27 @@ const AccountProfile: React.FC = () => {
 						<div className="flex items-top justify-between mb-6">
 							<div className="flex items-center space-x-4">
 								<img
-									src={profileimg}
+									src={GetImageUrl(profile?.image) ?? undefined}
 									alt="Profile"
 									className="w-[166px] h-[166px] rounded"
 								/>
 								<div>
-									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>Albert Elnstein</h3>
-									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
-									<button className="bg-green-500 h-[38px] w-[107px] text-white  rounded-2xl hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
-										Active
-									</button>
+									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>{profile?.first_name + ' ' + profile?.last_name}</h3>
+									{/* <p className="mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p> */}
+									<img
+										src={actimg}// replace with your actual image path
+										alt="Active"
+										className="inline-block mt-2 w-[90px] h-[38px] rounded-lg"
+										style={{ objectFit: "cover" }} // Optional styling
+									/>
 								</div>
 							</div>
 							<span>
 								<img
-									src={insadmin}
+									src={insadmin}// replace with your actual image path
 									alt="Active"
 									className="inline-block mt-2 w-[173px] h-[48px] rounded-lg"
-									style={{ objectFit: "cover" }}
+									style={{ objectFit: "cover" }} // Optional styling
 								/>
 							</span>
 						</div>
@@ -144,19 +180,19 @@ const AccountProfile: React.FC = () => {
 							<div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm">
 								<div>
 									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_06_light }}>Name</p>
-									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>Chandran R</p>
+									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>{profile?.first_name + ' ' + profile?.last_name}</p>
 								</div>
 								<div>
 									<p className="text-[#716F6F] font-medium mb-1" style={{ ...FONTS.heading_06_light }}>Email</p>
-									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>Chandran1@gmail.com</p>
+									<p className="text-[#716F6F] font-semibold text-base" style={{ ...FONTS.heading_06_bold }}>{profile?.email}</p>
 								</div>
 								<div>
 									<p className="text-[#716F6F] font-medium mb-1 ml-12" style={{ ...FONTS.heading_06_light }}>Status</p>
-									<p className="text-[#3ABE65] font-semibold text-base ml-12" style={{ ...FONTS.heading_06_bold }}>Active</p>
+									<p className="text-[#3ABE65] font-semibold text-base ml-12" style={{ ...FONTS.heading_06_bold }}>{profile?.is_active ? 'Active' : 'Inactive'}</p>
 								</div>
 								<div>
 									<p className="text-[#716F6F] font-medium mb-1 ml-8" style={{ ...FONTS.heading_06_light }}>Contact</p>
-									<p className="text-[#716F6F] font-semibold text-base ml-8" style={{ ...FONTS.heading_06_bold }}>+91 9876556789</p>
+									<p className="text-[#716F6F] font-semibold text-base ml-8" style={{ ...FONTS.heading_06_bold }}>{profile?.phone_number}</p>
 								</div>
 							</div>
 						</div>
@@ -172,7 +208,7 @@ const AccountProfile: React.FC = () => {
 				)}
 				{/* Security Page Content */}
 				{activePanel === 'second' && (
-					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] shadow p-2">
+					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] p-2">
 						<div className="flex flex-col md:flex-row bg-white p-1 rounded-lg  max-w-5xl">
 							<div className=" lg:w-1/2 mb-5 md:mb-0">
 								<h2 className="mb-2 mt-8 text-[#000000] " style={{ ...FONTS.heading_11 }}>Change Password</h2>
@@ -250,7 +286,7 @@ const AccountProfile: React.FC = () => {
 									</button>
 								</div>
 
-								<button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 mt-20 rounded-lg" style={{ ...FONTS.heading_09 }}>
+								<button onClick={handleChangePassword} className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-medium py-2 mt-20 rounded-lg" style={{ ...FONTS.heading_09 }}>
 									Change Password
 								</button>
 							</div>
@@ -262,7 +298,7 @@ const AccountProfile: React.FC = () => {
 					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
 						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(100vh-180px)] scrollbar-hidden">
 
-							{timelineData.map((item, index) => (
+							{timeline?.map((item: any, index:any) => (
 								<div key={index} className="mb-1 ml-4 relative">
 									<div className="absolute -left-[50px] top-0">
 										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-2 mt-0 shadow" style={{ ...FONTS.heading_07 }}>
@@ -277,10 +313,10 @@ const AccountProfile: React.FC = () => {
 									<div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg shadow-md px-4 py-4 w-[500px]" >
 										<h3 className="text-md font-semibold" style={{ ...FONTS.heading_05_bold }}>{item.title}</h3>&nbsp;
 										<p className="text-sm text-gray-600 ">
-											<span className='block mb-3' style={{ ...FONTS.heading_06_light }}>Create</span>
-											<span className="block font-medium" style={{ ...FONTS.heading_06_bold }} >{item.description}</span>
+											<span className='block mb-3' style={{ ...FONTS.heading_06_light }}>{item.action}</span>
+											<span className="block font-medium" style={{ ...FONTS.heading_06_bold }} >{item.details}</span>
 										</p>
-										<p className="text-sm text-gray-500 text-right mt-0" >{item.date}</p>
+										<p className="text-sm text-gray-500 text-right mt-0" >{item.createdAt}</p>
 									</div>
 								</div>
 							))}
