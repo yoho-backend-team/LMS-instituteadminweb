@@ -150,7 +150,10 @@ try{
   }
 
   const id = staff.uuid
+  const uniq_id = staff._id
+
   console.log("id", id)
+  console.log("uniid", uniq_id)
 
 const handleDelete = async () => {
   try {
