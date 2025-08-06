@@ -63,7 +63,7 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
     }
 
     await dispatch(upgradeRequestThunk(plan.id.toString(), actualInstituteId));
-  } catch (error) {
+  } catch (error:any) {
     console.error("Upgrade error:", error);
   }
 };
@@ -168,7 +168,7 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
                   "w-full text-sm border p-3 rounded",
                   isSelected
                     ? " bg-[#1BBFCA] text-white hover:bg-cyan-600 border-white"
-                    : " text-[#1BBFCA] cursor-not-allowed border-[#1BBFCA]"
+                    : " text-[#1BBFCA] border-[#1BBFCA]"
                 )}
                 disabled={isSelected}
                 onClick={() => handleUpgrade(plan)}
