@@ -505,6 +505,10 @@ class Client {
             HttpClient.update(HTTP_END_POINTS.placements.update, params),
         getById: (params: string) =>
             HttpClient.get(HTTP_END_POINTS.placements.getById, params),
+        delete: (params: any) => 
+            HttpClient.delete(HTTP_END_POINTS.placements.delete+params),
+
+
     };
     notificatinsubscription = {
         post: (data: any) =>
