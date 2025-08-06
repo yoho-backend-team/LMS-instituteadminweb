@@ -17,6 +17,7 @@ import StaffSlice from '../features/staff/reducers/slices'
 import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
 import helpCenterFaqs from '../features/HelpCenter/slice'
 import  ticketAdmin from '../features/TicketManagement/YourTicket/slice'
+import faqCategory from '../features/Faq_Category/slice'
 
 const store = configureStore({
 	reducer: {
@@ -37,7 +38,8 @@ const store = configureStore({
 		StaffSlice: StaffSlice,
 		AllNotificationReducer: AllNotificationReducer,
 		helpCenterFaqs: helpCenterFaqs,
-		ticketAdmin: ticketAdmin
+		ticketAdmin: ticketAdmin,
+		faqCategory: faqCategory,
 	},
 })
 

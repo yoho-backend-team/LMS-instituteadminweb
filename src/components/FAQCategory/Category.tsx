@@ -11,17 +11,35 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { faqCategory } from "../../features/Faq_Category/selector";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
+import { createFaqCategories, deleteFaqCategories, updateFaqCategories } from "../../features/Faq_Category/service";
 
 type Category = {
   id: number;
+  uuid: string;
   title: string;
-  createdBy: string;
-  status: "Active" | "Inactive";
+  category_name: string;
+  description: string;
+  is_active: boolean;
+  createdBy?: string;
+  status?: "Active" | "Inactive";
 };
 
+
 const initialCategories: Category[] = [
-  { id: 1, title: "Certificate Issue", createdBy: "Sara", status: "Active" },
-  { id: 2, title: "Login Issue", createdBy: "Peater", status: "Inactive" },
+  {
+    id: 1, title: "Certificate Issue", createdBy: "Sara", status: "Active",
+    uuid: "",
+    category_name: "",
+    description: "",
+    is_active: false
+  },
+  {
+    id: 2, title: "Login Issue", createdBy: "Peater", status: "Inactive",
+    uuid: "",
+    category_name: "",
+    description: "",
+    is_active: false
+  },
 ];
 
 const FaqCategory: React.FC = () => {
@@ -39,9 +57,11 @@ const FaqCategory: React.FC = () => {
 
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [selectedUUid,setSelectedUUId] = useState<any>();
 
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [deleteCategoryIndex, setDeleteCategoryIndex] = useState<number | null>(null);
+  const [deleteCategoryUuid, setDeleteCategoryUuid] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (
@@ -57,7 +77,12 @@ const FaqCategory: React.FC = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isFormOpen, isAddSuccessModalOpen, isEditSuccessModalOpen, isDeleteConfirmOpen]);
+  }, [
+    isFormOpen,
+    isAddSuccessModalOpen,
+    isEditSuccessModalOpen,
+    isDeleteConfirmOpen,
+  ]);
 
   const toggleStatus = (index: number) => {
     setOpenStatusIndex(openStatusIndex === index ? null : index);
@@ -67,15 +92,32 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
-  const handleStatusChange = (
-    index: number,
-    newStatus: "Active" | "Inactive"
-  ) => {
-    const updated = [...categories];
-    updated[index].status = newStatus;
-    setCategories(updated);
-    setOpenStatusIndex(null);
+  const handleStatusChange = async (
+  index: number,
+  newStatus: "Active" | "Inactive",
+  uuid: string,
+) => {
+  const Uuid = uuid;
+
+  const payload = {
+    is_active: newStatus === "Active"
   };
+
+  try {
+    await updateFaqCategories(Uuid, payload); 
+    dispatch(fetchFaqCategoryThunk({
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    }));
+  } catch (error) {
+    console.error("Failed to update status:", error);
+    alert("Failed to update status. Please try again.");
+  }
+
+  setOpenStatusIndex(null);
+};
 
   const openAddForm = () => {
     setIsEditing(false);
@@ -85,65 +127,110 @@ const FaqCategory: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const openEditForm = (category: Category) => {
-    setIsEditing(true);
-    setEditCategoryId(category.id);
-    setNewTitle(category.title);
-    setNewDescription("");
-    setIsFormOpen(true);
-  };
+ const openEditForm = (category: Category) => {
+  setIsEditing(true);
+  setEditCategoryId(category.id);
+  setNewTitle(category.category_name || ""); 
+  setNewDescription(category.description || "");
+  setSelectedUUId(category.uuid);
+  setIsFormOpen(true);
+};
 
+  const dispatch = useDispatch<any>();
+  const category = useSelector(faqCategory);
 
-  const handleSubmit = () => {
-    if (newTitle.trim() === "") return;
+  console.log("category", category);
 
-    if (isEditing && editCategoryId !== null) {
-      const updatedCategories = categories.map((cat) =>
-        cat.id === editCategoryId
-          ? { ...cat, title: newTitle, createdBy: cat.createdBy }
-          : cat
-      );
-      setCategories(updatedCategories);
-      setIsEditSuccessModalOpen(true);
-    } else {
-      const newCat: Category = {
-        id: categories.length + 1,
-        title: newTitle,
-        createdBy: "Admin",
-        status: "Active",
-      };
-      setCategories([...categories, newCat]);
+  useEffect(() => {
+    const params = {
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    };
+
+    dispatch(fetchFaqCategoryThunk(params));
+  }, [dispatch]);
+
+ const handleSubmit = async () => {
+  if (newTitle.trim() === "") return;
+
+  if (isEditing && editCategoryId !== null) {
+    const  uuid = selectedUUid;
+    const payload = {
+      category_name: newTitle,
+      description: newDescription,
+    };
+
+    updateFaqCategories(uuid, payload)
+    setIsEditSuccessModalOpen(true);
+    setSelectedUUId(null);
+  } else {
+    
+    const payload = {
+      category_name: newTitle,
+      description: newDescription,
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      institute_id: "67f3a26df4b2c530acd16419",
+    };
+
+    try {
+      await createFaqCategories(payload);
+      dispatch(fetchFaqCategoryThunk({
+        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        page: 1,
+        perPage: 10,
+      }));
       setIsAddSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Failed to add FAQ category:", error);
+      alert("Failed to add FAQ category. Please try again.");
     }
+  }
 
-    setNewTitle("");
-    setNewDescription("");
-    setIsFormOpen(false);
-  };
+  setNewTitle("");
+  setNewDescription("");
+  setIsFormOpen(false);
+};
 
-  const openDeleteConfirm = (index: number) => {
-    setDeleteCategoryIndex(index);
-    setIsDeleteConfirmOpen(true);
-    setOpenActionIndex(null);
-  };
 
-  const confirmDelete = () => {
-    if (deleteCategoryIndex === null) return;
-    const updated = categories.filter((_, i) => i !== deleteCategoryIndex);
-    setCategories(updated);
-    setIsDeleteConfirmOpen(false);
-    setDeleteCategoryIndex(null);
+  const openDeleteConfirm = (uuid: string) => {
+  setDeleteCategoryUuid(uuid);
+  setIsDeleteConfirmOpen(true);
+  setOpenActionIndex(null);
+};
+
+  const confirmDelete = async () => {
+  if (!deleteCategoryUuid) return;
+
+  try {
+    await deleteFaqCategories(deleteCategoryUuid);
+    dispatch(fetchFaqCategoryThunk({
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    }));
     setIsAddSuccessModalOpen(true);
-  };
+  } catch (error) {
+    console.error("Delete failed:", error);
+  }
+
+  setIsDeleteConfirmOpen(false);
+  setDeleteCategoryUuid(null);
+};
 
   const cancelDelete = () => {
     setIsDeleteConfirmOpen(false);
-    setDeleteCategoryIndex(null);
+    setDeleteCategoryUuid(null);
   };
 
-  const filtered = categories.filter((c) =>
-    c.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = Array.isArray(category)
+    ? category.filter((c: any) =>
+        c?.category_name?.toLowerCase?.().includes(search.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="w-full h-fit bg-white font-poppins py-6 px-4">
@@ -177,15 +264,15 @@ const FaqCategory: React.FC = () => {
           <div>Actions</div>
         </div>
         <div className="flex flex-col gap-3 mt-3">
-          {filtered.map((cat, index) => (
+          {filtered.map((cat: any, index: any) => (
             <div
               key={cat.id}
               className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]  text-[#7D7D7D]  text-sm rounded-md relative"
             >
               <div>{cat.id}</div>
               <div>
-                <p className="font-semibold">{cat.title}</p>
-                <p className="text-[#7D7D7D]">{cat.createdBy}</p>
+                <p className="font-semibold">{cat.category_name}</p>
+                <p className="text-[#7D7D7D]">{cat.description}</p>
               </div>
 
               {/* Status Dropdown */}
@@ -194,20 +281,20 @@ const FaqCategory: React.FC = () => {
                   className="flex items-center gap-1 text-sm"
                   onClick={() => toggleStatus(index)}
                 >
-                  {cat.status}
+                  {cat.is_active ? "Active" : "Inactive"}
                   <img src={dropdownIcon} alt="dropdown" className="w-3 h-3" />
                 </button>
 
                 {openStatusIndex === index && (
                   <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
                     <button
-                      onClick={() => handleStatusChange(index, "Active")}
+                      onClick={() => handleStatusChange(index, "Active", cat.uuid)}
                       className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
                     >
                       Active
                     </button>
                     <button
-                      onClick={() => handleStatusChange(index, "Inactive")}
+                      onClick={() => handleStatusChange(index, "Inactive", cat.uuid)}
                       className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
                     >
                       Inactive
@@ -231,13 +318,14 @@ const FaqCategory: React.FC = () => {
                       onClick={() => {
                         openEditForm(cat);
                         setOpenActionIndex(null);
+                        setSelectedUUId(cat.uuid);
                       }}
                     >
                       <img src={edit} alt="Edit" className="w-4 h-4" />
                       Edit
                     </button>
                     <button
-                      onClick={() => openDeleteConfirm(index)}
+                      onClick={() => openDeleteConfirm(cat.uuid)}
                       className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
                     >
                       <img src={deleteIcon} alt="Delete" className="w-4 h-4" />
@@ -302,7 +390,11 @@ const FaqCategory: React.FC = () => {
       {isAddSuccessModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Added!
             </h2>
@@ -320,7 +412,11 @@ const FaqCategory: React.FC = () => {
       {isEditSuccessModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Updated!
             </h2>
@@ -338,7 +434,11 @@ const FaqCategory: React.FC = () => {
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
-            <img src={warning} alt="Warning" className="mx-auto w-20 h-20 mb-4" />
+            <img
+              src={warning}
+              alt="Warning"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-2xl font-semibold text-[#716F6F] mb-2">
               Confirm Delete
             </h2>
