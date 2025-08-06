@@ -35,7 +35,7 @@ interface activityId {
 }
 
 
-const Activitypage: React.FC = (activityId) => {
+const Activitypage: React.FC<activityId> = (activityId) => {
   const dispatch = useDispatch<any>();
   const activity = useSelector(selectActivity);
   const activityData = activity?.data?.logs || [];

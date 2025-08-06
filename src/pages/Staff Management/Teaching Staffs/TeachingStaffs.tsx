@@ -195,7 +195,8 @@ const TeachingStaffs: React.FC = () => {
   },[])
 
   
-
+  
+  
 
 
   return (
@@ -208,13 +209,18 @@ const TeachingStaffs: React.FC = () => {
 
           <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className='flex items-center gap-4'>
-              <input type="file" />
+              <input type="file"
+                accept = ".pdf,.jpg,.jpeg,.png"
+                ref={fileInputRef}
+                onChange={handleFileChange} />
               <div>
                 <p style={{...FONTS.heading_05_bold,color:COLORS.gray_dark_02}}>Profile Picture</p>
                 <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Allowed PNG or JPEG. Max size of 800k.</p>
               </div>
             </div>
-            <Button className="bg-green-500 hover:bg-green-600 text-white">
+            <Button
+            onClick = {handleUploadClick}
+            className="bg-green-500 hover:bg-green-600 text-white">
               Upload Profile Picture
             </Button>
           </div>
