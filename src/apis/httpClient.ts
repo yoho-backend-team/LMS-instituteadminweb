@@ -37,12 +37,10 @@ Axios.interceptors.response.use(
 			error?.response?.data?.message ===
 				'Subscription limit reached. Update your subscription plan.'
 		) {
-			ClearLocalStorage();
-			window.location.reload();
 			UpgradeModal({
-				onClose: () => {
-					// Handle modal close action, e.g., redirect to upgrade page
-					window.location.href = '/login';
+				onClose: () => {},
+				onUpgrade: () => {
+					window.location.href = '/subscription/upgrade';
 				},
 			});
 		}

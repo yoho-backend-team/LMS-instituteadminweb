@@ -2,9 +2,10 @@ import React from 'react';
 
 interface UpgradeModalProps {
 	onClose: () => void;
+	onUpgrade: () => void;
 }
 
-const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose }) => {
+const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
 	return (
 		<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50'>
 			<div className='bg-black text-white p-6 rounded-lg flex flex-col md:flex-row gap-6 w-full max-w-3xl shadow-lg'>
@@ -48,7 +49,10 @@ const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose }) => {
 							Support
 						</li>
 					</ul>
-					<button className='mt-6 w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded'>
+					<button
+						onClick={onUpgrade}
+						className='mt-6 w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded'
+					>
 						Upgrade Now
 					</button>
 				</div>
