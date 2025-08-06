@@ -249,6 +249,9 @@ const generateEndpoints = () => {
 			getall: '/api/helpcenter/',
 			delete: '/api/helpcenter/delete/',
 			update: '/api/helpcenter/update/',
+		},
+		refund: {
+			getall: '/api/institutes/payments/refund/all',
 		}
 	};
 };

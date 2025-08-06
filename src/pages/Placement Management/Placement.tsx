@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "../../components/ui/table";
 import PlacementForm from "./PlacementForm";
+import { useDispatch, useSelector } from "react-redux";
+import {  createPlacementThunk, getAllPlacemetsThunk, getPlacementByIdThunk, getStudentsThunk } from "../../features/placementManagement/Reducer/thunk";
+
 
 interface Placement {
   id: number;
@@ -111,48 +114,138 @@ const initialPlacements: Placement[] = [
 ];
 const Placements = () => {
   const [showForm, setShowForm] = useState(false);
-  const [placements, setPlacements] = useState<Placement[]>(initialPlacements);
+  //const [placements, setPlacements] = useState<Placement[]>(initialPlacements);
+  const placements = useSelector((state:any)=>state.placements.placements);
+  const placementDetails = useSelector((state: any) => state.placements.placementById);
+  const dispatch = useDispatch()
   const [editingPlacement, setEditingPlacement] = useState<Placement | null>(null);
 
-  const handleAddPlacement = (formData: any) => {
-    const newPlacement = {
-      id: editingPlacement ? editingPlacement.id : placements.length + 1,
-      studentName: formData.selectedStudents?.[0]?.label.split(' (')[0] ||
-        (editingPlacement ? editingPlacement.studentName : 'New Student'),
-      email: formData.selectedStudents?.[0]?.label.match(/\(([^)]+)\)/)?.[1] ||
-        (editingPlacement ? editingPlacement.email : 'student@example.com'),
-      companyName: formData.companyName,
-      companyAddress: formData.companyAddress,
-      contactEmail: formData.contactEmail,
-      contactNumber: formData.contactNumber,
-      interviewDate: formData.interviewDate,
-      jobName: formData.jobName,
-      jobDescription: formData.jobDescription,
-      skills: formData.skills || [],
-      venue: formData.venue,
-      address: formData.address,
-      courseName: formData.courseName,
-      education: formData.education
-    };
+  useEffect(() => {
+  dispatch(getAllPlacemetsThunk());
+  dispatch(getPlacementByIdThunk());
+  //dispatch(getStudentsThunk());
+}, [dispatch]);
 
-    setPlacements(prevPlacements =>
-      editingPlacement
-        ? prevPlacements.map(p => p.id === editingPlacement.id ? newPlacement : p)
-        : [...prevPlacements, newPlacement]
-    );
+//   const handleAddPlacement = async(formData: any) => {
+//      const newPlacement = {
+//        id: editingPlacement ? editingPlacement.id : placements.length + 1,
+//        studentName: formData.selectedStudents?.[0]?.label.split(' (')[0] ||
+//          (editingPlacement ? editingPlacement.studentName : 'New Student'),
+//        email: formData.selectedStudents?.[0]?.label.match(/\(([^)]+)\)/)?.[1] ||
+//          (editingPlacement ? editingPlacement.email : 'student@example.com'),
+//        companyName: formData.companyName,
+//        companyAddress: formData.companyAddress,
+//       contactEmail: formData.contactEmail,
+//        contactNumber: formData.contactNumber,
+//        interviewDate: formData.interviewDate,
+//       jobName: formData.jobName,
+//       jobDescription: formData.jobDescription,
+//        skills: formData.skills || [],
+//        venue: formData.venue,
+//        address: formData.address,
+//      courseName: formData.courseName,
+//       education: formData.education
+//      };
 
-    setEditingPlacement(null);
+//   //   // setPlacements(prevPlacements =>
+//   //   //   editingPlacement
+//   //   //     ? prevPlacements.map(p => p.id === editingPlacement.id ? newPlacement : p)
+//   //   //     : [...prevPlacements, newPlacement]
+//   //   // );
+
+//      try {
+//      await dispatch(createPlacementThunk(formData));
+//      console.log("Transformed Payload: ", formData);
+//      setShowForm(false);
+//      setEditingPlacement(null);
+//    } catch (error) {
+//      console.error("Failed to create placement", error);
+//     }
+
+//   //   // setEditingPlacement(null);
+//   //   // setShowForm(false);
+//   // };
+
+//   // const handleEdit = (placement: Placement) => {
+//   //   setEditingPlacement(placement);
+//   //   setShowForm(true);
+//   // };
+
+//   // const handleDelete = (id: number) => {
+//   //   setPlacements(prevPlacements => prevPlacements.filter(PlacemetData => placement.id !== id));
+//   // };
+
+// //  const handleAddPlacement = async (formData: any) => {
+// //   const transformedData = {
+// //     company: {
+// //       name: formData.companyName || "",
+// //       email: formData.contactEmail || "",
+// //       phone: Number(formData.contactNumber) || 0, 
+// //       address: formData.companyAddress || "",
+// //     },
+// //     job: {
+// //       name: formData.jobName || "",
+// //       description: formData.jobDescription || "",
+// //       skils: formData.skills?.map((s: any) => s.value) || [], 
+// //     },
+// //     schedule: {
+// //       interviewDate: formData.interviewDate || new Date().toISOString(),
+// //       venue: formData.venue || "",
+// //       address: formData.address || "",
+// //     },
+// //     eligible: {
+// //       courseName: formData.courseName || "",
+// //       education: formData.education ? [formData.education] : [],
+// //     },
+// //     student: ["64fa1cbad3c6f20012c3ab2d"]
+// //     //  institute will be added inside the service using localStorage
+// //   };
+
+// //   try {
+// //     await dispatch(createPlacementThunk(transformedData));
+// //     console.log("Transformed Payload: ", transformedData);
+// //     setShowForm(false);
+// //     setEditingPlacement(null);
+// //   } catch (error) {
+// //     console.error("Failed to create placement", error);
+// //   }
+//  };
+
+ const handleAddPlacement = async (formData: any) => {
+  const transformedData = {
+    company: {
+      name: formData.companyName || "",
+      email: formData.contactEmail || "",
+      phone: Number(formData.contactNumber) || 0,
+      address: formData.companyAddress || "",
+    },
+    job: {
+      name: formData.jobName || "",
+      description: formData.jobDescription || "",
+      skills: formData.skills?.map((s: any) => s.value) || [],
+    },
+    schedule: {
+      interviewDate: formData.interviewDate || new Date().toISOString(),
+      venue: formData.venue || "",
+      address: formData.address || "",
+    },
+    eligible: {
+      courseName: formData.courseName || "",
+      education: formData.education ? [formData.education] : [],
+    },
+    student: formData.selectedStudents?.map((s: any) => s.value) || []
+  };
+
+  try {
+    await dispatch(createPlacementThunk(transformedData));
+    console.log("Transformed Payload: ", transformedData);
     setShowForm(false);
-  };
+    setEditingPlacement(null);
+  } catch (error) {
+    console.error("Failed to create placement", error);
+  }
+};
 
-  const handleEdit = (placement: Placement) => {
-    setEditingPlacement(placement);
-    setShowForm(true);
-  };
-
-  const handleDelete = (id: number) => {
-    setPlacements(prevPlacements => prevPlacements.filter(placement => placement.id !== id));
-  };
 
   return (
     <div className="space-y-4 p-4">
@@ -212,15 +305,17 @@ const Placements = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {placements.map((placement) => (
-              <TableRow key={placement.id} className="hover:bg-gray-50">
-                <TableCell className="px-6 py-4">{placement.studentName}</TableCell>
-                <TableCell className="px-6 py-4">{placement.email}</TableCell>
-                <TableCell className="px-6 py-4">{placement.companyName}</TableCell>
+            {placements.map((placement:any) => (
+              <TableRow key={placement._id} className="hover:bg-gray-50">
+                <TableCell className="px-6 py-4">{placement.student?.[0]?.full_name ?? "N/A"}</TableCell>
+                <TableCell className="px-6 py-4">{placement.student?.[0]?.email ?? "N/A"}</TableCell>
+                <TableCell className="px-6 py-4">{placement.company?.name ?? "N/A"}</TableCell>
                 <TableCell className="px-6 py-4">
-                  {new Date(placement.interviewDate).toLocaleDateString()}
+                    {placement.schedule?.interviewDate
+          ? new Date(placement.schedule.interviewDate).toLocaleDateString()
+          : "N/A"}
                 </TableCell>
-                <TableCell className="px-6 py-4">{placement.jobName}</TableCell>
+                <TableCell className="px-6 py-4">{placement.job?.name ?? "N/A"}</TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
                   <Button
                     variant="ghost"
