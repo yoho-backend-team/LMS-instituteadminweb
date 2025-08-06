@@ -332,6 +332,8 @@ class Client {
 				HTTP_END_POINTS.student.getall.replace(':courseUUID', params?.uuid),
 				{}
 			),
+		getWithCourse: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.student.getWithCourse, params),
 	};
 	community = {
 		getAll: (data: any) =>
