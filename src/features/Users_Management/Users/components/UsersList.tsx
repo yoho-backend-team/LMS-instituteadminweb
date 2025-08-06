@@ -9,8 +9,10 @@ import {
 import { COLORS, FONTS } from "../../../../constants/uiConstants";
 import { GetImageUrl } from "../../../../utils/helper";
 import { SlOptionsVertical } from "react-icons/sl";
-import CardOptions from "./cardOptions";
+import CardOptions from "./CardOptions";
 import { useState } from "react";
+import { updateUserStatus } from "../service";
+import warning  from "../../../../assets/warningimg.png"
 
 interface UserDetail {
   image?: string;
@@ -36,9 +38,29 @@ type props = {
 
 const UsersList: React.FC<props> = ({ Users }) => {
     const [cardOptionsShow, setCardOptionsShow] = useState<number | null>(null);
+    const [statusValue, setStatusValue] = useState<string>();
+    const [userId, setUserId] = useState<string>();
+    const [alertModal, setAlertModal] = useState<boolean>(false)
+
+    const handleStatusValue = (value:string, userId:string) => {
+        setAlertModal(true)
+        setStatusValue(value);
+        setUserId(userId);
+    }
+
+    const handleUpdateStatus = async() => {
+        const userStatus = statusValue === "active" ? true : false 
+        const data = {
+            is_active: userStatus,
+            userId: userId
+        }
+
+        const response = await updateUserStatus(data);
+        setAlertModal(false)
+    }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Users?.map((card, index)=> (<div key={index} className="shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px] p-[16px] grid gap-[20px] bg-white">
                 <div className="flex gap-3.5 items-center justify-between relative">
                     <div className="flex gap-4">
@@ -84,7 +106,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
                         <span className="font-bold">{card?.role?.identity}</span>
                     </p>
 
-                    <Select>
+                    <Select onValueChange={(value)=> handleStatusValue(value, card.uuid)}>
                         <SelectTrigger
                             className={`w-[110px] h-[48px] border text-white rounded-[8px] pr-[16px] pl-[16px] bg-[${COLORS.primary}]`}
                         >
@@ -111,6 +133,42 @@ const UsersList: React.FC<props> = ({ Users }) => {
                     </Select>
                 </div>
             </div>))}
+            {alertModal && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40">
+                    <div className='fixed z-50 left-1/2 top-1/2 transform lg:-translate-x-1/4 lg:-translate-y-1/4 md:-translate-x-1/3 md:-translate-y-1/3  w-[402px] h-[279px] bg-white rounded-[12px] flex flex-col gap-[30px] p-4 justify-center items-center'>
+                        <div className='grid gap-2'>
+                            <img
+                                className='w-[100px] h-[100px] mx-auto'
+                                src={warning}
+                                alt="Warning"
+                            />
+                            <h2 className={`text-[${COLORS.gray_dark_02}] text-center`} style={{ ...FONTS.heading_04_bold }}>
+                                Confirm Action
+                            </h2>
+                            <p className={`text-[${COLORS.gray_light}] text-center`} style={{ ...FONTS.heading_07 }}>
+                                Are you sure you want to change the status?
+                            </p>
+                        </div>
+                        <div className='flex gap-5'>
+                            <button
+                                onClick={() => setAlertModal(false)}
+                                style={{ ...FONTS.heading_08_bold }}
+                                className={`bg-[#D7F6F5] border border-[#1BBFCA] px-4 h-[40px] rounded-[8px] flex items-center gap-2 text-[#1BBFCA]`}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleUpdateStatus}
+                                type='submit'
+                                style={{ ...FONTS.heading_08_bold }}
+                                className='bg-[#1BBFCA] px-4 h-[40px] rounded-[8px] flex items-center gap-2 text-white'
+                            >
+                                Yes, Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

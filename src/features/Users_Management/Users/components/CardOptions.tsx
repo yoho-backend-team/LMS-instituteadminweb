@@ -67,7 +67,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
                                 Confirm Action
                             </h2>
                             <p className={`text-[${COLORS.gray_light}] text-center`} style={{ ...FONTS.heading_07 }}>
-                                Are you sure you want to change the status?
+                                Are you sure you want to delete the user?
                             </p>
                         </div>
                         <div className='flex gap-5'>
@@ -84,7 +84,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
                                 style={{ ...FONTS.heading_08_bold }}
                                 className='bg-[#1BBFCA] px-4 h-[40px] rounded-[8px] flex items-center gap-2 text-white'
                             >
-                                Yes, Status
+                                Delete
                             </button>
                         </div>
                     </div>
