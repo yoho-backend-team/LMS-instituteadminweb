@@ -18,25 +18,27 @@ import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
 import { Button } from '../../ui/button';
 import EditOfflineClass from './editOfflineClass';
+import toast from 'react-hot-toast';
+import { deleteOfflineClass } from '../../../features/Class Management/offlineClass/services';
 
 interface BatchCardProps {
 	title: string;
-	 students: any;
-	 startDate: string;
-	 endTime: string;
-	 startTime: string;
-	// data:any;
-	// fetchAllOfflineClasses?.()=>void;
+	students: any;
+	startDate: string;
+	endTime: string;
+	startTime: string;
+	classData: any;
+	fetchAllofflineClasses?: () => void;
 }
 
 const offlineClassCard: React.FC<BatchCardProps> = ({
 	title,
-	 students,
-	 startDate,
-    endTime,
+	students,
+	startDate,
+	endTime,
 	startTime,
-	// data,
-	// fetchAllofflineClasses,
+	classData,
+	fetchAllofflineClasses,
 }) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -46,16 +48,36 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = () => {
-		console.log('Deleted');
+	const handleConfirmDelete = async () => {
+		try {
+			const response = await deleteOfflineClass({ uuid: classData?.uuid });
+			if (response) {
+				toast.success('Offline class deleted successfully');
+				if (fetchAllofflineClasses) {
+					fetchAllofflineClasses();
+				}
+				closeDeleteModal();
+			} else {
+				toast.success('Offline class deleted successfully');
+				closeDeleteModal();
+			}
+		} catch (error) {
+			console.error('Error deleting Offline class:', error);
+		} finally {
+			closeDeleteModal();
+			if (fetchAllofflineClasses) {
+				fetchAllofflineClasses();
+			}
+		}
 	};
 
 	const navigate = useNavigate();
-	const data = { title, students, startDate, endTime, startTime };
-console.log(data,'dataaaaaaaaaaaaaaaaa')
+
 	// Format date as DD/MM/YYYY
 	const formattedDate = new Date(startDate);
-	const displayDate = `${formattedDate.getDate()}/${formattedDate.getMonth() + 1}/${formattedDate.getFullYear()}`;
+	const displayDate = `${formattedDate.getDate()}/${
+		formattedDate.getMonth() + 1
+	}/${formattedDate.getFullYear()}`;
 
 	// Function to format time as 1.00 AM/PM
 	const getFormattedTime = (timeString: string) => {
@@ -67,50 +89,56 @@ console.log(data,'dataaaaaaaaaaaaaaaaa')
 		return `${formattedHour}.${minutes} ${ampm}`;
 	};
 
-	const displayTimeRange = `${getFormattedTime(startTime)} - ${getFormattedTime(endTime)}`;
-
-	console.log(data, 'data1')
+	const displayTimeRange = `${getFormattedTime(startTime)} - ${getFormattedTime(
+		endTime
+	)}`;
 
 	return (
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
-			<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
-								<div className='flex justify-between gap-35'>
-									<div className='flex flex-col items-center gap-2'>
-										<p style={{ ...FONTS.heading_09 }}>
-											{data?.batch?.student?.length}{' '}
-											{data?.batch?.student?.length === 1 ? 'student' : 'students'}
-										</p>
-										<div className='flex'>
-											{data?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
-												<img
-													key={studentImg?._id}
-													src={GetImageUrl(studentImg?.image) ?? undefined}
-													alt={studentImg?.full_name}
-													title={studentImg?.full_name}
-													className='w-12 h-12 rounded-full '
-												/>
-											))}
-										</div>
-									</div>
-									<div className='flex flex-col items-center gap-2'>
-										<p style={{ ...FONTS.heading_09 }}>
-											{data?.instructors?.length}{' '}
-											{data?.instructors?.length === 1 ? 'instructor' : 'instructors'}
-										</p>
-										<div className='flex'>
-											{data?.instructors?.slice(0, 3)?.map((studentImg: any) => (
-												<img
-													key={studentImg?._id}
-													src={GetImageUrl(studentImg?.image) ?? undefined}
-													alt={studentImg?.full_name}
-													title={studentImg?.full_name}
-													className='w-12 h-12 rounded-full '
-												/>
-											))}
-										</div>
-									</div>
-								</div>
+				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
+					<div className='flex justify-between gap-35'>
+						<div className='flex flex-col items-center gap-2'>
+							<p style={{ ...FONTS.heading_09 }}>
+								{classData?.batch?.student?.length}{' '}
+								{classData?.batch?.student?.length === 1
+									? 'student'
+									: 'students'}
+							</p>
+							<div className='flex'>
+								{classData?.batch?.student
+									?.slice(0, 3)
+									?.map((studentImg: any) => (
+										<img
+											key={studentImg?._id}
+											src={GetImageUrl(studentImg?.image) ?? undefined}
+											alt={studentImg?.full_name}
+											title={studentImg?.full_name}
+											className='w-12 h-12 rounded-full '
+										/>
+									))}
+							</div>
+						</div>
+						<div className='flex flex-col items-center gap-2'>
+							<p style={{ ...FONTS.heading_09 }}>
+								{classData?.instructors?.length}{' '}
+								{classData?.instructors?.length === 1
+									? 'instructor'
+									: 'instructors'}
+							</p>
+							<div className='flex'>
+								{classData?.instructors?.slice(0, 3)?.map((studentImg: any) => (
+									<img
+										key={studentImg?._id}
+										src={GetImageUrl(studentImg?.image) ?? undefined}
+										alt={studentImg?.full_name}
+										title={studentImg?.full_name}
+										className='w-12 h-12 rounded-full '
+									/>
+								))}
+							</div>
+						</div>
+					</div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<button
@@ -124,8 +152,8 @@ console.log(data,'dataaaaaaaaaaaaaaaaa')
 						<DropdownMenuContent className='bg-white rounded-lg shadow-xl w-[120px] p-2 z-20 space-y-2'>
 							<DropdownMenuItem
 								onClick={() =>
-									navigate(`/view-student/${title}`, {
-										state: { data },
+									navigate(`/view-student/${classData?.uuid}`, {
+										state: { classData },
 									})
 								}
 								className='group border border-gray-300 text-black font-semibold text-sm rounded-md px-3 py-2 flex items-center gap-2 cursor-pointer'
@@ -180,24 +208,17 @@ console.log(data,'dataaaaaaaaaaaaaaaaa')
 					</p>
 
 					<div className='flex items-center justify-between mt-3'>
-					<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
-						{students?.length == 0
-						? 'No students in this class'
-						: `${students} students on this class`}
-					</p>
+						<p style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
+							{classData?.batch?.student?.length == 0
+								? 'No students in this class'
+								: `${classData?.batch?.student?.length} students on this class`}
+						</p>
 					</div>
-
 
 					<div className='mt-2 flex gap-2'>
 						<CalendarDays color={COLORS.gray_light} />
 						<p style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}>
-							{displayDate}
-						</p>
-					</div>
-
-					<div className='mt-2 flex gap2'>
-						<p style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}>
-							{displayTimeRange}
+							{displayDate} | {displayTimeRange}
 						</p>
 					</div>
 				</div>
@@ -205,8 +226,8 @@ console.log(data,'dataaaaaaaaaaaaaaaaa')
 				<div className='mt-5 flex justify-end'>
 					<Button
 						onClick={() =>
-							navigate(`/view-student/${title}`, {
-								state: { data },
+							navigate(`/view-student/${classData?.uuid}`, {
+								state: { classData },
 							})
 						}
 						className='bg-[#3ABE65] p-3 text-white hover:bg-[#3ABE65]'
@@ -217,7 +238,12 @@ console.log(data,'dataaaaaaaaaaaaaaaaa')
 				</div>
 			</CardContent>
 
-			<EditOfflineClass isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditOfflineClass
+				classData={classData}
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				fetchAllofflineClasses={fetchAllofflineClasses}
+			/>
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}
 				onClose={closeDeleteModal}

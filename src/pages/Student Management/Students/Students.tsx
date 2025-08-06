@@ -19,6 +19,7 @@ import type { AppDispatch } from "recharts/types/state/store"
 import { selectStudent } from "../../../features/StudentManagement/reducer/selector"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import { GetImageUrl } from "../../../utils/helper"
+import { createstudentdata } from "../../../features/StudentManagement/services/Student"
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false)
@@ -31,22 +32,39 @@ const Students = () => {
 
   // State for the new student form
   const [newStudentForm, setNewStudentForm] = useState({
-    fullName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     dob: "",
     gender: "",
     qualification: "",
     branch: "",
     course: "",
-    addressLine1: "",
-    addressLine2: "",
+    address1: "",
+    address2: "",
     city: "",
     state: "",
-    pinCode: "",
-    phoneNumber: "",
-    altPhoneNumber: "",
+    pincode: "",
+    phone_number: "",
+    alternate_phone_number: "",
+    image: null as File | string | null,
   })
+
+  const handleFileUpload = (file: File) => {
+  // Check file type
+  if (!['image/jpeg', 'image/png'].includes(file.type)) {
+    alert('Only JPEG and PNG files are allowed');
+    return;
+  }
+
+  // Check file size (2MB max)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('File size must be less than 2MB');
+    return;
+  }
+
+  setNewStudentForm(prev => ({...prev, image: file}));
+};
 
   const toggleFilters = () => setShowFilters(!showFilters)
   const toggleAddStudent = () => setShowAddStudent(!showAddStudent)
@@ -57,36 +75,64 @@ const Students = () => {
   }
 
   const handleAddNewStudent = () => {
-    const studentToAdd = {
-      name: `${newStudentForm.fullName} ${newStudentForm.lastName}`,
+    const payload = {
+      first_name: newStudentForm.first_name,
+      last_name: newStudentForm.last_name,
       email: newStudentForm.email,
-      location: `${newStudentForm.city}, ${newStudentForm.state}`,
-    }
+      dob: newStudentForm.dob,
+      gender: newStudentForm.gender,
+      qualification: newStudentForm.qualification,
+      course: "1958e331-84ce-464b-8865-eb06c6189414",
+      contact_info: {
+        address1: newStudentForm.address1,
+        address2: newStudentForm.address2,
+        city: newStudentForm.city,
+        state: newStudentForm.state,
+        pincode: newStudentForm.pincode,
+        phone_number: newStudentForm.phone_number,
+        alternate_phone_number: newStudentForm.alternate_phone_number,
+      },
     
- 
-    setNewStudentForm({
-      fullName: "",
-      lastName: "",
-      email: "",
-      dob: "",
-      gender: "",
-      qualification: "",
-      branch: "",
-      course: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      pinCode: "",
-      phoneNumber: "",
-      altPhoneNumber: "",
-    })
-    setShowAddStudent(false)
+      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", 
+      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", 
+      type: "payment" 
+    }
+
+    console.log("Submitting payload:", payload);
+    
+    dispatch(createstudentdata(payload))
+      .unwrap()
+      .then(() => {
+        // Reset form and close modal on success
+        setNewStudentForm({
+          first_name: "",
+          last_name: "",
+          email: "",
+          dob: "",
+          gender: "",
+          qualification: "",
+          branch: "",
+          course: "",
+          address1: "",
+          address2: "",
+          city: "",
+          state: "",
+          pincode: "",
+          phone_number: "",
+          alternate_phone_number: "",
+          image: null as File | string | null,
+        })
+        setShowAddStudent(false)
+        // Refresh student list
+        fetchStudentManagement()
+      })
+      .catch((error) => {
+        console.error("Error adding student:", error)
+      })
   }
 
   const studentData = useSelector(selectStudent)
-  console.log(studentData,"sowmi")
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<any>()
 
   const fetchStudentManagement = () => {
     dispatch(getStudentmanagement({
@@ -98,9 +144,6 @@ const Students = () => {
   useEffect(() => {
     fetchStudentManagement()
   }, [])
-
-  
-
 
   const formatStudentData = (data: any) => {
     if (!data || !data.data) return []
@@ -121,11 +164,11 @@ const Students = () => {
       gender: student.gender,
       qualification: student.qualification,
       course: student.course,
-      addressLine1: student.contact_info?.address1,
-      addressLine2: student.contact_info?.address2,
+      address1: student.contact_info?.address1,
+      address2: student.contact_info?.address2,
       city: student.contact_info?.city,
       state: student.contact_info?.state,
-      pinCode: student.contact_info?.pincode,
+      pincode: student.contact_info?.pincode,
       joinedDate: student.created_at,
       status: student.status || 'Active',
       uuid: student?.uuid
@@ -146,19 +189,76 @@ const Students = () => {
     return (
       <div className="p-6">
         <Card className="mb-6 shadow-md">
-          <CardHeader>
-            <h1 className="text-[20px] text-[#1BBFCA] font-bold">Add New Student</h1>
-            <hr></hr>
-            <CardTitle className="text-[20px] font-semibold">Upload Profile Picture</CardTitle>
-            <p className="text-[14px] text-gray-500">Allowed PNG or JPEG. Max size of 2MB.</p>
-          </CardHeader>
-          <CardContent>
-            <div className="border-2 border-black rounded-lg p-12 text-center">
-              <RiUploadCloudFill className="mx-auto text-[#1BBFCA] text-3xl mb-2" />
-              <p className=" text-[14px] text-gray-500">Drop files here or click to upload</p>
-            </div>
-          </CardContent>
-        </Card>
+  <CardHeader>
+    <h1 className="text-[20px] text-[#1BBFCA] font-bold">Add New Student</h1>
+    <hr></hr>
+    <CardTitle className="text-[20px] font-semibold">Upload Profile Picture</CardTitle>
+    <p className="text-[14px] text-gray-500">Allowed PNG or JPEG. Max size of 2MB.</p>
+  </CardHeader>
+  <CardContent>
+    <div 
+      className="border-2  border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative"
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.currentTarget.classList.add('border-[#1BBFCA]', 'bg-[#1BBFCA]/10');
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('border-[#1BBFCA]', 'bg-[#1BBFCA]/10');
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('border-[#1BBFCA]', 'bg-[#1BBFCA]/10');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handleFileUpload(e.dataTransfer.files[0]);
+        }
+      }}
+      onClick={() => document.getElementById('file-upload')?.click()}
+    >
+      <input
+        id="file-upload"
+        type="file"
+        accept="image/png, image/jpeg"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handleFileUpload(e.target.files[0]);
+          }
+        }}
+      />
+      {newStudentForm.image ? (
+        <div className="flex flex-col items-center">
+          <img 
+            src={typeof newStudentForm.image === 'string' 
+                 ? newStudentForm.image 
+                 : URL.createObjectURL(newStudentForm.image)}
+            alt="Preview"
+            className="h-32 w-32 rounded-full object-cover mb-4"
+          />
+          <p className="text-[14px] text-gray-700">{typeof newStudentForm.image === 'string' 
+            ? 'Image uploaded' 
+            : newStudentForm.image.name}</p>
+          <Button
+            variant="ghost"
+            className="mt-2 text-red-500 hover:text-red-700"
+            onClick={(e) => {
+              e.stopPropagation();
+              setNewStudentForm(prev => ({...prev, image: null}));
+            }}
+          >
+            Remove
+          </Button>
+        </div>
+      ) : (
+        <>
+          <RiUploadCloudFill className="mx-auto text-[#1BBFCA] text-3xl mb-2" />
+          <p className="text-[14px] text-gray-500">Drop files here or click to upload</p>
+         
+        </>
+      )}
+    </div>
+  </CardContent>
+</Card>
 
         <Card className="mb-6 shadow-md">
           <CardHeader>
@@ -167,23 +267,23 @@ const Students = () => {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label htmlFor="fullName" className="text-[16px] font-medium ">
-                Full Name
+              <label htmlFor="first_name" className="text-[16px] font-medium">
+                First Name
               </label>
               <Input
-                id="fullName"
-                value={newStudentForm.fullName}
+                id="first_name"
+                value={newStudentForm.first_name}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="lastName" className="text-[16px] font-medium">
+              <label htmlFor="last_name" className="text-[16px] font-medium">
                 Last Name
               </label>
               <Input
-                id="lastName"
-                value={newStudentForm.lastName}
+                id="last_name"
+                value={newStudentForm.last_name}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
@@ -194,7 +294,7 @@ const Students = () => {
               </label>
               <Input
                 id="email"
-                type="email" 
+                type="email"
                 value={newStudentForm.email}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
@@ -216,12 +316,19 @@ const Students = () => {
               <label htmlFor="gender" className="text-[16px] font-medium">
                 Gender
               </label>
-              <Input
-                id="gender"
+              <Select 
                 value={newStudentForm.gender}
-                onChange={handleInputChange}
-                className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
-              />
+                onValueChange={(value) => setNewStudentForm(prev => ({...prev, gender: value}))}
+              >
+                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent className="border-gray-300 shadow-md bg-white">
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <label htmlFor="qualification" className="text-[16px] font-medium">
@@ -265,23 +372,23 @@ const Students = () => {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label htmlFor="addressLine1" className="text-[16px] font-medium">
+              <label htmlFor="address1" className="text-[16px] font-medium">
                 Address Line 1
               </label>
               <Input
-                id="addressLine1"
-                value={newStudentForm.addressLine1}
+                id="address1"
+                value={newStudentForm.address1}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="addressLine2" className="text-[16px] font-medium">
+              <label htmlFor="address2" className="text-[16px] font-medium">
                 Address Line 2
               </label>
               <Input
-                id="addressLine2"
-                value={newStudentForm.addressLine2}
+                id="address2"
+                value={newStudentForm.address2}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
@@ -309,34 +416,34 @@ const Students = () => {
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="pinCode" className="text-[16px] font-medium">
+              <label htmlFor="pincode" className="text-[16px] font-medium">
                 Pin Code
               </label>
               <Input
-                id="pinCode"
-                value={newStudentForm.pinCode}
+                id="pincode"
+                value={newStudentForm.pincode}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="phoneNumber" className="text-[16px] font-medium">
+              <label htmlFor="phone_number" className="text-[16px] font-medium">
                 Phone Number
               </label>
               <Input
-                id="phoneNumber"
-                value={newStudentForm.phoneNumber}
+                id="phone_number"
+                value={newStudentForm.phone_number}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="altPhoneNumber" className="text-[16px] font-medium">
+              <label htmlFor="alternate_phone_number" className="text-[16px] font-medium">
                 Alt Phone Number
               </label>
               <Input
-                id="altPhoneNumber"
-                value={newStudentForm.altPhoneNumber}
+                id="alternate_phone_number"
+                value={newStudentForm.alternate_phone_number}
                 onChange={handleInputChange}
                 className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
               />
@@ -451,27 +558,25 @@ const Students = () => {
             className="min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => handleStudentClick(student)}
           >
-            
-             <CardContent className="p-4">
-        <div className="flex justify-center mb-4">
-          <Avatar className="h-20 w-20 rounded-lg">
-            <AvatarImage
-              src={GetImageUrl(student?.image) ?? undefined}
-              alt={student?.name || "Student"}
-              className="rounded-lg object-cover"
-            />
-            
-          </Avatar>
-        </div>
+            <CardContent className="p-4">
+              <div className="flex justify-center mb-4">
+                <Avatar className="h-20 w-20 rounded-lg">
+                  <AvatarImage
+                    src={GetImageUrl(student?.image) ?? undefined}
+                    alt={student?.name || "Student"}
+                    className="rounded-lg object-cover"
+                  />
+                </Avatar>
+              </div>
 
-        <h5 className="text-[20px] font-semibold text-center">{student.name}</h5>
-        <p className="text-[16px] text-gray-500 text-center">{student.email}</p>
+              <h5 className="text-[20px] font-semibold text-center">{student.name}</h5>
+              <p className="text-[16px] text-gray-500 text-center">{student.email}</p>
 
-        <div className="flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]">
-          <img className="w-5 h-5" src={location} alt="Location" />
-          <span>{student.location}</span>
-        </div>
-      </CardContent>
+              <div className="flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]">
+                <img className="w-5 h-5" src={location} alt="Location" />
+                <span>{student.location}</span>
+              </div>
+            </CardContent>
 
             <CardFooter className="flex justify-center gap-[30px] items-center px-4 pb-4">
               <img className="w-8 h-8" src={call} alt="Call" />
