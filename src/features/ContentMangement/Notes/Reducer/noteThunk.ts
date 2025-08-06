@@ -7,6 +7,7 @@ import {
   deleteNote,
   setBranches,
   setCourses,
+  updateNoteStatus,
 } from "./noteSlice";
 
 import {
@@ -16,6 +17,7 @@ import {
   deleteNote as deleteNoteApi,
   uploadFile,
   CourseDrop,
+  ToggleNoteStatus,
 } from "../Services/index";
 import { getBranch } from "./selectors";
 
@@ -41,17 +43,36 @@ export const fetchNotesThunk = (params: any) => async (dispatch: any) => {
 
 // Create Note
 export const createNoteThunk = (data: any) => async (dispatch: any) => {
-  
   try {
-    const response = await createNote(data); 
-    dispatch(addNote([response.data])); 
-    console.log("Created material:", response.data);
-  } catch (error) {
-    console.error("Error creating study material:", error);
+    let payload = { ...data };
+    if (payload.file instanceof File) {
+      const uploadRes = await uploadFile(payload.file);
+      if (uploadRes?.data?.file) {
+        payload.file = uploadRes.data.file;
+      } else {
+        throw new Error("File upload failed");
+      }
+    }
+    payload.slug = payload.title;
+    payload.is_active = payload.isActive ?? true;
+    const result = await createNote(payload);
+    dispatch(addNote(result));
+    console.log("Added Notes:", result);
+    return result;
+  } catch (error: any) {
+    console.error(
+      "Error in AddNoteThunks",
+      error.response?.data || error.message || error
+    );
+    dispatch(
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create note"
+      )
+    );
   }
 };
-
-
 
 // Update Note
 export const updateNoteThunk = (data: any) => async (dispatch: any) => {
@@ -105,25 +126,45 @@ export const deleteNoteThunk = (id: string) => async (dispatch: any) => {
 // Branch Dropdown
 export const GetBranchThunks = (params: any) => async (dispatch: any) => {
   try {
-    const result = await getBranch(params); 
-    dispatch(setBranches(result)); 
+    const result = await getBranch(params);
+    dispatch(setBranches(result));
     return result.data;
   } catch (error: any) {
     console.error("Error fetching branches:", error.message || error);
-    throw new Error(error.response?.data?.message || "Failed to fetch branches");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch branches"
+    );
   }
 };
 
+//Course Dropodown
+export const fetchCoursesByBranchThunk =
+  (params: any) => async (dispatch: any) => {
+    try {
+      const result = await CourseDrop(params);
+      dispatch(setCourses(result));
+      return result.data;
+    } catch (error: any) {
+      console.error("Error fetching courses:", error.message || error);
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch courses"
+      );
+    }
+  };
 
-export const fetchCoursesByBranchThunk = (params: any) => async (dispatch: any) => {
+
+//Toggle Status Thuck
+export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
-    const result = await CourseDrop(params); // should hit /{branch_id}/courses
-    dispatch(setCourses(result)); 
-    return result.data;
-  } catch (error: any) {
-    console.error("Error fetching courses:", error.message || error);
-    throw new Error(error.response?.data?.message || "Failed to fetch courses");
+    const updated = await ToggleNoteStatus(data);
+    console.log("API response in Thunk:", updated);
+    dispatch(
+      updateNoteStatus({
+        uuid: data._id, 
+        isActive: data.status === "active", 
+      })
+    );
+  } catch (error) {
+    console.error("Error toggling status:", error);
   }
 };
-
-
