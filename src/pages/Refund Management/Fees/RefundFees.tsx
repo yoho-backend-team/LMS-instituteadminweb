@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import RefundAdd from "../../../components/RefundManagement/RefundAdd";
 import RefundTable from "../../../components/RefundManagement/RefundTable";
 import { BsPlusLg } from "react-icons/bs";
+import { getAllRefundsThunk } from "../../../features/Refund_management/Reducer/refundThunks";
 
 export interface RefundData {
   refundId: string;
@@ -12,76 +14,23 @@ export interface RefundData {
   status: string;
   branch: string;
 }
-const initialRefunds: RefundData[] = [
-  {
-    refundId: "RF0001",
-    studentId: "ST0001",
-    studentInfo: "Full Stack",
-    paid: "Paid",
-    payment: "80,000",
-    status: "Pending",
-    branch: "Hyderabad",
-  },
-  {
-    refundId: "RF0002",
-    studentId: "ST0002",
-    studentInfo: "Frontend Angular",
-    paid: "Unpaid",
-    payment: "75,000",
-    status: "Completed",
-    branch: "Bangalore",
-  },
-  {
-    refundId: "RF0003",
-    studentId: "ST0003",
-    studentInfo: "UI Design",
-    paid: "Paid",
-    payment: "60,000",
-    status: "Pending",
-    branch: "Chennai",
-  },
-  {
-    refundId: "RF0004",
-    studentId: "ST0004",
-    studentInfo: "Backend NodeJS",
-    paid: "Unpaid",
-    payment: "65,000",
-    status: "Pending",
-    branch: "Pune",
-  },
-  {
-    refundId: "RF0005",
-    studentId: "ST0005",
-    studentInfo: "MongoDB + Express",
-    paid: "Paid",
-    payment: "70,000",
-    status: "Completed",
-    branch: "Hyderabad",
-  },
-  {
-    refundId: "RF0006",
-    studentId: "ST0006",
-    studentInfo: "Full Stack",
-    paid: "Paid",
-    payment: "90,000",
-    status: "Pending",
-    branch: "Bangalore",
-  },
-  {
-    refundId: "RF0007",
-    studentId: "ST0007",
-    studentInfo: "UI Design",
-    paid: "Unpaid",
-    payment: "55,000",
-    status: "Completed",
-    branch: "Chennai",
-  },
-];
+
 const RefundFees = () => {
-  const [showPanel, setShowPanel] = useState(false);
-  const [refunds, setRefunds] = useState<RefundData[]>(initialRefunds);
+  const dispatch = useDispatch();
+  const [refunds, setRefunds] = useState<RefundData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState<RefundData | null>(null);
+  const [showPanel, setShowPanel] = useState(false);
+
+  useEffect(() => {
+   dispatch(getAllRefundsThunk({}) as any)
+      .then((data: RefundData[]) => {
+        setRefunds(data);
+      })
+      .catch((err: any) => {
+        console.error("Failed to fetch refunds:", err);
+      });
+  }, [dispatch]);
 
   const handleAddOrUpdateRefund = (data: RefundData) => {
     if (editData) {

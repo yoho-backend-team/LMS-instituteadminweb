@@ -16,7 +16,6 @@ export const getNotes = async (params: any) => {
 export const createNote = async (data: any) => {
   try {
      const response = await Client.notes.create(data);
-     console.log("Module added successfully", response.data);
      return response.data;
    } catch (error) {
      console.error("Error adding module:", error);
@@ -63,7 +62,6 @@ export const uploadFile = async (formData: FormData) => {
 export const getBranch = async (params: any) => {
   try {
     const response = await Client.branch.getAll(params);
-    console.log("branches",response)
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "Failed to fetch branches");
@@ -74,7 +72,6 @@ export const getBranch = async (params: any) => {
 export const CourseDrop=async(params:any)=>{
  try {
     const response = await Client.course.getWithBranch(params);
-    console.log("courses", response);
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "Failed to fetch courses");

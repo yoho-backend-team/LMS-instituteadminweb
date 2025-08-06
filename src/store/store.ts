@@ -20,14 +20,14 @@ import CertificateManagemetSlice from '../features/certificateManagement/reducer
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 import StaffSalary from"../features/Payment_Managemant/salary/reducers/moduleSlice"
-
+import refundReducer from "../features/Refund_management/Reducer/refundSlice"
 
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
-
+		 refund: refundReducer,
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,

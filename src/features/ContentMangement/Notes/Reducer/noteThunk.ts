@@ -57,7 +57,7 @@ export const createNoteThunk = (data: any) => async (dispatch: any) => {
     payload.is_active = payload.isActive ?? true;
     const result = await createNote(payload);
     dispatch(addNote(result));
-    console.log("Added Notes:", result);
+    // console.log("Added Notes:", result);
     return result;
   } catch (error: any) {
     console.error(
@@ -80,7 +80,7 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
     let payload = { ...data };
     if (payload.file instanceof File) {
       const uploadRes = await uploadFile(payload.file);
-      console.log(uploadRes, "upload");
+      // console.log(uploadRes, "upload");
       if (uploadRes) {
         payload.file = uploadRes.data?.file;
       } else {
@@ -94,7 +94,7 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
       delete payload.file;
     }
     const response = await updateNote(payload);
-    console.log("update:", response);
+    // console.log("update:", response);
     dispatch(EditsNote(response.data.data));
   } catch (error: any) {
     dispatch(
@@ -157,7 +157,7 @@ export const fetchCoursesByBranchThunk =
 export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
     const updated = await ToggleNoteStatus(data);
-    console.log("API response in Thunk:", updated);
+    // console.log("API response in Thunk:", updated);
     dispatch(
       updateNoteStatus({
         uuid: data._id, 
