@@ -26,7 +26,7 @@ import StudentNotificationSlice from '../features/StudentNotification/reducer/No
 import helpCenterFaqs from '../features/HelpCenter/slice'
 import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
 import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSlice"
-
+import PlacementReducer from '../features/placementManagement/Reducer/slice'
 
 
 const store = configureStore({
@@ -59,9 +59,7 @@ const store = configureStore({
 		helpCenterFaqs: helpCenterFaqs,
 		ticketAdmin: ticketAdmin,
 		StaffSalary: StaffSalary,
-
-
-
+		placements: PlacementReducer
 	},
 })
 
