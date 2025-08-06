@@ -8,7 +8,7 @@ import {
 } from '../../features/batchManagement/services';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { getAllBatches } from '../../features/certificateManagement/services';
+import { createCertificate, getAllBatches } from '../../features/certificateManagement/services';
 import { getStudentmanagement } from '../../features/StudentManagement/reducer/thunks';
 import { selectStudent } from '../../features/StudentManagement/reducer/selector';
 
@@ -102,19 +102,30 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     }
   }, [studentData]);
 
-  const formik = useFormik({
-    initialValues: {
-      title: editingCertificate?.title || '',
-      course: editingCertificate?.course || '',
-      branch: editingCertificate?.branch || '',
-      batch: editingCertificate?.batch || '',
-      student: editingCertificate?.student || ''
-    },
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      onSave(values);
-    }
-  });
+ const formik = useFormik({
+  initialValues: {
+    title: editingCertificate?.title || '',
+    course: editingCertificate?.course || '',
+    branch: editingCertificate?.branch || '',
+    batch: editingCertificate?.batch || '',
+    student: editingCertificate?.student || ''
+  },
+  enableReinitialize: true,
+  onSubmit: async (values) => {
+    const payload = {
+      batch_id: values.batch,
+      branch_id: values.branch,
+      course: values.course,
+      institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529', // Replace this with dynamic value if needed
+      student: values.student
+    };
+
+    onSave(payload); // optional, if you're using this for state update or local storage
+    await createCertificate(payload); // sends data to backend
+    onClose(); // close modal after submission
+  }
+});
+
 
   if (!isOpen) return null;
 
@@ -176,7 +187,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 >
                   <option value="">Select Branch</option>
                   {branches.map((branch: any) => (
-                    <option key={branch._id} value={branch.branch_identity}>
+                    <option key={branch._id} value={branch.uuid}>
                       {branch.branch_identity}
                     </option>
                   ))}
