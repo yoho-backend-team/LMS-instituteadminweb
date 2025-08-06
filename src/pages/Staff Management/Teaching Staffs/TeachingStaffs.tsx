@@ -213,7 +213,6 @@ const TeachingStaffs: React.FC = () => {
 
 
 
-
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -224,13 +223,18 @@ const TeachingStaffs: React.FC = () => {
 
           <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className='flex items-center gap-4'>
-              <input type="file" />
+              <input type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                ref={fileInputRef}
+                onChange={handleFileChange} />
               <div>
                 <p style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}>Profile Picture</p>
                 <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>Allowed PNG or JPEG. Max size of 800k.</p>
               </div>
             </div>
-            <Button className="bg-green-500 hover:bg-green-600 text-white">
+            <Button
+              onClick={handleUploadClick}
+              className="bg-green-500 hover:bg-green-600 text-white">
               Upload Profile Picture
             </Button>
           </div>
@@ -484,8 +488,8 @@ const TeachingStaffs: React.FC = () => {
           )}
 
           <div className='w-full grid grid-cols-3'>
-          {classData.map((member) => (<Card key={member?.id} className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-            <div className="divide-y">
+            {classData.map((member) => (<Card key={member?.id} className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+              <div className="divide-y">
                 <div className="p-4">
                   <div className="flex items-center gap-3 ">
                     <Avatar className='!w-[80px] !h-[80px]'>
@@ -519,16 +523,16 @@ const TeachingStaffs: React.FC = () => {
                     View Profile
                   </Button>
                 </div>
-              
-            </div>
 
-            {staff.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground">
-                <p>No staff members found.</p>
-                <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
               </div>
-            )}
-          </Card>))}
+
+              {staff.length === 0 && (
+                <div className="p-8 text-center text-muted-foreground">
+                  <p>No staff members found.</p>
+                  <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
+                </div>
+              )}
+            </Card>))}
           </div>
         </>
       )}
