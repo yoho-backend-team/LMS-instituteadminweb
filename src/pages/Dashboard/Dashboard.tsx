@@ -26,6 +26,16 @@ export default function Component() {
 	const [selectedMonth, setSelectedMonth] = useState('July');
 	const [selectedYear, setSelectedYear] = useState('2025');
 
+
+	const branchList = ['Chennai', 'Bangalore', 'Hyderabad'];
+	const [selectedBranch, setSelectedBranch] = useState('Select Branch');
+	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
+
+	const handleBranchChange = (branch: string) => {
+		setSelectedBranch(branch);
+		setBranchMenuOpen(false);
+	};
+
 	const handleApply = () => {
 		console.log('Selected Month:', selectedMonth);
 		console.log('Selected Year:', selectedYear);
@@ -58,15 +68,44 @@ export default function Component() {
 				{/* Header */}
 				<div className='flex justify-between items-center'>
 					<div className='relative'>
-						<input
-							style={{
-								...FONTS.heading_07,
-								border: `2px solid ${COLORS.primary}`,
-							}}
-							placeholder='Branch'
-							className='w-96 p-2 pl-4 rounded-full'
-						/>
+			{/* Trigger Button */}
+			<button
+				onClick={() => setBranchMenuOpen(!branchMenuOpen)}
+				className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
+				style={{
+					background: 'white',
+					border: `2px solid ${COLORS.primary}`,
+					...FONTS.heading_07,
+					color: '#716F6F',
+				}}
+			>
+				<span>{selectedBranch}</span>
+				<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
+			</button>
+
+			{/* Dropdown Options */}
+			{branchMenuOpen && (
+				<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
+					<div className='space-y-2 p-2'>
+						{branchList.map((branch) => (
+							<button
+								key={branch}
+								onClick={() => handleBranchChange(branch)}
+								className='w-full text-left p-2 rounded-md'
+								style={{
+									...FONTS.heading_08,
+									backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
+									color: selectedBranch === branch ? '#fff' : '#716F6F',
+									border: '1px solid #ddd',
+								}}
+							>
+								{branch}
+							</button>
+						))}
 					</div>
+				</div>
+			)}
+		</div>
 					<div className='relative'>
 						<button
 							onClick={() => setPeriodOpen(!periodOpen)}
