@@ -2,26 +2,26 @@ import secureLocalStorage from 'react-secure-storage';
 import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
-    if (typeof secureLocalStorage !== 'undefined') {
-        const institute = GetLocalStorage('institute');
-        return institute;
-    } else {
-        return null;
-    }
+	if (typeof secureLocalStorage !== 'undefined') {
+		const institute = GetLocalStorage('instituteId');
+		return institute;
+	} else {
+		return null;
+	}
 };
 
 export const getSelectedBranchId = () => {
-    if (typeof secureLocalStorage !== 'undefined') {
-        const branch = GetLocalStorage('selectedBranchId');
-        return branch;
-    } else {
-        return null;
-    }
+	if (typeof secureLocalStorage !== 'undefined') {
+		const branch = GetLocalStorage('selectedBranchId');
+		return branch;
+	} else {
+		return null;
+	}
 };
 
 const generateEndpoints = () => {
-    const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
-    const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+	const instituteId = getInstituteDetails()
+	const branchId = getSelectedBranchId()
 
     return {
         admin: {
@@ -182,7 +182,7 @@ const generateEndpoints = () => {
         },
         ticket: {
             student_ticket: `/api/institutes/student-ticket/getalll`,
-            update_student_status_ticket: `/api/institutes/student-ticket/updatestatus/`,
+            update_student_status_ticket: `/api/institutes/student-ticket/update/`,
             update: `/api/institutes/student-ticket/update/`,
             student_ticket_with_id: `/api/institutes/student-ticket/`,
             staff_ticket: `/api/institutes/staff/ticket/all`,
@@ -212,7 +212,7 @@ const generateEndpoints = () => {
             staff_notification: `/api/institutes/staff/notifications/all`,
             create_staff_notification: `/api/institutes/staff/notifications/`,
             institute_notification: `/api/institutes/branch/notifications`,
-            resend_student_notification:`/api/notification/student-notification-resend`
+            resend_student_notification:'/api/notification/student-notification-resend'
         },
         institute_notification: {
             get_all: `/api/notification/institute/`,

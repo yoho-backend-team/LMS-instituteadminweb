@@ -10,9 +10,13 @@ import add from '../../../../assets/Add.png'
 import AddForm from './AddForm'
 import { useState } from 'react'
 import { ChevronDownIcon } from 'lucide-react'
+import UsersList from './UsersList'
 
+type props = {
+    Users: ()=> void;
+}
 
-const UserCard = () => {
+const UserCard:React.FC<props> = ({Users}) => {
     const [showForm, SetShowForm] = useState<boolean>(false)
     const [showFilter, SetShowFilter] = useState<boolean>(false)
 
@@ -29,7 +33,7 @@ const UserCard = () => {
                             <h3 className={`text-[${COLORS.gray_dark_02}]`}>Total Users</h3>
                         </div>
                         <div className='flex justify-end'>
-                            <h1 className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`} style={{ ...FONTS.heading_01 }}>0</h1>
+                            <h1 className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`} style={{ ...FONTS.heading_01 }}>{Users?.length}</h1>
                         </div>
                     </div>
 

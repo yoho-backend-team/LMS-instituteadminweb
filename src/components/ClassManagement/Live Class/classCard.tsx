@@ -9,20 +9,26 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-
 import { Card, CardContent } from '../../ui/card';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
 import { Button } from '../../ui/button';
 import EditLiveClass from './editLiveClass';
 import { GetImageUrl } from '../../../utils/helper';
+import { deleteLiveClass } from '../../../features/Class Management/Live Class/services';
+import toast from 'react-hot-toast';
 
 interface BatchCardProps {
 	title: string;
 	data: any;
+	fetchAllLiveClasses?: () => void;
 }
 
-export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
+export const LiveClassCard: React.FC<BatchCardProps> = ({
+	title,
+	data,
+	fetchAllLiveClasses,
+}) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const navigate = useNavigate();
@@ -32,8 +38,27 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 	const openDeleteModal = () => setIsDeleteModalOpen(true);
 	const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-	const handleConfirmDelete = () => {
-		console.log('Deleted');
+	const handleConfirmDelete = async () => {
+		try {
+			const response = await deleteLiveClass({ uuid: data?.uuid });
+			if (response) {
+				toast.success('Live class deleted successfully');
+				if (fetchAllLiveClasses) {
+					fetchAllLiveClasses();
+				}
+				closeDeleteModal();
+			} else {
+				toast.success('Live class deleted successfully');
+				closeDeleteModal();
+			}
+		} catch (error) {
+			console.error('Error deleting live class:', error);
+		} finally {
+			closeDeleteModal();
+			if (fetchAllLiveClasses) {
+				fetchAllLiveClasses();
+			}
+		}
 	};
 
 	const getFormattedTime = (timeString: string) => {
@@ -50,23 +75,23 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 	)} - ${getFormattedTime(data?.end_time)}`;
 
 	return (
-		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
+		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] flex flex-1 flex-wrap bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
 				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
-					<div className='flex justify-between gap-35'>
+					<div className='flex justify-between w-full px-4'>
 						<div className='flex flex-col items-center gap-2'>
 							<p style={{ ...FONTS.heading_09 }}>
 								{data?.batch?.student?.length}{' '}
 								{data?.batch?.student?.length === 1 ? 'student' : 'students'}
 							</p>
-							<div className='flex'>
+							<div className='flex gap-1'>
 								{data?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
 									<img
 										key={studentImg?._id}
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -76,14 +101,14 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 								{data?.instructors?.length}{' '}
 								{data?.instructors?.length === 1 ? 'instructor' : 'instructors'}
 							</p>
-							<div className='flex'>
+							<div className='flex gap-1'>
 								{data?.instructors?.slice(0, 3)?.map((studentImg: any) => (
 									<img
 										key={studentImg?._id}
 										src={GetImageUrl(studentImg?.image) ?? undefined}
 										alt={studentImg?.full_name}
 										title={studentImg?.full_name}
-										className='w-12 h-12 rounded-full '
+										className='w-10 h-10 rounded-full object-cover'
 									/>
 								))}
 							</div>
@@ -156,7 +181,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 							className=' mt-4'
 							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
 						>
-							{title}
+							{`${title.substring(0, 35)}${title.length > 35 ? '...' : ''}`}
 						</p>
 					</div>
 
@@ -165,7 +190,9 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 							className=''
 							style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_01 }}
 						>
-							{`${data?.batch?.student?.length} students on this Class`}
+							{`${data?.batch?.student?.length} ${
+								data?.batch?.student?.length === 1 ? 'student' : 'students'
+							} on this Class`}
 						</p>
 					</div>
 
@@ -188,7 +215,9 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 							className='cursor-pointer underline'
 							target='_blank'
 						>
-							{data?.video_url}
+							{`${data?.video_url.substring(0, 35)} ${
+								data?.video_url?.length > 35 ? '...' : ''
+							}`}
 						</a>
 					</div>
 				</div>
@@ -208,7 +237,12 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({ title, data }) => {
 					</Button>
 				</div>
 			</CardContent>
-			<EditLiveClass data={data} isOpen={isEditModalOpen} onClose={closeEditModal} />
+			<EditLiveClass
+				data={data}
+				isOpen={isEditModalOpen}
+				onClose={closeEditModal}
+				fetchAllLiveClasses={fetchAllLiveClasses}
+			/>
 
 			<DeleteConfirmationModal
 				open={isDeleteModalOpen}

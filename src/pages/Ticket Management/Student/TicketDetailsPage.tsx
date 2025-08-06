@@ -5,6 +5,11 @@ import chatbg from "../../../assets/navbar/chatbg.png";
 import circleblue from "../../../assets/navbar/circleblue.png";
 import userblue from "../../../assets/navbar/userblue.png";
 import { useTicketContext } from "../../../components/StudentTickets/TicketContext";
+import { useDispatch, useSelector } from "react-redux";
+import { StudentTicketByID } from "../../../features/StudentTicket/Reducers/thunks";
+import { selectStudentTicketById } from "../../../features/StudentTicket/Reducers/selectors";
+import { GetImageUrl } from "../../../utils/helper";
+import { updateStudentTicketService } from "../../../features/StudentTicket/Services";
 
 interface Message {
   sender: "user" | "admin";
@@ -16,6 +21,8 @@ const TicketDetailsPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { updateTicketStatus, tickets } = useTicketContext();
+   const dispatch = useDispatch<any>();
+   const ticketData = useSelector(selectStudentTicketById)
 
   const ticketId = Number(id);
   const ticket = tickets.find((t) => t.id === ticketId);
@@ -26,24 +33,33 @@ const TicketDetailsPage: React.FC = () => {
     navigate(-1);
   };
 
-  const [messages, setMessages] = useState<Message[]>([
-    { sender: "user", text: "Hi there, How are you?", time: "12:24 PM" },
-    {
-      sender: "user",
-      text: "Waiting for your reply. As I have to go back soon.",
-      time: "12:25 PM",
-    },
-    {
-      sender: "admin",
-      text: "Hi! I am coming there in few minutes. Please wait!",
-      time: "12:26 PM",
-    },
-    {
-      sender: "user",
-      text: "Thank you very much. I am waiting here at Starbucks cafe.",
-      time: "12:35 PM",
-    },
-  ]);
+  const updateStatus = async () =>{
+    try {
+      const data = {uuid: ticketData?.uuid, status: "closed", user: ticketData?.user}
+      const response = await updateStudentTicketService(data);
+      console.log('Ticket status updated:', response);
+      
+    } catch (error) {
+      console.log('Error updating ticket status:', error);
+    }
+
+  }
+
+  const fetchstudentTicketsById = async () => {
+      try {
+        dispatch(StudentTicketByID({uuid: id}));
+      } catch (error) {
+        console.log('Error fetching in tickts:', error);
+      }
+    }
+  
+    useEffect(() => {
+      fetchstudentTicketsById();
+    }, [dispatch]);
+
+    console.log('Ticket Data:', ticketData);
+
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [inputValue, setInputValue] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
@@ -70,6 +86,8 @@ const TicketDetailsPage: React.FC = () => {
     }
   }, [messages]);
 
+  
+
   return (
     <div className="p-6 pt-0">
       <div className="flex items-center justify-between mb-4">
@@ -87,11 +105,11 @@ const TicketDetailsPage: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
         <div>
           <p className="text-sm font-semibold">
-            TICKET ID : <span className="text-[#14b8c6]">#{id}</span>
+            TICKET ID : <span className="text-[#14b8c6]">#{ticketData?.ticket_id}</span>
           </p>
           <p className="text-sm text-gray-600 mt-1">
             RAISED DATE & TIME :{" "}
-            <span className="font-medium">APR 28, 2025, 4:14 PM</span>
+            <span className="font-medium"> {ticketData?.date ? new Date(ticketData?.date).toLocaleDateString() : 'N/A'} & {ticketData?.date ? new Date(ticketData?.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</span>
           </p>
         </div>
         {status !== "closed" && (
@@ -130,14 +148,14 @@ const TicketDetailsPage: React.FC = () => {
               ref={chatRef}
               className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
             >
-              {messages.map((msg, idx) => (
+              {ticketData?.messages?.map((msg:any, idx:any) => (
                 <div
                   key={idx}
                   className={`flex items-start gap-2 ${
                     msg.sender === "admin" ? "justify-end" : ""
                   }`}
                 >
-                  {msg.sender === "user" && (
+                  {msg?.sender === "user" && (
                     <img
                       src={userblue}
                       alt="User"
@@ -146,12 +164,12 @@ const TicketDetailsPage: React.FC = () => {
                   )}
                   <div
                     className={`p-2 rounded shadow text-sm max-w-[75%] ${
-                      msg.sender === "admin"
+                      msg?.sender === "admin"
                         ? "bg-[#14b8c6] text-white"
                         : "bg-white text-gray-800"
                     }`}
                   >
-                    {msg.text}
+                    {msg.content}
                     <div
                       className={`text-[10px] text-right mt-1 ${
                         msg.sender === "admin"
@@ -159,7 +177,7 @@ const TicketDetailsPage: React.FC = () => {
                           : "text-gray-500"
                       }`}
                     >
-                      {msg.time}
+                       {msg?.date ? new Date(msg?.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                     </div>
                   </div>
                   {msg.sender === "admin" && (
@@ -175,7 +193,7 @@ const TicketDetailsPage: React.FC = () => {
               {status !== "closed" && (
                 <div className="flex gap-2 px-4 py-2 border-t">
                   <button
-                    onClick={handleCloseTicket}
+                    onClick={updateStatus}
                     className="border border-[#1BBFCA] text-[#1BBFCA] text-sm font-medium px-4 py-2 rounded"
                   >
                     Solved
@@ -214,19 +232,19 @@ const TicketDetailsPage: React.FC = () => {
               Issue Description:
             </p>
             <p className="text-sm text-gray-600">
-              If You Can This Yes Successfully Mobile App On Android
+              {ticketData?.description || "No description provided."}
             </p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Issue Category:</p>
-            <p className="text-sm text-gray-600">Feedback</p>
+            <p className="text-sm text-gray-600">{ticketData?.category}</p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Attachments:</p>
             <p className="text-sm text-gray-600 break-all">
-              2bf39350-F04d-4e22-A5ea-2be943f28e9e.jpeg
+             {ticketData?.file}
             </p>
-            <a href="#" className="text-blue-500 underline text-sm">
+            <a href={GetImageUrl(ticketData?.file) ?? undefined} target="_blank" className="text-blue-500 underline text-sm">
               View
             </a>
           </div>
@@ -239,7 +257,7 @@ const TicketDetailsPage: React.FC = () => {
                   : "text-white bg-[#3ABE65]"
               }`}
             >
-              {status}
+              {ticketData?.status}
             </span>
           </div>
         </div>

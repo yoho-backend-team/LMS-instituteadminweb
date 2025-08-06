@@ -7,6 +7,7 @@ const StaffSlice = createSlice({
         singleData:[],
         classData:[],
         activityData:[],
+        branchData: [],
     },
     reducers : {
         getStaffDetails : (state,action) => {
@@ -20,9 +21,12 @@ const StaffSlice = createSlice({
         },
         getActivity : (state,action) => {
             state.activityData = action.payload;
+        },
+        getBranch : (state,action) => {
+            state.branchData = action.payload;
         }
     }, 
 });
 
 export default StaffSlice.reducer;
-export const { getStaffDetails,getStaffDetailsId,getClass,getActivity } = StaffSlice.actions
+export const { getStaffDetails,getStaffDetailsId,getClass,getActivity,getBranch } = StaffSlice.actions

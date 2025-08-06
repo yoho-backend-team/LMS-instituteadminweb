@@ -1,374 +1,482 @@
-import React, { useState, useRef } from 'react';
+"use client"
 
-type CardProps = {
-  title: string;
-  imageSrc: string;
-  status: string;
-  onStatusChange: (title: string, newStatus: string) => void;
-  onEdit: () => void;
-  onDelete: () => void;
-};
+import type React from "react"
 
-const Card: React.FC<CardProps> = ({ title, imageSrc, status, onStatusChange, onEdit, onDelete }) => {
-  const [showMenu, setShowMenu] = useState(false);
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Plus, MoreVertical, X, Upload, Trash2, SlidersHorizontal, ChevronDown, FileEdit } from "lucide-react"
+import { useState, useRef } from "react"
+import  Image  from "../../../assets/web.png"
+import  web  from "../../../assets/mern.png"
+
+
+
+// Simulated image imports - replace with your actual imports
+const webImage = "{Image}"
+const mernImage = "{web}"
+
+interface Category {
+  id: string
+  name: string
+  image: string
+  status: string
+}
+
+export default function Component() {
+  const [showFilters, setShowFilters] = useState(false)
+  const [showAddDrawer, setShowAddDrawer] = useState(false)
+  const [showEditDrawer, setShowEditDrawer] = useState(false)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [activeStatusDropdown, setActiveStatusDropdown] = useState<string | null>(null)
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+
+  // Form states
+  const [newCategoryName, setNewCategoryName] = useState("")
+  const [newCategoryImage, setNewCategoryImage] = useState("")
+  const [editCategoryName, setEditCategoryName] = useState("")
+  const [editCategoryImage, setEditCategoryImage] = useState("")
+
+  // File input refs
+  const addFileInputRef = useRef<HTMLInputElement>(null)
+  const editFileInputRef = useRef<HTMLInputElement>(null)
+
+  // Categories state - initialized with your existing categories
+  const [categories, setCategories] = useState<Category[]>([
+    {
+      id: "web-dev",
+      name: "Mern",
+      image: webImage,
+      status: "",
+    },
+    {
+      id: "mern-stack",
+      name: "Mern",
+      image: mernImage,
+      status: "",
+    },
+  ])
+
+  const toggleDropdown = (cardId: string) => {
+    setActiveDropdown(activeDropdown === cardId ? null : cardId)
+  }
+
+  const toggleStatusDropdown = (cardId: string) => {
+    setActiveStatusDropdown(activeStatusDropdown === cardId ? null : cardId)
+  }
+
+  const toggleFilter = () => {
+    setShowFilters(!showFilters)
+  }
+
+  const handleStatusChange = (cardId: string, newStatus: string) => {
+    setCategories((prev) => prev.map((cat) => (cat.id === cardId ? { ...cat, status: newStatus } : cat)))
+    setActiveStatusDropdown(null)
+  }
+
+  const handleEdit = (categoryId: string) => {
+    const categoryData = categories.find((cat) => cat.id === categoryId)
+    if (categoryData) {
+      setEditingCategory(categoryData)
+      setEditCategoryName(categoryData.name)
+      setEditCategoryImage(categoryData.image)
+      setShowEditDrawer(true)
+      setActiveDropdown(null)
+    }
+  }
+
+  const handleDelete = (categoryId: string) => {
+    setCategories((prev) => prev.filter((cat) => cat.id !== categoryId))
+    setActiveDropdown(null)
+  }
+
+  // Handle image upload for add category
+  const handleAddImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setNewCategoryImage(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  // Handle image upload for edit category
+  const handleEditImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setEditCategoryImage(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  // Add new category
+   const handleAddCategory = () => {
+    if (newCategoryName.trim()) {
+      const newCategory: Category = {
+        id: `category-${Date.now()}`,
+        name: newCategoryName.trim(),
+        image: newCategoryImage || "/placeholder.svg?height=128&width=300&text=New+Category",
+        status: "",
+      }
+
+      setCategories((prev) => [...prev, newCategory])
+
+      // Reset form
+      setNewCategoryName("")
+      setNewCategoryImage("")
+      setShowAddDrawer(false)
+
+      // Reset file input
+      if (addFileInputRef.current) {
+        addFileInputRef.current.value = ""
+      }
+    }
+  }
+  // Save edited category
+  const handleSaveEdit = () => {
+    if (editingCategory && editCategoryName.trim()) {
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.id === editingCategory.id
+            ? {
+                ...cat,
+                name: editCategoryName.trim(),
+                image: editCategoryImage,
+              }
+            : cat,
+        ),
+      )
+
+      // Reset form and close drawer
+      setEditingCategory(null)
+      setEditCategoryName("")
+      setEditCategoryImage("")
+      setShowEditDrawer(false)
+
+      // Reset file input
+      if (editFileInputRef.current) {
+        editFileInputRef.current.value = ""
+      }
+    }
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
-      <img src={imageSrc} alt={title} className="w-full h-40 object-cover" />
-      <div className="p-4">
-        <div className="flex justify-between items-start">
-          <h3 className="text-lg font-medium">{title}</h3>
-          <div className="relative">
-            <button 
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-1 text-gray-500 hover:text-[#1BBFCA]"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-              </svg>
-            </button>
+    <div className="">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-xl font-medium text-gray-800 mb-6">Admin User</h1>
+        <div className="flex items-center justify-between">
+          {/* "Show Filter" / "Hide" Button with teal background */}
+          <Button
+            onClick={toggleFilter}
+            className="bg-cyan-500 text-white hover:bg-cyan-600 px-4 py-2 rounded-md flex items-center space-x-2"
+          >
+            <SlidersHorizontal className="w-6 h-6" />
+            <span>{showFilters ? "Hide" : "Show Filter"}</span>
+          </Button>
+          <Button
+            onClick={() => setShowAddDrawer(true)}
+            className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Category
+          </Button>
+        </div>
+      </div>
 
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                <div className="py-1">
-                  <button
-                    onClick={() => {
-                      onEdit();
-                      setShowMenu(false);
-                    }}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full text-left"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      onDelete();
-                      setShowMenu(false);
-                    }}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full text-left"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Delete
-                  </button>
+      {/* Filter Form */}
+      {showFilters && (
+        <div className="mb-6 space-y-4">
+          {/* Search Input */}
+          <div className="max-w-xs">
+            <input
+              type="text"
+              placeholder="Search Categories"
+              className="w-full px-3 py-2 border border-cyan-400 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+            />
+          </div>
+          {/* Filter Dropdowns */}
+          <div className="p-4 bg-white rounded-lg shadow-lg border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Status</label>
+                <Select>
+                  <SelectTrigger className="w-full text-gray-300">
+                    <SelectValue placeholder="Filter by Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Course</label>
+                <Select>
+                  <SelectTrigger className="w-full text-gray-300">
+                    <SelectValue placeholder="Filter by Course" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="web-development">Web Development</SelectItem>
+                    <SelectItem value="mern-stack">MERN Stack</SelectItem>
+                    <SelectItem value="all">All Courses</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6  ">
+        {categories.map((category) => (
+          <div key={category.id} className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden p-2">
+            <div className="relative h-32 ">
+              <img
+                src={Image}
+                alt={`Background`}
+                className="w-full h-full object-cover opacity-80 rounded-lg"
+              />
+              
+            </div>
+            <div className="p-4 ">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-cyan-500 font-medium">{category.name}</h4>
+                <div className="relative">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-cyan-500 hover:text-gray-600 p-1  ">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleEdit(category.id)}>
+                        <FileEdit className="mr-2 h-4 w-4 " />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(category.id)}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-        <select
-          value={status}
-          onChange={(e) => onStatusChange(title, e.target.value)}
-          className="mt-2 w-full border border-gray-300 rounded px-2 py-1"
-        >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-      </div>
-    </div>
-  );
-};
-
-export const DashboardCards: React.FC = () => {
-  const [categories, setCategories] = useState([
-    { title: 'Mern', imageSrc: '/src/assets/navbar/webimage.png', status: 'Status' },
-    { title: 'Mern', imageSrc: '/src/assets/navbar/mernimage.png', status: 'Status' },
-  ]);
-  const [showFilter, setShowFilter] = useState(false);
-  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [categoryName, setCategoryName] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [editingCategory, setEditingCategory] = useState<null | {title: string, index: number, imageSrc: string}>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleStatusChange = (title: string, newStatus: string) => {
-    setCategories(categories.map(cat => 
-      cat.title === title ? { ...cat, status: newStatus } : cat
-    ));
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setSelectedImage(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleAddCategory = () => {
-    if (categoryName.trim()) {
-      setCategories([...categories, {
-        title: categoryName,
-        imageSrc: selectedImage || '/src/assets/navbar/default-image.png',
-        status: 'Active'
-      }]);
-      setShowAddCategoryModal(false);
-      setCategoryName('');
-      setSelectedImage(null);
-    }
-  };
-
-  const handleEditCategory = (index: number) => {
-    setEditingCategory({
-      title: categories[index].title,
-      index,
-      imageSrc: categories[index].imageSrc
-    });
-    setCategoryName(categories[index].title);
-    setSelectedImage(categories[index].imageSrc);
-    setShowEditModal(true);
-  };
-
-  const handleUpdateCategory = () => {
-    if (categoryName.trim() && editingCategory) {
-      const updatedCategories = [...categories];
-      updatedCategories[editingCategory.index] = {
-        ...updatedCategories[editingCategory.index],
-        title: categoryName,
-        imageSrc: selectedImage || editingCategory.imageSrc
-      };
-      setCategories(updatedCategories);
-      setShowEditModal(false);
-      setCategoryName('');
-      setSelectedImage(null);
-      setEditingCategory(null);
-    }
-  };
-
-  const handleDeleteCategory = (index: number) => {
-    setCategories(categories.filter((_, i) => i !== index));
-  };
-
-  const filteredCategories = categories.filter(cat =>
-    cat.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="p-6">
-      {showAddCategoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-6">Add Category</h2>
-            
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                accept="image/*"
-                className="hidden"
-              />
-              <div 
-                className="border-2 border-dashed border-gray-300 rounded p-4 text-center cursor-pointer"
-                onClick={triggerFileInput}
-              >
-                {selectedImage ? (
-                  <img src={selectedImage} alt="Preview" className="h-32 mx-auto object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-32">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="text-gray-500 mt-2">Drag & drop your image here or click to browse</p>
-                  </div>
-                )}
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-2">Status</label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="flex items-center justify-between border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    >
+                      <span className="text-gray-700">{category.status}</span>
+                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="p-2 bg-white rounded-lg shadow-md flex flex-col gap-2">
+                    <DropdownMenuItem
+                      className="  text-gray-700 rounded-md px-4 py-2 text-center cursor-pointer hover:bg-cyan-500 hover:text-white hover:border-gray-500 focus:bg-cyan-500 focus:text-white border border-gray-300"
+                      onClick={() => handleStatusChange(category.id, "Active")}
+                    >
+                      Active
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className=" text-gray-700 rounded-md px-4 py-2 text-center cursor-pointer hover:bg-cyan-500 hover:text-white hover:border-gray-500 focus:bg-cyan-500 focus:text-white border border-gray-300"
+                      onClick={() => handleStatusChange(category.id, "Inactive")}
+                    >
+                      Inactive
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
-              <input
-                type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                placeholder="Enter category name"
-              />
-            </div>
-            
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowAddCategoryModal(false);
-                  setSelectedImage(null);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddCategory}
-                className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA]"
-              >
-                Save Changes
-              </button>
-            </div>
           </div>
-        </div>
-      )}
-
-      {showEditModal && editingCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Edit Category</h2>
-            <p className="text-gray-600 mb-6">Edit Course Category Details</p>
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-              <input
-                type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                placeholder="Enter category name"
-              />
-            </div>
-            
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Image</label>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                accept="image/*"
-                className="hidden"
-              />
-              <div 
-                className="border-2 border-dashed border-gray-300 rounded p-4 text-center cursor-pointer"
-                onClick={triggerFileInput}
-              >
-                {selectedImage ? (
-                  <img src={selectedImage} alt="Preview" className="h-32 mx-auto object-cover" />
-                ) : (
-                  <img src={editingCategory.imageSrc} alt="Current" className="h-32 mx-auto object-cover" />
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                Recommended: 388x300 Pixels<br />
-                Accepted Formats: PNG, JPG, JPEG
-              </p>
-            </div>
-            
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedImage(null);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdateCategory}
-                className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA]"
-              >
-                Update Category
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Admin User</h2>
-        <div className="flex justify-between items-center">
-          <button 
-            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA]"
-            onClick={() => setShowFilter(!showFilter)}
-          >
-            {showFilter ? 'Hide' : 'Show Filter'}
-          </button>
-          <button 
-            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] flex items-center"
-            onClick={() => setShowAddCategoryModal(true)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            Add New Category
-          </button>
-        </div>
-      </div>
-
-      {showFilter && (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <div className="mb-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search Categories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1BBFCA] text-sm"
-              />
-              <svg
-                className="absolute left-3 top-3 h-4 w-4 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-700">Status</label>
-              <select className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
-                <option value="">Filter by status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
-            <div className="flex-1">
-              <label className="block text-sm font-semibold text-gray-700">Filter by Course</label>
-              <select className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
-                <option value="">Filter by course</option>
-                <option value="Web Development">Web Development</option>
-                <option value="MERN Stack Development">MERN Stack Development</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="grid gap-6 justify-start"
-     style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-        {filteredCategories.map((cat, index) => (
-          <Card
-            key={index}
-            title={cat.title}
-            imageSrc={cat.imageSrc}
-            status={cat.status}
-            onStatusChange={handleStatusChange}
-            onEdit={() => handleEditCategory(index)}
-            onDelete={() => handleDeleteCategory(index)}
-          />
         ))}
       </div>
+
+      {/* Add Category Drawer */}
+      {showAddDrawer && (
+        <>
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowAddDrawer(false)} />
+          {/* Drawer */}
+          <div
+            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+              showAddDrawer ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="p-6 h-full flex flex-col">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-800">Add Category</h2>
+                  <p className="text-sm text-gray-500 mt-1">Create A New Course Category With An Image</p>
+                </div>
+                <button onClick={() => setShowAddDrawer(false)} className="text-gray-400 hover:text-gray-600 p-1">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              {/* Form */}
+              <div className="flex-1 space-y-6">
+                {/* Image Preview */}
+                {newCategoryImage && (
+                  <div className="w-full h-40 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                    <img
+                      src={newCategoryImage || "/placeholder.svg"}
+                      alt="Category Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                {/* Category Name Input */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    placeholder="Enter category name"
+                  />
+                </div>
+                {/* Upload Image Button */}
+                <div>
+                  <input
+                    type="file"
+                    ref={addFileInputRef}
+                    onChange={handleAddImageUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <Button
+                    onClick={() => addFileInputRef.current?.click()}
+                    className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md flex items-center gap-2 mb-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload Image
+                  </Button>
+                  <p className="text-xs text-gray-500">Recommended: 388x300 Pixels Accepted Formats: PNG, JPEG</p>
+                </div>
+              </div>
+              {/* Drawer Footer */}
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200 ">
+                <Button onClick={() => setShowAddDrawer(false)} variant="outline" className="px-4 py-2 text-cyan-300 bg-cyan-50  border-cyan-500">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddCategory}
+                  className="bg-cyan-600 hover:bg-cyan-600 text-white px-4 py-2"
+                  disabled={!newCategoryName.trim()}
+                >
+                  Create Category
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Edit Category Drawer */}
+      {showEditDrawer && (
+        <>
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowEditDrawer(false)} />
+          {/* Drawer */}
+          <div
+            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+              showEditDrawer ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="p-6 h-full flex flex-col">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-800">Edit Category</h2>
+                </div>
+                <button onClick={() => setShowEditDrawer(false)} className="text-gray-400 hover:text-gray-600 p-1">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              {/* Form */}
+              <div className="flex-1 space-y-6">
+                {/* Current Image Preview */}
+                <div>
+                  <div className="w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                    {editCategoryImage ? (
+                      <img
+                        src={editCategoryImage || "/placeholder.svg"}
+                        alt="Category Image"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="text-gray-400 text-center">
+                        <div className="text-sm">Current Image</div>
+                      </div>
+                    )}
+                  </div>
+                  {/* Upload Image Button */}
+                  <input
+                    type="file"
+                    ref={editFileInputRef}
+                    onChange={handleEditImageUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <Button
+                    onClick={() => editFileInputRef.current?.click()}
+                    className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload Image
+                  </Button>
+                </div>
+                {/* Category Name Input */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                  <input
+                    type="text"
+                    value={editCategoryName}
+                    onChange={(e) => setEditCategoryName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+              {/* Drawer Footer */}
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-cyan-500">
+                <Button onClick={() => setShowEditDrawer(false)} variant="outline" className="px-4 py-2 text-cyan-300 bg-cyan-50 border-cyan-500">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2"
+                  disabled={!editCategoryName.trim()}
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Click outside to close dropdowns */}
+      {(activeDropdown || activeStatusDropdown) && (
+        <div
+          className="fixed inset-0 z-5"
+          onClick={() => {
+            setActiveDropdown(null)
+            setActiveStatusDropdown(null)
+          }}
+        />
+      )}
     </div>
-  );
-};
+  )
+}
