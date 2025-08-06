@@ -20,8 +20,8 @@ import CertificateManagemetSlice from '../features/certificateManagement/reducer
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 import StaffSalary from"../features/Payment_Managemant/salary/reducers/moduleSlice"
-
-
+import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
+import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
 
 const store = configureStore({
 	reducer: {
@@ -47,8 +47,8 @@ const store = configureStore({
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
 		StaffSalary:StaffSalary,
-
-
+        StaffTicket:StaffTicket,
+		Studentfees:Studentfees
 
 	},
 })
