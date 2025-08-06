@@ -74,7 +74,6 @@ const AppRoutes = () => {
 			<Route path='/otp-verify' element={<OtpVerification />} />
 			<Route path='/reset-password' element={<ChangePassword />} />
 			<Route path='*' element={<Navigate to='/login' />} />
-			<Route path="/logout" element={<LogoutRoute />} />
 		</Routes>
 	);
 

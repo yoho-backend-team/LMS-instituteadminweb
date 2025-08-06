@@ -12,9 +12,26 @@ import { SlOptionsVertical } from "react-icons/sl";
 import CardOptions from "./cardOptions";
 import { useState } from "react";
 
+interface UserDetail {
+  image?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: {
+    identity?: string;
+  };
+  is_active?: boolean;
+  username?: string;
+  email?: string;
+  designation?: string;
+  phone_number?: string;
+  contact_info?: {
+    city?: string;
+  };
+  uuid:string;
+}
 
 type props = {
-    Users: () => void;
+    Users: UserDetail[];
 }
 
 const UsersList: React.FC<props> = ({ Users }) => {
@@ -26,7 +43,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
                 <div className="flex gap-3.5 items-center justify-between relative">
                     <div className="flex gap-4">
                         <img
-                            src={GetImageUrl(card?.image) ?? undefined}
+                            src={GetImageUrl(card?.image) ?? ""}
                             className="w-[62px] h-[62px] rounded-full object-cover items-start"
                             alt="Student"
                         />
@@ -71,7 +88,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
                         <SelectTrigger
                             className={`w-[110px] h-[48px] border text-white rounded-[8px] pr-[16px] pl-[16px] bg-[${COLORS.primary}]`}
                         >
-                            <SelectValue placeholder={card?.is_active ? "Active" : "Inactive"} />
+                            <SelectValue placeholder={card?.is_active ? "Active" : "Inactive"} style={{...FONTS.heading_08}}/>
                             <ChevronDownIcon className="size-4 opacity-50 text-[#FFFFFF]" />
                         </SelectTrigger>
 
