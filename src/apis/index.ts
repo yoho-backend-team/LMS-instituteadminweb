@@ -302,6 +302,8 @@ class Client {
 			HttpClient.update(HTTP_END_POINTS.staff.update, data),
 		delete: (query: any) =>
 			HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
+		getWithCourse: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 	};
 	student = {
 		activity: (data: any) =>
