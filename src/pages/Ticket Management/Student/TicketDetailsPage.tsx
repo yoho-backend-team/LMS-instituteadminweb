@@ -122,8 +122,8 @@ const TicketDetailsPage: React.FC = () => {
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 flex flex-col gap-4 relative">
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex-1 w-[70%] flex flex-col gap-4 relative">
           <div className="bg-white rounded-md border-t-2 shadow p-4">
             <div className="flex items-center gap-3">
               <img
@@ -146,7 +146,7 @@ const TicketDetailsPage: React.FC = () => {
           >
             <div
               ref={chatRef}
-              className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
+              className="h-[300px] overflow-y-auto p-2 space-y-4 bg-no-repeat bg-cover bg-center"
             >
               {ticketData?.messages?.map((msg:any, idx:any) => (
                 <div
