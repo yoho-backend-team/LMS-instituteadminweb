@@ -212,6 +212,7 @@ const generateEndpoints = () => {
             staff_notification: `/api/institutes/staff/notifications/all`,
             create_staff_notification: `/api/institutes/staff/notifications/`,
             institute_notification: `/api/institutes/branch/notifications`,
+            resend_student_notification:`/api/notification/student-notification-resend`
         },
         institute_notification: {
             get_all: `/api/notification/institute/`,

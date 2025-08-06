@@ -379,6 +379,11 @@ class Client {
                     HTTP_END_POINTS.notification.student_notification,
                     query
                 ),
+                resend_student_notification:(params:any)=>
+                HttpClient.post(
+                    HTTP_END_POINTS.notification.resend_student_notification,
+                    params
+                ),
         },
         staff: {
             add_staff_notification: (data: any) =>
