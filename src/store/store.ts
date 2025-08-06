@@ -20,6 +20,7 @@ import CertificateManagemetSlice from '../features/certificateManagement/reducer
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
 import FaqsSlice from '../features/Faq/reducers/slice'
+import CategoriesSlice from '../features/Course mangement/categories/reducers/slice'
 
 
 const store = configureStore({
@@ -45,6 +46,7 @@ const store = configureStore({
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
 		FaqsSlice: FaqsSlice,
+		categoriesSlice:CategoriesSlice
 
 
 	},

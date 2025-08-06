@@ -104,7 +104,11 @@ class Client {
         update: (data: any) =>
             HttpClient.update(HTTP_END_POINTS.category.create + `/${data.id}`, data),
         delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.category.create + `/${data.id}`),
+            HttpClient.delete(HTTP_END_POINTS.category.create + `/${data.uuid}`),
+         updatestatus: (data: any) =>
+            HttpClient.update(HTTP_END_POINTS.category.create + `/${data.id}`, data),
+       
+
     };
     course_module = {
         getAll: (params: string) =>
