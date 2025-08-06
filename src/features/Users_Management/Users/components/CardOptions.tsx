@@ -26,7 +26,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
         }
     }
     return (
-        <div className="flex flex-col items-start p-2 gap-3 w-[120px] bg-white rounded-xl absolute -right-3 top-6 shadow-lg z-20">
+        <div className="flex flex-col items-start p-2 gap-3 w-[120px] bg-white rounded-xl  shadow-lg z-20">
             <button
                 onClick={handleView}
                 className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border bg-gray-100 hover:bg-[${COLORS.primary}] transition`}

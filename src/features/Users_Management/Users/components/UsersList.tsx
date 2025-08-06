@@ -10,7 +10,7 @@ import { COLORS, FONTS } from "../../../../constants/uiConstants";
 import { GetImageUrl } from "../../../../utils/helper";
 import { SlOptionsVertical } from "react-icons/sl";
 import CardOptions from "./CardOptions";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { updateUserStatus } from "../service";
 import warning  from "../../../../assets/warningimg.png"
 
@@ -41,6 +41,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
     const [statusValue, setStatusValue] = useState<string>();
     const [userId, setUserId] = useState<string>();
     const [alertModal, setAlertModal] = useState<boolean>(false)
+    const dropdownRef = useRef<HTMLDivElement>(null)
 
     const handleStatusValue = (value:string, userId:string) => {
         setAlertModal(true)
@@ -58,6 +59,19 @@ const UsersList: React.FC<props> = ({ Users }) => {
         const response = await updateUserStatus(data);
         setAlertModal(false)
     }
+    
+    useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setCardOptionsShow(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
     return (
         <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -96,7 +110,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
                         <button className="bg-white" onClick={() => setCardOptionsShow(cardOptionsShow === index ? null : index)}>
                             <SlOptionsVertical className={`text-[${COLORS.primary}]`}/>
                         </button>
-                        {cardOptionsShow === index && <CardOptions uuid={card?.uuid}/>}
+                        {cardOptionsShow === index && <div ref={dropdownRef} className="absolute right-0 z-10"><CardOptions uuid={card?.uuid}/></div>}
                     </div>
                 </div>
 

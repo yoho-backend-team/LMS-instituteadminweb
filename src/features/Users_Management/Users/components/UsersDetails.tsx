@@ -62,7 +62,7 @@ const UsersDetails = () => {
                         <p className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_07 }}>{userDetail?.role?.identity}</p>
                     </div>
                 </div>
-                <div className={`bg-[${COLORS.light_green}] w-[55px] h-[25px]  flex justify-center items-center rounded-md`} style={{...FONTS.heading_13}}><span className="text-white">{userDetail?.is_active ? "Active" : "Inactive"}</span></div>
+                <div className={`w-[70px] h-[30px]  flex justify-center items-center rounded-md ${userDetail?.is_active ? `bg-[${COLORS.light_green}]` : "bg-red-500"}`} style={{...FONTS.heading_13}}><span className="text-white">{userDetail?.is_active ? "Active" : "Inactive"}</span></div>
             </div>
             <div className="p-2 mt-10 grid gap-4">
                 <h1 className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_05_bold }}>Profile Details</h1>
