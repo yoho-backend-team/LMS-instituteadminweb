@@ -16,6 +16,7 @@ export const getNotes = async (params: any) => {
 export const createNote = async (data: any) => {
   try {
     const response = await Client.notes.create(data);
+    console.log("Create Note ",response.data)
     return response
   } catch (error) {
     console.log("Adding Note",error)
@@ -61,24 +62,24 @@ export const uploadFile = async (file: File) => {
   }
 };
 
-//For branch Dropdown
-export const BranchDrop =async(params:any)=>{
+export const getBranch = async (params: any) => {
   try {
     const response = await Client.branch.getAll(params);
-    return response
-  } catch (error) {
-    console.log("Branch Dorpdown",error)
+    console.log("branches",response)
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch branches");
   }
 };
 
 //For Course Dropdown
-export const CourseDrop=async(data:any)=>{
-  try {
-    const response= await Client.course.getWithBranch(data);
-    return response
-  } catch (error) {
-    console.log("Course Dorpdown",error)
-    throw error;    
+export const CourseDrop=async(params:any)=>{
+ try {
+    const response = await Client.course.getWithBranch(params);
+    console.log("courses", response);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch courses");
   }
 }
 

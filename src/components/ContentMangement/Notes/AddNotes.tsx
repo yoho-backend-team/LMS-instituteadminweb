@@ -4,17 +4,20 @@ import { BiSolidCloudUpload } from "react-icons/bi";
 import CustomDropdown from "./CoustomDropdown/CustomDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchBranchesThunk,
+  
   fetchCoursesByBranchThunk,
+  GetBranchThunks,
 } from "../../../features/ContentMangement/Notes/Reducer/noteThunk";
+import { getBranch } from "../../../features/ContentMangement/Notes/Reducer/selectors";
 
-interface Props {
+type AddNotesProps = {
   onClose: () => void;
   onSubmit: (data: FormData) => void;
-}
+};
 
-const AddNotes = ({ onClose, onSubmit }: Props) => {
+const AddNotes: React.FC<AddNotesProps> = ({ onClose, onSubmit }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch<any>();
 
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
@@ -23,103 +26,65 @@ const AddNotes = ({ onClose, onSubmit }: Props) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
 
-  const [titleError, setTitleError] = useState("");
-  const [fileError, setFileError] = useState("");
-  const [branchError, setBranchError] = useState("");
-  const [courseError, setCourseError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
+  const [errors, setErrors] = useState({
+    title: "",
+    file: "",
+    branch: "",
+    course: "",
+    description: "",
+  });
 
-  const dispatch = useDispatch<any>();
   const noteState = useSelector((state: any) => state?.noteSlice || {});
-  const instituteId = useSelector(
-    (state: any) => state?.auth?.user?.institute?._id
-  );
-
   const branchOptions =
-    noteState?.branches?.data?.map((b: any) => ({
+    noteState?.branches?.map((b: any) => ({
       label: b.branch_identity,
       value: b.uuid,
     })) || [];
-
   const courseOptions =
-    noteState?.courses?.data?.map((c: any) => ({
+    noteState?.courses?.map((c: any) => ({
       label: c.course_name,
       value: c.uuid,
     })) || [];
 
-  useEffect(() => {
-    dispatch(fetchBranchesThunk());
+    const branches = useSelector(getBranch)
+
+    console.log("branches",branches)
+
+ useEffect(() => {
+    const params = {
+      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+    };
+    dispatch(GetBranchThunks(params));
+   
   }, [dispatch]);
 
-  const handleUploadClick = () => fileInputRef.current?.click();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-      if (!allowedTypes.includes(file.type)) {
-        setFileError("Only PDF, DOC, or DOCX files are allowed.");
-        setUploadedFile(null);
-        setFilePreviewUrl(null);
-      } else {
-        setFileError("");
-        setUploadedFile(file);
-        setFilePreviewUrl(URL.createObjectURL(file));
-      }
-    }
+  const validateForm = () => {
+    const newErrors = {
+      title: !title.trim() ? "Title is required." : "",
+      file: !uploadedFile ? "File is required." : "",
+      branch: !selectedBranch ? "Branch is required." : "",
+      course: !selectedCourse ? "Course is required." : "",
+      description: !description.trim() ? "Description is required." : "",
+    };
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    let valid = true;
 
-    if (!title.trim()) {
-      setTitleError("Title is required.");
-      valid = false;
-    } else {
-      setTitleError("");
-    }
-
-    if (!uploadedFile) {
-      setFileError("Please upload a valid document file.");
-      valid = false;
-    } else {
-      setFileError("");
-    }
-
-    if (!selectedBranch) {
-      setBranchError("Branch is required.");
-      valid = false;
-    } else {
-      setBranchError("");
-    }
-
-    if (!selectedCourse) {
-      setCourseError("Course is required.");
-      valid = false;
-    } else {
-      setCourseError("");
-    }
-
-    if (!description.trim()) {
-      setDescriptionError("Description is required.");
-      valid = false;
-    } else {
-      setDescriptionError("");
-    }
-
-    if (!valid) return;
+    if (!validateForm()) return;
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("course", selectedCourse);
     formData.append("branch", selectedBranch);
     formData.append("description", description);
-    if (uploadedFile) formData.append("file", uploadedFile);
+    if (uploadedFile) {
+      formData.append("file", uploadedFile);
+    }
 
     onSubmit(formData);
     onClose();
@@ -139,122 +104,134 @@ const AddNotes = ({ onClose, onSubmit }: Props) => {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 justify-between overflow-y-auto h-[85vh] scrollbar-hide"
+        className="flex flex-col gap-4 overflow-y-auto h-[85vh] scrollbar-hide"
       >
-        <div className="flex flex-col gap-4">
-          {!uploadedFile ? (
-            <div
-              onClick={handleUploadClick}
-              className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
-            >
-              <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
-              <span>Drop File Here Or Click To Upload</span>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept=".pdf,.doc,.docx"
-                className="hidden"
-              />
-              {fileError && <p className="text-sm text-red-500">{fileError}</p>}
-            </div>
-          ) : (
-            <div className="relative border p-3 rounded-md">
-              <button
-                type="button"
-                onClick={() => {
+        {/* File Upload */}
+        {!uploadedFile ? (
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
+          >
+            <BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
+            <span>Drop File Here Or Click To Upload</span>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (
+                  file &&
+                  [
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  ].includes(file.type)
+                ) {
+                  setUploadedFile(file);
+                  setFilePreviewUrl(URL.createObjectURL(file));
+                  setErrors((prev) => ({ ...prev, file: "" }));
+                } else {
                   setUploadedFile(null);
                   setFilePreviewUrl(null);
-                }}
-                className="absolute top-2 right-2 text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
-              >
-                <IoMdClose size={14} />
-              </button>
-
-              {uploadedFile?.type === "application/pdf" ? (
-                <iframe
-                  src={filePreviewUrl!}
-                  className="w-full h-64 border rounded-md"
-                  title="PDF Preview"
-                />
-              ) : uploadedFile?.type.includes("word") ? (
-                <div className="text-sm text-blue-600">
-                  DOC/DOCX file selected. Preview not supported.
-                </div>
-              ) : (
-                <div className="text-sm">Unknown file type.</div>
-              )}
-              <p className="mt-2 text-sm text-green-600">{uploadedFile.name}</p>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-2">
-            <label>Branch</label>
-            <CustomDropdown
-              options={branchOptions}
-              value={selectedBranch}
-              onChange={(value) => {
-                setSelectedBranch(value);
-                setSelectedCourse("");
-                dispatch(
-                  fetchCoursesByBranchThunk({
-                    branchId: value,
-                    instituteId, 
-                  })
-                );
+                  setErrors((prev) => ({
+                    ...prev,
+                    file: "Only PDF, DOC, or DOCX files are allowed.",
+                  }));
+                }
               }}
-              placeholder="Select Branch"
-              width="w-full"
+              accept=".pdf,.doc,.docx"
+              className="hidden"
             />
-
-            {branchError && (
-              <p className="text-sm text-red-500">{branchError}</p>
+            {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
+          </div>
+        ) : (
+          <div className="relative border p-3 rounded-md">
+            <button
+              type="button"
+              onClick={() => {
+                setUploadedFile(null);
+                setFilePreviewUrl(null);
+              }}
+              className="absolute top-2 right-2 text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
+            >
+              <IoMdClose size={14} />
+            </button>
+            {uploadedFile?.type === "application/pdf" ? (
+              <iframe
+                src={filePreviewUrl!}
+                className="w-full h-64 border rounded-md"
+                title="PDF Preview"
+              />
+            ) : (
+              <div className="text-sm text-blue-600">
+                DOC/DOCX file selected. Preview not supported.
+              </div>
             )}
+            <p className="mt-2 text-sm text-green-600">{uploadedFile.name}</p>
           </div>
+        )}
 
-          <div className="flex flex-col gap-2">
-            <label>Course</label>
-            <CustomDropdown
-              options={courseOptions}
-              value={selectedCourse}
-              onChange={setSelectedCourse}
-              placeholder="Select Course"
-              width="w-full"
-            />
-            {courseError && (
-              <p className="text-sm text-red-500">{courseError}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label>Title</label>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              type="text"
-              className="border p-2 rounded h-10"
-            />
-            {titleError && <p className="text-sm text-red-500">{titleError}</p>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label>Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="border p-2 rounded h-20 resize-none"
-            />
-            {descriptionError && (
-              <p className="text-sm text-red-500">{descriptionError}</p>
-            )}
-          </div>
+        {/* Branch Dropdown */}
+        <div>
+          <label>Branch</label>
+          <CustomDropdown
+            options={branchOptions}
+            value={selectedBranch}
+            onChange={(value) => {
+              setSelectedBranch(value);
+              setSelectedCourse("");
+              dispatch(fetchCoursesByBranchThunk({ branchId: value }));
+            }}
+            placeholder="Select Branch"
+            width="w-full"
+          />
+          {errors.branch && <p className="text-sm text-red-500">{errors.branch}</p>}
         </div>
 
-        <div className="flex justify-end items-center gap-4">
+        {/* Course Dropdown */}
+        <div>
+          <label>Course</label>
+          <CustomDropdown
+            options={courseOptions}
+            value={selectedCourse}
+            onChange={setSelectedCourse}
+            placeholder="Select Course"
+            width="w-full"
+          />
+          {errors.course && <p className="text-sm text-red-500">{errors.course}</p>}
+        </div>
+
+        {/* Title */}
+        <div>
+          <label>Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border p-2 rounded h-10 w-full"
+          />
+          {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+        </div>
+
+        {/* Description */}
+        <div>
+          <label>Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 rounded h-20 resize-none w-full"
+          />
+          {errors.description && (
+            <p className="text-sm text-red-500">{errors.description}</p>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-4">
           <button
             className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"
-            onClick={onClose}
             type="button"
+            onClick={onClose}
           >
             Cancel
           </button>
