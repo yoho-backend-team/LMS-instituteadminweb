@@ -69,12 +69,12 @@ const Modules = () => {
 		setShowViewModule(true);
 	};
 
-	const handleDelete = (id: string,uuid:string) => {
+	const handleDelete = (id: string, uuid: string) => {
 		if (selectedModule?.id === id) {
 			setShowViewModule(false);
 			setSelectedModule(null);
 		}
-		dispatch(DeletemoduleThunks({ id ,uuid}));
+		dispatch(DeletemoduleThunks({ id, uuid }));
 	};
 
 
@@ -109,7 +109,7 @@ const Modules = () => {
 							onClose={() => setShowPanel(false)}
 							onSubmit={(newModule) => {
 								setShowPanel(false);
-								console.log(newModule,"new module added successfully")
+								console.log(newModule, "new module added successfully")
 							}}
 						/>
 					</div>
@@ -191,16 +191,23 @@ const Modules = () => {
 							title={selectedModule.title}
 							courseName={selectedModule.course?.course_name ?? ""}
 							description={selectedModule.description ?? ""}
-							isActive={selectedModule.isActive ?? false}
+							isActive={
+								toggleStatusMap[selectedModule.id] !== undefined
+									? toggleStatusMap[selectedModule.id]
+									: selectedModule.isActive
+							}
 							fileUrl={selectedModule.fileUrl}
-							fileName={selectedModule.fileName?"":""}
+							fileName={selectedModule.fileName ? "" : ""}
 							branch={selectedModule.branch ?? ""}
+							onStatusChange={() =>
+								handleToggle({ module_id: selectedModule.id, status: selectedModule.isActive })
+							}
 						/>
+
+
 					</div>
 				</div>
 			)}
-
-
 
 			<div className="flex flex-wrap gap-4">
 				{Module?.map((card: ModuleCardProps) => (
@@ -311,7 +318,7 @@ const Modules = () => {
 								</button>
 
 								<button
-									onClick={() => handleDelete(card.id,card.uuid)}
+									onClick={() => handleDelete(card.id, card.uuid)}
 									className="flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700"
 								>
 									<FaTrash />

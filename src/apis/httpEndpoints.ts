@@ -3,7 +3,7 @@ import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
 	if (typeof secureLocalStorage !== 'undefined') {
-		const institute = GetLocalStorage('institute');
+		const institute = GetLocalStorage('instituteId');
 		return institute;
 	} else {
 		return null;
@@ -13,7 +13,6 @@ export const getInstituteDetails = () => {
 export const getSelectedBranchId = () => {
 	if (typeof secureLocalStorage !== 'undefined') {
 		const branch = GetLocalStorage('selectedBranchId');
-		console.log(branch, 'branch id')
 		return branch;
 	} else {
 		return null;
@@ -21,10 +20,8 @@ export const getSelectedBranchId = () => {
 };
 
 const generateEndpoints = () => {
-	const instituteId =
-		getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
-	const branchId =
-		getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+	const instituteId = getInstituteDetails();
+	const branchId = getSelectedBranchId();
 
 	return {
 		admin: {
@@ -35,7 +32,7 @@ const generateEndpoints = () => {
 			verfiy_otp: '/api/institutes/auth/admin/verify-otp/',
 			reset_password: `/api/institutes/auth/admin/update-password`,
 			login: '/api/institutes/auth/admin/login/',
-			logout: '/api/institutes/admin/institute-user/logout'
+			logout: '/api/institutes/admin/institute-user/logout',
 		},
 		permission: {
 			getAll: `/api/admin/institutes/permissions/all`,
@@ -106,7 +103,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`
+			delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`,
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
@@ -140,7 +137,7 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/student/student/`,
 			activity: `/api/institutes/${instituteId}/students/student/activity/`,
 			// classess: `/api/institutes/:instituteId/students/student/classes/`
-			classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/students/`
+			classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/students/`,
 		},
 		payment: {
 			fee: {
@@ -166,13 +163,15 @@ const generateEndpoints = () => {
 			// getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
 			// getActivtiy: "/api/institutes/user/activity/staff/",
-			getActivtiy: "/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec",
+			getActivtiy:
+				'/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec',
 			// getClasses: "/api/institutes/class/staff/",
-			getClasses: "/api/institutes/class/staff/67f3bebeb8d2634300cc8aec",
+			getClasses: '/api/institutes/class/staff/67f3bebeb8d2634300cc8aec',
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22/teaching-staff/update/:staffId`,
 			create: 'api/institutes/auth/teaching-staff/register',
-			delete: 'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff'
+			delete:
+				'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff',
 		},
 		nonstaff: {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,
@@ -214,7 +213,7 @@ const generateEndpoints = () => {
 			staff_notification: `/api/institutes/staff/notifications/all`,
 			create_staff_notification: `/api/institutes/staff/notifications/`,
 			institute_notification: `/api/institutes/branch/notifications`,
-			all_notification_resend:`api/notification/student-notification-resend`,
+			all_notification_resend: `api/notification/student-notification-resend`,
 			institute_notification_resend: `/api/notification/institute/resend-notification/`,
 		},
 		institute_notification: {

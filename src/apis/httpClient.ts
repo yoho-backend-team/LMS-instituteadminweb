@@ -23,6 +23,7 @@ Axios.interceptors.response.use(
     (error) => {
         if (error?.response && error?.response?.status === 401 && error?.response?.data?.status === "session_expired") {
             ClearLocalStorage()
+            window.location.reload()
         }
         return Promise.reject(error);
     }
@@ -39,8 +40,8 @@ class HttpClient {
         return response.data;
     }
 
-    async update(url: string, data?: any) {
-        const response = await Axios.put(url, data)
+    async update(url: string, data?: any, params?: any) {
+        const response = await Axios.put(url, data, { params })
         return response.data
     }
 
