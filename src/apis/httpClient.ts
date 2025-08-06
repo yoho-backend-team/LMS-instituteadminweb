@@ -1,6 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
+import { showSessionExpiredModal } from '../components/Session/sessionexpiremodel';
+
+
+
 
 const Axios = axios.create({
     baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -9,6 +13,18 @@ const Axios = axios.create({
         "Content-Type": "application/json"
     }
 });
+
+Axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      ClearLocalStorage();
+      showSessionExpiredModal();
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 Axios.interceptors.request.use((config) => {
     const token = GetLocalStorage('instituteAdminToken');
@@ -21,9 +37,11 @@ Axios.interceptors.request.use((config) => {
 Axios.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error?.response && error?.response?.status === 401 && error?.response?.data?.status === "session_expired") {
-            ClearLocalStorage()
-            window.location.reload()
+        if (error?.response?.status === 401) {
+            ClearLocalStorage();
+           
+            showSessionExpiredModal();
+                
         }
         return Promise.reject(error);
     }
