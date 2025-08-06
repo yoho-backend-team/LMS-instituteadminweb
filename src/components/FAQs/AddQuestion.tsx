@@ -42,17 +42,17 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
     const payload = {
       title,
       description,
-      category_id: category1, // category1 is used for category_id
+      category_id:"6825d76c8245c52fee70cc27", // category1 is used for category_id
       accessby: ["Teaching Staff"], // hardcoded access
     };
 
     try {
       setLoading(true);
       const result = await CreateFaq(payload);
-      console.log("✅ Created FAQ:", result);
+      console.log(" Created FAQ:", result);
       onOpenChange(false);
     } catch (err) {
-      console.error("❌ Failed to create FAQ", err);
+      console.error(" Failed to create FAQ", err);
     } finally {
       setLoading(false);
     }
@@ -92,9 +92,9 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="6825d76c8245c52fee70cc27">General</SelectItem>
-                <SelectItem value="technical-cat-id">Technical</SelectItem>
-                <SelectItem value="billing-cat-id">Billing</SelectItem>
+                <SelectItem value="general">General</SelectItem>
+                <SelectItem value="technical">Technical</SelectItem>
+                <SelectItem value="billing">Billing</SelectItem>
               </SelectContent>
             </Select>
           </div>
