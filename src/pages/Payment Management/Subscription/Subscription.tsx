@@ -5,21 +5,28 @@ import { Plans } from "../../../components/subscription/Plans";
 
 type PlanType = {
   id: number;
-  name: string;
+  identity: string;
   description: string;
   price: number;
-  features: string[];
+  features: {
+    feature: { identity: string };
+    count?: number;
+    _id?: string;
+  }[];
+  _id: string;
 };
 
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
   const [viewPlan, setViewPlan] = useState(false);
+  const [institutePlan, setinstitutePlan] = useState(false);
 
   return (
     <div className="overflow-scroll">
       {viewPlan && selectedPlan ? (
         <Plans
           plan={selectedPlan}
+          show={institutePlan}
           onClose={() => {
             setViewPlan(false);
             setSelectedPlan(null);
@@ -29,8 +36,9 @@ const Subscription = () => {
         <>
           <Subscriptions />
           <SubScriptionPlan
-            onSelectPlan={(plan) => {
+            onSelectPlan={(plan: PlanType, show: boolean) => {
               setSelectedPlan(plan);
+              setinstitutePlan(show)
               setViewPlan(true);
             }}
           />
