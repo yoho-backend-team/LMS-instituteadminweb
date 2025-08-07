@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HiCheckCircle } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 
@@ -6,15 +7,21 @@ type PlanType = {
   identity: string;
   description: string;
   price: number;
-  features: string[];
+  features: {
+    feature: { identity: string };
+    count?: number;
+    _id?: string;
+  }[];
+  _id: string;
 };
 
 type PlansProps = {
   plan: PlanType;
+  show: boolean;
   onClose: () => void;
 };
 
-export const Plans = ({ plan, onClose }: PlansProps) => {
+export const Plans = ({ plan, onClose, show }: PlansProps) => {
   return (
     <div>
       <div className="bg-[#1BBFCA] text-white p-2 pl-4 rounded-xl flex justify-between">
@@ -59,7 +66,9 @@ export const Plans = ({ plan, onClose }: PlansProps) => {
 
           <div className="flex gap-4">
             <button className="px-4 py-2 border border-[#1BBFCA] bg-cyan-100 text-[#1BBFCA] rounded-md">Cancel</button>
-            <button className="px-4 py-2 bg-[#1BBFCA] text-white rounded-md">Renew</button>
+            <button className="px-4 py-2 bg-[#1BBFCA] text-white rounded-md">
+              {show ? 'Renew' : 'Upgrade Plan'}
+            </button>
           </div>
         </div>
       </div>

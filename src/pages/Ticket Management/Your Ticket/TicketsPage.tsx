@@ -23,12 +23,13 @@ const TicketCard: React.FC<TicketCardProps> = ({
     time,
     priority,
     avatarUrl,
+    
     onView,
 }) => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const popupRef = useRef<HTMLDivElement>(null);
 
-    
+    console.log("name",name)
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
@@ -59,6 +60,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 />
                 <div>
                     <h2 className="text-gray-500" style={{ ...FONTS.heading_07_bold }}>{name}</h2>
+                    
                     <p className="text-gray-500" style={{ ...FONTS.heading_12 }}>Email: {email}</p>
                 </div>
 

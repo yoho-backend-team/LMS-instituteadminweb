@@ -1,5 +1,6 @@
-import { getAllPlan, getInstituteSubscription, getSubscriptionStatus, updateRequest } from "./services"
-import { setAllPlan, setInstituteSubscription, setSubscriptionStatus, setUpgradeResponse } from "./slice";
+import { getAllPlan, getInstituteSubscription, getSubscriptionStatus, upgradeRequest, } from "./services"
+import { setAllPlan, setInstituteSubscription, setSubscriptionStatus, setUpgradeRequest, } from "./slice";
+
 
 export const getAllPlanThunk = () => async (dispatch: any) => {
   try {
@@ -11,7 +12,7 @@ export const getAllPlanThunk = () => async (dispatch: any) => {
   }
 };
 
-export const getInstituteSubcriptionThunk = (params:any) => async (dispatch: any) =>{
+export const getInstituteSubcriptionThunk = (params?:any) => async (dispatch: any) =>{
   try{
     const response = await getInstituteSubscription(params)
     dispatch(setInstituteSubscription(response.data))
@@ -21,7 +22,7 @@ export const getInstituteSubcriptionThunk = (params:any) => async (dispatch: any
   }
 }
 
-export const getSubscriptionStatusThunk = (params:any) => async (dispatch: any) => {
+export const getSubscriptionStatusThunk = (params?:any) => async (dispatch: any) => {
   try {
     const response = await getSubscriptionStatus(params);
     dispatch(setSubscriptionStatus(response.data));
@@ -31,13 +32,21 @@ export const getSubscriptionStatusThunk = (params:any) => async (dispatch: any) 
   }
 };
 
-export const updateRequestThunk = (params: any) => async (dispatch: any) => {
+// export const upgradeRequestThunk = (params:any) => async (dispatch: any) =>{
+//   try{
+//     const response = await upgradeRequest(params)
+//     dispatch(setUpgradeRequest(response.data))
+//   } catch(error){
+//     console.error("Error updating request:", error)
+//   }
+// }
+
+export const upgradeRequestThunk = (planId: string, instituteId: string) => async (dispatch: any) => {
   try {
-    console.log("Sending upgrade request with params:", params);
-    const response = await updateRequest(params);
-    dispatch(setUpgradeResponse(response)); // <-- Store in Redux
-    console.log("Upgrade request sent:", response);
+    const response = await upgradeRequest(planId, instituteId);
+    dispatch(setUpgradeRequest(response.data));
   } catch (error) {
-    console.error("Error updatingRequest:", error);
+    console.error("Error updating request:", error);
   }
 };
+

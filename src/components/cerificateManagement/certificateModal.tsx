@@ -1,23 +1,33 @@
-import React from 'react'
-import { HiMiniXMark } from "react-icons/hi2";
-import {  FONTS } from '../../constants/uiConstants';
+import React, { useCallback, useEffect, useState } from 'react';
+import { HiMiniXMark } from 'react-icons/hi2';
+import { COLORS, FONTS } from '../../constants/uiConstants';
+import {
+  getBranchService,
+  getCourseService,
+  getStudentService
+} from '../../features/batchManagement/services';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
+import { createCertificate, getAllBatches } from '../../features/certificateManagement/services';
+import { getStudentmanagement } from '../../features/StudentManagement/reducer/thunks';
+import { selectStudent } from '../../features/StudentManagement/reducer/selector';
 
 export interface Certificate {
-  id: number
-  title: string
-  description: string
-  branch: string
-  batch: string
-  student: string
-  email: string
+  id: number;
+  title: string;
+  description: string;
+  branch: string;
+  batch: string;
+  student: string;
+  email: string;
 }
 
 interface CertificateModalProps {
-  isOpen: boolean
-  isEditing: boolean
-  editingCertificate: Certificate | null
-  onClose: () => void
-  onSave: (formData: Partial<Certificate>) => void
+  isOpen: boolean;
+  isEditing: boolean;
+  editingCertificate: Certificate | null;
+  onClose: () => void;
+  onSave: (formData: Partial<Certificate>) => void;
 }
 
 export const CertificateModal: React.FC<CertificateModalProps> = ({
@@ -27,26 +37,104 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   onClose,
   onSave
 }) => {
-  if (!isOpen) return null
+  const dispatch = useDispatch<any>();
+  const [courses, setCourses] = useState<any[]>([]);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [allBatches, setAllBatches] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
+  const [courseUUID, setCourseUUID] = useState('');
+  const [courseObjectId, setCourseObjectId] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const formData = {
-      title: (form.elements.namedItem("title") as HTMLInputElement).value,
-      branch: (form.elements.namedItem("branch") as HTMLSelectElement)?.value,
-      batch: (form.elements.namedItem("batch") as HTMLSelectElement)?.value,
-      student: (form.elements.namedItem("student") as HTMLInputElement)?.value,
+  const studentData = useSelector(selectStudent)?.data;
+
+  const fetchAllCourses = async () => {
+    try {
+      const response = await getCourseService({});
+      if (response) {
+        setCourses(response?.data);
+      }
+    } catch (error) {
+      console.log('Error fetching course data:', error);
     }
-    onSave(formData)
+  };
+
+  const fetchAllBranches = async () => {
+    try {
+      const response = await getBranchService({});
+      if (response) {
+        setBranches(response?.data);
+      }
+    } catch (error) {
+      console.log('Error fetching branch data:', error);
+    }
+  };
+
+  const fetchAllBatches = useCallback(async () => {
+    try {
+      const response = await getAllBatches({});
+      if (response?.data) {
+        setAllBatches(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching batches:', error);
+    }
+  }, []);
+
+  const fetchStudentManagement = () => {
+    dispatch(
+      getStudentmanagement({
+        branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+        page: 1
+      })
+    );
+  };
+
+  useEffect(() => {
+    fetchAllBranches();
+    fetchAllCourses();
+    fetchAllBatches();
+    fetchStudentManagement();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (studentData && Array.isArray(studentData)) {
+      setStudents(studentData);
+    }
+  }, [studentData]);
+
+ const formik = useFormik({
+  initialValues: {
+    title: editingCertificate?.title || '',
+    course: editingCertificate?.course || '',
+    branch: editingCertificate?.branch || '',
+    batch: editingCertificate?.batch || '',
+    student: editingCertificate?.student || ''
+  },
+  enableReinitialize: true,
+  onSubmit: async (values) => {
+    const payload = {
+      batch_id: values.batch,
+      branch_id: values.branch,
+      course: values.course,
+      institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529', // Replace this with dynamic value if needed
+      student: values.student
+    };
+
+    onSave(payload); // optional, if you're using this for state update or local storage
+    await createCertificate(payload); // sends data to backend
+    onClose(); // close modal after submission
   }
+});
+
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
       <div className="w-full max-w-md h-[90vh] p-5 gap-5 rounded-lg flex flex-col shadow-xl bg-white overflow-hidden">
-        <div className="flex  " style={{ ...FONTS.heading_05_bold}}>
+        <div className="flex" style={{ ...FONTS.heading_05_bold }}>
           <h2 className="text-2xl text-[#716F6F] font-semibold mb-4">
-            {isEditing ? "Edit Study Material" : "Add Certificate"}
+            {isEditing ? 'Edit Certificate' : 'Add Certificate'}
           </h2>
           <button
             onClick={onClose}
@@ -55,63 +143,121 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             <HiMiniXMark className="h-6 w-6 pb-2 pr-2" />
           </button>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Select Courses</label>
-            <input
-              name="title"
-              className="w-full border h-13 px-3 py-2 rounded"
-              style={{ ...FONTS.heading_06}}
-              placeholder="Enter Course"
-              defaultValue={editingCertificate?.title || ""}
-              required
-            />
+
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 overflow-auto">
+          {/* Course */}
+          <div>
+            <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+              Course
+            </label>
+            <select
+              name="course"
+              className="w-full border rounded-md px-4 py-2"
+              value={formik.values.course}
+              onChange={(e) => {
+                const selectedCourse = courses.find((c) => c.uuid === e.target.value);
+                formik.handleChange(e);
+                setCourseUUID(selectedCourse?.uuid || '');
+                setCourseObjectId(selectedCourse?._id || '');
+              }}
+              onBlur={formik.handleBlur}
+            >
+              <option value="">Select Course</option>
+              {courses.map((course: any) => (
+                <option key={course?.uuid} value={course?.uuid}>
+                  {course?.course_name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* Branch */}
           {!isEditing && (
             <>
-              <div className="mb-4">
-                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Select Branch</label>
-                <select name="branch" className="w-full border h-13 px-3 py-2 rounded" required style={{ ...FONTS.heading_06}}>
-                  <option value="">Select</option>
-                  <option value="OMR">OMR</option>
-                  <option value="Padur">Padur</option>
+              <div>
+                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                  Branch
+                </label>
+                <select
+                  name="branch"
+                  className="w-full border rounded-md px-4 py-2"
+                  value={formik.values.branch}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select Branch</option>
+                  {branches.map((branch: any) => (
+                    <option key={branch._id} value={branch.uuid}>
+                      {branch.branch_identity}
+                    </option>
+                  ))}
                 </select>
               </div>
-              <div className="mb-4">
-                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Batch</label>
-                <select name="batch" className="w-full border h-13 px-3 py-2 rounded" style={{ ...FONTS.heading_06}} required>
-                  <option value="">Select</option>
-                  <option value="January 2025">January 2025</option>
-                  <option value="Aril 2025">April 2025</option>
-                  <option value="October 2024">October 2024</option>
+
+              {/* Batch */}
+              <div>
+                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                  Batch
+                </label>
+                <select
+                  name="batch"
+                  className="w-full border rounded-md px-4 py-2"
+                  value={formik.values.batch}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select Batch</option>
+                  {allBatches.map((batch: any) => (
+                    <option key={batch._id} value={batch._id}>
+                      {batch.batch_name}
+                    </option>
+                  ))}
                 </select>
               </div>
-              <div className="mb-4">
-                <label className="block text-lg font-medium mb-1" style={{ ...FONTS.heading_08}}>Student Name</label>
-                <input
+
+              {/* Student */}
+              <div>
+                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                  Student
+                </label>
+                <select
                   name="student"
-                  className="w-full border h-13 px-3 py-2 rounded"
-                  placeholder="Enter student name"
-                  required
-                />
+                  className="w-full border rounded-md px-4 py-2"
+                  value={formik.values.student}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select Student</option>
+                  {students.map((student: any) => (
+                    <option key={student._id} value={student._id}>
+                      {student.full_name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </>
           )}
-          <div className="flex justify-end gap-8 mt-8">
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
               onClick={onClose}
               className="bg-[#0400FF1A] text-[#0400FF] px-4 py-2 rounded-lg"
-              style={{ ...FONTS.heading_08}}
+              style={{ ...FONTS.heading_08 }}
             >
               Cancel
             </button>
-            <button type="submit" className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg" style={{ ...FONTS.heading_08}}>
-              {isEditing ? "Update" : "Submit"}
+            <button
+              type="submit"
+              className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg"
+              style={{ ...FONTS.heading_08 }}
+            >
+              {isEditing ? 'Update' : 'Submit'}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};

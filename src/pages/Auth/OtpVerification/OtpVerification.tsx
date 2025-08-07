@@ -4,12 +4,10 @@ import otpimg from '../../../assets/otpimg.png'
 import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../../utils/localStorage';
 import { AuthOtp } from '../../../features/Auth/service';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const OtpVerification = () => {
 
-	const navigate = useNavigate()
 	const { login } = useAuth()
 
 	const inputLength = 6;

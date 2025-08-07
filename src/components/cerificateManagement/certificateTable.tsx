@@ -4,9 +4,11 @@ import { FaEye } from "react-icons/fa"
 import { MdEditDocument, MdDelete } from "react-icons/md"
 import { IoMdDownload } from "react-icons/io"
 import {  FONTS } from '../../constants/uiConstants';
+import { GetImageUrl } from '../../utils/helper'
 
 export interface Certificate {
   id: number
+  uuid: string;
   title: string
   description: string
   branch: string
@@ -21,7 +23,7 @@ interface CertificateTableProps {
   setOpenDropdownId: (id: number | null) => void
   onEdit: (cert: Certificate) => void
   onView: (cert: Certificate) => void
-  onDelete: (id: number) => void
+  onDelete: (uuid: number) => void
   onDownload: (cert: Certificate) => void
 }
 
@@ -51,9 +53,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
               <tr key={cert.id} className="text-[#716F6F]">
                 <td className="px-6 py-4" style={{ ...FONTS.heading_08}}>{cert.id}</td>
                 <td className="px-6 py-4 flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#1BBFCA] text-white flex items-center justify-center font-semibold">
-                    
-                  </div>
+                  <img src={GetImageUrl(cert.image) ?? undefined} alt={cert.student} className='w-10 h-10 rounded-full object-cover' />
                   <div>
                     <div className="font-bold text-lg" style={{ ...FONTS.heading_07_bold}}>{cert.student}</div>
                     <div className="text-sm" style={{ ...FONTS.heading_08}}>{cert.email}</div>
@@ -92,7 +92,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
                       <button
                         className="w-full flex text-left px-4 py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white"
                         onClick={() => {
-                          onDelete(cert.id)
+                          onDelete(cert.uuid)
                           setOpenDropdownId(null)
                         }}
                       >

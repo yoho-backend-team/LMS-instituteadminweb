@@ -19,15 +19,21 @@ import AllNotificationReducer from '../features/AllNotifications/Reducers/slices
 import CertificateManagemetSlice from '../features/certificateManagement/reducers/slice'
 import usersSlice from '../features/Users_Management/Users/redux/slice'
 import Coursedata from '../features/StudentManagement/reducer/StudenSlicet'
-import StaffSalary from"../features/Payment_Managemant/salary/reducers/moduleSlice"
-import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
-import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
+import subscriptionReducer from '../components/subscription/slice'
+import StudentTicketReducer from '../features/StudentTicket/Reducers/slices';
+import StaffNotificationSlice from '../features/staffNotification/reducers/slices'
+import StudentNotificationSlice from '../features/StudentNotification/reducer/NotificationSlice';
+import helpCenterFaqs from '../features/HelpCenter/slice'
+import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
+import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSlice"
+import PlacementReducer from '../features/placementManagement/Reducer/slice'
+import FaqsSlice from '../features/Faq/reducers/slice'
+import faqCategory from '../features/Faq_Category/slice'
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
-
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,
@@ -46,10 +52,16 @@ const store = configureStore({
 		CertificateManagemetSlice: CertificateManagemetSlice,
 		usersSlice: usersSlice,
 		Coursedata: Coursedata,
-		StaffSalary:StaffSalary,
-        StaffTicket:StaffTicket,
-		Studentfees:Studentfees
-
+		subscription: subscriptionReducer,
+		StudentTicketReducer: StudentTicketReducer,
+		StaffNotificationSlice: StaffNotificationSlice,
+		StudentNotificationSlice: StudentNotificationSlice,
+		helpCenterFaqs: helpCenterFaqs,
+		ticketAdmin: ticketAdmin,
+		StaffSalary: StaffSalary,
+		placements: PlacementReducer,
+		FaqsSlice: FaqsSlice,
+		faqCategory: faqCategory,
 	},
 })
 

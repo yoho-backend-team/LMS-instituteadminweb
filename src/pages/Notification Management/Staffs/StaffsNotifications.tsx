@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
@@ -22,57 +22,116 @@ import purpleImg from "../../../assets/purple icon.png";
 import greenImg from "../../../assets/green icon.png";
 import classImg from "../../../assets/classimg (1).png";
 import instructorImg from "../../../assets/image 108.png";
-import { X } from "lucide-react";
-
-const stats = [
-  {
-    title: "Total Notifications",
-    count: 0,
-    color: "bg-[#DB55D233]",
-    image: purpleImg,
-  },
-  {
-    title: "Read notifications",
-    count: 0,
-    color: "bg-green-100",
-    image: greenImg,
-  },
-  {
-    title: "Unread Notification",
-    count: 0,
-    color: "bg-[#E3418F33]",
-    image: classImg,
-  },
-];
-
-
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectBranch, selectStaff } from "../../../features/staff/reducers/selector";
+import { getBranchDetailsData, getStaffDetailsData } from "../../../features/staff/reducers/thunks";
+import { getAllStaffNotifications } from "../../../features/staffNotification/reducers/thunks";
+import { getInstituteDetails, getSelectedBranchId } from "../../../apis/httpEndpoints";
+import { selectStaffNotification } from '../../../features/staffNotification/reducers/selector';
+import { createStaffNotifications, resendStaffNotifications } from "../../../features/staffNotification/services";
 
 const StaffsNotification: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
-  const notifications = [
-    {
-      id: 13,
-      name: "Abdul kalam",
-      status: "Unread",
-      title: "Dress Code Reg",
-      message: "All should maintain the dress code",
-    },
-    {
-      id: 14,
-      name: "Einstein",
-      status: "Unread",
-      title: "Dress Code Reg",
-      message: "All should maintain the dress code",
-    },
-    {
-      id: 15,
-      name: "William",
-      status: "Unread",
-      title: "Dress Code Reg",
-      message: "All should maintain the dress code",
-    },
+  const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
+  const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+
+  const dispatch = useDispatch<any>();
+  const classData = useSelector(selectStaff)?.data || [];
+  const branchData = useSelector(selectBranch);
+  const staffNotificationData = useSelector(selectStaffNotification);
+  const notifications = staffNotificationData?.data || [];
+
+  const totalNotifications = staffNotificationData?.count || 0;
+  const readNotifications = notifications.filter((n: any) => n.status === "read").length;
+  const unreadNotifications = notifications.filter((n: any) => n.status === "unread").length;
+
+  const stats = [
+    { title: "Total Notifications", count: totalNotifications, color: "bg-[#DB55D233]", image: purpleImg },
+    { title: "Read notifications", count: readNotifications, color: "bg-green-100", image: greenImg },
+    { title: "Unread Notification", count: unreadNotifications, color: "bg-[#E3418F33]", image: classImg },
   ];
+
+  const [formData, setFormData] = useState({
+    institute: instituteId,
+    branch: branchId,
+    title: "",
+    body: "",
+    link: "",
+    type: "",
+    staff: [] as any[]
+  });
+
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleResend = async(uuid: any) => {
+    try {
+      await resendStaffNotifications({
+        id: uuid,
+        notification_id: uuid,
+      });
+      // Refresh notifications after resend
+      dispatch(getAllStaffNotifications({ 
+        institute: instituteId, 
+        branch: branchId, 
+        page: currentPage,
+        limit: itemsPerPage
+      }));
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createStaffNotifications(formData);
+      setOpen(false);
+      // Reset form
+      setFormData({
+        institute: instituteId,
+        branch: branchId,
+        title: "",
+        body: "",
+        link: "",
+        type: "",
+        staff: []
+      });
+      // Refresh notifications
+      dispatch(getAllStaffNotifications({ 
+        institute: instituteId, 
+        branch: branchId, 
+        page: currentPage,
+        limit: itemsPerPage
+      }));
+    } catch(error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getStaffDetailsData({}));
+    dispatch(getBranchDetailsData({}));
+    dispatch(getAllStaffNotifications({ 
+      institute: instituteId, 
+      branch: branchId, 
+      page: currentPage,
+      limit: itemsPerPage
+    }));
+  }, [dispatch, instituteId, branchId, currentPage, itemsPerPage]);
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
 
   return (
     <div className="p-6">
@@ -89,66 +148,50 @@ const StaffsNotification: React.FC = () => {
       {/* Drawer for Notification Form */}
       <Drawer open={open} onOpenChange={setOpen} direction="right">
         <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
-           <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
+          <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
             <DrawerTitle className="text-lg font-semibold">Add Notification</DrawerTitle>
             <DrawerClose>
               <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
             </DrawerClose>
           </DrawerHeader>
 
-          <form className="flex flex-col space-y-4">
-            {/* Select Course */}
-            <div className="flex flex-col">
-              <Label>Select Course</Label>
-              <Select>
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue  />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="course1">Course 1</SelectItem>
-                  <SelectItem value="course2">Course 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Batch */}
-            <div className="flex flex-col">
-              <Label>Batch</Label>
-              <Select>
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue  />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="batch1">Batch 1</SelectItem>
-                  <SelectItem value="batch2">Batch 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Student */}
-            <div className="flex flex-col">
-              <Label>Student</Label>
-              <Select>
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="student1">Student 1</SelectItem>
-                  <SelectItem value="student2">Student 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
+          <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+            
             {/* Notification Type */}
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col">
               <Label>Notification Type</Label>
-              <Select >
+              <Select onValueChange={(v) => handleChange("type", v)}>
                 <SelectTrigger className="mt-1 w-full">
-                  <SelectValue   />
+                  <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
-                  <SelectItem value="type1">Type 1</SelectItem>
-                  <SelectItem value="type2">Type 2</SelectItem>
+                  <SelectItem value="Placement">Placement</SelectItem>
+                  <SelectItem value="Alerts">Alerts</SelectItem>
+                  <SelectItem value="Reminder">Reminder</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Select Staff */}
+            <div className="flex flex-col">
+              <Label>Select Staff</Label>
+              <Select
+                onValueChange={(uuid) => {
+                  const selectedStaff = classData.find((s: any) => s.uuid === uuid);
+                  if (selectedStaff) {
+                    handleChange("staff", [selectedStaff]);
+                  }
+                }}
+              >
+                <SelectTrigger className="mt-1 w-full">
+                  <SelectValue placeholder="Choose Staff" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {classData.map((staff: any) => (
+                    <SelectItem key={staff.uuid} value={staff.uuid}>
+                      {staff.full_name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -156,34 +199,39 @@ const StaffsNotification: React.FC = () => {
             {/* Title */}
             <div className="flex flex-col">
               <Label>Title</Label>
-              <Input  className="mt-1" />
+              <Input 
+                className="mt-1" 
+                value={formData.title}
+                onChange={(e) => handleChange("title", e.target.value)} 
+              />
             </div>
 
             {/* Body */}
             <div className="flex flex-col">
               <Label>Body</Label>
-              <Textarea  className="mt-1" />
+              <Textarea 
+                className="mt-1" 
+                value={formData.body}
+                onChange={(e) => handleChange("body", e.target.value)} 
+              />
             </div>
 
             {/* Link */}
             <div className="flex flex-col">
               <Label>Link</Label>
-              <Input className="mt-1" />
+              <Input 
+                className="mt-1" 
+                value={formData.link}
+                onChange={(e) => handleChange("link", e.target.value)} 
+              />
             </div>
 
             {/* Buttons */}
             <div className="flex justify-between mt-6">
-              <Button
-                type="button"
-                onClick={() => setOpen(false)}
-                variant="outline"
-                className="border-cyan-500 text-cyan-500 hover:bg-cyan-50"
-              >
+              <Button type="button" onClick={() => setOpen(false)} variant="outline" className="border-cyan-500 text-cyan-500 hover:bg-cyan-50">
                 Cancel
               </Button>
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
-                Add Notification
-              </Button>
+              <Button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white">Add Notification</Button>
             </div>
           </form>
         </DrawerContent>
@@ -192,24 +240,13 @@ const StaffsNotification: React.FC = () => {
       {/* Summary Cards */}
       <div className="flex gap-6 flex-wrap mb-5">
         {stats.map((stat, index) => (
-          <Card
-            key={index}
-            className={`w-[250px] h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}
-          >
+          <Card key={index} className={`w-[250px] h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}>
             <div className="absolute -top-3 left-3">
-              <img
-                src={stat.image}
-                alt={stat.title}
-                className="w-15 h-15 mt-3 object-contain"
-              />
+              <img src={stat.image} alt={stat.title} className="w-15 h-15 mt-3 object-contain" />
             </div>
             <CardContent className="pt-10">
-              <p className="text-gray-700 mr-10 font-medium text-sm">
-                {stat.title}
-              </p>
-              <p className="text-xl font-bold text-gray-800 mt-2">
-                {stat.count}
-              </p>
+              <p className="text-gray-700 mr-10 font-medium text-sm">{stat.title}</p>
+              <p className="text-xl font-bold text-gray-800 mt-2">{stat.count}</p>
             </CardContent>
           </Card>
         ))}
@@ -217,38 +254,77 @@ const StaffsNotification: React.FC = () => {
 
       {/* Notifications List */}
       <h2 className="text-lg font-semibold mb-4">Notifications</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {notifications.map((n, index) => (
-          <Card key={index} className="p-4 rounded-2xl shadow-md">
-            <CardContent className="p-0 flex flex-col items-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {notifications.map((n: any, index: number) => (
+          <Card key={n._id || index} className="p-4 rounded-2xl shadow-md flex flex-col justify-between min-h-[220px] overflow-hidden">
+            <CardContent className="p-0 flex flex-col h-full">
               <div className="flex items-center w-full mb-2">
-                <img
-                  src={instructorImg}
-                  alt=""
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="w-full">
-                  <span className="text-gray-500 ">{n.name}</span>
-                  <p>Instructor</p>
+                <img src={instructorImg} alt="" className="w-12 h-12 rounded-full mr-2" />
+                <div className="flex-1">
+                  <span className="text-gray-500 block truncate">{n.staff?.[0]?.full_name || "Staff"}</span>
+                  <p className="text-sm">Instructor</p>
                 </div>
-                <div className="flex justify-end w-full">
-                  <span className="text-gray-500 ">ID : {n.id}</span>
-                </div>
+                <div className="text-xs text-gray-500">ID: {n.id}</div>
               </div>
-              <div className="flex justify-between text-sm w-full mb-2">
-                <span className="text-green-600 font-semibold ">
-                  Status : {n.status}
+
+              <div className="text-sm mb-1">
+                <span className={`font-semibold ${n.status === "read" ? "text-green-600" : "text-red-600"}`}>
+                  Status: {n.status}
                 </span>
               </div>
-              <h3 className="font-semibold text-gray-800">{n.title}</h3>
-              <p className="text-gray-500 text-sm mb-3">{n.message}</p>
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-1 self-end">
+
+              <h3 className="font-semibold text-gray-800 mb-1 truncate">{n.title}</h3>
+              <p className="text-gray-500 text-sm mb-2 line-clamp-3 break-words">{n.body}</p>
+
+              {n.link && (
+                <a href={n.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline text-xs mb-2 break-all">
+                  {n.link}
+                </a>
+              )}
+
+              <Button
+                onClick={() => handleResend(n.uuid)}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-1 self-end mt-auto"
+              >
                 Resend
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+        {notifications.length > 0 && (
+          <div className="flex justify-center items-center mt-6 gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handlePrevPage} 
+              disabled={currentPage === 1}
+              className="h-8 w-8"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            
+            <Button 
+              variant="default" 
+              size="icon"
+              className="h-8 w-8 bg-primary text-primary-foreground"
+            >
+              {currentPage}
+            </Button>
+            
+            <Button 
+              variant="ghost"
+              size="icon"
+              onClick={handleNextPage} 
+              disabled={notifications.length < itemsPerPage}
+              className="h-8 w-8"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
     </div>
   );
 };
