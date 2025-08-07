@@ -129,7 +129,7 @@ class Client {
 			HttpClient.get(HTTP_END_POINTS.study_material.get, params),
 		create: (data: any) =>
 			HttpClient.post(HTTP_END_POINTS.study_material.get, data),
-		update: (data: any, id: string) =>
+		update: (data: any) =>
 			HttpClient.update(HTTP_END_POINTS.study_material.get + data.uuid, data),
 		delete: (data: any) =>
 			HttpClient.delete(HTTP_END_POINTS.study_material.get + data.id),
@@ -200,6 +200,10 @@ class Client {
 				HTTP_END_POINTS.batch.delete.replace(':batchId', data?.uuid),
 				data
 			),
+		getWithCourseId: (
+			courseId: any
+		) =>
+			HttpClient.get(HTTP_END_POINTS.batch.getBatchwithCourse.replace(':courseId', courseId)),
 	};
 	online_class = {
 		getAll: (params: string) =>
@@ -307,8 +311,6 @@ class Client {
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
 			),
-		getCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 		getclasses: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
 		getactivity: (params: any) =>
@@ -539,7 +541,6 @@ class Client {
 
 
 	}
-
 
 	helpcenter = {
 		getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),

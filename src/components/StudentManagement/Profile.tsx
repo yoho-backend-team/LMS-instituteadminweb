@@ -44,7 +44,6 @@ export const Profile = () => {
     fetchData()
   }, [dispatch, studentDataFromLocation.uuid])
 
-  console.log(studData, 'stud .......')
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -147,10 +146,11 @@ export const Profile = () => {
   const handleSubmit = async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       // Prepare the data to send to the API
-      const updateData = { ...formData,
+      const updateData = {
+        ...formData,
         uuid: studData?.data?.uuid,
         _id: studData?.data?._id, // Ensure you have the student ID
         first_name: formData.fullName,
@@ -171,11 +171,9 @@ export const Profile = () => {
         is_active: formData.status === "Active"
       }
 
-      console.log(updateData, 'updated')
-
       // Call the update service
       const response = await updatestudentdata(updateData)
-      
+
       if (response) {
         // Refresh the data after successful update
         await fetchData()
@@ -189,11 +187,10 @@ export const Profile = () => {
     }
   }
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     try {
-      const response = await deletestudentdata({uuid: studData?.data?.uuid})
-      console.log(response, 'response')
-      if(response){
+      const response = await deletestudentdata({ uuid: studData?.data?.uuid })
+      if (response) {
         toast.success('profile deleted successfully!')
       }
     } catch (error) {
@@ -226,7 +223,7 @@ export const Profile = () => {
   }
 
 
-  
+
 
   // Edit Mode
   if (isEditing) {
@@ -236,7 +233,7 @@ export const Profile = () => {
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-semibold text-gray-800 mb-1">Student Information</h1>
-            
+
             {error && <div className="text-red-500 mb-2">{error}</div>}
           </div>
 
@@ -265,7 +262,7 @@ export const Profile = () => {
                     </Button>
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={handleCancel}
                   className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white px-6"
                 >
@@ -484,8 +481,8 @@ export const Profile = () => {
                 >
                   Cancel
                 </Button>
-                <Button 
-                  onClick={handleSubmit} 
+                <Button
+                  onClick={handleSubmit}
                   className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white px-8"
                   disabled={isLoading}
                 >

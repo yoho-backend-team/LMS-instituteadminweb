@@ -3,7 +3,6 @@ import Client from "../../../apis/index";
 export const createRefund = async (data: any) => {
   try {
     const response = await Client.refund.create(data);
-    console.log("Create Refund:", response);
     return response;
   } catch (error) {
     console.log("Create Refund Error:", error);
@@ -14,8 +13,7 @@ export const createRefund = async (data: any) => {
 
 export const getAllRefunds = async (params: any) => {
   try {
-    const response = await Client.refund.getAll(params);;
-    console.log("Refund response:", response);
+    const response = await Client.refund.getAll(params)
     return await response
   } catch (error) {
     throw error;
@@ -26,7 +24,7 @@ export const getAllRefunds = async (params: any) => {
 
 export const updateRefund = async (data: any) => {
   try {
-    const res = await Client.refund.update(data); 
+    const res = await Client.refund.update(data);
     console.log("update", res);
     return res;
   } catch (error) {
@@ -38,8 +36,8 @@ export const updateRefund = async (data: any) => {
 
 export const deleteRefund = async (data: any) => {
   try {
-    const res =await Client.refund.delete(data);
-    console.log("delete",res)
+    const res = await Client.refund.delete(data);
+    console.log("delete", res)
     return res
 
   } catch (error) {
@@ -50,8 +48,8 @@ export const deleteRefund = async (data: any) => {
 
 export const getRefundByID = async (data: any) => {
   try {
-    const res=await Client.refund.getByID(data);
-    console.log("BYID",res)
+    const res = await Client.refund.getByID(data);
+    console.log("BYID", res)
     return res
   } catch (error) {
     throw error;
@@ -62,7 +60,7 @@ export const getRefundByID = async (data: any) => {
 
 export const GetBranchCourse = async (data: any) => {
   try {
-    const response= await Client.course.get( data.branchId); 
+    const response = await Client.course.get(data.branchId);
     console.log(" Branch course data getting in services", response);
     return response;
   } catch (error: any) {
@@ -93,7 +91,7 @@ export const StudentsWithBatch = async (params: any) => {
 
 export const StudentWithFee = async (id: string) => {
   try {
-    const res = await Client.payment.student_fee.get({ id }); 
+    const res = await Client.payment.student_fee.get({ id });
     console.log("Refund fee", res);
     return res;
   } catch (error) {

@@ -118,9 +118,6 @@ const NotesManagement = () => {
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  console.log("courses", courses);
-  console.log("studyMaterials", studyMaterials);
-
   // Create mapping objects for course name/ID conversion
   const courseNameToIdMap = courses.reduce((acc: any, course: any) => {
     acc[course.course_name] = course._id;
@@ -319,51 +316,44 @@ const NotesManagement = () => {
 
   const filteredNotes = Array.isArray(studyMaterials)
     ? studyMaterials.filter((note: any) => {
-        console.log("Filtering note:", note);
-        console.log("Filter values:", filterValues);
 
-        let statusMatch = true;
-        if (filterValues.status) {
-          if (note.status) {
-            statusMatch = note.status === filterValues.status;
-          } else if (typeof note.is_active === "boolean") {
-            statusMatch =
-              filterValues.status === "Active"
-                ? note.is_active === true
-                : note.is_active === false;
-          } else if (typeof note.active === "boolean") {
-            statusMatch =
-              filterValues.status === "Active"
-                ? note.active === true
-                : note.active === false;
-          } else if (note.status === "active" || note.status === "inactive") {
-            statusMatch =
-              (filterValues.status === "Active" && note.status === "active") ||
-              (filterValues.status === "Completed" &&
-                note.status === "inactive");
-          }
+      let statusMatch = true;
+      if (filterValues.status) {
+        if (note.status) {
+          statusMatch = note.status === filterValues.status;
+        } else if (typeof note.is_active === "boolean") {
+          statusMatch =
+            filterValues.status === "Active"
+              ? note.is_active === true
+              : note.is_active === false;
+        } else if (typeof note.active === "boolean") {
+          statusMatch =
+            filterValues.status === "Active"
+              ? note.active === true
+              : note.active === false;
+        } else if (note.status === "active" || note.status === "inactive") {
+          statusMatch =
+            (filterValues.status === "Active" && note.status === "active") ||
+            (filterValues.status === "Completed" &&
+              note.status === "inactive");
         }
+      }
 
-        let courseMatch = true;
-        if (filterValues.course) {
-          if (note.course_name) {
-            courseMatch = note.course_name === filterValues.course;
-          } else if (note.course) {
-            const filterCourseId = courseNameToIdMap[filterValues.course];
-            courseMatch =
-              note.course === filterCourseId ||
-              note.course === filterValues.course;
-          } else if (note.courseName) {
-            courseMatch = note.courseName === filterValues.course;
-          }
+      let courseMatch = true;
+      if (filterValues.course) {
+        if (note.course_name) {
+          courseMatch = note.course_name === filterValues.course;
+        } else if (note.course) {
+          const filterCourseId = courseNameToIdMap[filterValues.course];
+          courseMatch =
+            note.course === filterCourseId ||
+            note.course === filterValues.course;
+        } else if (note.courseName) {
+          courseMatch = note.courseName === filterValues.course;
         }
-
-        console.log(
-          `Note ${note.title}: Status match = ${statusMatch}, Course match = ${courseMatch}`
-        );
-
-        return statusMatch && courseMatch;
-      })
+      }
+      return statusMatch && courseMatch;
+    })
     : [];
 
   return (

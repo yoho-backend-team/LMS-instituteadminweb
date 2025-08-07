@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type React from "react"
 import { useEffect, useState } from "react"
@@ -19,13 +20,12 @@ export const FeesTable: React.FC = () => {
   useEffect(() => {
     const fetchFeesData = async () => {
       const result = await dispatch(GetAllFeesThunks({}) as any)
-      console.log(result,"data for fees comming")
       // if (result && result.payload) {
-        setCurrentFeesData(result)
+      setCurrentFeesData(result)
       // }
     }
     fetchFeesData()
-  }, [])
+  }, [dispatch])
 
   const [showFilter, setShowFilter] = useState(false)
   const [showEditAddDrawer, setShowEditAddDrawer] = useState(false)
@@ -69,7 +69,6 @@ export const FeesTable: React.FC = () => {
 
   const handleDownload = (fee: Fee) => {
     setSelectedFee(fee)
-    console.log("Downloading fee:", fee)
   }
 
   const handleConfirm = () => {
@@ -78,7 +77,6 @@ export const FeesTable: React.FC = () => {
 
     switch (actionToPerform) {
       case "delete":
-        console.log("Deleting fee:", selectedFee)
         setCurrentFeesData((prevData) =>
           prevData.filter((feeItem) => feeItem.id !== selectedFee.id)
         )
@@ -173,7 +171,7 @@ export const FeesTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentFeesData.map((fee: any) => (
+              {currentFeesData?.map((fee: any) => (
                 <FeesTableRow
                   key={fee.id}
                   fee={fee}

@@ -6,7 +6,6 @@ export const getAllFaqsThunk = (params: any) => async (dispatch: any) => {
   try {
     const response = await GetAllFaqs(params); // Service/API call
     dispatch(getFaqs(response.data ?? response)); // Dispatch to store
-    console.log(response, " Fetched FAQs response");
   } catch (error) {
     console.error("Failed to fetch FAQs:", error);
   }

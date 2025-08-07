@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type React from "react"
 import { useState, useEffect } from "react"
@@ -91,7 +92,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         }
         const res = await dispatch(GetStudentsWithBatchThunks(params) as any)
-        console.log("Fetching students with name", res)
 
         if (res?.data && Array.isArray(res.data)) {
           setStudents(res.data)
@@ -156,7 +156,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
         course_name: course,
       }
       onUpdateFee(updatedFee)
-      console.log("Updated fee:", updatedFee)
     }
   }
 
@@ -186,7 +185,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
 
     await creatFees(newFee)
     onAddFee(newFee)
-    console.log("New fee added:", newFee)
     onSuccess()
   }
 

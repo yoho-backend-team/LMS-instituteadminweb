@@ -107,7 +107,9 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`
+			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`,
+			getBatchwithCourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
+			getstudentWithBatch: `/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches/batch-students`
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
@@ -191,7 +193,7 @@ const generateEndpoints = () => {
 		ticket: {
 			student_ticket: `/api/institutes/student-ticket/getalll`,
 			update_student_status_ticket: `/api/institutes/student-ticket/update/`,
-			// update: `/api/institutes/student-ticket/update/`,
+			update: `/api/institutes/student-ticket/update/`,
 			student_ticket_with_id: `/api/institutes/student-ticket/`,
 			staff_ticket: `/api/institutes/staff/ticket/all`,
 			staff_ticket_with_id: `/api/institutes/staff/ticket/`,

@@ -74,7 +74,7 @@ const AccountProfile: React.FC = () => {
 		if (activePanel === "third") {
 			dispatch(fetchTimeline({ page: 1 }));
 		}
-	}, [activePanel]);
+	}, [activePanel, dispatch]);
 
 	const handleChangePassword = async () => {
 		try {
@@ -85,7 +85,7 @@ const AccountProfile: React.FC = () => {
 			const response = await getsecurity(data)
 			console.log(response)
 		} catch (error) {
-
+			console.log(error)
 		}
 	}
 	return (

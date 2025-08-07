@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -18,7 +19,6 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit,
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  console.log(fee,"checking fee data")
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -57,7 +57,7 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit,
 
   return (
     <tr>
-      <td className="px-4 py-3">{fee.id}</td> 
+      <td className="px-4 py-3">{fee.id}</td>
       <td className="px-4 py-3">{fee.payment_history?.[0]?.transaction_id}</td>
       <td className="px-4 py-3 flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-sm">
@@ -71,11 +71,11 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit,
       <td className="px-4 py-3">{fee.paid_amount}</td>
       <td className="px-4 py-3">{fee.createdAt}</td>
       <td className="px-4 py-3">
-        <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs">{fee.is_active?"Active":"InActive"}</span>
+        <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs">{fee.is_active ? "Active" : "InActive"}</span>
       </td>
       <td className="px-4 py-3 text-gray-600 relative">
         <MoreVertical className="text-xl cursor-pointer" onClick={handleActionClick} />
-      {showDropdown && <FeesActionDropdown ref={dropdownRef} onAction={handleDropdownAction} />}
+        {showDropdown && <FeesActionDropdown ref={dropdownRef} onAction={handleDropdownAction} />}
       </td>
     </tr>
   )

@@ -65,32 +65,30 @@ function Edit() {
   };
 
   // Save changes
-const handleSave = async () => {
-  try {
-    const payload = {
-      id: Number(id), // backend expects the group id
-      identity: groupName, // backend calls group name "identity"
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      permissions: Object.entries(state).map(([module, perms]) => ({
-        identity: module, // match backend naming
-        read: perms.Read,
-        create: perms.Create,
-        update: perms.Update,
-        delete: perms.Delete,
-      })),
-    };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        id: Number(id), // backend expects the group id
+        identity: groupName, // backend calls group name "identity"
+        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        permissions: Object.entries(state).map(([module, perms]) => ({
+          identity: module, // match backend naming
+          read: perms.Read,
+          create: perms.Create,
+          update: perms.Update,
+          delete: perms.Delete,
+        })),
+      };
 
-    console.log("Saving payload:", payload);
+      await UpdateGroup(payload); // Submit to backend
 
-    await UpdateGroup(payload); // Submit to backend
-
-    toast("Group updated successfully");
-    navigate("/group"); // go back to list after update
-  } catch (err) {
-    console.error("Update failed", err);
-    toast("Failed to update group");
-  }
-};
+      toast("Group updated successfully");
+      navigate("/group"); // go back to list after update
+    } catch (err) {
+      console.error("Update failed", err);
+      toast("Failed to update group");
+    }
+  };
 
   return (
     <>
@@ -158,12 +156,12 @@ const handleSave = async () => {
 
       {/* Save Button */}
       <div className="mt-6">
-       <button
-  onClick={handleSave}
-  className="px-6 py-2 bg-[#1BBFCA] text-white rounded-lg hover:bg-[#17a8b4] transition"
->
-  Save Changes
-</button>
+        <button
+          onClick={handleSave}
+          className="px-6 py-2 bg-[#1BBFCA] text-white rounded-lg hover:bg-[#17a8b4] transition"
+        >
+          Save Changes
+        </button>
 
       </div>
     </>

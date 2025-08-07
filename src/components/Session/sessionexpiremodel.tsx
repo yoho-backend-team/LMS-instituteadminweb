@@ -25,7 +25,6 @@ export const showSessionExpiredModal = () => {
   const root = createRoot(modalContainer);
 
   const handleLogout = () => {
-    console.log("Logout button clicked");
 
     // Clear only after user clicks
     removeSecureItem("token");

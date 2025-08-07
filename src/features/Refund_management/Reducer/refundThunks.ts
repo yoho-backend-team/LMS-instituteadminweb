@@ -52,7 +52,7 @@ export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
 export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    const res:any = await updateRefund(payload);
+    const res: any = await updateRefund(payload);
     dispatch(updateRefundInState(res.data));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to update refund"));
@@ -65,7 +65,7 @@ export const DeleteRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
     await deleteRefund(payload);
-    dispatch(deleteRefundInState(payload)); 
+    dispatch(deleteRefundInState(payload));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to delete refund"));
   } finally {
@@ -79,7 +79,7 @@ export const GetCourseThunk = (branchId: string) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
     const res: any = await GetBranchCourse(branchId);
-    dispatch(getBranchCourse(res)); 
+    dispatch(getBranchCourse(res));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to fetch courses"));
   } finally {
@@ -106,7 +106,6 @@ export const GetStudentsWithBatchThunks = (params: any) => async (dispatch: any)
   try {
     const response = await StudentsWithBatch(params);
     dispatch(getstudent(response.data));
-    console.log("Students with batch data in thunk", response?.data || "no data");
     return response;
   } catch (error) {
     console.error("Error fetching students with batch in thunk", error);
@@ -117,8 +116,7 @@ export const GetStudentsWithBatchThunks = (params: any) => async (dispatch: any)
 export const GetStudentFeeThunks = (studentId: string) => async (dispatch: any) => {
   try {
     const response = await StudentWithFee(studentId);
-    console.log("Fetched fee data", response.data.fees);
-    dispatch(getfee(response.data)); 
+    dispatch(getfee(response.data));
     return response;
   } catch (error) {
     console.log("Error in fetching student Fee", error);

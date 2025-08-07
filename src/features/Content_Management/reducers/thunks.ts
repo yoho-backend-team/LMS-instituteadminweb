@@ -23,31 +23,29 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
   try {
     const response = await GetAllModule(params);
     dispatch(getModule(response.data.data));
-    console.log(response.data.data, "Module Slice in thunks");
+
   } catch (error) {
     console.log("error in thunks", error);
   }
 };
 
 export const DeletemoduleThunks =
-  (params: { id: string,uuid:string }) => async (dispatch: any) => {
+  (params: { id: string, uuid: string }) => async (dispatch: any) => {
     try {
-      await DeleteModule(params); 
+      await DeleteModule(params);
       dispatch(deleteModule(params.id));
-      console.log("Deleted module ID:", params.uuid);
     } catch (error) {
       console.error("Error in thunks", error);
     }
   };
 
- 
-  
-  
-  export const EditModuleThunks = (params: any) => async (dispatch: any) => {
+
+
+
+export const EditModuleThunks = (params: any) => async (dispatch: any) => {
   try {
     const updatedData = await EditModule(params);
     dispatch(EditmodulePage(updatedData));
-    console.log("Edited module:", updatedData);
   } catch (error) {
     console.log("Error in edit thunk", error);
   }
@@ -58,7 +56,6 @@ export const Upload_addFileThunks =
     try {
       const uploadedData = await UploadFile(params);
       dispatch(upload_editdata(uploadedData));
-      console.log("Uploaded file:", uploadedData);
       return uploadedData;
     } catch (error) {
       console.log("Error in upload thunk", error);
@@ -68,7 +65,6 @@ export const Upload_addFileThunks =
 export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
     const updated = await ToggleModuleStatus(data);
-    console.log("API response in Thunk:", updated);
     dispatch(
       updateModuleStatus({
         module_id: data.module_id,
@@ -81,37 +77,34 @@ export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
 };
 
 export const AddModuleThunks = (data: any) => async (dispatch: any) => {
-    try {
-      const result = await AddModule(data); 
-      dispatch(addModules(result)); 
-      console.log("Added module:", result);
-      return result
-    } catch (error) {
-      console.error("Error in AddModuleThunks", error);
-    }
-  };
+  try {
+    const result = await AddModule(data);
+    dispatch(addModules(result));
+    return result
+  } catch (error) {
+    console.error("Error in AddModuleThunks", error);
+  }
+};
 
-  
+
 
 export const GetBranchThunks =
   (params: any) => async (dispatch: any) => {
     try {
       const result = await GetBranch(params);
-      dispatch(getBranches(result.data)); 
-      // console.log("Fetched branches:", result.data);
+      dispatch(getBranches(result.data));
       return result.data;
     } catch (error) {
       console.error("Error in GetBranchThunks", error);
     }
   };
 
- 
+
 
 export const GetBranchCourseThunks = (branchname: string) => async (dispatch: any) => {
   try {
     const response = await GetBranchCourse(branchname);
     dispatch(getBranchCourse(response.data));
-    console.log("Branch course data in thunk", response.data);
   } catch (error) {
     console.error("Error fetching branch courses in thunk", error);
   }
