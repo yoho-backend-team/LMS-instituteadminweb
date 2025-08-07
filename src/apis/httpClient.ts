@@ -1,11 +1,7 @@
-
 import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
-import UpgradeModal from '../components/shared/UpgradeSubscriptionModal';
 import { showSessionExpiredModal } from '../components/Session/sessionexpiremodel';
-
-
-
+import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
 
 const Axios = axios.create({
 	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -14,18 +10,6 @@ const Axios = axios.create({
 		'Content-Type': 'application/json',
 	},
 });
-
-Axios.interceptors.response.use(
-	(response) => response,
-	(error) => {
-		if (error?.response && error?.response?.status === 401 && error?.response?.data?.status === "session_expired") {
-			ClearLocalStorage();
-			showSessionExpiredModal();
-		}
-		return Promise.reject(error);
-	}
-);
-
 
 Axios.interceptors.request.use((config) => {
 	const token = GetLocalStorage('instituteAdminToken');
@@ -38,11 +22,19 @@ Axios.interceptors.request.use((config) => {
 Axios.interceptors.response.use(
 	(response) => response,
 	(error) => {
-		if (error?.response?.status === 401) {
+		if (
+			error?.response &&
+			error?.response?.status === 401 &&
+			error?.response?.data?.status === 'session_expired'
+		) {
 			ClearLocalStorage();
-
 			showSessionExpiredModal();
-
+		} else if (
+			error?.response?.status === 403 &&
+			error?.response?.data?.message ===
+				'Subscription limit reached. Update your subscription plan.'
+		) {
+			showUpgradeModal();
 		}
 		return Promise.reject(error);
 	}
