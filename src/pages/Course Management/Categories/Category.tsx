@@ -556,7 +556,6 @@ export const DashboardCards: React.FC = () => {
         </div>
       )}
 
-      {/* Loading skeleton */}
       {isLoad && (
         <div className="grid gap-6 justify-start"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
