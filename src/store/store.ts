@@ -29,7 +29,9 @@ import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSl
 import PlacementReducer from '../features/placementManagement/Reducer/slice'
 import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
-import courseReducer from '../features/CourseManagement/Course/slice'
+import CoursesReducer from '../features/CourseManagement/Course/slice'
+import categoryReducer from '../features/Category/slice'
+
 
 const store = configureStore({
 	reducer: {
@@ -63,7 +65,8 @@ const store = configureStore({
 		placements: PlacementReducer,
 		FaqsSlice: FaqsSlice,
 		faqCategory: faqCategory,
-		courseReducer: courseReducer,
+		CoursesReducer: CoursesReducer,
+		categoryReducer: categoryReducer,
 	},
 })
 

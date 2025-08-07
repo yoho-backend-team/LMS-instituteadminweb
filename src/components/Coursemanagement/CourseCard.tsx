@@ -5,15 +5,16 @@ import arr from "../../assets/navbar/arrow.png";
 import dots from "../../assets/navbar/dots.png";
 
 interface CourseCardProps {
-  title: string;
-  category: string;
+  course_name: string;
+  category: string | { category_name: string };
   price: string;
   image: string;
   onView: () => void;
+  onEdit?: () => void;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
-  title,
+  course_name,
   category,
   price,
   image,
@@ -28,26 +29,31 @@ const CourseCard: React.FC<CourseCardProps> = ({
     setShowDropdown(false);
   };
 
+  const getCategoryName = () =>
+    typeof category === "object" ? category.category_name : category;
+
   return (
     <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
-
+      {/* Category and Format */}
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
-          {category}
+          {getCategoryName()}
         </span>
         <span className="bg-[#3ABE65] text-white text-sm font-medium px-3 py-1 rounded-md">
           Online
         </span>
       </div>
 
+      {/* Course Image */}
       <img
-        src={card1}
-        alt={title}
+        src={image}
+        alt="Course"
         className="rounded-md w-full h-30 object-cover"
       />
 
+      {/* Course Details */}
       <div className="flex flex-col gap-y-1">
-        <h2 className="text-lg font-semibold text-[#1BBFCA]">{title}</h2>
+        <h2 className="text-lg font-semibold text-[#1BBFCA]">{course_name}</h2>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <img src={dots} alt="dot" className="w-4 h-4" />
@@ -57,17 +63,18 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </div>
       </div>
 
+      {/* Status & View Button */}
       <div className="flex justify-between items-center relative">
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className={`px-3 py-1 rounded-md inline-block flex items-center gap-1 ${
+            className={`px-3 py-1 rounded-md flex items-center gap-1 ${
               status === "Active"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-black border border-gray-300"
             }`}
           >
-            <span className="align-middle">{status}</span>
+            <span>{status}</span>
             <img
               src={arr}
               alt="arrow"

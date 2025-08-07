@@ -7,11 +7,14 @@ import showfilter from '../../../assets/navbar/showfilter.png'
 import ContentLoader from "react-content-loader";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { createCourse, getCourses } from "../../../features/CourseManagement/Course/service";
-import { getAllCourses } from "../../../features/CourseManagement/Course/selector";
-import { fetchCoursesThunk } from "../../../features/CourseManagement/Course/thunks";
+import { createCourse} from "../../../features/CourseManagement/Course/service";
+
 import { selectBranches } from "../../../features/StudyMaterials/selector";
 import { GetBranchThunks } from "../../../features/StudyMaterials/thunk";
+import { selectCoursesData } from "../../../features/CourseManagement/Course/selector";
+import { GetAllCoursesThunk } from "../../../features/CourseManagement/Course/thunks";
+import { getCategories } from "../../../features/Category/selector";
+import { GetAllCategoryThunk } from "../../../features/Category/thunks";
 
 const Courses: React.FC = () => {
   const [courses, setCourses] = useState([
@@ -35,12 +38,18 @@ const Courses: React.FC = () => {
   const [isLoad, setisLoad] = useState(true);
 
   const dispatch = useDispatch<any>();
-  const course = useSelector(getAllCourses)
-  console.log(course, "courses")
-
+  const course = useSelector(selectCoursesData)
+  const category = useSelector(getCategories)
   const branch = useSelector(selectBranches)
 
+  console.log( "courses",course)
   console.log('branch',branch)
+  console.log('category',category)
+
+  useEffect(() => {
+
+    dispatch(GetAllCategoryThunk())
+  },[dispatch])
 
    useEffect(() => {
       const params = {
@@ -59,7 +68,7 @@ const Courses: React.FC = () => {
       page: 1,
     };
 
-    dispatch(fetchCoursesThunk(params));
+    dispatch( GetAllCoursesThunk(params));
   }, [dispatch]);
 
   useEffect(() => {
@@ -83,22 +92,23 @@ const Courses: React.FC = () => {
 
 
 const handleAddCourse = async (formValues: any) => {
-  const payload = {
-    course_name: formValues.title,
-    description: formValues.description,
-    overview: formValues.overview,
-    duration: formValues.duration,
-    actual_price: formValues.actualPrice,
-    current_price: formValues.price,
-    rating: parseInt(formValues.rating),
-    reviews: formValues.review,
-    image: `staticfiles/lms/${formValues.image}`,
-    thumbnail: `staticfiles/lms/${formValues.thumbnail}`,
-    class_type: [formValues.format.toLowerCase()],
-    category: "9f1e96c9-431c-4017-aab0-5b14b350ef32", 
-    branch_id: [formValues.branch], 
-    institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", 
-  };
+ const payload = {
+  course_name: formValues.title,
+  description: formValues.description,
+  overview: formValues.overview,
+  duration: formValues.duration,
+  actual_price: formValues.actualPrice,
+  current_price: formValues.price,
+  rating: parseInt(formValues.rating),
+  reviews: formValues.review,
+  image: `staticfiles/lms/${formValues.image}`,
+  thumbnail: `staticfiles/lms/${formValues.thumbnail}`,
+  class_type: [formValues.format.toLowerCase()],
+  category: formValues.category, 
+  branch_ids: [formValues.branch],
+  institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", 
+};
+
 
   try {
     const response = await createCourse(payload, {}); 
@@ -114,15 +124,16 @@ const handleAddCourse = async (formValues: any) => {
 
 
   if (addingCourse)
-    return <AddNewCourseForm onBack={handleBack} onSubmit={handleAddCourse}   branches={branch}/>;
+    return <AddNewCourseForm onBack={handleBack} onSubmit={handleAddCourse}  branches={branch} categories={category}/>;
 
   if (selectedCourse)
-    return <CourseDetailView course={selectedCourse} onBack={handleBack} />;
+  return <CourseDetailView course={selectedCourse} onBack={handleBack} courses={course} />;
+
 
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl text-[#3B3939] font-bold">Admin User</h1>
+        <h1 className="text-xl text-[#3B3939] font-bold">Courses</h1>
       </div>
       <div className="flex justify-between items-center mb-4">
         <button
@@ -177,7 +188,7 @@ const handleAddCourse = async (formValues: any) => {
             </ContentLoader>
           ))
         }
-        {courses.map((course, index) => (
+        {course.map((course: any, index: any) => (
           <CourseCard key={index} {...course} onView={() => handleViewCourse(course)} />
         ))}
       </div>

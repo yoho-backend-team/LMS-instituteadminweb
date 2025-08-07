@@ -1,12 +1,13 @@
 import Client from '../../../apis/index'
 
-export const getCourses = async (data: any) => {
+export const getCourse = async (params: any) => {
   try {
-    const response: any = await Client.course.getAllcourse(data)
-    return response;
-  } catch (error: any) {
-    console.error("Course fetch error:", error?.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Failed to fetch courses");
+    const response: any = await Client.course.getAll(params);
+    console.log("Service Res", response.data)
+    return response.data; 
+  } catch (error) {
+    console.error("Getting Course Error:", error);
+    throw error;
   }
 };
 
@@ -28,5 +29,16 @@ export const createCourse = async (data: any, p0: {}) => {
     return response;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "Failed to create course");
+  }
+};
+
+export const updateCourse = async (data: any) => {
+  try {
+    const response = await Client.course.update(data); 
+    console.log("Course updated:", response);
+    return response;
+  } catch (error: any) {
+    console.error("Failed to update course:", error);
+    throw new Error(error.response?.data?.message || "Failed to update course");
   }
 };

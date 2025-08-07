@@ -78,7 +78,7 @@ const generateEndpoints = () => {
 		},
 		course: {
 			get: `/api/institutes/${instituteId}/branches/`,
-			getall:`/api/institutes/ ${instituteId}/${branchId}/course/:courseId`,
+			getAll: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
 			update: `/api/institutes/${instituteId}/categories/`,
 			withBranch: `/api/institutes/${instituteId}/branches/`,
 			add: `/api/institutes/${instituteId}/categories/`,

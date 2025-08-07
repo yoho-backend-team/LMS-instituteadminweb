@@ -1,1 +1,1 @@
-export const getAllCourses = (state: any) => state.courseReducer.data;
+export const selectCoursesData = (state: any) => state?.CoursesReducer?.data;

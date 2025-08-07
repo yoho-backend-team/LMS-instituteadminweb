@@ -1,12 +1,15 @@
-import { getCourses } from "./service";
+import { getCourse } from "./service";
 import { setCourses } from "./slice";
 
-export const fetchCoursesThunk = (data: any) => async (dispatch: any) => {
+
+export const GetAllCoursesThunk = (params: any) => async (dispatch: any) => {
+
   try {
-    const response = await getCourses(data);
-    console.log('thunks response', response)
-    dispatch(setCourses(response));
-  } catch (error) {
+    const data = await getCourse(params);
+    console.log("THUNK response:", data);
+    dispatch( setCourses(data)); 
+  } catch (error: any) {
     console.error("Failed to fetch courses:", error);
+    throw error;
   }
 };
