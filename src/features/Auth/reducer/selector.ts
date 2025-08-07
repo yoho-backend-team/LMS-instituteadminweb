@@ -1,0 +1,1 @@
+export const selectBranches = (state: any) => state.authuser.branches

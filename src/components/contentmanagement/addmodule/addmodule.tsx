@@ -1,7 +1,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import { BiSolidCloudUpload } from "react-icons/bi";
+// import { BiSolidCloudUpload } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	AddModuleThunks,
@@ -20,12 +20,13 @@ interface Props {
 		course: string;
 		description: string;
 		title: string;
+		video: string;
 	}) => void;
 }
 
 const Addmodule = ({ onClose, onSubmit }: Props) => {
-	const fileInputRef = useRef<HTMLInputElement>(null);
-	const [file, setFile] = useState<File | null>(null);
+	// const fileInputRef = useRef<HTMLInputElement>(null);
+	// const [file, setFile] = useState<File | null>(null);
 	const [branch, setBranch] = useState("");
 	const [course, setCourse] = useState("");
 	const [title, setTitle] = useState("");
@@ -34,29 +35,19 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 
 	const branches = useSelector(Branch);
 	const courses = useSelector(BranchCourse);
+	const [video, setVideo] = useState("");
 
-	
+
 	useEffect(() => {
 		dispatch(GetBranchThunks([]) as any);
 	}, [dispatch]);
 
-	
+
 	useEffect(() => {
 		if (branch) {
 			dispatch(GetBranchCourseThunks(branch) as any);
 		}
-	},[branch]);
-
-	const handleUploadClick = () => {
-		fileInputRef.current?.click();
-	};
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const uploadedFile = e.target.files?.[0];
-		if (uploadedFile) {
-			setFile(uploadedFile);
-		}
-	};
+	}, [branch]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -66,6 +57,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 			course,
 			title,
 			description,
+			video
 		};
 
 		try {
@@ -90,13 +82,13 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 				</button>
 			</div>
 
-			
+
 			<form
 				className="flex flex-col gap-4 mt-2 overflow-y-auto h-[75vh] scrollbar-hide"
 				onSubmit={handleSubmit}
 			>
-				
-				<div
+
+				{/* <div
 					onClick={handleUploadClick}
 					className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
 				>
@@ -110,7 +102,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 						className="hidden"
 						onChange={handleFileChange}
 					/>
-				</div>
+				</div> */}
 
 				{/* Branch Dropdown */}
 				<div className="flex flex-col gap-2">
@@ -121,7 +113,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 						value={branch}
 						onChange={(e) => {
 							setBranch(e.target.value);
-							setCourse(""); 
+							setCourse("");
 						}}
 					>
 						<option value="">Select Branch</option>
@@ -142,7 +134,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 						className="border p-2 rounded h-10"
 						value={course}
 						onChange={(e) => setCourse(e.target.value)}
-						disabled={!branch} 
+						disabled={!branch}
 					>
 						<option value="">Select Course</option>
 						{Array.isArray(courses) &&
@@ -154,7 +146,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 					</select>
 				</div>
 
-				
+
 				<div className="flex flex-col gap-2">
 					<label htmlFor="title">Title</label>
 					<input
@@ -166,7 +158,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 					/>
 				</div>
 
-				
+
 				<div className="flex flex-col gap-2">
 					<label htmlFor="description">Description</label>
 					<textarea
@@ -177,7 +169,18 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 					></textarea>
 				</div>
 
-			
+				<div className="flex flex-col gap-2">
+					<label htmlFor="videoURL">Video URL</label>
+					<input
+						type="url"
+						id="videoURL"
+						className="border p-2 rounded"
+						value={video}
+						onChange={(e) => setVideo(e.target.value)}
+					/>
+				</div>
+
+
 				<div className="flex justify-end items-center gap-4">
 					<button
 						className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"
@@ -187,7 +190,6 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 						Cancel
 					</button>
 					<button
-					onClick={()=>{handleSubmit}}
 						className="bg-[#1BBFCA] text-white px-4 py-1 rounded font-semibold"
 						type="submit"
 					>

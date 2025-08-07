@@ -38,7 +38,7 @@ export const getBranchService = async (params: any) => {
 
 export const getStudentService = async (params: any) => {
 	try {
-		const response = await Client.student.getWithCourse(params);
+		const response = await Client.student.getall(params);
 		if (response) {
 			return response;
 		}
@@ -50,7 +50,7 @@ export const getStudentService = async (params: any) => {
 
 export const getStaffService = async (params: any) => {
 	try {
-		const response = await Client.staff.getWithName(params);
+		const response = await Client.staff.getall(params);
 		if (response) {
 			return response;
 		}

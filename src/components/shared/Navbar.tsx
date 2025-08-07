@@ -7,12 +7,11 @@ import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProfileThunk } from "../../features/Auth/reducer/thunks";
+import { GetBranchThunks, GetProfileThunk } from "../../features/Auth/reducer/thunks";
 import { GetImageUrl } from "../../utils/helper";
 import { useAuth } from "../../pages/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { AuthThunks } from '../../features/Auth/reducer/thunks';
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 
 const Navbar = () => {
@@ -27,14 +26,18 @@ const Navbar = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+
   const handleLogout = useCallback(() => {
     setActiveTab("logout");
     setDropdownOpen(false);
-    // your logout logic here
     localStorage.removeItem("token");
     logout();
-    dispatch(AuthThunks.logOutUser?.());
-    toast.success("Logged out Successfully");
+    toast.success("Logout successful");
     navigate("/login", { replace: true });
   }, [logout, dispatch, navigate]);
 
@@ -92,6 +95,7 @@ const Navbar = () => {
     }
 
     dispatch(GetProfileThunk())
+    dispatch(GetBranchThunks())
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -186,23 +190,78 @@ const Navbar = () => {
                       onClick={() => {
                         setActiveTab("logout");
                         setDropdownOpen(false);
+                        setIsOpen(true);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout"
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "logout"
                         ? "bg-[#1BBFCA] text-white font-semibold"
                         : ""
                         }`}
                     >
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className={`w-full text-left rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-gray-200 ${activeTab === "logout" && "bg-[#1BBFCA] text-white"
-                          }`}
-                      >
-                        <div className="flex gap-2"><TbLogout /> Logout</div>
-                      </button>
+
+                      <div className="flex gap-2"><TbLogout /> Logout</div>
+
                     </Link>
                   </li>
                 </ul>
+              </div>
+            )}
+
+            {/* Modal */}
+            {isOpen && (
+              <div
+                className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-50 overflow-y-auto overflow-x-hidden"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="relative p-4 w-full max-w-md max-h-full">
+                  <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                    {/* Close button */}
+                    <button
+                      type="button"
+                      onClick={handleCancel}
+                      className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                      </svg>
+                      <span className="sr-only">Close modal</span>
+                    </button>
+
+                    {/* Modal content */}
+                    <div className="p-4 md:p-5 text-center">
+
+                      <h3 className="mb-7 mt-10 text-[20px] font-normal text-gray-700 dark:text-gray-400">
+                        Are you sure you want to Logout
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="text-white bg-[#1BBFCA] hover:bg-[#1BDFCA] focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="py-2.5 px-5 ml-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

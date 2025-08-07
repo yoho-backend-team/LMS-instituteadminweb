@@ -9,6 +9,7 @@ interface ModuleCardProps {
     fileUrl?: string;
     fileName: string;
     branch: string;
+    onStatusChange?: () => void;
 }
 
 
@@ -22,6 +23,7 @@ const ViewModule = ({
     fileUrl,
     fileName,
     branch,
+    onStatusChange,
 }: ModuleCardProps) => {
     console.log("ViewModule Props:", {
         title,
@@ -30,7 +32,8 @@ const ViewModule = ({
         isActive,
         fileUrl,
         fileName,
-        branch
+        branch,
+        onStatusChange
     });
     return (
         <div className="relative w-[400px] bg-white rounded-lg  p-4 ">
@@ -47,6 +50,7 @@ const ViewModule = ({
                 </h2>
 
                 <span
+                
                     className={`w-14 h-9 text-center py-1 rounded-lg text-white ${isActive ? 'bg-green-700' : 'bg-red-600'
                         }`}
                 >

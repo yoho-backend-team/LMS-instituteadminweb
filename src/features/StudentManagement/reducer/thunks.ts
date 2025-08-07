@@ -17,6 +17,7 @@ export const getStudentmanagement =
     (params: any) => async (dispatch: any) => {
         try {
             const response = await getcoursedataservice(params);
+            console.log(response, "Thunk")
             if(response){
                 dispatch(getcoursedetails(response));
             }

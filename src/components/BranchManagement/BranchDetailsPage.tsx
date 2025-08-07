@@ -212,8 +212,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
 
   return (
    <motion.div
-  animate="visible" // 👈 Always shows the elevated effect
-  variants={cardHoverVariants}
+ 
   className="bg-white rounded-xl p-6"
 >
       <div className="flex items-center justify-between mb-8">
@@ -242,14 +241,14 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
       >
         {/* Left Column (2/3 width) */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Key Metrics Section */}
-          <motion.div variants={itemVariants} initial="show">
-            <motion.div
-              whileHover="hover"
-              variants={cardHoverVariants}
-              className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)]  rounded-xl p-6 transition-all duration-300"
-            >
-              <h2 className="text-xl font-semibold text-[#716F6F] mb-6">Key Metrics</h2>
+          {/* Key Metrics Section - Modified to always be visible */}
+  <motion.div variants={itemVariants} initial="show">
+    <motion.div
+      whileHover="hover"
+      variants={cardHoverVariants}
+      className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6 transition-all duration-300"
+    >
+      <h2 className="text-xl font-semibold text-[#716F6F] mb-6">Key Metrics</h2>
               
               <div className="relative w-full flex items-center justify-center overflow-visible">
               
@@ -275,6 +274,10 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                             : "w-[200px] h-[250px] rounded-2xl"
                         } text-white shadow-lg flex items-center justify-between px-6 py-6 relative`}
                         style={{ backgroundColor: card.color }}
+                         whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.2)"
+                }}
                       >
                         <div className="flex flex-col justify-between h-full w-full">
                           <div>
@@ -378,7 +381,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
       value="fee"
       className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
     >
-      <span className="text-[#23AF62] font-semibold text-lg relative">
+      <span className=" text-[#23AF62] font-semibold text-lg relative">
         Fee
         <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "fee" ? "active" : "inactive"}></span>
       </span>
@@ -418,7 +421,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
       <CardContent>
         <div className="h-[350px]">
           <BarChart
-            width={800}
+            width={780}
             height={350}
             data={chartData}
       margin={{ top: 40, right: 10, left: 5, bottom: 5 }} 

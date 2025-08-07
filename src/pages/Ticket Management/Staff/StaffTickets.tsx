@@ -1,11 +1,11 @@
-import React from 'react';
+
 import StaffTicketFront from '../../../components/Staff Tickets/StaffTicketFront'
 
 const StaffTickets = () => {
-	return <div>
-		<StaffTicketFront/>
-
-	</div>;
+	return (
+	<StaffTicketFront/>
+)
+	
 };
 
 export default StaffTickets;
