@@ -20,7 +20,7 @@ interface Props {
 		course: string;
 		description: string;
 		title: string;
-		video:string;
+		video: string;
 	}) => void;
 }
 
@@ -35,7 +35,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 
 	const branches = useSelector(Branch);
 	const courses = useSelector(BranchCourse);
-	 const [video, setVideo] = useState("");
+	const [video, setVideo] = useState("");
 
 
 	useEffect(() => {
@@ -48,17 +48,6 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 			dispatch(GetBranchCourseThunks(branch) as any);
 		}
 	}, [branch]);
-
-	// const handleUploadClick = () => {
-	// 	fileInputRef.current?.click();
-	// };
-
-	// const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const uploadedFile = e.target.files?.[0];
-	// 	if (uploadedFile) {
-	// 		setFile(uploadedFile);
-	// 	}
-	// };
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
