@@ -50,6 +50,8 @@ const Students = () => {
     image: null as File | string | null,
   })
 
+  
+
   const handleFileUpload = (file: File) => {
   // Check file type
   if (!['image/jpeg', 'image/png'].includes(file.type)) {
