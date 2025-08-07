@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import { HiCheckCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPlanThunk, getInstituteSubcriptionThunk, getSubscriptionStatusThunk, updateRequestThunk } from "./thunk";
+import { getAllPlanThunk, getInstituteSubcriptionThunk, getSubscriptionStatusThunk, upgradeRequestThunk, } from "./thunk";
 
 type PlanType = {
   id: number;
@@ -14,44 +15,37 @@ type PlanType = {
     count?: number;
     _id?: string;
   }[];
+  _id: string;
 };
 
 
 type SubScriptionPlanProps = {
-  onSelectPlan: (plan: PlanType) => void;
+  onSelectPlan: (plan: PlanType, show: boolean) => void;
 };
 
-// const plans: PlanType[] = [
-//   {
-//     id: 1,
-//     name: "Basic Plan",
-//     description: "The Plan is for everyone",
-//     price: 2000,
-//     features: ["Admins", "Students", "Teachers", "Batches", "Courses", "Classes"],
-//   },
-//   {
-//     id: 2,
-//     name: "Premium Plan",
-//     description: "The Plan is for Premium users",
-//     price: 15000,
-//     features: ["Admins", "Students", "Teachers", "Batches", "Courses", "Classes"],
-//   },
-//   {
-//     id: 3,
-//     name: "New Year Plan",
-//     description: "The Plan is an exclusive offer",
-//     price: 12000,
-//     features: ["Admins", "Students", "Teachers", "Batches", "Courses", "Classes"],
-//   },
-// ];
 
 export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
-  const dispatch = useDispatch()
-  const plans: PlanType[] = useSelector((state: any) => state.subscription.plans)
-  const insitituteSubscription = useSelector((state: any) => state.subscription.insitituteSubscription)
-  const status = useSelector((state: any) => state.subscription.status)
-  const upgradeResponse = useSelector((state: any) => state.subscription.upgradeResponse);
+  const dispatch: any = useDispatch()
+  const plans: PlanType[] = useSelector((state: any) => state.subscription?.plans)
+  const insitituteSubscription = useSelector((state: any) => state.subscription?.insitituteSubscription)
+  // const status = useSelector((state: any) => state.subscription?.status)
+  const upgradeRequest = useSelector((state: any) => state.subscription?.upgradeRequest);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
+
+  const handleUpgrade = async (plan: PlanType) => {
+    try {
+
+      const actualInstituteId = insitituteSubscription?.[0]?.instituteId?._id;
+      if (!actualInstituteId) {
+        console.error("No institute ID found for upgrade");
+        return;
+      }
+
+      await dispatch(upgradeRequestThunk(plan.id.toString(), actualInstituteId));
+    } catch (error: any) {
+      console.error("Upgrade error:", error);
+    }
+  };
 
   useEffect(() => {
     dispatch(getAllPlanThunk());
@@ -60,29 +54,27 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
   }, [dispatch]);
 
   useEffect(() => {
-  if (plans.length && insitituteSubscription && !selectedPlan) {
-    const subscribedPlan = plans.find(
-      (p) => p.identity === insitituteSubscription?.plan?.identity
-    );
-    setSelectedPlan(subscribedPlan || plans[0]);
-  }
-}, [plans, insitituteSubscription]);
+    if (upgradeRequest) {
+      dispatch(getInstituteSubcriptionThunk({}));
+      dispatch(getSubscriptionStatusThunk({}));
+    }
+  }, [dispatch, upgradeRequest]);
+
 
   useEffect(() => {
-  if (upgradeResponse?.message) {
-    dispatch(getInstituteSubcriptionThunk()); 
-  }
-}, [upgradeResponse]);
+    if (plans?.length && insitituteSubscription && !selectedPlan) {
+      const subscribedPlan = plans.find(
+        (p) => p.identity === insitituteSubscription?.plan?.identity
+      );
+      setSelectedPlan(subscribedPlan || plans[0]);
+    }
+  }, [plans, insitituteSubscription, selectedPlan]);
 
 
   return (
     <div className="flex flex-wrap justify-between gap-4 px-6 py-4">
-      {plans.map((plan) => {
-        const isSelected = selectedPlan?.
-          identity
-          === plan.
-            identity
-          ;
+      {plans?.map((plan) => {
+        const isSelected = insitituteSubscription?.[0]?.subscriptionId?._id == plan?._id
 
         return (
           <div
@@ -95,9 +87,9 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
           >
             <div>
               <div className={cn("w-full h-40 mb-4", isSelected ? "bg-white rounded-xl" : "bg-gray-200 rounded-xl")} />
-              <h2 className="text-xl font-semibold mb-1">{plan.identity}</h2>
+              <h2 className="text-xl font-semibold mb-1">{plan?.identity}</h2>
               <p className={cn("text-sm mb-4", isSelected ? "text-white/90" : "text-gray-500")}>
-                {plan.description}
+                {plan?.description}
               </p>
               <p className={cn("text-center text-2xl font-extrabold mb-4", isSelected ? "text-white" : "text-gray-600")}>
                 ₹{plan.price.toLocaleString()}{" "}
@@ -140,10 +132,10 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
                     ? "bg-white text-[#1BBFCA] hover:bg-gray-100"
                     : "bg-[#1BBFCA] text-white hover:bg-cyan-600 border-transparent"
                 )}
-                disabled={!isSelected}
-                onClick={() => onSelectPlan(plan)}
+                // disabled={!isSelected}
+                onClick={() => onSelectPlan(plan, isSelected)}
               >
-                Your Plan
+                View
               </button>
 
               <button
@@ -151,12 +143,12 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
                   "w-full text-sm border p-3 rounded",
                   isSelected
                     ? " bg-[#1BBFCA] text-white hover:bg-cyan-600 border-white"
-                    : " text-[#1BBFCA] cursor-not-allowed border-[#1BBFCA]"
+                    : " text-[#1BBFCA] border-[#1BBFCA]"
                 )}
                 disabled={isSelected}
-                onClick={() => dispatch(updateRequestThunk({ plan_id: plan.id }))}
+                onClick={() => handleUpgrade(plan)}
               >
-                Upgrade Plan
+                {isSelected ? 'Your Plan' : 'Upgrade Plan'}
               </button>
             </div>
           </div>

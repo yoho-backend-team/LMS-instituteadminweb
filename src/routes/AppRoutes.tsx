@@ -41,7 +41,6 @@ import StaffsAttendance from '../pages/Attendance Management/Staffs Attendance/S
 import AddNewGroup from '../components/Usermanagement/Group/AddNewGroup';
 import View from '../components/Usermanagement/Group/View';
 import Edit from '../components/Usermanagement/Group/Edit';
-
 import MainPage from '../components/staff/MainPage';
 import StudentDashboardMain from '../components/BatchManagement/viewBatch';
 import ViewLiveClassId from '../components/ClassManagement/Live Class/viewLiveClassId';
@@ -49,7 +48,6 @@ import StudentClassBatch from '../components/class management/offlineClass/stude
 import { Profile } from '../components/StudentManagement/Profile';
 import StudentDetails from '../features/Attendance_Managemenet/Student_Attendance/components/StudentDetails';
 import NotificationPage from '../pages/Notification/NotificationPage';
-// import Home from '../pages/Notification/'
 import Accountpf from '../components/Profile/AccProfile';
 import EditUserInfo from '../components/Profile/EditUserInfo';
 import TicketDetailsPage from '../pages/Ticket Management/Student/TicketDetailsPage';
@@ -59,6 +57,9 @@ import CertificateView from '../components/cerificateManagement/certificateView'
 import SecureDelivery from '../components/HelpFAQ/SecureDelivery';
 import FindMissingOrder from '../components/HelpFAQ/FindMissingOrder';
 import TrackOrder from '../components/HelpFAQ/TrackOrder';
+import LogoutRoute from '../components/shared/Navbar';
+import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
+import HistoryPage from '../components/subscription/HistoryPage';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -72,6 +73,7 @@ const AppRoutes = () => {
 			<Route path='/otp-verify' element={<OtpVerification />} />
 			<Route path='/reset-password' element={<ChangePassword />} />
 			<Route path='*' element={<Navigate to='/login' />} />
+			<Route path='/logout' element={<LogoutRoute />} />
 		</Routes>
 	);
 
@@ -81,9 +83,9 @@ const AppRoutes = () => {
 				<Route index element={<Dashboard />} />
 				{/* Profile Management */}
 
-				<Route path="/tickets/:id" element={<TicketDetailsPage />} />
+				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
 
-				<Route path="noti/msg" element={<NotificationPage />} />
+				<Route path='noti/msg' element={<NotificationPage />} />
 
 				{/* <Route path="/" element={<HomePage />} /> */}
 
@@ -106,10 +108,11 @@ const AppRoutes = () => {
 
 				{/* User Management */}
 				<Route path='users' element={<Users />} />
+				<Route path='users/details/:id' element={<UsersDetails />} />
 				<Route path='group' element={<Group />} />
 				<Route path='group/add' element={<AddNewGroup />} />
 				<Route path='group/view/:id' element={<View />} />
-				<Route path='group/edit' element={<Edit />} />
+				<Route path='group/edit/:id' element={<Edit />} />
 
 				{/* Course Management */}
 				<Route path='courses' element={<Courses />} />
@@ -172,6 +175,7 @@ const AppRoutes = () => {
 				<Route path='student-fees' element={<StudentFees />} />
 				<Route path='staff-salaries' element={<StaffSalaries />} />
 				<Route path='subscriptions' element={<Subscription />} />
+				<Route path='/subscriptions/history' element={<HistoryPage />} />
 
 				{/* Ticket Management */}
 				<Route path='student-tickets' element={<StudentTickets />} />

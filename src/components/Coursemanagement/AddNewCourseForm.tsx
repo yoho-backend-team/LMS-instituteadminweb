@@ -4,11 +4,13 @@ import cloud from "../../assets/cloud.png";
 interface AddNewCourseFormProps {
   onBack: () => void;
   onSubmit: (course: any) => void;
+  branches: any[]; // <- Accept branches
 }
 
 const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
   onBack,
   onSubmit,
+  branches,
 }) => {
   const courseImageInputRef = useRef<HTMLInputElement>(null);
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
@@ -147,17 +149,19 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
 
         <div>
           <label className="text-sm text-gray-600">Select Branches</label>
-          <select
-            name="branch"
-            value={formData.branch}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-          >
-            <option value=""></option>
-            <option>Chennai</option>
-            <option>Bangalore</option>
-            <option>Hyderabad</option>
-          </select>
+         <select
+  name="branch"
+  value={formData.branch}
+  onChange={handleChange}
+  className="border rounded-md p-2 w-full"
+>
+  <option value="">Select Branch</option>
+  {branches.map((br) => (
+    <option key={br.uuid} value={br.uuid}>
+      {br.branch_identity}
+    </option>
+  ))}
+</select>
         </div>
 
         <div>

@@ -1,0 +1,1 @@
+export const getAllCourses = (state: any) => state.courseReducer.data;

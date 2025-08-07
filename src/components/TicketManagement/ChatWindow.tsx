@@ -15,9 +15,9 @@ interface ChatWindowProps {
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
   return (
-    <div className="flex flex-col justify-between w-4/5 border border-[#E2E8F0] rounded-xl bg-white mx-2 mt-2">
+    <div className="flex flex-col justify-between w-[70%] border border-[#E2E8F0] rounded-xl bg-white ">
       {/* Top Bar */}
-      <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl mr-5 items-center gap-4">
+      <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl m-2 items-center gap-4">
         <img
           src={user.image}
           alt={""}
@@ -26,14 +26,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
         <div>
           <div className="font-semibold">{user.first_name}</div>
           <div className={`text-sm ${user.is_active ? 'text-green-500' : 'text-red-500'}`}>
-  {user.is_active ? 'Active Now' : 'Inactive'}
-</div>
+            {user.is_active ? 'Active Now' : 'Inactive'}
+          </div>
         </div>
       </div>
 
       {/* Messages Section */}
       <div className="flex-1 p-4 overflow-y-auto"
-       style={{ backgroundImage: `url(${chatimg})` }}>
+        style={{ backgroundImage: `url(${chatimg})` }}>
         {/* Example message bubble */}
         <div className="mb-2 flex flex-col items-start">
           <div className="bg-gray-200 text-black p-2 rounded-xl max-w-[70%]">
