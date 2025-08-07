@@ -4,46 +4,47 @@ import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
-import { Provider } from "react-redux";
-import store from "./store/store"; // ✅ Correct
+import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
+import store from './store/store'; // ✅ Correct for default export
+import { Provider } from 'react-redux';
 
 function App() {
 	return (
-		<>
-			<BrowserRouter>
-				<AuthProvider>
+		<BrowserRouter>
+			<AuthProvider>
+				<Provider store={store}>
 					<TicketProvider>
-						  <Provider store={store}>
-					<AppRoutes />
-					<Toaster
-						position='top-right'
-						toastOptions={{
-							duration: 4000,
-							style: {
-								background: '#363636',
-								color: '#fff',
-							},
-							success: {
-								duration: 3000,
-								style: {
-									background: '#10B981',
-									color: '#fff',
-								},
-							},
-							error: {
-								duration: 4000,
-								style: {
-									background: '#EF4444',
-									color: '#fff',
-								},
-							},
-						}}
-					/>
-					</Provider>
+						<StaffTicketProvider>
+							<AppRoutes />
+							<Toaster
+								position="top-right"
+								toastOptions={{
+									duration: 4000,
+									style: {
+										background: '#363636',
+										color: '#fff',
+									},
+									success: {
+										duration: 3000,
+										style: {
+											background: '#10B981',
+											color: '#fff',
+										},
+									},
+									error: {
+										duration: 4000,
+										style: {
+											background: '#EF4444',
+											color: '#fff',
+										},
+									},
+								}}
+							/>
+						</StaffTicketProvider>
 					</TicketProvider>
-				</AuthProvider>
-			</BrowserRouter>
-		</>
+				</Provider>
+			</AuthProvider>
+		</BrowserRouter>
 	);
 }
 

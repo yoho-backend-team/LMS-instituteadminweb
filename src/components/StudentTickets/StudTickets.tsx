@@ -1,14 +1,28 @@
 
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import TicketCard from "./TicketCard";
 import ticket1 from "../../assets/ticket1.png";
-import { useTicketContext } from "../../components/StudentTickets/TicketContext";
+import { useDispatch, useSelector } from "react-redux";
+import { getStudentTicket } from "../../features/StudentTicket/Reducers/thunks";
+import { selectStudentTicket } from "../../features/StudentTicket/Reducers/selectors";
 
 const StudTickets: React.FC = () => {
   const [filter, setFilter] = useState<"opened" | "closed">("opened");
-  const { tickets } = useTicketContext();
+  const dispatch = useDispatch<any>();
+  const studentTicketData = useSelector(selectStudentTicket)
 
-  const filteredTickets = tickets.filter((ticket) => ticket.status === filter);
+  const fetchstudentTickets = async () => {
+    try {
+      const params = {branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", status: filter}
+      dispatch(getStudentTicket(params))
+    } catch (error) {
+      console.log('Error fetching in tickts:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchstudentTickets();
+  }, [dispatch, filter]);
 
   return (
     <div>
@@ -34,8 +48,8 @@ const StudTickets: React.FC = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {filteredTickets.length > 0 ? (
-          filteredTickets.map((ticket) => <TicketCard key={ticket.id} {...ticket} />)
+        {studentTicketData?.data?.length > 0 ? (
+          studentTicketData?.data?.map((ticket: any) => <TicketCard key={ticket?._id} data={ticket} />)
         ) : (
           <p className="text-gray-500 col-span-3 text-center">No tickets found.</p>
         )}

@@ -23,7 +23,6 @@ export const FeesFilter: React.FC = () => {
             </label>
             <select id="select-batch" className="w-full border border-gray-300 rounded-md px-3 py-2">
               <option>Select Batch</option>
-              {/* Add more batch options here */}
             </select>
           </div>
           <div>

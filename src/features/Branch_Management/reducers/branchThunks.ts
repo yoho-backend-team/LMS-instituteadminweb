@@ -1,78 +1,52 @@
-// src/features/branch/branchThunks.ts
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { branchService } from '../../../features/Branch_Management/services/branchService';
-import { Branch } from '../../components/BranchManagement/types';
+// src/features/Branch_Management/reducers/branchThunks.ts
+import {
+  fetchBranches,
+  addBranch,
+  // editBranch,
+  deleteBranch,
+} from "../services/index";
 
-// Fetch All Branches
-export const fetchBranches = createAsyncThunk<
-  Branch[],                               // Return Type
-  { instituteId: string; params?: any },  // Argument Type
-  { rejectValue: string }                 // Rejection Type
->(
-  'branch/fetchBranches',
-  async ({ instituteId, params }, { rejectWithValue }) => {
-    try {
-      const response = await branchService.getAll(instituteId, params);
-      return response.data;  // Branch[]
-    } catch (error: any) {
-      return rejectWithValue(error?.message || 'Failed to fetch branches');
-    }
-  }
-);
+import { allbranchSlice } from "./branchSlice"; // Make sure you have this action
 
-// Create a Branch
-export const createBranch = createAsyncThunk<
-  Branch,  // Return type
-  { instituteId: string; data: any },  // Payload type
-  { rejectValue: string }  // Reject type
->(
-  'branch/createBranch',
-  async ({ instituteId, data }, { rejectWithValue }) => {
-    try {
-      const response = await branchService.create(`/branches`, {
-        institute_id: instituteId,
-        ...data
-      });
-      return response.data;  // Assuming API returns the created branch object
-    } catch (error: any) {
-      console.error("Create Branch API Error:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data?.message || 'Failed to create branch');
+// GET ALL BRANCHES
+export const fetchBranch = (params: any) => async (dispatch: any) => {
+  try {
+    const response = await fetchBranches(params);
+    if (response) {
+      dispatch(allbranchSlice(response.data));
+      return { payload: response.data };
     }
+  } catch (error: any) {
+    throw new Error(error.message);
   }
-);
+};
 
-// ✅ Update Branch
-export const updateBranch = createAsyncThunk<
-  Branch,  // Return type
-  { branchId: string; data: any },  // Payload
-  { rejectValue: string }
->(
-  'branch/updateBranch',
-  async ({ branchId, data }, { rejectWithValue }) => {
-    try {
-const response = await branchService.update(branchId, data);
-      return response.data; // Updated branch
-    } catch (error: any) {
-      console.error("Update Branch API Error:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data?.message || 'Failed to update branch');
-    }
+// CREATE BRANCH
+export const createBranch = (params: any) => async () => {
+  try {
+    const response = await addBranch(params);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
-);
+};
 
-// ✅ Delete Branch
-export const deleteBranch = createAsyncThunk<
-  string,  // Return type: branchId (or you can return a success message)
-  string,  // Payload: branchId
-  { rejectValue: string }
->(
-  'branch/deleteBranch',
-  async (branchId, { rejectWithValue }) => {
-    try {
-      await branchService.delete(`/branches/${branchId}`);
-      return branchId; // Return deleted branchId to remove it from state
-    } catch (error: any) {
-      console.error("Delete Branch API Error:", error.response?.data || error.message);
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete branch');
-    }
+// UPDATE BRANCH
+export const updateBranch = (params: { id: string; data: any }) => async () => {
+  try {
+    const response = await editBranch(params);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
-);
+};
+
+// DELETE BRANCH
+export const deleteBranchAction = (id: string) => async () => {
+  try {
+    const response = await deleteBranch(id);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
