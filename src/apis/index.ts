@@ -142,8 +142,8 @@ class Client {
       HttpClient.delete(HTTP_END_POINTS.notes.index + "/" + data.id),
   };
   course = {
-    get:async(params:any)=>{
-      await HttpClient.get(HTTP_END_POINTS.course.get,params)
+    get:(data:any)=>{
+       HttpClient.get(HTTP_END_POINTS.course.get,data)
     },
     create: (data: any, options: any) => {
       return HttpClient.post(
@@ -266,6 +266,8 @@ class Client {
     student_fee: {
       create: (data: any) =>
         HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
+     get:(data:any)=> 
+        HttpClient.get(HTTP_END_POINTS.payment.fee.getbyID.replace(":id", data.id)),
     },
     staff_salary: {
       getall: (params: any) =>

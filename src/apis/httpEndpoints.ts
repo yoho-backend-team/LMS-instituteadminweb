@@ -104,7 +104,7 @@ const generateEndpoints = () => {
 			update: `/api/institutes/${instituteId}/branches/${branchId}/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
 			getBatchwithCourse:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
-            getstudentWithBatch:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches/batch-students`
+            getstudentWithBatch:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches/batch-students`,
 			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`
 		},
 		online_class: {
@@ -145,6 +145,7 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
+				getbyID:`/api/institutes/payments/student-fee/:id`
 			},
 			salary: {
 				getall: '/api/institutes/payments/staff-salary/all',
@@ -260,9 +261,7 @@ const generateEndpoints = () => {
 			delete: '/api/helpcenter/delete/',
 			update: '/api/helpcenter/update/',
 		},
-		refund: {
-			getall: '/api/institutes/payments/refund/all',
-		}
+	
 	};
 };
 

@@ -11,6 +11,7 @@ export const createRefund = async (data: any) => {
   }
 };
 
+
 export const getAllRefunds = async (params: any) => {
   try {
     const response = await Client.refund.getAll(params);;
@@ -21,6 +22,7 @@ export const getAllRefunds = async (params: any) => {
   }
 };
 
+
 export const updateRefund = async (data: any) => {
   try {
     const res=await Client.refund.update(data);
@@ -30,6 +32,7 @@ export const updateRefund = async (data: any) => {
     throw error;
   }
 };
+
 
 export const deleteRefund = async (data: any) => {
   try {
@@ -42,6 +45,7 @@ export const deleteRefund = async (data: any) => {
   }
 };
 
+
 export const getRefundByID = async (data: any) => {
   try {
     const res=await Client.refund.getByID(data);
@@ -52,33 +56,12 @@ export const getRefundByID = async (data: any) => {
   }
 };
 
-export const getStudentsWithCourse = async (params: any) => {
-  try {
-    const res = await Client.users.getStudentsWithCourse(params);
-    console.log("Students with Course:", res);
-    return res;
-  } catch (error) {
-    console.error("getStudentsWithCourse error:", error);
-    throw error;
-  }
-};
-
-export const getStudentsWithBatch = async (params: any) => {
-  try {
-    const res = await Client.users.getStudentsWithBatch(params);
-    console.log("Students with Batch:", res);
-    return res;
-  } catch (error) {
-    console.error("getStudentsWithBatch error:", error);
-    throw error;
-  }
-};
 
 
-export const GetCourseRefund = async (data: any) => {
+export const GetBranchCourse = async (data: any) => {
   try {
-    const response = await Client.course.get(data); 
-    console.log("Branch course data getting in services", response);
+    const response= await Client.course.get( data.branchId); 
+    console.log(" Branch course data getting in services", response);
     return response;
   } catch (error: any) {
     console.error("Error in GetBranchCourse:", error.response?.data || error.message);
@@ -87,18 +70,33 @@ export const GetCourseRefund = async (data: any) => {
 };
 
 
+export const GetBatch = async (instituteId: any, branchId: any, courseId: any) => {
+  const response = await Client.batch.getWithCourseId(instituteId, branchId, courseId);
+  console.log("Batch data getting", response);
+  if (response) {
+    return response;
+  }
+};
 
-export const GetBatchwithCourseRefund = async (
-  instituteId: any,
-  branchId: any,
-  courseId: any
-): Promise<any> => {
+
+export const StudentsWithBatch = async (params: any) => {
+  if (!params || !params.batch_id || !params.branch_id || !params.institute_id) {
+    throw new Error("Missing required parameters to fetch students.");
+  }
+
+  const response = await Client.users.getStudentsWithBatch(params);
+  console.log("Student with batch-check services", response);
+  return response;
+};
+
+export const StudentWithFee = async (id: string) => {
   try {
-    const response = await Client.batch.getWithCourseId(instituteId, branchId, courseId);
-    console.log("Batch data getting", response);
-    return response.data; 
+    const res = await Client.payment.student_fee.get({ id }); 
+    console.log("Refund fee", res);
+    return res;
   } catch (error) {
-    console.error("Error in GetBatchwithCourseRefund:", error);
     throw error;
   }
 };
+
+

@@ -2,12 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const refundSlice = createSlice({
   name: "refund",
+
   initialState: {
     data: [],
     loading: false,
     error: null,
-     course: [],
-    batch:[],
+    course: [],
+    batch: [],
+    student: [],
+    fee: [],
   },
   reducers: {
     setRefundLoading: (state, action) => {
@@ -23,22 +26,31 @@ const refundSlice = createSlice({
       state.data.push(action.payload);
     },
     updateRefundInState: (state: any, action) => {
-      const index = state.data.findIndex((item: any) => item._id === action.payload._id);
+      const index = state.data.findIndex(
+        (item: any) => item._id === action.payload._id
+      );
       if (index !== -1) {
         state.data[index] = action.payload;
       }
     },
     deleteRefundInState: (state: any, action) => {
-      state.data = state.data.filter((item: any) => item._id !== action.payload);
+      state.data = state.data.filter(
+        (item: any) => item._id !== action.payload
+      );
     },
-      getCourseRefundSl: (state:any, action) => {
+    getBranchCourse: (state, action) => {
       state.course = action.payload;
     },
 
-     getbatchwith_idRefund: (state:any, action) => {
+    getbatchwith_id: (state, action) => {
       state.batch = action.payload;
     },
-    
+    getstudent: (state, action) => {
+      state.student = action.payload;
+    },
+    getfee: (state, action) => {
+      state.fee = action.payload;
+    },
   },
 });
 
@@ -49,8 +61,10 @@ export const {
   addRefund,
   updateRefundInState,
   deleteRefundInState,
-    getCourseRefundSl,
-   getbatchwith_idRefund,
+  getBranchCourse,
+  getbatchwith_id,
+  getstudent,
+  getfee,
 } = refundSlice.actions;
 
 export default refundSlice.reducer;
