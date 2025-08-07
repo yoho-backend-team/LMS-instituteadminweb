@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import HttpClient from './httpClient';
-import { HTTP_END_POINTS } from './httpEndpoints';
+import HttpClient from "./httpClient";
+import { HTTP_END_POINTS } from "./httpEndpoints";
 
 class Client {
 	admin = {

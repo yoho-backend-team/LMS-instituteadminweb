@@ -34,12 +34,15 @@ import timelineReducer from '../features/Profile_Security/reducer/timelineSlice'
 import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
 import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
 import community from "../features/Community/Reducers/CommunitySlice";
+import refundReducer from "../features/Refund_management/Reducer/refundSlice"
+
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
 		// authusers: authUserReducer,	
+		refund: refundReducer,
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,

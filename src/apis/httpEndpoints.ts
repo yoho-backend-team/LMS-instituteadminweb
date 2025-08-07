@@ -77,7 +77,7 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		course: {
-			get: `/api/institutes/${instituteId}/branches/`,
+			get: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
 			update: `/api/institutes/${instituteId}/categories/`,
 			withBranch: `/api/institutes/${instituteId}/branches/`,
 			add: `/api/institutes/${instituteId}/categories/`,
@@ -103,10 +103,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`,
-			getBatchwithCourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
-			getstudentWithBatch: `/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches/batch-students`
-
+			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
@@ -146,7 +143,6 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
-				getAllSalary: `/api/institutes/payments/student-fee/all/?branch_id=${branchId}`
 			},
 			salary: {
 				getall: '/api/institutes/payments/staff-salary/all',
@@ -248,6 +244,14 @@ const generateEndpoints = () => {
 			getById: `/api/placements/fetch`,
 			delete: `/api/placements/delete/`
 		},
+		refund: {
+			create: `/api/institutes/payments/refund/create`,
+			getAll: `/api/institutes/payments/refund/all`,
+			getById: `/api/institutes/payments/refund/:id`,
+			update: `/api/institutes/payments/refund/update/:id`,
+			delete: `/api/institutes/payments/refund/:_id`,
+			query: `/api/institutes/payments/refund/:query`
+		},
 		notificationSubscription: {
 			post: '/notification/subscribe',
 		},
@@ -263,9 +267,7 @@ const generateEndpoints = () => {
 			delete: '/api/helpcenter/delete/',
 			update: '/api/helpcenter/update/',
 		},
-		refund: {
-			getall: '/api/institutes/payments/refund/all',
-		}
+
 	};
 };
 
