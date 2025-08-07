@@ -26,14 +26,14 @@ import StudentNotificationSlice from '../features/StudentNotification/reducer/No
 import helpCenterFaqs from '../features/HelpCenter/slice'
 import ticketAdmin from '../features/TicketManagement/YourTicket/slice'
 import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSlice"
-
-
+import PlacementReducer from '../features/placementManagement/Reducer/slice'
+import FaqsSlice from '../features/Faq/reducers/slice'
+import faqCategory from '../features/Faq_Category/slice'
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
-
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,
@@ -59,9 +59,9 @@ const store = configureStore({
 		helpCenterFaqs: helpCenterFaqs,
 		ticketAdmin: ticketAdmin,
 		StaffSalary: StaffSalary,
-
-
-
+		placements: PlacementReducer,
+		FaqsSlice: FaqsSlice,
+		faqCategory: faqCategory,
 	},
 })
 

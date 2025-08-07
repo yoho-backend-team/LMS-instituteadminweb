@@ -24,6 +24,7 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
 
   const fetchClassData = async() => {
     dispatch(getClassesData({
+      id: classId,
       staff: classId,
     }))
   }
