@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { fetchAllUsers } from '../../../features/Users_Management/Users/redux/thunk';
 import { getInstituteDetails, getSelectedBranchId } from '../../../apis/httpEndpoints';
 import UsersList from '../../../features/Users_Management/Users/components/UsersList';
-import UsersDetails from '../../../features/Users_Management/Users/components/UsersDetails';
 
 const Users = () => {
   const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
@@ -20,7 +19,6 @@ const Users = () => {
     dispatch(fetchAllUsers(data))
   }, [dispatch])
 
-  console.log("Users", Users)
   return (
     <div className='grid gap-4'>
       <UserCard Users={Users?.data} />

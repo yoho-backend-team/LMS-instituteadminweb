@@ -1,11 +1,8 @@
-// components/PlacementForm.tsx
-
 import { Controller, useForm } from "react-hook-form";
-import { X } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ReactSelect from 'react-select';
+import ReactSelect from "react-select";
 import {
   Card,
   CardContent,
@@ -13,9 +10,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
-import { getStudentsThunk } from "../../features/placementManagement/Reducer/thunk";
+import { getStudentsThunk } from "@/features/placementManagement/Reducer/thunk";
 
-interface PlacementFormData {
+export interface PlacementFormData {
   companyName: string;
   companyAddress: string;
   contactEmail: string;
@@ -38,7 +35,12 @@ interface PlacementFormProps {
   initialData?: PlacementFormData;
 }
 
-const PlacementForm = ({ mode = "add", onClose, onSubmit, initialData }: PlacementFormProps) => {
+const PlacementForm = ({
+  mode = "add",
+  onClose,
+  onSubmit,
+  initialData,
+}: PlacementFormProps) => {
   const {
     register,
     handleSubmit,
@@ -76,15 +78,13 @@ const PlacementForm = ({ mode = "add", onClose, onSubmit, initialData }: Placeme
             <CardTitle className="text-2xl">
               {mode === "add" ? "Add Placement Details" : "Edit Placement Details"}
             </CardTitle>
-            <Button type="button" onClick={onClose} variant="ghost" size="icon" className="h-8 w-8">
+            {/* <Button type="button" onClick={onClose} variant="ghost" size="icon" className="h-8 w-8">
               <X className="h-4 w-4" />
-            </Button>
+            </Button> */}
           </div>
         </CardHeader>
-
         <CardContent>
           <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-            {/* Company Details */}
             <Card>
               <CardHeader><CardTitle className="text-lg">Company Details</CardTitle></CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,11 +165,11 @@ const PlacementForm = ({ mode = "add", onClose, onSubmit, initialData }: Placeme
                     control={control}
                     rules={{ required: "At least one student must be selected" }}
                     render={({ field }) => (
-                      <ReactSelect
+                      <ReactSelect 
                         {...field}
                         isMulti
                         options={students.map((student: any) => ({
-                          value: student.id,
+                          value: student._id,
                           label: student.full_name,
                         }))}
                         className="basic-multi-select"
@@ -230,7 +230,6 @@ const PlacementForm = ({ mode = "add", onClose, onSubmit, initialData }: Placeme
                 </div>
               </CardContent>
             </Card>
-
             {/* Actions */}
             <div className="flex justify-end gap-4 pt-4">
               <Button type="button" onClick={onClose} variant="outline" className='!border-[#1BBFCA] !text-[#1BBFCA]'>
@@ -248,3 +247,4 @@ const PlacementForm = ({ mode = "add", onClose, onSubmit, initialData }: Placeme
 };
 
 export default PlacementForm;
+

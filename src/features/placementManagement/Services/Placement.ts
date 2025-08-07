@@ -40,3 +40,12 @@ export const createPlacement = async (data: any) => {
     throw new Error(error.message);
   }
 };
+
+export const deletePlacement = async (params: any) => {
+  try {
+    const response = await Client.placements.delete(params)
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
