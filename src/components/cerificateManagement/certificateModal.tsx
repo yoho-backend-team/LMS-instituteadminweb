@@ -20,6 +20,7 @@ export interface Certificate {
   batch: string;
   student: string;
   email: string;
+  course?: string;
 }
 
 interface CertificateModalProps {
@@ -102,30 +103,32 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     }
   }, [studentData]);
 
- const formik = useFormik({
-  initialValues: {
-    title: editingCertificate?.title || '',
-    course: editingCertificate?.course || '',
-    branch: editingCertificate?.branch || '',
-    batch: editingCertificate?.batch || '',
-    student: editingCertificate?.student || ''
-  },
-  enableReinitialize: true,
-  onSubmit: async (values) => {
-    const payload = {
-      batch_id: values.batch,
-      branch_id: values.branch,
-      course: values.course,
-      institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529', // Replace this with dynamic value if needed
-      student: values.student
-    };
+  const formik = useFormik({
+    initialValues: {
+      title: editingCertificate?.title || '',
+      course: editingCertificate?.course || '',
+      branch: editingCertificate?.branch || '',
+      batch: editingCertificate?.batch || '',
+      student: editingCertificate?.student || ''
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      const payload = {
+        ...(isEditing && { title: values.title }), // Only include title when editing
+        ...(!isEditing && { // Only include these fields when creating
+          batch_id: values.batch,
+          branch_id: values.branch,
+          course: values.course,
+          institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+          student: values.student
+        })
+      };
 
-    onSave(payload); // optional, if you're using this for state update or local storage
-    await createCertificate(payload); // sends data to backend
-    onClose(); // close modal after submission
-  }
-});
-
+      onSave(payload);
+      await createCertificate(payload);
+      onClose();
+    }
+  });
 
   if (!isOpen) return null;
 
@@ -145,33 +148,50 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         </div>
 
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 overflow-auto">
-          {/* Course */}
-          <div>
-            <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
-              Course
-            </label>
-            <select
-              name="course"
-              className="w-full border rounded-md px-4 py-2"
-              value={formik.values.course}
-              onChange={(e) => {
-                const selectedCourse = courses.find((c) => c.uuid === e.target.value);
-                formik.handleChange(e);
-                setCourseUUID(selectedCourse?.uuid || '');
-                setCourseObjectId(selectedCourse?._id || '');
-              }}
-              onBlur={formik.handleBlur}
-            >
-              <option value="">Select Course</option>
-              {courses.map((course: any) => (
-                <option key={course?.uuid} value={course?.uuid}>
-                  {course?.course_name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Conditional Field - Title for Edit, Course for Create */}
+          {isEditing ? (
+            <div>
+              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                Certificate Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="Enter certificate title"
+              />
+            </div>
+          ) : (
+            <div>
+              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                Course
+              </label>
+              <select
+                name="course"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.course}
+                onChange={(e) => {
+                  const selectedCourse = courses.find((c) => c.uuid === e.target.value);
+                  formik.handleChange(e);
+                  setCourseUUID(selectedCourse?.uuid || '');
+                  setCourseObjectId(selectedCourse?._id || '');
+                }}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">Select Course</option>
+                {courses.map((course: any) => (
+                  <option key={course?.uuid} value={course?.uuid}>
+                    {course?.course_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-          {/* Branch */}
+          {/* Additional fields only shown when creating */}
           {!isEditing && (
             <>
               <div>
@@ -194,7 +214,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
 
-              {/* Batch */}
               <div>
                 <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                   Batch
@@ -215,7 +234,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
 
-              {/* Student */}
               <div>
                 <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                   Student
