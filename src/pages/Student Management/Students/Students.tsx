@@ -607,7 +607,7 @@ const Students = () => {
 			)}
 
 			<div className='grid grid-cols-3 justify-around overflow-x-auto gap-5 pb-4'>
-				{formattedStudents.map((student, index) => (
+				{formattedStudents?.map((student: any, index: any) => (
 					<Card
 						key={index}
 						className='min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow'
@@ -625,15 +625,15 @@ const Students = () => {
 							</div>
 
 							<h5 className='text-[20px] font-semibold text-center'>
-								{student.name}
+								{student?.name}
 							</h5>
 							<p className='text-[16px] text-gray-500 text-center'>
-								{student.email}
+								{student?.email}
 							</p>
 
 							<div className='flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]'>
 								<img className='w-5 h-5' src={location} alt='Location' />
-								<span>{student.location}</span>
+								<span>{student?.location}</span>
 							</div>
 						</CardContent>
 
