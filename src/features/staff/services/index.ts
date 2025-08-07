@@ -44,3 +44,8 @@ export const getBranchData = async (data: any) => {
 	const response = await Client.staff.getWithBranch(data)
 	if (response) return response;
 }
+
+export const updateStatus = async (params: any) => {
+	const response = await Client.staff.updatestatus(params);
+	if (response) return response;
+};

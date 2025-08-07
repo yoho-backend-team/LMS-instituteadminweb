@@ -13,7 +13,7 @@ import { selectStaff } from '../../../features/staff/reducers/selector';
 import { getStaffDetailsData } from '../../../features/staff/reducers/thunks';
 import type { AppDispatch } from 'recharts/types/state/store';
 import { GetImageUrl } from '../../../utils/helper';
-import { createStaff, uploadFile } from '../../../features/staff/services';
+import { createStaff, updateStatus, uploadFile } from '../../../features/staff/services';
 import { toast } from 'react-toastify';
 
 const theme = {
@@ -224,13 +224,22 @@ const TeachingStaffs: React.FC = () => {
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setStaff(staff.map(member => 
-      member.id === id 
-        ? { ...member, status: member.status === 'Active' ? 'Inactive' : 'Active' }
-        : member
-    ));
-  };
+  const toggleStatus = async (uuid: string, newStatus: 'Active' | 'Inactive') => {
+  try {
+    const isActive = newStatus === 'Active';
+
+    await updateStatus({
+      is_active: isActive,
+      staff: uuid,
+    });
+
+    toast.success(`Status updated to ${newStatus}`);
+    fetchClassData(); // Re-fetch to reflect updated status
+  } catch (error) {
+    console.error("Status update failed:", error);
+    toast.error('Failed to update staff status.');
+  }
+};
 
   const getStatusButtonStyle = (status: 'Active' | 'Inactive') => {
     if (status === 'Active') {
@@ -538,10 +547,12 @@ const TeachingStaffs: React.FC = () => {
                     <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
                     <Select 
                       value={member?.is_active ? 'Active' : 'Inactive'}
-                      onValueChange={(value: 'Active' | 'Inactive') => toggleStatus(member.id)}
+                      onValueChange={(value: 'Active' | 'Inactive') => {
+                        toggleStatus(member.uuid, value);
+                      }}
                     >
-                      <SelectTrigger className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(member.status)}`}>
-                        <SelectValue placeholder={member?.is_active} />
+                      <SelectTrigger className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(member.is_active ? 'Active' : 'Inactive')}`}>
+                        <SelectValue placeholder={member?.is_active ? 'Active' : 'Inactive'} />
                       </SelectTrigger>
                       <SelectContent className="bg-[#1BBFCA]">
                         <SelectItem value="Active" className="focus:bg-white cursor-pointer">Active</SelectItem>
