@@ -7,8 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Plus, MoreVertical, X, Upload, Trash2, SlidersHorizontal, ChevronDown, FileEdit } from "lucide-react"
 import { useState, useRef } from "react"
-import  Image  from "../../../assets/web.png"
-import  web  from "../../../assets/mern.png"
+import Image from "../../../assets/web.png"
+import web from "../../../assets/mern.png"
 
 
 
@@ -115,7 +115,7 @@ export default function Component() {
   }
 
   // Add new category
-   const handleAddCategory = () => {
+  const handleAddCategory = () => {
     if (newCategoryName.trim()) {
       const newCategory: Category = {
         id: `category-${Date.now()}`,
@@ -144,10 +144,10 @@ export default function Component() {
         prev.map((cat) =>
           cat.id === editingCategory.id
             ? {
-                ...cat,
-                name: editCategoryName.trim(),
-                image: editCategoryImage,
-              }
+              ...cat,
+              name: editCategoryName.trim(),
+              image: editCategoryImage,
+            }
             : cat,
         ),
       )
@@ -244,7 +244,7 @@ export default function Component() {
                 alt={`Background`}
                 className="w-full h-full object-cover opacity-80 rounded-lg"
               />
-              
+
             </div>
             <div className="p-4 ">
               <div className="flex items-center justify-between mb-3">
@@ -309,9 +309,8 @@ export default function Component() {
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowAddDrawer(false)} />
           {/* Drawer */}
           <div
-            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-              showAddDrawer ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${showAddDrawer ? "translate-x-0" : "translate-x-full"
+              }`}
           >
             <div className="p-6 h-full flex flex-col">
               {/* Drawer Header */}
@@ -391,9 +390,8 @@ export default function Component() {
           <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowEditDrawer(false)} />
           {/* Drawer */}
           <div
-            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-              showEditDrawer ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${showEditDrawer ? "translate-x-0" : "translate-x-full"
+              }`}
           >
             <div className="p-6 h-full flex flex-col">
               {/* Drawer Header */}

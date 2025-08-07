@@ -35,6 +35,7 @@ import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
 import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
 import community from "../features/Community/Reducers/CommunitySlice";
 import refundReducer from "../features/Refund_management/Reducer/refundSlice"
+import CategoriesSlice from '../features/Course mangement/categories/reducers/slice'
 
 
 const store = configureStore({
@@ -75,6 +76,8 @@ const store = configureStore({
 		StaffTicket: StaffTicket,
 		Studentfees: Studentfees,
 		community: community,
+		categoriesSlice: CategoriesSlice
+
 
 	},
 })
