@@ -1,4 +1,3 @@
-// CourseCard.tsx
 import React, { useState } from "react";
 import card1 from "../../assets/navbar/card1.png";
 import arr from "../../assets/navbar/arrow.png";
@@ -11,7 +10,6 @@ interface CourseCardProps {
   image: string;
   onView: () => void;
 }
-
 const CourseCard: React.FC<CourseCardProps> = ({
   title,
   category,
@@ -30,7 +28,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
-
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
           {category}
@@ -41,7 +38,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
       </div>
 
       <img
-        src={card1}
+        src={image || card1}
         alt={title}
         className="rounded-md w-full h-30 object-cover"
       />
@@ -61,19 +58,17 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className={`px-3 py-1 rounded-md inline-block flex items-center gap-1 ${
+            className={`px-3 py-1 rounded-md inline-block items-center gap-1 ${
               status === "Active"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-black border border-gray-300"
             }`}
           >
-            <span className="align-middle">{status}</span>
+            {status}
             <img
               src={arr}
               alt="arrow"
-              className={`w-3 h-3 ${
-                status === "Inactive" ? "filter invert" : ""
-              }`}
+              className={`w-3 h-3 ${status === "Inactive" ? "filter invert" : ""}`}
             />
           </button>
 

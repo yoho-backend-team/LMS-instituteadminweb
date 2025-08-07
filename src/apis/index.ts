@@ -142,8 +142,11 @@ class Client {
       HttpClient.delete(HTTP_END_POINTS.notes.index + "/" + data.id),
   };
   course = {
-    get:(data:any)=>{
-       HttpClient.get(HTTP_END_POINTS.course.get,data)
+    get:async(data:any)=>{
+       return await HttpClient.get(HTTP_END_POINTS.course.get,data)
+    },
+    getAllcourse:( courseId: any)=>{
+      HttpClient.get(HTTP_END_POINTS.course.getall.replace(':courseId',courseId))
     },
     create: (data: any, options: any) => {
       return HttpClient.post(

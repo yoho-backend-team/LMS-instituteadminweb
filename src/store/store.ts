@@ -30,13 +30,14 @@ import PlacementReducer from '../features/placementManagement/Reducer/slice'
 import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
 import refundReducer from "../features/Refund_management/Reducer/refundSlice"
-
+import CoursesReducer from "../features/Courses_mangement/Reducers/CourseSlice"
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
 		 refund: refundReducer,
+		Courses: CoursesReducer,
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,
