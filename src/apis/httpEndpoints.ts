@@ -185,7 +185,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,
 		},
 		community: {
-			all: `/api/institutes/community/${instituteId}/branches/`,
+			all: `/api/institutes/community/${instituteId}/branches/${branchId}`,
 			messages: `/api/institutes/community/messages/`,
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},
