@@ -229,6 +229,7 @@ console.log(certificateData,'certificate management...................')
         editingCertificate={editingCertificate}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+        fetchgetStudentCertificate={fetchgetStudentCertificate}
       />
     </div>
   )
