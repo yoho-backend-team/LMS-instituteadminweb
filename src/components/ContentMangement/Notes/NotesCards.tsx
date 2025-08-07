@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosEye } from "react-icons/io";
 import { IoDocument } from "react-icons/io5";
@@ -15,10 +15,12 @@ const NoteCard = ({
   onEdit,
   onDelete,
   onView,
+  id,
+  toggleStatusMap,
+  onToggleStatus
 }: {
   title: string;
-  course: {course_name: string;
-  [key: string]: any;};
+  course: { course_name: string; [key: string]: any };
   isActive: boolean;
   index: number;
   openIndex: number | null;
@@ -26,8 +28,10 @@ const NoteCard = ({
   onEdit: () => void;
   onDelete: () => void;
   onView: () => void;
+  id: string;
+  toggleStatusMap: { [key: string]: boolean };
+  onToggleStatus: (id: string, currentStatus: boolean) => void;
 }) => {
-  const [active, setActive] = useState(isActive);
   const optionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +52,9 @@ const NoteCard = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openIndex, index, setOpenIndex]);
+
+  const currentActive =
+    toggleStatusMap[id] !== undefined ? toggleStatusMap[id] : isActive;
 
   return (
     <div className="relative border p-4 rounded-xl bg-white shadow-lg flex flex-col gap-3">
@@ -99,7 +106,7 @@ const NoteCard = ({
         </div>
         <div className="flex items-center gap-2">
           <MdCastForEducation />
-        <p>{course.course_name}</p>
+          <p>{course.course_name}</p>
         </div>
       </div>
 
@@ -107,15 +114,15 @@ const NoteCard = ({
         <div className="flex items-center gap-2">
           <p
             className={`text-sm font-medium ${
-              active ? "text-[#3ABE65]" : "text-red-500"
+              currentActive ? "text-[#3ABE65]" : "text-red-500"
             }`}
           >
-            {active ? "Active" : "Inactive"}
+            {currentActive ? "Active" : "Inactive"}
           </p>
 
           <span
             className={`w-3 h-3 rounded-full ${
-              active ? "bg-[#3ABE65] " : "bg-red-500"
+              currentActive ? "bg-[#3ABE65]" : "bg-red-500"
             }`}
           />
         </div>
@@ -124,8 +131,8 @@ const NoteCard = ({
           <input
             type="checkbox"
             className="sr-only peer"
-            checked={active}
-            onChange={() => setActive(!active)}
+            checked={currentActive}
+            onChange={() => onToggleStatus(id, currentActive)}
           />
           <div className="w-full h-full bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors duration-300" />
           <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-2.5" />

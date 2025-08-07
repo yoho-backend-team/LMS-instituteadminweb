@@ -109,7 +109,13 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
                     </button>
                     <button
                       className="text-red-400"
-                      onClick={() => onDelete(item.refundId)}
+                      onClick={() => {
+                        if (item.uuid) {
+                          onDelete(item.uuid);
+                        } else {
+                          console.warn("Cannot delete: Missing uuid");
+                        }
+                      }}
                     >
                       <FaTrashAlt size={18} />
                     </button>

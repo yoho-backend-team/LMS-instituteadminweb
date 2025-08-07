@@ -62,6 +62,7 @@ import UsersDetails from '../features/Users_Management/Users/components/UsersDet
 import HistoryPage from '../components/subscription/HistoryPage';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
+import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
@@ -84,6 +85,7 @@ const AppRoutes = () => {
 				{/* Profile Management */}
 
 				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
+				<Route path='StaffTicketDetail' element={<StaffTicketDetail />} />
 
 				<Route path='noti/msg' element={<NotificationPage />} />
 
