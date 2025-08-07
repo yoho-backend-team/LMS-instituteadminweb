@@ -49,8 +49,8 @@ const MainPage: React.FC = () => {
           </Avatar>
           <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}}>{staffMember?.full_name}</h3>
         </div>
-        <Button className={`${staffMember?.is_active === 'true' ? 'bg-[#3ABE65]' : 'bg-destructive'} text-white`}>
-          {staffMember?.is_active}
+        <Button className={`${staffMember?.is_active ? 'bg-[#3ABE65] text-white' : 'bg-[#716F6F]/10 text-[#716F6F] border border-[#716F6F]'} `}>
+          {staffMember?.is_active ? "Active" : "Inactive"}
         </Button>
       </Card>
 

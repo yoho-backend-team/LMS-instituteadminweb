@@ -570,7 +570,7 @@ export function LocationCardsGrid() {
         {!isLoad && filteredLocations.length > 0 ? (
           filteredLocations.map((location, index) => {
             const originalIndex = location.findIndex(
-              loc => loc.cityName === location.cityName
+      loc => loc.cityName === location.cityName
             );
 
             return (

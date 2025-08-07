@@ -17,16 +17,18 @@ import {
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
 import { GetImageUrl } from "../../utils/helper";
-import { X } from "lucide-react";
+import { X } from 'lucide-react';
 import {
   deletePlacement,
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
+import JobDetailsShow from "./ViewPlacementDetails";
+import { IoMdEye } from "react-icons/io";
 
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
-
+  const [viewingPlacement, setViewingPlacement] = useState<any | null>(null);
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
@@ -55,6 +57,28 @@ const Placements = () => {
     education: placement?.eligible?.education?.join(", ") || "",
   });
 
+  // Transform placement data for the view component
+  const transformPlacementForView = (placement: any) => ({
+    companyName: placement?.company?.name || "",
+    companyAddress: placement?.company?.address || "",
+    contactEmail: placement?.company?.email || "",
+    contactNumber: placement?.company?.phone || "",
+    companyLogo: placement?.company?.logo || null,
+    
+    jobName: placement?.job?.name || "",
+    jobDescription: placement?.job?.description || "",
+    requiredSkills: placement?.job?.skils || [],
+    
+    selectedStudents: placement?.student?.map((s: any) => s.full_name) || [],
+    
+    interviewDate: placement?.schedule?.interviewDate || "",
+    venue: placement?.schedule?.venue || "",
+    address: placement?.schedule?.address || "",
+    
+    courseName: placement?.eligible?.courseName || "",
+    educationLevel: placement?.eligible?.education?.join(", ") || "",
+  });
+
   const handleAddPlacement = async (data: any) => {
     const payload = {
       company: {
@@ -66,9 +90,9 @@ const Placements = () => {
       job: {
         name: data.jobName,
         description: data.jobDescription,
-        skils: data.skills.split(",").map((s:any) => s.trim()),
+        skils: data.skills.split(",").map((s: any) => s.trim()),
       },
-      student: data.selectedStudents.map((s:any) => s.value),
+      student: data.selectedStudents.map((s: any) => s.value),
       schedule: {
         interviewDate: data.interviewDate,
         venue: data.venue,
@@ -76,7 +100,7 @@ const Placements = () => {
       },
       eligible: {
         courseName: data.courseName,
-        education: data.education.split(",").map((e:any) => e.trim()),
+        education: data.education.split(",").map((e: any) => e.trim()),
       },
       institute: instituteId,
     };
@@ -93,7 +117,7 @@ const Placements = () => {
   const handleUpdatePlacement = async (data: any) => {
     const payload = {
       uuid: editingPlacement?.uuid,
-      student: data.selectedStudents.map((s:any) => s.value),
+      student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
     };
 
@@ -131,6 +155,7 @@ const Placements = () => {
         </button>
       </div>
 
+      {/* Form Modal */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-5xl max-h-[90vh] overflow-y-auto relative">
@@ -147,7 +172,6 @@ const Placements = () => {
             >
               <X className="h-4 w-4" />
             </Button>
-
             <PlacementForm
               mode={editingPlacement ? "edit" : "add"}
               onClose={() => {
@@ -160,6 +184,27 @@ const Placements = () => {
               initialData={
                 editingPlacement ? transformPlacementToFormData(editingPlacement) : undefined
               }
+            />
+          </div>
+        </div>
+      )}
+
+      {/* View Modal - Separate from Form Modal */}
+      {viewingPlacement && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[95%] max-w-6xl max-h-[95vh] overflow-y-auto relative">
+            <Button
+              type="button"
+              onClick={() => setViewingPlacement(null)}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 absolute top-4 right-4 text-gray-600 hover:text-gray-900 z-10"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <JobDetailsShow 
+              data={transformPlacementForView(viewingPlacement)}
             />
           </div>
         </div>
@@ -208,9 +253,19 @@ const Placements = () => {
                   >
                     <FaEllipsisV className="h-4 w-4" />
                   </Button>
-
                   <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
-                    
+                    <Button
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setViewingPlacement(placement);
+                      }}
+                      className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                      aria-label="View"
+                    >
+                      <IoMdEye className="mr-2 h-4 w-4" />
+                      <span>View</span>
+                    </Button>
                     
                     <Button
                       variant="ghost"
@@ -225,7 +280,6 @@ const Placements = () => {
                       <FaEdit className="mr-2 h-4 w-4" />
                       <span>Edit</span>
                     </Button>
-
                     <Button
                       variant="ghost"
                       onClick={(e: any) => {

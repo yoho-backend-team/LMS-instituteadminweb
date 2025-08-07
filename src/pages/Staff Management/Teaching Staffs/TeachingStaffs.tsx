@@ -572,7 +572,7 @@ const TeachingStaffs: React.FC = () => {
               <div className="divide-y">
                 <div className="p-4">
                   <div className="flex items-center gap-3 ">
-                    <Avatar className='!w-[80px] !h-[80px]'>
+                    <Avatar className='w-[80px] h-[80px]'>
                       <AvatarImage src={GetImageUrl(member?.image)} alt={member?.full_name} />
                     </Avatar>
                     <h3 style={{ ...FONTS.heading_02, color: COLORS.gray_dark_02 }} className="text-center ">{member.full_name}</h3>
