@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSelector } from "react-redux";
 import { FONTS } from "../../constants/uiConstants";
 import {
@@ -7,16 +8,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "../../components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 export const Subscriptions = () => {
   const subscriptions = useSelector(
     (state: any) => state.subscription?.insitituteSubscription
   );
 
-  
+  const navigate = useNavigate()
+
+
   return (
-    <div className="bg-white rounded-xl border-2 border-gray-100 shadow-md p-6 mb-8">
+    <div className="bg-white flex flex-col rounded-xl border-2 border-gray-100 shadow-md p-6 mb-8">
       <h1 style={FONTS.heading_04} className="text-center mb-4 text-gray-700">
         Subscription Plans
       </h1>
@@ -26,6 +30,12 @@ export const Subscriptions = () => {
       <p className="text-gray-600 text-center mb-4">
         Choose the best plan to fit your needs
       </p>
+      <div className="flex justify-end">
+        <p
+          onClick={() => navigate('/subscriptions/history')}
+          className="text-[#1BBFCA] mb-4 font-semibold cursor-pointer"
+        >View History</p>
+      </div>
 
       <Table className="border-separate border-spacing-0 w-full">
         <TableHeader className="bg-gray-100">

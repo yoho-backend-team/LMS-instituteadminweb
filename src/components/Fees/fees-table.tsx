@@ -1,7 +1,6 @@
-"use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SlidersHorizontal } from "lucide-react"
 import { FeesFilter } from "../../components/Fees/fees-filter"
 import { FeesTableRow } from "../../components/Fees/fees-table-row"
@@ -10,75 +9,24 @@ import { FeeDetailsDrawer } from "../../components/Fees/fee-details-drawer"
 import { ConfirmationModal } from "../../components/Fees/confirmation-modal"
 import { SuccessModal } from "../../components/Fees/success-modal"
 import type { Fee } from "../../components/Fees/types"
-
-const feesData: Fee[] = [
-  {
-    id: "#28",
-    transactionId: "N/A",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$0",
-    date: "N/A",
-    status: "Active",
-  },
-  {
-    id: "#30",
-    transactionId: "N/A",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$0",
-    date: "N/A",
-    status: "Active",
-  },
-  {
-    id: "#31",
-    transactionId: "198",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$10000",
-    date: "2025-05-07",
-    status: "Active",
-  },
-  {
-    id: "#34",
-    transactionId: "123456",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$5000",
-    date: "2025-05-07",
-    status: "Active",
-  },
-  {
-    id: "#31-2", // Unique ID for React key, display will be #31
-    transactionId: "198",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$10000",
-    date: "2025-05-07",
-    status: "Active",
-  },
-  {
-    id: "#31-3", // Unique ID for React key, display will be #31
-    transactionId: "198",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$10000",
-    date: "2025-05-07",
-    status: "Active",
-  },
-  {
-    id: "#31-4", // Unique ID for React key, display will be #31
-    transactionId: "198",
-    name: "Elon Musk",
-    email: "Musk@Gmail.Com",
-    amount: "$10000",
-    date: "2025-05-07",
-    status: "Active",
-  },
-]
+import { useDispatch } from "react-redux"
+import { GetAllFeesThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks"
 
 export const FeesTable: React.FC = () => {
-  const [currentFeesData, setCurrentFeesData] = useState<Fee[]>(feesData)
+  const dispatch = useDispatch()
+  const [currentFeesData, setCurrentFeesData] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchFeesData = async () => {
+      const result = await dispatch(GetAllFeesThunks({}) as any)
+      console.log(result,"data for fees comming")
+      // if (result && result.payload) {
+        setCurrentFeesData(result)
+      // }
+    }
+    fetchFeesData()
+  }, [])
+
   const [showFilter, setShowFilter] = useState(false)
   const [showEditAddDrawer, setShowEditAddDrawer] = useState(false)
   const [showDetailsDrawer, setShowDetailsDrawer] = useState(false)
@@ -92,15 +40,17 @@ export const FeesTable: React.FC = () => {
   }
 
   const handleUpdateFee = (updatedFee: Fee) => {
-    setCurrentFeesData((prevData) => prevData.map((fee) => (fee.id === updatedFee.id ? updatedFee : fee)))
+    setCurrentFeesData((prevData) =>
+      prevData.map((fee) => (fee.id === updatedFee.id ? updatedFee : fee))
+    )
   }
 
   const handleEdit = (fee: Fee) => {
     setSelectedFee(fee)
-    setShowEditAddDrawer(true) // Directly open the edit drawer
-    setShowDetailsDrawer(false) // Ensure other drawers are closed
-    setShowConfirmationModal(false) // Ensure confirmation modal is closed
-    setShowSuccessModal(false) // Ensure success modal is closed
+    setShowEditAddDrawer(true)
+    setShowDetailsDrawer(false)
+    setShowConfirmationModal(false)
+    setShowSuccessModal(false)
   }
 
   const handleView = (fee: Fee) => {
@@ -119,8 +69,7 @@ export const FeesTable: React.FC = () => {
 
   const handleDownload = (fee: Fee) => {
     setSelectedFee(fee)
-    console.log("Downloading fee:", fee) // Directly perform download action
-    // No confirmation modal or success modal for download
+    console.log("Downloading fee:", fee)
   }
 
   const handleConfirm = () => {
@@ -130,11 +79,13 @@ export const FeesTable: React.FC = () => {
     switch (actionToPerform) {
       case "delete":
         console.log("Deleting fee:", selectedFee)
-        setCurrentFeesData((prevData) => prevData.filter((feeItem) => feeItem.id !== selectedFee.id))
+        setCurrentFeesData((prevData) =>
+          prevData.filter((feeItem) => feeItem.id !== selectedFee.id)
+        )
         setShowSuccessModal(true)
         break
-      // The 'download' case is removed as it's handled directly in handleDownload
     }
+
     setActionToPerform(null)
   }
 
@@ -222,7 +173,7 @@ export const FeesTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentFeesData.map((fee) => (
+              {currentFeesData.map((fee: any) => (
                 <FeesTableRow
                   key={fee.id}
                   fee={fee}
@@ -236,15 +187,20 @@ export const FeesTable: React.FC = () => {
           </table>
         </div>
       </div>
+
       <FeeDrawer
         isOpen={showEditAddDrawer}
         onClose={() => setShowEditAddDrawer(false)}
         selectedFee={selectedFee}
         onSuccess={() => setShowSuccessModal(true)}
         onAddFee={handleAddFee}
-        onUpdateFee={handleUpdateFee} // Pass the new update handler
+        onUpdateFee={handleUpdateFee}
       />
-      <FeeDetailsDrawer isOpen={showDetailsDrawer} onClose={() => setShowDetailsDrawer(false)} fee={selectedFee} />
+      <FeeDetailsDrawer
+        isOpen={showDetailsDrawer}
+        onClose={() => setShowDetailsDrawer(false)}
+        fee={selectedFee}
+      />
       <ConfirmationModal
         isOpen={showConfirmationModal}
         onClose={() => setShowConfirmationModal(false)}
@@ -253,7 +209,11 @@ export const FeesTable: React.FC = () => {
         message={getConfirmationMessage()}
         confirmButtonText={getConfirmButtonText()}
       />
-      <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} title="Success!" />
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Success!"
+      />
     </>
   )
 }
