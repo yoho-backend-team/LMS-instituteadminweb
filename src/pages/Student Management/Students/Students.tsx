@@ -609,7 +609,7 @@ const Students = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-3 justify-around overflow-x-auto gap-5 pb-4">
+      <div className="grid grid-cols-3 justify-around gap-5 pb-4">
         {formattedStudents.map((student, index) => (
           <Card
             key={index}

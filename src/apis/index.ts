@@ -335,6 +335,7 @@ class Client {
 		delete: (data: any) =>
 			HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
 		get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
+		getLiveClass: (query:any) => HttpClient.get(HTTP_END_POINTS.student.liveClasses,  query),
 		getWithId: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
 		getall: (params: any) =>

@@ -11,11 +11,12 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getcoursesdata } from "../../features/StudentManagement/reducer/thunks"
+import { getcoursesdata, getLiveClassDataSet, getStudentActivityData } from "../../features/StudentManagement/reducer/thunks"
 import { selectCoursedata } from "../../features/StudentManagement/reducer/selector"
 import { deletestudentdata, updatestudentdata } from "../../features/StudentManagement/services/Student"
 import { GetImageUrl } from "../../utils/helper"
 import toast from "react-hot-toast"
+import { getInstituteDetails, getSelectedBranchId } from "../../apis/httpEndpoints"
 
 export const Profile = () => {
   const navigate = useNavigate()
@@ -28,6 +29,38 @@ export const Profile = () => {
 
   // Get student data from navigation state
   const studentDataFromLocation = location.state?.studentData || {}
+
+  const instituteId = getInstituteDetails();
+    const branchId = getSelectedBranchId();
+
+
+  const fetchLiveData = async() => {
+    try {
+       await dispatch(getLiveClassDataSet({
+        type: "live",
+        branch: branchId,
+        course_name: studData?.data?._id,
+        insitute: instituteId,
+        uuid: studData?.data?.uuid,
+       }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const fetchActivityData = async() => {
+    try {
+       await dispatch(getStudentActivityData({
+        id: studData?.data?.uuid,
+       }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLiveData();
+    fetchActivityData();
+  },[])
 
   const fetchData = async () => {
     try {
