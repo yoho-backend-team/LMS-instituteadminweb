@@ -11,7 +11,7 @@ import {
 	GetAllSalaryThunks,
 	GetBranchThunks,
 } from "../../../features/Payment_Managemant/salary/reducers/thunks";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { GetStaffName_Branch } from "../../../features/Payment_Managemant/salary/services/index";
 
 const StaffSalaries = () => {
@@ -34,7 +34,7 @@ const StaffSalaries = () => {
 		institute_id: "",
 		branch_id: "",
 		staff_type: "",
-		staff: "", // ✅ will now hold staff ID
+		staff: "", 
 		payment_date: "",
 		transaction_id: "",
 		salary_amount: "",
@@ -63,6 +63,7 @@ const StaffSalaries = () => {
 	const fetchStaffNamesByBranch = async (branchId: string) => {
 		try {
 			const res = await GetStaffName_Branch(branchId);
+			console.log("getting staffname11111",res)
 			if (Array.isArray(res)) {
 				setStaffList(res);
 			} else {
@@ -101,7 +102,7 @@ const StaffSalaries = () => {
 			institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
 			branch_id: newSalary.branch_id,
 			staff_type: newSalary.staff_type,
-			staff: newSalary.staff, // ✅ Send staff ID
+			staff: newSalary.staff,
 			payment_date: newSalary.payment_date,
 			transaction_id: newSalary.transaction_id,
 			salary_amount: parseFloat(newSalary.salary_amount),
@@ -159,7 +160,7 @@ const StaffSalaries = () => {
 						<p className="font-semibold text-2xl">Add Salary</p>
 
 						<form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmitAndClose}>
-							{/* Branch */}
+							
 							<div className="flex flex-col gap-2">
 								<label>Select Branch</label>
 								<select
@@ -203,7 +204,7 @@ const StaffSalaries = () => {
 							</div>
 					
 
-							{/* Staff Name */}
+							
 							<div className="flex flex-col">
 								<label>Select Staff Name</label>
 								<select
@@ -223,7 +224,7 @@ const StaffSalaries = () => {
 							</div>
 
 
-							{/* Payment Date */}
+							
 							<div className="flex flex-col">
 								<label>Payment Date</label>
 								<input
@@ -236,7 +237,7 @@ const StaffSalaries = () => {
 								/>
 							</div>
 
-							{/* Transaction ID */}
+						
 							<div className="flex flex-col">
 								<label>Transaction ID</label>
 								<input
@@ -249,7 +250,7 @@ const StaffSalaries = () => {
 								/>
 							</div>
 
-							{/* Salary Amount */}
+						
 							<div className="flex flex-col">
 								<label>Salary Amount</label>
 								<input
@@ -262,7 +263,7 @@ const StaffSalaries = () => {
 								/>
 							</div>
 
-							{/* Balance */}
+							
 							<div className="flex flex-col">
 								<label>Balance</label>
 								<textarea
@@ -274,7 +275,6 @@ const StaffSalaries = () => {
 								></textarea>
 							</div>
 
-							{/* Buttons */}
 							<div className="flex justify-end items-center gap-4 mt-4">
 								<button
 									className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"

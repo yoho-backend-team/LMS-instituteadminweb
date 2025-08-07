@@ -31,7 +31,8 @@ import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
 // import authUserReducer from '../features/Profile_Security/reducer/authUserSlice';
 import timelineReducer from '../features/Profile_Security/reducer/timelineSlice';
-
+import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
+import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
 
 const store = configureStore({
 	reducer: {
@@ -67,7 +68,8 @@ const store = configureStore({
 		FaqsSlice: FaqsSlice,
 		faqCategory: faqCategory,
 		timelineReducer: timelineReducer,
-
+		StaffTicket: StaffTicket,
+		Studentfees: Studentfees
 
 	},
 })
