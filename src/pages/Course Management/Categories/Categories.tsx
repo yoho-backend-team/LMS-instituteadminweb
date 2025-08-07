@@ -1,4 +1,4 @@
-import { DashboardCards } from '../Categories/Category';
+import DashboardCards from '../Categories/Category';
 const Categories = () => {
 	return <div>
 		<DashboardCards/>
