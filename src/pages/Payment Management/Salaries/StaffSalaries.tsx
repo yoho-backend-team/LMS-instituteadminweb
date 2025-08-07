@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetStaffName_Branch } from "../../../features/Payment_Managemant/salary/services/index";
 
 const StaffSalaries = () => {
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<any>();
 
 	const [showFilter, setShowFilter] = useState(false);
 	const [showAddsalary, setAddsalary] = useState(false);
@@ -43,14 +43,14 @@ const StaffSalaries = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const result = await dispatch<any>(GetAllSalaryThunks({}));
+			const result = await dispatch(GetAllSalaryThunks({}));
 			if (result?.payload && Array.isArray(result.payload)) {
 				setCardData(result.payload);
 			}
 		};
 
 		const fetchBranches = async () => {
-			const branchRes = await dispatch<any>(GetBranchThunks({}));
+			const branchRes = await dispatch(GetBranchThunks({}));
 			if (branchRes?.payload && Array.isArray(branchRes.payload)) {
 				setBranches(branchRes.payload);
 			}
@@ -108,7 +108,7 @@ const StaffSalaries = () => {
 			balance: newSalary.balance,
 		};
 
-		const result = await dispatch<any>(AddSalaryThunks(payload));
+		const result = await dispatch(AddSalaryThunks(payload));
 
 		if (result?.payload) {
 			setCardData((prev) => [...prev, result.payload]);
@@ -122,6 +122,7 @@ const StaffSalaries = () => {
 	function handleFilterChange(updatedFilters: typeof filters) {
 		setFilters(updatedFilters);
 	}
+	
 
 	return (
 		<div>

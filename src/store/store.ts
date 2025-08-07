@@ -29,11 +29,15 @@ import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSl
 import PlacementReducer from '../features/placementManagement/Reducer/slice'
 import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
+// import authUserReducer from '../features/Profile_Security/reducer/authUserSlice';
+import timelineReducer from '../features/Profile_Security/reducer/timelineSlice';
+
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
+		// authusers: authUserReducer,	
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,
@@ -62,6 +66,9 @@ const store = configureStore({
 		placements: PlacementReducer,
 		FaqsSlice: FaqsSlice,
 		faqCategory: faqCategory,
+		timelineReducer: timelineReducer,
+
+
 	},
 })
 
