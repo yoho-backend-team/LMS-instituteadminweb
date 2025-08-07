@@ -51,6 +51,7 @@ class Client {
             HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
         create: (params: string) =>
             HttpClient.post(HTTP_END_POINTS.branch.create, params),
+        
     };
     file = {
         upload: (data: any) => {

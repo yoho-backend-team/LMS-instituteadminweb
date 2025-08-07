@@ -40,3 +40,39 @@ export const createBranch = createAsyncThunk<
     }
   }
 );
+
+// ✅ Update Branch
+export const updateBranch = createAsyncThunk<
+  Branch,  // Return type
+  { branchId: string; data: any },  // Payload
+  { rejectValue: string }
+>(
+  'branch/updateBranch',
+  async ({ branchId, data }, { rejectWithValue }) => {
+    try {
+const response = await branchService.update(branchId, data);
+      return response.data; // Updated branch
+    } catch (error: any) {
+      console.error("Update Branch API Error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || 'Failed to update branch');
+    }
+  }
+);
+
+// ✅ Delete Branch
+export const deleteBranch = createAsyncThunk<
+  string,  // Return type: branchId (or you can return a success message)
+  string,  // Payload: branchId
+  { rejectValue: string }
+>(
+  'branch/deleteBranch',
+  async (branchId, { rejectWithValue }) => {
+    try {
+      await branchService.delete(`/branches/${branchId}`);
+      return branchId; // Return deleted branchId to remove it from state
+    } catch (error: any) {
+      console.error("Delete Branch API Error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete branch');
+    }
+  }
+);

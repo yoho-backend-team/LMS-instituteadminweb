@@ -60,6 +60,7 @@ const generateEndpoints = () => {
 			// getAll: `/api/institutes/${instituteId}/branches/`,
 			getAll: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/`,
 			create: `/api/institutes/${instituteId}/branches/`,
+			
 		},
 		faq: {
 			create: `/api/institutes/faq`,
