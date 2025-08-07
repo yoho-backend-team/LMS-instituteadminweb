@@ -5,21 +5,19 @@ import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
 import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
-
-// import { store } from './app/store';
-// import { Provider } from 'react-redux';
-
+import store from './store/store'; // ✅ Correct for default export
+import { Provider } from 'react-redux';
 
 function App() {
 	return (
-		<>
-			<BrowserRouter>
-				<AuthProvider>
+		<BrowserRouter>
+			<AuthProvider>
+				<Provider store={store}>
 					<TicketProvider>
 						<StaffTicketProvider>
 							<AppRoutes />
 							<Toaster
-								position='top-right'
+								position="top-right"
 								toastOptions={{
 									duration: 4000,
 									style: {
@@ -44,9 +42,9 @@ function App() {
 							/>
 						</StaffTicketProvider>
 					</TicketProvider>
-				</AuthProvider>
-			</BrowserRouter>
-		</>
+				</Provider>
+			</AuthProvider>
+		</BrowserRouter>
 	);
 }
 

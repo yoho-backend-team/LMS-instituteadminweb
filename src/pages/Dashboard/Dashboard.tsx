@@ -34,13 +34,13 @@ export default function Component() {
 	const ActivityData = useSelector(selectActivityData)
 	const BranchData = useSelector(selectBranches)
 
-	const BranchOptions = BranchData.map((branch: any) => {
+	const BranchOptions = BranchData?.map((branch: any) => {
 		return branch?.branch_identity
 	})
 
 	console.log(BranchData, "branch")
 	const branchList = BranchOptions;
-	const [selectedBranch, setSelectedBranch] = useState(BranchData[0]?.branch_identity);
+	const [selectedBranch, setSelectedBranch] = useState(BranchData?.[0]?.branch_identity);
 	console.log(selectedBranch, "selected branch")
 
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
@@ -70,10 +70,10 @@ export default function Component() {
 
 
 	useEffect(() => {
-		const paramsData = { branch: BranchData[0]?.uuid }
+		const paramsData = { branch: BranchData?.[0]?.uuid }
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [dispatch, selectedBranch]);
+	}, [BranchData, dispatch, selectedBranch]);
 
 
 
@@ -97,7 +97,7 @@ export default function Component() {
 								color: '#716F6F',
 							}}
 						>
-							<span>{BranchData[0]?.branch_identity}</span>
+							<span>{BranchData?.[0]?.branch_identity}</span>
 							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
 						</button>
 
