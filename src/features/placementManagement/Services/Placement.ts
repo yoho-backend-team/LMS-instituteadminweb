@@ -49,3 +49,12 @@ export const deletePlacement = async (params: any) => {
     throw new Error(error.message);
   }
 };
+
+export const updatePlacement = async (params: any) => {
+  try {
+    const response = await Client.placements.update(params)
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
