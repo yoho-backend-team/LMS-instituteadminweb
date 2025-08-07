@@ -8,9 +8,11 @@ import { useDispatch, useSelector } from "react-redux"
 import { getStudentCertificate } from "../../features/certificateManagement/reducers/thunks"
 import { selectCertificate } from "../../features/certificateManagement/reducers/selectors"
 import { GetImageUrl } from "../../utils/helper"
+import { deleteCertificate } from "../../features/certificateManagement/services"
 
 export interface Certificate {
   id: number
+  uuid:string
   title: string
   description: string
   branch: string
@@ -23,6 +25,7 @@ export interface Certificate {
 const initialCertificates: Certificate[] = [
   {
     id: 1,
+    uuid:'',
     title: "MERN STACK 2025",
     description: "The MERN Stack is a collection of Technologies for building web application",
     branch: "OMR",
@@ -32,6 +35,7 @@ const initialCertificates: Certificate[] = [
   },
   {
     id: 2,
+    uuid:'',
     title: "Python 2024",
     description: "The Python Full Stack is a collection of Technologies for building web application",
     branch: "Padur",
@@ -41,6 +45,7 @@ const initialCertificates: Certificate[] = [
   },
    {
     id: 3,
+    uuid:'',
     title: "MEAN STACK 2025",
     description: "The MERN Stack is a collection of Technologies for building web application",
     branch: "OMR",
@@ -105,9 +110,24 @@ console.log(certificateData,'certificate management...................')
     await downloadCertificate(cert)
   }
 
-  const handleDelete = (id: number) => {
-    setCertificates(prev => prev.filter(c => c.id !== id))
-  }
+  const handleDelete = async (certificateid:any) => {
+    try {
+      console.log(certificateid,'iddddddddddddddddddd')
+      const data = {
+      certificateid,
+        InstituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",    
+      };
+      const result = await deleteCertificate(data);
+      if (result) {
+        fetchgetStudentCertificate(); 
+      } else {
+        console.error("Failed to delete certificate");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
 
   const handleSave = (formData: Partial<Certificate>) => {
     if (isEditing && editingCertificate) {
@@ -144,6 +164,7 @@ console.log(certificateData,'certificate management...................')
 
       const mapped: Certificate = {
         id: cert.id,
+        uuid: cert.uuid,
         title: cert?.certificate_name,
         description: cert?.description,
         branch: cert?.branch_id,

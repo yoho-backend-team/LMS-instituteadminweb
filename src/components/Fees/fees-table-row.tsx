@@ -7,7 +7,7 @@ import { FeesActionDropdown } from "../../components/Fees/fees-action-dropdown"
 import type { Fee } from "../../components/Fees/types"
 
 interface FeesTableRowProps {
-  fee: Fee
+  fee: any
   onView: (fee: Fee) => void
   onEdit: (fee: Fee) => void
   onDelete: (fee: Fee) => void
@@ -18,7 +18,8 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit,
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Close dropdown when clicking outside [^1]
+  console.log(fee,"checking fee data")
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -56,25 +57,25 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onView, onEdit,
 
   return (
     <tr>
-      <td className="px-4 py-3">{fee.id.split("-")[0]}</td> {/* Display original ID without suffix */}
-      <td className="px-4 py-3">{fee.transactionId}</td>
+      <td className="px-4 py-3">{fee.id}</td> 
+      <td className="px-4 py-3">{fee.payment_history?.[0]?.transaction_id}</td>
       <td className="px-4 py-3 flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold text-sm">
-          {fee.name.charAt(0).toUpperCase()}
+          {fee?.name?.charAt(0).toUpperCase()}
         </div>
         <div>
-          <p className="font-semibold text-[#1c1c1c]">{fee.name}</p>
+          <p className="font-semibold text-[#1c1c1c]">{fee.full_name}</p>
           <p className="text-xs text-gray-500">{fee.email}</p>
         </div>
       </td>
-      <td className="px-4 py-3">{fee.amount}</td>
-      <td className="px-4 py-3">{fee.date}</td>
+      <td className="px-4 py-3">{fee.paid_amount}</td>
+      <td className="px-4 py-3">{fee.createdAt}</td>
       <td className="px-4 py-3">
-        <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs">{fee.status}</span>
+        <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs">{fee.is_active?"Active":"InActive"}</span>
       </td>
       <td className="px-4 py-3 text-gray-600 relative">
         <MoreVertical className="text-xl cursor-pointer" onClick={handleActionClick} />
-        {showDropdown && <FeesActionDropdown ref={dropdownRef} onAction={handleDropdownAction} />}
+      {showDropdown && <FeesActionDropdown ref={dropdownRef} onAction={handleDropdownAction} />}
       </td>
     </tr>
   )

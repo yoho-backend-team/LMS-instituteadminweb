@@ -22,7 +22,6 @@ const ViewModal: React.FC<{
 }> = ({ note, isOpen, onClose, titleIcon }) => {
   if (!isOpen) return null;
 
-  // Debugging - check the note object structure
   console.log("Note object in ViewModal:", note);
   console.log("Note file:", note.file);
   console.log("Note file type:", typeof note.file);
@@ -38,10 +37,9 @@ const ViewModal: React.FC<{
       );
     }
 
-    // Create object URL from File object or use string URL
     let fileUrl: string;
     let fileName: string;
-    let fileType: string = '';
+    let fileType: string = "";
 
     if (note.file instanceof File) {
       fileUrl = URL.createObjectURL(note.file);
@@ -57,12 +55,21 @@ const ViewModal: React.FC<{
     // Check if the file is a PDF
     const isPDF = () => {
       if (note.file instanceof File) {
-        const result = note.file.type === 'application/pdf' || note.file.name.toLowerCase().endsWith('.pdf');
-        console.log("PDF check (File):", result, note.file.type, note.file.name);
+        const result =
+          note.file.type === "application/pdf" ||
+          note.file.name.toLowerCase().endsWith(".pdf");
+        console.log(
+          "PDF check (File):",
+          result,
+          note.file.type,
+          note.file.name
+        );
         return result;
       }
       const fileStr = String(note.file);
-      const result = fileStr.toLowerCase().includes('.pdf') || fileStr.toLowerCase().includes('pdf');
+      const result =
+        fileStr.toLowerCase().includes(".pdf") ||
+        fileStr.toLowerCase().includes("pdf");
       console.log("PDF check (String):", result, fileStr);
       return result;
     };
@@ -70,20 +77,29 @@ const ViewModal: React.FC<{
     // Check if it's an image
     const isImage = () => {
       if (note.file instanceof File) {
-        const result = note.file.type.startsWith('image/');
+        const result = note.file.type.startsWith("image/");
         console.log("Image check (File):", result, note.file.type);
         return result;
       }
       const fileStr = String(note.file);
-      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
-      const result = imageExtensions.some(ext => fileStr.toLowerCase().includes(ext));
+      const imageExtensions = [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".bmp",
+        ".webp",
+      ];
+      const result = imageExtensions.some((ext) =>
+        fileStr.toLowerCase().includes(ext)
+      );
       console.log("Image check (String):", result, fileStr);
       return result;
     };
 
     const pdfCheck = isPDF();
     const imageCheck = isImage();
-    
+
     console.log("File type checks:", { isPDF: pdfCheck, isImage: imageCheck });
 
     if (pdfCheck) {
@@ -98,16 +114,18 @@ const ViewModal: React.FC<{
             className="w-full h-full rounded"
             title="PDF Preview"
             style={{
-              border: 'none',
-              minHeight: '400px'
+              border: "none",
+              minHeight: "400px",
             }}
             onLoad={() => console.log("PDF iframe loaded successfully")}
             onError={() => console.log("PDF iframe failed to load")}
           >
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
-              <p className="text-sm font-medium mb-2">Cannot display PDF in this browser</p>
-              <a 
-                href={fileUrl} 
+              <p className="text-sm font-medium mb-2">
+                Cannot display PDF in this browser
+              </p>
+              <a
+                href={fileUrl}
                 download={fileName}
                 className="text-blue-500 hover:text-blue-700 underline"
               >
@@ -123,15 +141,15 @@ const ViewModal: React.FC<{
       console.log("Rendering Image with URL:", fileUrl);
       return (
         <div className="w-full h-60 bg-gray-100 rounded mb-4 flex items-center justify-center border-2 border-gray-300">
-          <img 
-            src={fileUrl} 
-            alt="Preview" 
+          <img
+            src={fileUrl}
+            alt="Preview"
             className="max-w-full max-h-full object-contain rounded"
             onLoad={() => console.log("Image loaded successfully")}
             onError={(e) => {
               console.log("Image failed to load");
               const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
+              target.style.display = "none";
               target.parentElement!.innerHTML = `
                 <div class="text-center text-gray-500">
                   <p class="text-sm font-medium">Cannot load image</p>
@@ -144,32 +162,36 @@ const ViewModal: React.FC<{
       );
     }
 
-    // For other file types or when detection fails, show file info and download link
     console.log("Rendering generic file preview");
     return (
       <div className="w-full h-60 bg-gray-100 rounded mb-4 flex flex-col items-center justify-center text-gray-500 border-2 border-dashed border-gray-300">
         <div className="text-center">
-          <img src="/file-icon.svg" alt="file" className="w-12 h-12 mx-auto mb-2 opacity-50" />
+          <img
+            src="/file-icon.svg"
+            alt="file"
+            className="w-12 h-12 mx-auto mb-2 opacity-50"
+          />
           <p className="text-sm font-medium mb-2">File Preview</p>
           <p className="text-xs mb-3 text-gray-600 break-all">{fileName}</p>
-          <p className="text-xs mb-3 text-gray-400">Type: {fileType || 'Unknown'}</p>
-          
-          {/* Show direct link for debugging */}
+          <p className="text-xs mb-3 text-gray-400">
+            Type: {fileType || "Unknown"}
+          </p>
+
           <div className="mb-3 p-2 bg-gray-50 rounded text-xs break-all">
             URL: {fileUrl}
           </div>
-          
+
           <div className="space-y-2">
-            <a 
-              href={fileUrl} 
+            <a
+              href={fileUrl}
               download={fileName}
               className="inline-block px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
             >
               Download File
             </a>
             <br />
-            <a 
-              href={fileUrl} 
+            <a
+              href={fileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block px-4 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
@@ -186,7 +208,10 @@ const ViewModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 text-[#716F6F] flex items-center justify-center">
       <div className="bg-white grid rounded-2xl p-12 w-full max-w-4xl max-h-[90vh] relative shadow-xl overflow-y-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 text-xl hover:text-black z-10">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-xl hover:text-black z-10"
+        >
           <MdClose />
         </button>
 
@@ -198,9 +223,13 @@ const ViewModal: React.FC<{
             {note.title}
             <span className="text-yellow-400">★</span>
           </h1>
-          <span className={`text-xs px-3 py-1 rounded-full ${
-            note?.is_active ? "bg-green-500 text-white" : "bg-gray-500 text-white"
-          }`}>
+          <span
+            className={`text-xs px-3 py-1 rounded-full ${
+              note?.is_active
+                ? "bg-green-500 text-white"
+                : "bg-gray-500 text-white"
+            }`}
+          >
             {note?.is_active ? "Active" : "Completed"}
           </span>
         </div>
@@ -210,14 +239,13 @@ const ViewModal: React.FC<{
             <p className="font-medium">Title:</p>
             <p>{note.title || "No title available"}</p>
           </div>
-          
+
           {note.description && (
             <div>
               <p className="font-medium">Description:</p>
               <p className="whitespace-pre-wrap">{note.description}</p>
             </div>
           )}
-          
         </div>
       </div>
     </div>
@@ -244,7 +272,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 
   const handleView = () => {
     setIsViewModalOpen(true);
-    onView(note); // Still call the original onView prop if needed
+    onView(note);
   };
 
   const handleCloseModal = () => {
@@ -269,9 +297,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               alt="file"
               className="w-5 h-5"
             />
-            <span className="text-sm">
-              {note.id}
-            </span>
+            <span className="text-sm">{note.id}</span>
           </div>
         )}
 
@@ -303,7 +329,6 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         </div>
       </div>
 
-      {/* View Modal */}
       <ViewModal
         note={note}
         isOpen={isViewModalOpen}

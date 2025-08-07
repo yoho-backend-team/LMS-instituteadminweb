@@ -11,7 +11,12 @@ import { fetchAddQuestionThunk } from "../../features/HelpManagement/AddQuestion
 import { faqCategory } from "../../features/Faq_Category/selector";
 import { fetchHelpCenterThunk } from "../../features/HelpCenter/thunks";
 import { selectFaq } from "../../features/HelpCenter/selector";
-import { createHelpCenter, deleteHelpCenter, updateHelpCenter } from "../../features/HelpCenter/service";
+import {
+  createHelpCenter,
+  deleteHelpCenter,
+  updateHelpCenter,
+} from "../../features/HelpCenter/service";
+import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 
 interface FAQItem {
   id: number;
@@ -50,13 +55,15 @@ const AddQuestion = () => {
     "confirm" | "processing" | "success" | "dialog" | null
   >(null);
 
+  const categories = useSelector(faqCategory);
+
   const [formData, setFormData] = useState({
     category: "",
     videoLink: "",
     status: "",
     description: "",
   });
-  
+
   const dispatch = useDispatch<any>();
   const questions = useSelector(selectFaq);
   console.log("help center question", questions);
@@ -102,16 +109,27 @@ const AddQuestion = () => {
     }
   };
 
+  console.log("category data", categories);
+  useEffect(() => {
+    const params = {
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    };
+
+    dispatch(fetchFaqCategoryThunk(params));
+  }, [dispatch]);
 
   const handleEdit = (item: any) => {
     setIsEditing(true);
-    setEditUuid(item.uuid); 
+    setEditUuid(item.uuid);
     console.log("Edit UUID:", item.uuid);
     setFormData({
       category: item.category,
-      videoLink: item.videolink, 
+      videoLink: item.videolink,
       status: item.question,
-      description: item.answer, 
+      description: item.answer,
     });
     setShowModal(true);
     setDropdownOpenId(null);
@@ -121,12 +139,14 @@ const AddQuestion = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteHelpCenter(id);
-      dispatch(fetchHelpCenterThunk({
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
-        page: 1,
-        perPage: 10,
-      }));
+      dispatch(
+        fetchHelpCenterThunk({
+          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          page: 1,
+          perPage: 10,
+        })
+      );
     } catch (error) {
       console.error("Failed to delete FAQ:", error);
     } finally {
@@ -229,7 +249,7 @@ const AddQuestion = () => {
                         </button>
                         <button
                           className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                          onClick={() => handleDelete(faq.uuid)} 
+                          onClick={() => handleDelete(faq.uuid)}
                         >
                           <MdDelete /> Delete
                         </button>
@@ -247,7 +267,7 @@ const AddQuestion = () => {
       {showModal && (
         <div
           className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
-            modalStage === "success" || modalStage === "dialog"
+            modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
               ? "justify-center"
               : "justify-end"
           } z-50`}
@@ -280,18 +300,28 @@ const AddQuestion = () => {
                 >
                   <div>
                     <label className="block font-semibold mb-1">Category</label>
-                    <input
-                      type="text"
+                    <select
                       required
                       className="w-full border h-18 px-4 py-2 rounded-md"
                       value={formData.category}
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                       }
-                    />
+                    >
+                      <option value="" disabled>
+                        Select a category
+                      </option>
+                      {categories?.map((cat: any) => (
+                        <option key={cat.id} value={cat.name}>
+                          {cat.category_name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
-                    <label className="block font-semibold mb-1">Video Link</label>
+                    <label className="block font-semibold mb-1">
+                      Video Link
+                    </label>
                     <input
                       type="url"
                       required
@@ -352,7 +382,9 @@ const AddQuestion = () => {
               <div className="flex flex-col items-center justify-center p-6">
                 <img src={warning} alt="Warning" className="w-12 h-12 mb-4" />
                 <p className="text-lg font-semibold mb-2">Are you sure?</p>
-                <p className="text-sm text-gray-600 mb-6">You want to update status of this question.</p>
+                <p className="text-sm text-gray-600 mb-6">
+                  You want to update status of this question.
+                </p>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setModalStage("confirm")}
@@ -362,12 +394,11 @@ const AddQuestion = () => {
                   </button>
                   <button
                     onClick={async () => {
-                      if (isEditing && editUuid !== null) { 
+                      if (isEditing && editUuid !== null) {
                         try {
-                          console.log("editUuid value:", editUuid); 
+                          console.log("editUuid value:", editUuid);
                           console.log("editUuid type:", typeof editUuid);
-                          
-                         
+
                           const updateData = {
                             category: formData.category,
                             videolink: formData.videoLink,
@@ -375,32 +406,30 @@ const AddQuestion = () => {
                             answer: formData.description,
                           };
 
-                         
                           const uuidString = String(editUuid);
-                          console.log("UUID string:", uuidString); 
+                          console.log("UUID string:", uuidString);
 
-                          
                           await updateHelpCenter(updateData, editUuid);
 
-                         
-                          dispatch(fetchHelpCenterThunk({
-                            branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-                            instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
-                            page: 1,
-                            perPage: 10,
-                          }));
+                          dispatch(
+                            fetchHelpCenterThunk({
+                              branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+                              instituteid:
+                                "973195c0-66ed-47c2-b098-d8989d3e4529",
+                              page: 1,
+                              perPage: 10,
+                            })
+                          );
 
-                          
                           setModalStage("success");
                           setIsEditing(false);
-                          setEditUuid(null); 
+                          setEditUuid(null);
                           setFormData({
                             category: "",
                             status: "",
                             description: "",
-                            videoLink: ""
+                            videoLink: "",
                           });
-
                         } catch (error) {
                           console.error("Update failed:", error);
                           alert("Update failed. Please try again.");
@@ -420,7 +449,9 @@ const AddQuestion = () => {
               <div className="flex flex-col items-center justify-center p-6">
                 <div className="loader mb-4"></div>
                 <p className="text-lg font-semibold mb-2">Processing...</p>
-                <p className="text-sm text-gray-600">Please wait while we update your request.</p>
+                <p className="text-sm text-gray-600">
+                  Please wait while we update your request.
+                </p>
               </div>
             )}
 
@@ -428,7 +459,9 @@ const AddQuestion = () => {
               <div className="flex flex-col items-center justify-center p-6">
                 <img src={success} alt="Success" className="w-12 h-12 mb-4" />
                 <p className="text-lg font-semibold mb-2">Status Updated</p>
-                <p className="text-sm text-gray-600 mb-6">The status has been successfully updated.</p>
+                <p className="text-sm text-gray-600 mb-6">
+                  The status has been successfully updated.
+                </p>
                 <button
                   onClick={resetForm} // Use resetForm to properly close modal
                   className="bg-[#2AAA94] hover:bg-[#28907f] text-white px-4 py-2 rounded-md"

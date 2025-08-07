@@ -26,7 +26,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
         }
     }
     return (
-        <div className="flex flex-col items-start p-2 gap-3 w-[120px] bg-white rounded-xl absolute -right-3 top-6 shadow-lg z-20">
+        <div className="flex flex-col items-start p-2 gap-3 w-[120px] bg-white rounded-xl  shadow-lg z-20">
             <button
                 onClick={handleView}
                 className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border bg-gray-100 hover:bg-[${COLORS.primary}] transition`}
@@ -67,7 +67,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
                                 Confirm Action
                             </h2>
                             <p className={`text-[${COLORS.gray_light}] text-center`} style={{ ...FONTS.heading_07 }}>
-                                Are you sure you want to change the status?
+                                Are you sure you want to delete the user?
                             </p>
                         </div>
                         <div className='flex gap-5'>
@@ -84,7 +84,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
                                 style={{ ...FONTS.heading_08_bold }}
                                 className='bg-[#1BBFCA] px-4 h-[40px] rounded-[8px] flex items-center gap-2 text-white'
                             >
-                                Yes, Status
+                                Delete
                             </button>
                         </div>
                     </div>

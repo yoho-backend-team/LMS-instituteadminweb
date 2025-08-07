@@ -46,6 +46,10 @@ interface Staff {
   addressLine2?: string;
   phoneNumber?: string;
   altPhoneNumber?: string;
+  bank_name?: string;
+  bank_branch?: string;
+  bank_account_number?: string;
+  bank_IFSC?: string;
 }
 
 const TeachingStaffs: React.FC = () => {
@@ -67,7 +71,7 @@ const TeachingStaffs: React.FC = () => {
       addressLine1: 'Texas: Near The SpaceX Starbase',
       addressLine2: 'Pretoria, Texas',
       phoneNumber: '3804348004',
-      altPhoneNumber: '3903858390'
+      altPhoneNumber: '3903858390',
     }
   ]);
 
@@ -263,8 +267,8 @@ const TeachingStaffs: React.FC = () => {
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
-      <h1 style={{...FONTS.heading_02}}>Teaching Staff</h1>
-      
+      <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
+
       {showAddStaff ? (
         <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
           <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
@@ -309,39 +313,39 @@ const TeachingStaffs: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Full Name
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.name}
-                onChange={(e) => setNewStaff({...newStaff, name: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Email
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.email}
-                onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Date of Birth
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 type="date"
                 value={newStaff.dateOfBirth}
-                onChange={(e) => setNewStaff({...newStaff, dateOfBirth: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, dateOfBirth: e.target.value })}
               />
             </label>
-           
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Gender
               <Select
                 value={newStaff.gender}
-                onValueChange={(value) => setNewStaff({...newStaff, gender: value})}
+                onValueChange={(value) => setNewStaff({ ...newStaff, gender: value })}
               >
                 <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                   <SelectValue placeholder="Select Gender" />
@@ -354,11 +358,11 @@ const TeachingStaffs: React.FC = () => {
               </Select>
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Courses
               <Select
                 value={newStaff.course}
-                onValueChange={(value) => setNewStaff({...newStaff, course: value})}
+                onValueChange={(value) => setNewStaff({ ...newStaff, course: value })}
               >
                 <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                   <SelectValue placeholder="Select Course" />
@@ -370,90 +374,126 @@ const TeachingStaffs: React.FC = () => {
               </Select>
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Designation
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.designation}
-                onChange={(e) => setNewStaff({...newStaff, designation: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, designation: e.target.value })}
               />
             </label>
-            
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Qualification
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.qualification}
-                onChange={(e) => setNewStaff({...newStaff, qualification: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, qualification: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               State
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.state}
-                onChange={(e) => setNewStaff({...newStaff, state: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, state: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               City
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.city}
-                onChange={(e) => setNewStaff({...newStaff, city: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, city: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Pin Code
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.pinCode}
-                onChange={(e) => setNewStaff({...newStaff, pinCode: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, pinCode: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Address Line 1
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.addressLine1}
-                onChange={(e) => setNewStaff({...newStaff, addressLine1: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, addressLine1: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Address Line 2
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.addressLine2}
-                onChange={(e) => setNewStaff({...newStaff, addressLine2: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, addressLine2: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Phone Number
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.phoneNumber}
-                onChange={(e) => setNewStaff({...newStaff, phoneNumber: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, phoneNumber: e.target.value })}
               />
             </label>
 
-            <label style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
               Alt Phone Number
-              <Input 
+              <Input
                 className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
                 value={newStaff.altPhoneNumber}
-                onChange={(e) => setNewStaff({...newStaff, altPhoneNumber: e.target.value})}
+                onChange={(e) => setNewStaff({ ...newStaff, altPhoneNumber: e.target.value })}
+              />
+            </label>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+              Bank Name
+              <Input
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
+                value={newStaff.bank_name}
+                onChange={(e) => setNewStaff({ ...newStaff, bank_name: e.target.value })}
+              />
+            </label>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+              Branch
+              <Input
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
+                value={newStaff.bank_branch}
+                onChange={(e) => setNewStaff({ ...newStaff, bank_branch: e.target.value })}
+              />
+            </label>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+              Bank IFSC
+              <Input
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
+                value={newStaff.bank_IFSC}
+                onChange={(e) => setNewStaff({ ...newStaff, bank_IFSC: e.target.value })}
+              />
+            </label>
+
+            <label style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+              Bank Account Number
+              <Input
+                className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]"
+                value={newStaff.bank_account_number}
+                onChange={(e) => setNewStaff({ ...newStaff, bank_account_number: e.target.value })}
               />
             </label>
           </div>
 
           <div className="flex justify-end gap-4 mt-6">
-            <Button 
+            <Button
               className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA]"
               variant="outline" 
               onClick={() => {
@@ -466,7 +506,7 @@ const TeachingStaffs: React.FC = () => {
             >
               Back
             </Button>
-            <Button 
+            <Button
               className="bg-[#1BBFCA] hover:bg-teal-600 text-white"
               onClick={handleAddStaff}
               disabled={isLoading}
@@ -485,8 +525,8 @@ const TeachingStaffs: React.FC = () => {
               <Filter size={16} />
               Show Filter
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => setShowAddStaff(true)}
               className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
             >
@@ -498,10 +538,10 @@ const TeachingStaffs: React.FC = () => {
           {showFilter && (
             <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
               <div className="space-y-2">
-                <Label style={{color:COLORS.gray_dark_02}} htmlFor="status">Status</Label>
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">Status</Label>
                 <Select>
                   <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
-                    <SelectValue placeholder=" "  />
+                    <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent className='bg-white '>
                     <SelectItem className='hover:bg-[#1BBFCA] cursor-pointer' value="all">All</SelectItem>
@@ -512,7 +552,7 @@ const TeachingStaffs: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label style={{color:COLORS.gray_dark_02}} htmlFor="course">Course</Label>
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">Course</Label>
                 <Select>
                   <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
                     <SelectValue placeholder=" " />
@@ -527,25 +567,25 @@ const TeachingStaffs: React.FC = () => {
             </Card>
           )}
 
-          <Card className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-            <div className="divide-y">
-              {classData.map((member) => (
-                <div key={member?.id} className="p-4">
+          <div className='w-full grid grid-cols-3'>
+            {classData.map((member) => (<Card key={member?.id} className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+              <div className="divide-y">
+                <div className="p-4">
                   <div className="flex items-center gap-3 ">
-                    <Avatar className='!w-[80px] !h-[80px]'> 
+                    <Avatar className='!w-[80px] !h-[80px]'>
                       <AvatarImage src={GetImageUrl(member?.image)} alt={member?.full_name} />
                     </Avatar>
-                    <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}} className="text-center ">{member.full_name}</h3>
+                    <h3 style={{ ...FONTS.heading_02, color: COLORS.gray_dark_02 }} className="text-center ">{member.full_name}</h3>
                   </div>
 
                   <div className="flex items-center gap-2 mb-3 text-muted-foreground">
                     <Mail size={16} />
-                    <span style={{...FONTS.heading_06,color:COLORS.gray_dark_02}}>{member.email}</span>
+                    <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>{member.email}</span>
                   </div>
 
                   <div className="flex items-center justify-between mb-4 bg-white">
-                    <span style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>Status</span>
-                    <Select 
+                    <span style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>Status</span>
+                    <Select
                       value={member?.is_active ? 'Active' : 'Inactive'}
                       onValueChange={(value: 'Active' | 'Inactive') => {
                         toggleStatus(member.uuid, value);
@@ -565,16 +605,17 @@ const TeachingStaffs: React.FC = () => {
                     View Profile
                   </Button>
                 </div>
-              ))}
-            </div>
 
-            {staff.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground">
-                <p>No staff members found.</p>
-                <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
               </div>
-            )}
-          </Card>
+
+              {staff.length === 0 && (
+                <div className="p-8 text-center text-muted-foreground">
+                  <p>No staff members found.</p>
+                  <p className="text-sm mt-1">Click "Add New Staff" to get started.</p>
+                </div>
+              )}
+            </Card>))}
+          </div>
         </>
       )}
     </div>

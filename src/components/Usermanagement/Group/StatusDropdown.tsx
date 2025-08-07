@@ -31,10 +31,11 @@ export function StatusDropdown({
 
     try {
       setIsSaving(true);
-     await UpdateStatusCard({
+    await UpdateStatusCard({
   id: itemId,
-  is_active: option === "Active", // Active => true, Inactive => false
+  is_active: option === "Active",
 });
+
 
       console.log("Status updated to", option);
     } catch (e: any) {

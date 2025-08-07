@@ -8,6 +8,7 @@ import { GetImageUrl } from '../../utils/helper'
 
 export interface Certificate {
   id: number
+  uuid: string;
   title: string
   description: string
   branch: string
@@ -22,7 +23,7 @@ interface CertificateTableProps {
   setOpenDropdownId: (id: number | null) => void
   onEdit: (cert: Certificate) => void
   onView: (cert: Certificate) => void
-  onDelete: (id: number) => void
+  onDelete: (uuid: number) => void
   onDownload: (cert: Certificate) => void
 }
 
@@ -91,7 +92,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
                       <button
                         className="w-full flex text-left px-4 py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white"
                         onClick={() => {
-                          onDelete(cert.id)
+                          onDelete(cert.uuid)
                           setOpenDropdownId(null)
                         }}
                       >

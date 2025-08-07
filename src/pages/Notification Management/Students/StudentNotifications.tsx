@@ -34,7 +34,7 @@ import {
   getSelectedBranchId,
 } from "../../../apis/httpEndpoints"
 import { selectCoursedata, selectStudentNotification } from "../../../features/StudentNotification/reducer/selector"
-import { createstudentnotificationdata } from "../../../features/StudentNotification/services/Notification"
+import { createstudentnotificationdata, resendstudentnotificationdata } from "../../../features/StudentNotification/services/Notification"
 import { getBranchService } from "../../../features/batchManagement/services"
 
 interface StudentNotificationData {
@@ -49,6 +49,7 @@ interface StudentNotificationData {
     email: string
     image: string
   }
+  uuid: any
 }
 
 interface ApiResponse {
@@ -166,6 +167,7 @@ const StudentNotifications = () => {
           },
           course: item.title,
           description: item.body,
+          uuid: item.uuid,
         }),
       )
       setNotificationsList(mappedNotifications)
@@ -178,7 +180,7 @@ const StudentNotifications = () => {
       branch: branchId,
       course: selectedCourse,
       batch: "688deb796f788de6b9237c44",
-      student: ["67f3b8feb8d2634300cc8819"], 
+      student: ["67f3b8feb8d2634300cc8810"], 
       type: notificationType,
       title,
       body,
@@ -195,7 +197,20 @@ const StudentNotifications = () => {
     }
 
   }
+  const handleResend = async(uuid: any)=>{
+    try{
+      await resendstudentnotificationdata({
+        id:uuid,
+        notification_id:uuid
+      })
+    }
+    catch (error){
+      console.log(error)
+      
 
+    }
+
+  }
   const [branches,setBranches] = useState<any[]>([]);
 
    const fetchAllBranches = async () => {
@@ -434,7 +449,9 @@ const StudentNotifications = () => {
                 </div>
                 {/* Resend Button - Bottom Left */}
                 <div className="mt-auto flex justify-end">
-                  <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                  <Button
+                  onClick={()=>handleResend(notification.uuid)}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white">
                     Resend
                   </Button>
                 </div>

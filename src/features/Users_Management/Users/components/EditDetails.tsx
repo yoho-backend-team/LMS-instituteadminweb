@@ -108,7 +108,7 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
                 
                 <div className='p-9 grid justify-center'>
                     <img 
-                        src={userDetail?.image ? GetImageUrl(userDetail.image) : ''} 
+                        src={GetImageUrl(userDetail?.image) ?? ""} 
                         className={`w-[100px] h-[100px] border rounded-full mx-auto`} 
                         alt='Preview'
                     />

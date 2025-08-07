@@ -1,96 +1,104 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import HttpClient from './httpClient';
-import { HTTP_END_POINTS } from './httpEndpoints';
-import { data } from 'react-router-dom';
-import httpClient from './httpClient';
+import HttpClient from "./httpClient";
+import { HTTP_END_POINTS } from "./httpEndpoints";
 
 class Client {
-    admin = {
-        me: () => HttpClient.get(HTTP_END_POINTS.admin.me),
-        change_password: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.admin.change_password, data),
-        forget_password: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.admin.forget_password, data),
-        verfiy_otp: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.admin.verfiy_otp, data),
-        reset_password: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.admin.reset_password, data),
-        login: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.login, data),
-        logout: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.logout, data),
-    };
-    permission = {
-        getAll: () => HttpClient.get(HTTP_END_POINTS.permission.getAll),
-        update: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.permission.update, data),
-    };
-    group = {
-        create: (data: any) => HttpClient.post(HTTP_END_POINTS.group.create, data),
-        getAll: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id, data),
-        permissionWithRole: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.group.permissions, data),
-        permissionWithRoleEdit: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.group.permissions,
-                data),
-        updateStatus: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.group.update_status, data),
-        delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.group.delete + data?.id),
-    };
-    user = {
-        add: (data: any) => HttpClient.post(HTTP_END_POINTS.user.add, data),
-        getAll: (data: any) => HttpClient.get(HTTP_END_POINTS.user.all, data),
-        getWithId: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.user.getWihtId + data.id),
-        getWithRoleName: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.user.getWithRoleName, data),
-        update: (data: any) =>
-            HttpClient.update(HTTP_END_POINTS.user.update + data?.userId, data),
-        delete: (data: any) =>
-            HttpClient.delete(HTTP_END_POINTS.user.delete + data?.userId),
-    };
-    branch = {
-        getAll: (params: string) =>
-            HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
-        create: (params: string) =>
-            HttpClient.post(HTTP_END_POINTS.branch.create, params),
-    };
-    file = {
-        upload: (data: any) => {
-            return HttpClient.uploadFile(HTTP_END_POINTS.file.upload, data);
-        },
-    };
-    faq = {
-        create: (data: any) => HttpClient.post(HTTP_END_POINTS.faq.create, data),
-        getAll: (params: string) =>
-            HttpClient.get(HTTP_END_POINTS.faq.getAll, params),
-        delete: (data: any) =>
-            HttpClient.delete(
-                HTTP_END_POINTS.faq.delete.replace(':uuid', data.uuid),
-                data
-            ),
-        update: (uuid: string, data: any) =>
-            HttpClient.update(
-                HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
-                data
-            ),
-    };
-    faq_category = {
-        create: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.faq_category.create, data),
-        getAll: (params: string) =>
-            HttpClient.get(HTTP_END_POINTS.faq_category.getAll, params),
-        delete: (data: any) =>
-            HttpClient.delete(
-                HTTP_END_POINTS.faq_category.delete.replace(':uuid', data.uuid),
-                data
-            ),
-        update: (uuid: string, data: any) =>
-            HttpClient.update(
-                HTTP_END_POINTS.faq_category.update.replace(':uuid', uuid),
-                data
-            ),
-    };
+	admin = {
+		me: () => HttpClient.get(HTTP_END_POINTS.admin.me),
+		change_password: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.admin.change_password, data),
+		forget_password: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.admin.forget_password, data),
+		verfiy_otp: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.admin.verfiy_otp, data),
+		reset_password: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.admin.reset_password, data),
+		login: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.login, data),
+		logout: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.logout, data),
+	};
+	permission = {
+		getAll: () => HttpClient.get(HTTP_END_POINTS.permission.getAll),
+		update: (data: any) =>
+			HttpClient.update(HTTP_END_POINTS.permission.update, data),
+	};
+	group = {
+		create: (data: any) => HttpClient.post(HTTP_END_POINTS.group.create, data),
+		getAll: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.group.getAll + data.institute_id, data),
+		permissionWithRole: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.group.permissions, data),
+		permissionWithRoleEdit: (data: any) =>
+			HttpClient.update(HTTP_END_POINTS.group.permissions,
+				data),
+		updateStatus: (data: any) =>
+			HttpClient.update(HTTP_END_POINTS.group.update_status, data),
+		delete: (data: any) =>
+			HttpClient.delete(HTTP_END_POINTS.group.delete + data?.id),
+	};
+	user = {
+		add: (data: any) => HttpClient.post(HTTP_END_POINTS.user.add, data),
+		getAll: (data: any) => HttpClient.get(HTTP_END_POINTS.user.all, data),
+		getWithId: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.user.getWihtId + data.id),
+		getWithRoleName: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.user.getWithRoleName, data),
+		update: (data: any) =>
+			HttpClient.update(HTTP_END_POINTS.user.update + data?.userId, data),
+		delete: (data: any) =>
+			HttpClient.delete(HTTP_END_POINTS.user.delete + data?.userId),
+	};
+	branch = {
+		getAll: (params: string) =>
+			HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
+		create: (params: string) =>
+			HttpClient.post(HTTP_END_POINTS.branch.create, params),
+		edit: (data: any, params: string) => HttpClient.update(HTTP_END_POINTS.branch.edit.replace(':branchuuid', params), data),
+		delete: (params: string) => HttpClient.delete(HTTP_END_POINTS.branch.delete.replace(':branchuuid', params)),
+		updatestatus: (params: string, data?: any) => HttpClient.update(HTTP_END_POINTS.branch.updatestatus.replace(':branchuuid', params), data),
+		getByid: (params: string) => HttpClient.get(HTTP_END_POINTS.branch.getByBranchId.replace(':branchuuid', params)),
+	};
+	file = {
+		upload: (data: any) => {
+			return HttpClient.uploadFile(HTTP_END_POINTS.file.upload, data);
+		},
+	};
+	faq = {
+		create: (data: any) => HttpClient.post(HTTP_END_POINTS.faq.create, data),
+		getAll: (params: string) =>
+			HttpClient.get(HTTP_END_POINTS.faq.getAll, params),
+		delete: (data: any) =>
+			HttpClient.delete(
+				HTTP_END_POINTS.faq.delete.replace(':uuid', data.uuid),
+				data
+			),
+		update: (uuid: string, data: any) =>
+			HttpClient.update(
+				HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
+				data
+			),
+		statusupdate: (uuid: string, data: any) =>
+			HttpClient.update(
+				HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
+				data
+			),
+
+	};
+	faq_category = {
+		create: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.faq_category.create, data),
+		getAll: (params: string) =>
+			HttpClient.get(HTTP_END_POINTS.faq_category.getAll, params),
+		delete: (data: any) =>
+			HttpClient.delete(
+				HTTP_END_POINTS.faq_category.delete.replace(':uuid', data.uuid),
+				data
+			),
+		update: (uuid: string, data: any) =>
+			HttpClient.update(
+				HTTP_END_POINTS.faq_category.update.replace(':uuid', uuid),
+				data
+			),
+	};
 
     category = {
         get: (data: any) => HttpClient.get(HTTP_END_POINTS.category.getAll, data),
@@ -447,90 +455,95 @@ class Client {
                     query
                 ),
 
-            resend_all_notification: (data: any) =>
-                HttpClient.post(
-                    HTTP_END_POINTS.notification.all_notification_resend, data),
-        },
-    };
-    institute_notification = {
-        get_institute_notification: (data: any, query: any) =>
-            HttpClient.get(
-                HTTP_END_POINTS.institute_notification.get_all +
-                data.institute_id +
-                '/all',
-                query
-            ),
-        update_institute_notification: (data: any, body: any) =>
-            HttpClient.update(
-                HTTP_END_POINTS.institute_notification.update + data.id,
-                body
-            ),
-    };
-    id_cards = {
-        student: {
-            get_all: (data: any) =>
-                HttpClient.get(HTTP_END_POINTS.id_cards.student.all, data),
-        },
-        staff: {
-            getAll: (params: any) =>
-                HttpClient.get(
-                    HTTP_END_POINTS.id_cards.staff.all
-                        .replace(':instituteId', params.instituteid)
-                        .replace(':branchId', params.branchid),
-                    params
-                ),
-        },
-    };
-    subscription = {
-        get_all_plans: () => HttpClient.get(HTTP_END_POINTS.subscription.all_plans),
-        get_subscription: (params: any) =>
-            HttpClient.get(
-                HTTP_END_POINTS.subscription.institute_subscription + params?.institute
-            ),
-        get_subscription_status: (params: any) =>
-            HttpClient.get(
-                HTTP_END_POINTS.subscription.status_check + params.institute
-            ),
-        upgrade_request: ({ institute, body }: { institute: string, body: any }) =>
-            HttpClient.update(
-                HTTP_END_POINTS.subscription.upgrade_request +
-                institute + '/request', body
-            ),
-    };
-    activity = {
-        get: (query: any) => HttpClient.get(HTTP_END_POINTS.activity.get, query),
-    };
-    reports = {
-        get: (query: any) =>
-            HttpClient.get(HTTP_END_POINTS.reports.get + query?.branch, query),
-    };
-    placements = {
-        getAll: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.placements.getAll, data),
-        create: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.placements.create, data),
-        update: (params: string) =>
-            HttpClient.update(HTTP_END_POINTS.placements.update, params),
-        getById: (params: string) =>
-            HttpClient.get(HTTP_END_POINTS.placements.getById, params),
-    };
-    notificatinsubscription = {
-        post: (data: any) =>
-            HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
-    };
-    certificate = {
-        getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId', params?.certificateId), params),
+			resend_all_notification: (data: any) =>
+				HttpClient.post(
+					HTTP_END_POINTS.notification.all_notification_resend, data),
+		},
+	};
+	institute_notification = {
+		get_institute_notification: (data: any, query: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.institute_notification.get_all +
+				data.institute_id +
+				'/all',
+				query
+			),
+		update_institute_notification: (data: any, body: any) =>
+			HttpClient.update(
+				HTTP_END_POINTS.institute_notification.update + data.id,
+				body
+			),
+	};
+	id_cards = {
+		student: {
+			get_all: (data: any) =>
+				HttpClient.get(HTTP_END_POINTS.id_cards.student.all, data),
+		},
+		staff: {
+			getAll: (params: any) =>
+				HttpClient.get(
+					HTTP_END_POINTS.id_cards.staff.all
+						.replace(':instituteId', params.instituteid)
+						.replace(':branchId', params.branchid),
+					params
+				),
+		},
+	};
+	subscription = {
+		get_all_plans: () => HttpClient.get(HTTP_END_POINTS.subscription.all_plans),
+		get_subscription: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.subscription.institute_subscription + params?.institute
+			),
+		get_subscription_status: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.subscription.status_check + params.institute
+			),
+		upgrade_request: ({ institute, body }: { institute: string, body: any }) =>
+			HttpClient.update(
+				HTTP_END_POINTS.subscription.upgrade_request +
+				institute + '/request', body
+			),
+	};
+	activity = {
+		get: (query: any) => HttpClient.get(HTTP_END_POINTS.activity.get, query),
+	};
+	reports = {
+		get: (query: any) =>
+			HttpClient.get(HTTP_END_POINTS.reports.get + query?.branch, query),
+	};
+	placements = {
+		getAll: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.placements.getAll, data),
+		create: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.placements.create, data),
+		update: (params: string) =>
+			HttpClient.update(HTTP_END_POINTS.placements.update, params),
+		getById: (params: string) =>
+			HttpClient.get(HTTP_END_POINTS.placements.getById, params),
+		delete: (params: any) =>
+			HttpClient.delete(HTTP_END_POINTS.placements.delete + params),
 
 
-    }
+	};
+	notificatinsubscription = {
+		post: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.notificationSubscription.post, data),
+	};
+
+	certificate = {
+		getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId', params?.certificateId), params),
 
 
-    helpcenter = {
-        getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
-        post: (data: any) => HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
-        delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
-        update: (data: any, id: string) =>
-            HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
-    }
+	}
+
+
+	helpcenter = {
+		getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
+		post: (data: any) => HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
+		delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
+		update: (data: any, id: string) =>
+			HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
+	}
 }
 export default new Client();

@@ -24,7 +24,7 @@ const TicketsPage: React.FC = () => {
   const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
 
- 
+
 
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
@@ -183,31 +183,31 @@ const TicketsPage: React.FC = () => {
                 })}
                 priority={ticket.priority}
                 avatarUrl={ticket.avatarUrl}
-               onView={() => {
-  setSelectedTicketUser(ticket.user);
-  setSelectedTicketUserDetails(ticket); 
-  setShowChatWindow(true);
-  setShowbuttonWindow(false);
-  setShowCreateButton(false);
-  setShowBackButton(true);
-}}
+                onView={() => {
+                  setSelectedTicketUser(ticket.user);
+                  setSelectedTicketUserDetails(ticket);
+                  setShowChatWindow(true);
+                  setShowbuttonWindow(false);
+                  setShowCreateButton(false);
+                  setShowBackButton(true);
+                }}
 
               />
             ))}
         </div>
       )}
 
-      
+
 
       {showChatWindow && (
-       
-        <div className="flex h-[50vh] md:h-[71vh] font-sans">
+
+        <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
           <ChatWindow user={selectedTicketUser} />
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}
 
-      
+
 
       {viewShowModal && (
         <div className="fixed inset-0 z-30 mt-22 shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] h-full rounded-lg">

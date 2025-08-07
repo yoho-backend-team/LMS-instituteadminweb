@@ -17,3 +17,9 @@ export const getcoursedata = async (data: any) => {
         return response;
     }
 };
+export const resendstudentnotificationdata = async (params: any) => {
+    const response = await Client.notification.student.resend_student_notification(params)
+    if (response) {
+        return response;
+    }
+};

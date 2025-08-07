@@ -9,6 +9,7 @@ const liveClassSlice = createSlice({
 		getLiveClass: (state, actions) => {
 			state.liveClass = actions.payload;
 		},
+		
 	},
 });
 
