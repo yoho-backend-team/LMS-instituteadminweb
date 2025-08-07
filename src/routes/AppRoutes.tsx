@@ -60,6 +60,7 @@ import TrackOrder from '../components/HelpFAQ/TrackOrder';
 import LogoutRoute from '../components/shared/Navbar';
 import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
 import HistoryPage from '../components/subscription/HistoryPage';
+import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 const AppRoutes = () => {
@@ -84,7 +85,7 @@ const AppRoutes = () => {
 				{/* Profile Management */}
 
 				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
-				<Route path='StaffTicketDetail' element={<StaffTicketDetail />} />
+				{/* <Route path='StaffTicketDetail' element={<StaffTicketDetail />} /> */}
 
 				<Route path='noti/msg' element={<NotificationPage />} />
 

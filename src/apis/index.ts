@@ -264,7 +264,11 @@ class Client {
     student_fee: {
       create: (data: any) =>
         HttpClient.post(HTTP_END_POINTS.payment.fee.create, data),
-      get:(data:any) => httpClient.get(HTTP_END_POINTS.payment.fee.getAllSalary,data)
+      get:(data:any) => httpClient.get(HTTP_END_POINTS.payment.fee.getAllSalary,data),
+	  delete:(params:any) =>
+		HttpClient.delete(HTTP_END_POINTS.payment.fee.delete + params.uuid),
+    update:(data: any) =>
+      httpClient.update(HTTP_END_POINTS.payment.fee.update,data)
     },
     staff_salary: {
       getall: (params: any) =>

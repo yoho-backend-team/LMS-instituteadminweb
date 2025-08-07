@@ -146,7 +146,9 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
-				getAllSalary:`/api/institutes/payments/student-fee/all/?branch_id=${branchId}`
+				getAllSalary:`/api/institutes/payments/student-fee/all/?branch_id=${branchId}`,
+				delete:'/api/institutes/payments/student-fee/',
+				update:'/api/institutes/payments/student-fee/update',
 			},
 			 salary: {
                 getall: '/api/institutes/payments/staff-salary/all',
