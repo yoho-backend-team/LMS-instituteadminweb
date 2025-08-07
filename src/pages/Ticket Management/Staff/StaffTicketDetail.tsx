@@ -2,9 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiX, FiSend, FiArrowLeft } from "react-icons/fi";
 import chtimg from "../../../assets/icons/chtimg.png";
-import round from "../../../assets/icons/round.png";
 import userblue from "../../../assets/navbar/userblue.png";
 import { useTicketContext } from "../../../components/Staff Tickets/StaffTicketContext";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getindividualStaffdata } from "../../../features/Ticket_Management/reducers/selectors";
+import { GetIndividualStaffTicketThunks } from "../../../features/Ticket_Management/reducers/thunks";
+import { GetImageUrl } from "../../../utils/helper";
+import dayjs from "dayjs";
+import { updateStaffTicketService } from "../../../features/Ticket_Management/services";
 
 interface Message {
   sender: "user" | "admin";
@@ -17,15 +23,32 @@ const StaffTicketDetail: React.FC = () => {
   const navigate = useNavigate();
   const { updateTicketStatus, tickets } = useTicketContext();
 
-  const ticketId = Number(id);
-  const ticket = tickets.find((t) => t.id === ticketId);
+  const ticketId:any = id;
+  const ticket = tickets.find((t:any) => t.id === ticketId);
   const status = ticket?.status ?? "opened";
 
-  const handleCloseTicket = () => {
-    updateTicketStatus(ticketId, "closed");
-    navigate(-1);
-  };
+  console.log(ticketId,"asdfghjkl")
 
+  const dispatch=useDispatch<any>()
+
+  const individualData = useSelector(getindividualStaffdata)
+
+  useEffect(()=>{
+
+    dispatch(GetIndividualStaffTicketThunks(ticketId))
+  
+  },[])
+
+console.log(individualData,"................................................")
+
+  const handleCloseTicket = async (ticketId:any) => {
+    // updateTicketStatus(ticketId, "closed");
+    const respone = await updateStaffTicketService(ticketId)
+    console.log(respone)
+
+    // navigate(-1);
+  };
+  
   const [messages, setMessages] = useState<Message[]>([
     { sender: "user", text: "Hi there, How are you?", time: "12:24 PM" },
     {
@@ -87,16 +110,15 @@ const StaffTicketDetail: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
         <div>
           <p className="text-sm font-semibold">
-            TICKET ID : <span className="text-[#14b8c6]">#{id}</span>
+            TICKET ID : <span className="text-[#14b8c6]">#{individualData?.id}</span>
           </p>
           <p className="text-sm text-gray-600 mt-1">
             RAISED DATE & TIME :{" "}
-            <span className="font-medium">APR 28, 2025, 4:14 PM</span>
+            <span className="font-medium">{dayjs(individualData?.date).format("DD-MM-YYYY , HH:MM A")}</span>
           </p>
         </div>
         {status !== "closed" && (
           <button
-            onClick={handleCloseTicket}
             className="flex items-center gap-2 px-4 py-2 bg-[#14b8c6] text-white rounded-md text-sm font-semibold"
           >
             <FiX className="text-lg" /> CLOSE TICKET
@@ -109,13 +131,13 @@ const StaffTicketDetail: React.FC = () => {
           <div className="bg-white rounded-md border-t-2 shadow p-4">
             <div className="flex items-center gap-3">
               <img
-                src={round}
+                src={GetImageUrl(individualData?.user?.image) ?? undefined}
                 alt="User Avatar"
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
                 <h2 className="font-semibold text-gray-800 text-base">
-                  Oliver Smith
+                  {individualData?.user?.full_name}
                 </h2>
                 <p className="text-green-600 text-sm">Active Now</p>
               </div>
@@ -130,7 +152,7 @@ const StaffTicketDetail: React.FC = () => {
               ref={chatRef}
               className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
             >
-              {messages.map((msg, idx) => (
+              {individualData?.messages?.map((msg:any, idx:any) => (
                 <div
                   key={idx}
                   className={`flex items-start gap-2 ${
@@ -151,7 +173,7 @@ const StaffTicketDetail: React.FC = () => {
                         : "bg-white text-gray-800"
                     }`}
                   >
-                    {msg.text}
+                    {msg.content}
                     <div
                       className={`text-[10px] text-right mt-1 ${
                         msg.sender === "admin"
@@ -159,7 +181,7 @@ const StaffTicketDetail: React.FC = () => {
                           : "text-gray-500"
                       }`}
                     >
-                      {msg.time}
+                      {dayjs(msg.date).format("HH:MM A")}
                     </div>
                   </div>
                   {msg.sender === "admin" && (
@@ -175,7 +197,7 @@ const StaffTicketDetail: React.FC = () => {
               {status !== "closed" && (
                 <div className="flex gap-2 px-4 py-2 border-t">
                   <button
-                    onClick={handleCloseTicket}
+                    onClick={()=>handleCloseTicket(individualData?.uuid)}
                     className="border border-[#1BBFCA] text-[#1BBFCA] text-sm font-medium px-4 py-2 rounded"
                   >
                     Solved
@@ -214,19 +236,19 @@ const StaffTicketDetail: React.FC = () => {
               Issue Description:
             </p>
             <p className="text-sm text-gray-600">
-              If You Can This Yes Successfully Mobile App On Android
+             {individualData?.description}
             </p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Issue Category:</p>
-            <p className="text-sm text-gray-600">Feedback</p>
+            <p className="text-sm text-gray-600">{individualData?.category}</p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Attachments:</p>
             <p className="text-sm text-gray-600 break-all">
-              2bf39350-F04d-4e22-A5ea-2be943f28e9e.jpeg
+             {GetImageUrl(individualData?.file)}
             </p>
-            <a href="#" className="text-blue-500 underline text-sm">
+            <a href={GetImageUrl(individualData?.file)?? undefined} target="_blank" className="text-blue-500 underline text-sm">
               View
             </a>
           </div>
