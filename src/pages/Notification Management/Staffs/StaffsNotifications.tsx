@@ -22,17 +22,19 @@ import purpleImg from "../../../assets/purple icon.png";
 import greenImg from "../../../assets/green icon.png";
 import classImg from "../../../assets/classimg (1).png";
 import instructorImg from "../../../assets/image 108.png";
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectBranch, selectStaff } from "../../../features/staff/reducers/selector";
 import { getBranchDetailsData, getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { getAllStaffNotifications } from "../../../features/staffNotification/reducers/thunks";
 import { getInstituteDetails, getSelectedBranchId } from "../../../apis/httpEndpoints";
 import { selectStaffNotification } from '../../../features/staffNotification/reducers/selector';
-import { createStaffNotifications } from "../../../features/staffNotification/services";
+import { createStaffNotifications, resendStaffNotifications } from "../../../features/staffNotification/services";
 
 const StaffsNotification: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
   const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
@@ -43,7 +45,7 @@ const StaffsNotification: React.FC = () => {
   const staffNotificationData = useSelector(selectStaffNotification);
   const notifications = staffNotificationData?.data || [];
 
-  const totalNotifications = notifications.length;
+  const totalNotifications = staffNotificationData?.count || 0;
   const readNotifications = notifications.filter((n: any) => n.status === "read").length;
   const unreadNotifications = notifications.filter((n: any) => n.status === "unread").length;
 
@@ -67,25 +69,69 @@ const StaffsNotification: React.FC = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleResend = async(uuid: any) => {
+    try {
+      await resendStaffNotifications({
+        id: uuid,
+        notification_id: uuid,
+      });
+      // Refresh notifications after resend
+      dispatch(getAllStaffNotifications({ 
+        institute: instituteId, 
+        branch: branchId, 
+        page: currentPage,
+        limit: itemsPerPage
+      }));
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("Final Payload:", formData);
-     try{
-    console.log("🚀 Notification Payload:", formData);
-    await createStaffNotifications(formData)
-    setOpen(false);
+    try {
+      await createStaffNotifications(formData);
+      setOpen(false);
+      // Reset form
+      setFormData({
+        institute: instituteId,
+        branch: branchId,
+        title: "",
+        body: "",
+        link: "",
+        type: "",
+        staff: []
+      });
+      // Refresh notifications
+      dispatch(getAllStaffNotifications({ 
+        institute: instituteId, 
+        branch: branchId, 
+        page: currentPage,
+        limit: itemsPerPage
+      }));
+    } catch(error) {
+      console.log(error);
     }
-    catch(error) {
-      console.log(error)
-    }
-    
   };
 
   useEffect(() => {
     dispatch(getStaffDetailsData({}));
     dispatch(getBranchDetailsData({}));
-    dispatch(getAllStaffNotifications({ institute: instituteId, branch: branchId, page: 1 }));
-  }, [dispatch, instituteId, branchId]);
+    dispatch(getAllStaffNotifications({ 
+      institute: instituteId, 
+      branch: branchId, 
+      page: currentPage,
+      limit: itemsPerPage
+    }));
+  }, [dispatch, instituteId, branchId, currentPage, itemsPerPage]);
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
 
   return (
     <div className="p-6">
@@ -133,7 +179,7 @@ const StaffsNotification: React.FC = () => {
                 onValueChange={(uuid) => {
                   const selectedStaff = classData.find((s: any) => s.uuid === uuid);
                   if (selectedStaff) {
-                    handleChange("staff", [selectedStaff]); // ✅ send full object
+                    handleChange("staff", [selectedStaff]);
                   }
                 }}
               >
@@ -153,19 +199,31 @@ const StaffsNotification: React.FC = () => {
             {/* Title */}
             <div className="flex flex-col">
               <Label>Title</Label>
-              <Input className="mt-1" onChange={(e) => handleChange("title", e.target.value)} />
+              <Input 
+                className="mt-1" 
+                value={formData.title}
+                onChange={(e) => handleChange("title", e.target.value)} 
+              />
             </div>
 
             {/* Body */}
             <div className="flex flex-col">
               <Label>Body</Label>
-              <Textarea className="mt-1" onChange={(e) => handleChange("body", e.target.value)} />
+              <Textarea 
+                className="mt-1" 
+                value={formData.body}
+                onChange={(e) => handleChange("body", e.target.value)} 
+              />
             </div>
 
             {/* Link */}
             <div className="flex flex-col">
               <Label>Link</Label>
-              <Input className="mt-1" onChange={(e) => handleChange("link", e.target.value)} />
+              <Input 
+                className="mt-1" 
+                value={formData.link}
+                onChange={(e) => handleChange("link", e.target.value)} 
+              />
             </div>
 
             {/* Buttons */}
@@ -224,13 +282,49 @@ const StaffsNotification: React.FC = () => {
                 </a>
               )}
 
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-1 self-end mt-auto">
+              <Button
+                onClick={() => handleResend(n.uuid)}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-1 self-end mt-auto"
+              >
                 Resend
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+        {notifications.length > 0 && (
+          <div className="flex justify-center items-center mt-6 gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handlePrevPage} 
+              disabled={currentPage === 1}
+              className="h-8 w-8"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            
+            <Button 
+              variant="default" 
+              size="icon"
+              className="h-8 w-8 bg-primary text-primary-foreground"
+            >
+              {currentPage}
+            </Button>
+            
+            <Button 
+              variant="ghost"
+              size="icon"
+              onClick={handleNextPage} 
+              disabled={notifications.length < itemsPerPage}
+              className="h-8 w-8"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
     </div>
   );
 };

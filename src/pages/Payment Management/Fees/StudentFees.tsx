@@ -1,13 +1,10 @@
 import { FeesTable } from "../../../components/Fees/fees-table"
 
-
-export default function Home() {
-  return (
-    
-    
-      <>
+const Home=()=>{
+  return(
+    <div>
         <FeesTable />
-      </>
-    
+    </div>
   )
 }
+export default Home

@@ -21,7 +21,7 @@ const FaqCategorySlice = createSlice({
   name: "faqCategory",
   initialState,
   reducers: {
-   getFaqCategory: (state, action: PayloadAction<FaqCategory[]>) => {
+   getFaqCategory: (state, action: PayloadAction<any[]>) => {
   state.data = action.payload;
 },
     addFaqCategory: (state, action: PayloadAction<FaqCategory>) => {
