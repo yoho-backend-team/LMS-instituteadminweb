@@ -11,6 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetStaffTicketServicesThunks } from "../../features/Ticket_Management/reducers/thunks";
 import avatarimg from "../../assets/navbar/avatarimg.png";
 import { GetStaffTicket } from "../../features/Ticket_Management/reducers/selectors";
+// import React, { useState } from "react";
+// import TicketCard from "./TicketCard";
+import ticket1 from "../../assets/ticket1.png";
+// import { useTicketContext } from "../../components/Staff Tickets/StaffTicketContext";
 
 interface Ticket {
   id: number;
@@ -73,11 +77,12 @@ const StaffTickets: React.FC = () => {
     }
   };
 
-  
+
 
   return (
     <div>
-      <div className="bg-[#14b8c6] w-full text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6">
+      <div className="bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6 w-full">
+        <img src={ticket1} alt="Ticket Icon" className="w-5 h-5" />
         STAFF TICKETS
       </div>
 

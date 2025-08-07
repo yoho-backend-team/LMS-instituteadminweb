@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
+import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
 
 function App() {
 	return (
@@ -11,7 +12,8 @@ function App() {
 			<BrowserRouter>
 				<AuthProvider>
 					<TicketProvider>
-					<AppRoutes />
+						<StaffTicketProvider>
+						<AppRoutes />
 					<Toaster
 						position='top-right'
 						toastOptions={{
@@ -36,6 +38,7 @@ function App() {
 							},
 						}}
 					/>
+						</StaffTicketProvider>
 					</TicketProvider>
 				</AuthProvider>
 			</BrowserRouter>
