@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAdminTickets } from "../../../features/TicketManagement/YourTicket/selector";
 import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourTicket/thunks";
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
+import socket from "../../../utils/socket";
 
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
@@ -23,7 +24,7 @@ const TicketsPage: React.FC = () => {
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
   const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
-
+  const [messages, setMessages] = useState()
 
 
   const [query, setQuery] = useState("");
@@ -102,6 +103,28 @@ const TicketsPage: React.FC = () => {
     }
   };
 
+  useEffect(()=>{
+    if(adminTickets?.messages){
+       setMessages(adminTickets.messages)
+    }
+  },[adminTickets])
+
+  useEffect(() => {
+      socket.connect()
+      socket.on("connect", () => {
+        socket.emit("joinTicket", id)
+      });
+  
+      const handleMessage = (message: Message) => {
+        setMessages((prev) => [...prev, message])
+      }
+  
+      socket.on("receiveTeacherTicketMessage", handleMessage)
+      return () => {
+        socket.off("receiveTeacherTicketMessage", handleMessage)
+      }
+    })
+
   return (
     <div className="h-auto p-0">
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
@@ -175,7 +198,7 @@ const TicketsPage: React.FC = () => {
                 key={index}
                 name={ticket.name}
                 email={ticket.email}
-                message={ticket.description || ticket.message}
+                message={messages}
                 date={new Date(ticket.created_at).toLocaleDateString("en-GB")}
                 time={new Date(ticket.created_at).toLocaleTimeString("en-US", {
                   hour: "2-digit",
