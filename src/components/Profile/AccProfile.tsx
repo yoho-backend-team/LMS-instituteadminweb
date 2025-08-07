@@ -72,19 +72,20 @@ const AccountProfile: React.FC = () => {
 
 	useEffect(() => {
 		if (activePanel === "third") {
-			dispatch(fetchTimeline({page:1}));
+			dispatch(fetchTimeline({ page: 1 }));
 		}
 	}, [activePanel]);
 
-	const handleChangePassword = async() => {
+	const handleChangePassword = async () => {
 		try {
-			const data= { confirm_password: confirmPassword, current_password: currentPassword
-, new_password: newPassword
-}
+			const data = {
+				confirm_password: confirmPassword, current_password: currentPassword
+				, new_password: newPassword
+			}
 			const response = await getsecurity(data)
 			console.log(response)
 		} catch (error) {
-			
+
 		}
 	}
 	return (
@@ -161,14 +162,19 @@ const AccountProfile: React.FC = () => {
 										className="inline-block mt-2 w-[90px] h-[38px] rounded-lg"
 										style={{ objectFit: "cover" }} // Optional styling
 									/>
+									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>Albert Elnstein</h3>
+									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
+									<button className="bg-green-500 h-[38px] w-[107px] text-white  rounded-2xl hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
+										Active
+									</button>
 								</div>
 							</div>
 							<span>
 								<img
-									src={insadmin}// replace with your actual image path
+									src={insadmin}
 									alt="Active"
 									className="inline-block mt-2 w-[173px] h-[48px] rounded-lg"
-									style={{ objectFit: "cover" }} // Optional styling
+									style={{ objectFit: "cover" }}
 								/>
 							</span>
 						</div>
@@ -298,7 +304,7 @@ const AccountProfile: React.FC = () => {
 					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
 						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(100vh-180px)] scrollbar-hidden">
 
-							{timeline?.map((item: any, index:any) => (
+							{timeline?.map((item: any, index: any) => (
 								<div key={index} className="mb-1 ml-4 relative">
 									<div className="absolute -left-[50px] top-0">
 										<div className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-2 mt-0 shadow" style={{ ...FONTS.heading_07 }}>

@@ -598,3 +598,5 @@ export const DashboardCards: React.FC = () => {
     </div>
   );
 };
+
+export default DashboardCards
