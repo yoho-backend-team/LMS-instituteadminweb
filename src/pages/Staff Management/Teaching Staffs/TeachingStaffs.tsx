@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Plus, Filter, Mail } from 'lucide-react';
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
@@ -13,7 +13,8 @@ import { selectStaff } from '../../../features/staff/reducers/selector';
 import { getStaffDetailsData } from '../../../features/staff/reducers/thunks';
 import type { AppDispatch } from 'recharts/types/state/store';
 import { GetImageUrl } from '../../../utils/helper';
-import { createStaff } from '../../../features/staff/services';
+import { createStaff, uploadFile } from '../../../features/staff/services';
+import { toast } from 'react-toastify';
 
 const theme = {
   primary: {
@@ -90,13 +91,81 @@ const TeachingStaffs: React.FC = () => {
     altPhoneNumber: ''
   });
 
-  const navigate = useNavigate();
+  // File upload state
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileUploadError, setFileUploadError] = useState<string | null>(null);
 
-  const handleAddStaff = async() => {
-  if (newStaff.name && newStaff.email) {
-    // ✅ Build payload in required backend format
+  const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const classData = useSelector(selectStaff)?.data || [];
+
+  useEffect(() => {
+    if (preview) {
+      return () => {
+        URL.revokeObjectURL(preview);
+      };
+    }
+  }, [preview]);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only image files (JPG, PNG) are allowed.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setFileUploadError(null);
+
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await uploadFile(formData);
+      const uploadedPath = response?.data?.file;
+
+      if (!uploadedPath) {
+        throw new Error('Upload failed: No file path returned from server.');
+      }
+
+      setUploadedFileName(file.name);
+      setFileUrl(uploadedPath);
+      toast.success('Profile picture uploaded successfully.');
+    } catch (error: any) {
+      setFileUploadError(error?.message || 'Failed to upload file');
+      toast.error(error?.message || 'Failed to upload file');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddStaff = async () => {
+    if (!newStaff.name || !newStaff.email) {
+      toast.error('Name and Email are required fields');
+      return;
+    }
+
+    if (!fileUrl) {
+      toast.error('Please upload a profile picture');
+      return;
+    }
+
     const payload = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4", // TODO: Replace with actual branch ID dynamically
+      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
       contact_info: {
         state: newStaff.state,
         city: newStaff.city,
@@ -106,55 +175,54 @@ const TeachingStaffs: React.FC = () => {
         phone_number: newStaff.phoneNumber,
         alternate_phone_number: newStaff.altPhoneNumber
       },
-      course: ['1958e331-84ce-464b-8865-eb06c6189414'], // Convert to array
+      course: ['1958e331-84ce-464b-8865-eb06c6189414'],
       designation: newStaff.designation,
       dob: newStaff.dateOfBirth,
       email: newStaff.email,
       full_name: newStaff.name,
       gender: newStaff.gender,
-      image: "staticfiles/lms/default-image.png", // TODO: replace with uploaded image path
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529", // TODO: replace with actual institute_id
+      image: fileUrl,
+      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       qualification: newStaff.qualification,
       staffId: "",
       user_details: "InstituteTeachingStaff"
     };
 
-    try{
-    // ✅ Log data to check
-    console.log("✅ Staff Payload to send:", payload);
-
+    try {
+      setIsLoading(true);
       const response = await createStaff(payload);
+      console.log("Staff Created Successfully:", response);
 
-      console.log("✅ Staff Created Successfully:", response);
+      setNewStaff({
+        name: '',
+        email: '',
+        status: 'Active',
+        dateOfBirth: '',
+        gender: '',
+        course: '',
+        designation: '',
+        qualification: '',
+        state: '',
+        city: '',
+        pinCode: '',
+        addressLine1: '',
+        addressLine2: '',
+        phoneNumber: '',
+        altPhoneNumber: ''
+      });
 
-    // ✅ Clear Form
-    setNewStaff({
-      name: '',
-      email: '',
-      status: 'Active',
-      dateOfBirth: '',
-      gender: '',
-      course: '',
-      designation: '',
-      qualification: '',
-      state: '',
-      city: '',
-      pinCode: '',
-      addressLine1: '',
-      addressLine2: '',
-      phoneNumber: '',
-      altPhoneNumber: ''
-    });
-
-    // ✅ Close Add Staff Form
-    setShowAddStaff(false);
-  }
-  catch(error) {
-    console.error("❌ Failed to create staff:", error);
-  }
-  }
-};
-
+      setPreview(null);
+      setFileUrl(null);
+      setUploadedFileName(null);
+      setShowAddStaff(false);
+      toast.success('Staff member added successfully!');
+    } catch (error) {
+      console.error("Failed to create staff:", error);
+      toast.error('Failed to create staff member');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const toggleStatus = (id: number) => {
     setStaff(staff.map(member => 
@@ -176,28 +244,13 @@ const TeachingStaffs: React.FC = () => {
     navigate('/staffs-details', { state: { staff: staffMember } });
   };
 
-	const dispatch = useDispatch<any>();
-	const classData = useSelector(selectStaff)?.data || [];
-
-  console.log('classData :',classData);
-
-		const fetchClassData = (
-		page: number = 1
-	) => {
-		dispatch(getStaffDetailsData({
-				page: page,
-			})
-		);
-	};
+  const fetchClassData = (page: number = 1) => {
+    dispatch(getStaffDetailsData({ page: page }));
+  };
 
   useEffect(() => {
-      fetchClassData();
-  },[])
-
-  
-  
-  
-
+    fetchClassData();
+  }, []);
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
@@ -209,20 +262,41 @@ const TeachingStaffs: React.FC = () => {
 
           <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div className='flex items-center gap-4'>
-              <input type="file"
-                accept = ".pdf,.jpg,.jpeg,.png"
-                ref={fileInputRef}
-                onChange={handleFileChange} />
+              {preview ? (
+                <img 
+                  src={preview} 
+                  alt="Preview" 
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500">No Image</span>
+                </div>
+              )}
               <div>
                 <p style={{...FONTS.heading_05_bold,color:COLORS.gray_dark_02}}>Profile Picture</p>
-                <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>Allowed PNG or JPEG. Max size of 800k.</p>
+                <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+                  {uploadedFileName || "Allowed PNG or JPEG. Max size of 800k."}
+                </p>
+                {fileUploadError && (
+                  <p className="text-red-500 text-sm mt-1">{fileUploadError}</p>
+                )}
               </div>
             </div>
             <Button
-            onClick = {handleUploadClick}
-            className="bg-green-500 hover:bg-green-600 text-white">
-              Upload Profile Picture
+              onClick={handleUploadClick}
+              className="bg-green-500 hover:bg-green-600 text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Uploading...' : 'Upload Profile Picture'}
             </Button>
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -373,15 +447,22 @@ const TeachingStaffs: React.FC = () => {
             <Button 
               className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA]"
               variant="outline" 
-              onClick={() => setShowAddStaff(false)}
+              onClick={() => {
+                setShowAddStaff(false);
+                setPreview(null);
+                setFileUrl(null);
+                setUploadedFileName(null);
+              }}
+              disabled={isLoading}
             >
               Back
             </Button>
             <Button 
               className="bg-[#1BBFCA] hover:bg-teal-600 text-white"
               onClick={handleAddStaff}
+              disabled={isLoading}
             >
-              Submit
+              {isLoading ? 'Submitting...' : 'Submit'}
             </Button>
           </div>
         </Card>
