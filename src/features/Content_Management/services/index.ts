@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../apis/index";
 export const GetAllModule = async (params: any) => {
   const response = await Client.course_module.getAll(params);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   setLoading,
   setError,
@@ -153,7 +154,7 @@ export const fetchCoursesByBranchThunk =
 //Toggle Status Thuck
 export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
-    const updated = await ToggleNoteStatus(data);
+    await ToggleNoteStatus(data);
     dispatch(
       updateNoteStatus({
         uuid: data._id,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import EditmodulePage from "../../../components/contentmanagement/editmodule/editmodule";
 import {
   AddModule,
@@ -64,7 +65,7 @@ export const Upload_addFileThunks =
 
 export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
-    const updated = await ToggleModuleStatus(data);
+    await ToggleModuleStatus(data);
     dispatch(
       updateModuleStatus({
         module_id: data.module_id,
