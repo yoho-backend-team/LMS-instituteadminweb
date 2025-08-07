@@ -1,5 +1,6 @@
 import React from 'react';
-import FaqCategory from '../../components/FAQCategory/Category';
+import FaqCategory from '../../components/Faq_Category/FaqCategories';
+
 
 const Category = () => {
 	return <div>
