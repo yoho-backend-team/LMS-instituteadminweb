@@ -27,12 +27,13 @@ const refundSlice = createSlice({
     },
     updateRefundInState: (state: any, action) => {
       const index = state.data.findIndex(
-        (item: any) => item._id === action.payload._id
+        (item: any) => item.uuid === action.payload.uuid
       );
       if (index !== -1) {
         state.data[index] = action.payload;
       }
     },
+
     deleteRefundInState: (state: any, action) => {
       state.data = state.data.filter(
         (item: any) => item._id !== action.payload

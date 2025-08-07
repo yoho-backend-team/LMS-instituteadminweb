@@ -8,6 +8,7 @@ import {
   CreateRefundThunk,
   GetStudentsWithBatchThunks,
   GetStudentFeeThunks,
+  UpdateRefundThunk,
 } from "../../features/Refund_management/Reducer/refundThunks";
 
 import {
@@ -59,7 +60,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedFee, setSelectedFee] = useState("");
   const [amount, setAmount] = useState("");
-const feeList = fees?.fees ?? []; 
+  const feeList = fees?.fees ?? [];
 
   const [errors, setErrors] = useState({
     branchId: false,
@@ -134,42 +135,44 @@ const feeList = fees?.fees ?? [];
       amount: false,
     });
   }, [editData]);
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newErrors = {
-      branchId: !branchId,
-      selectedCourse: !selectedCourse,
-      selectedBatch: !selectedBatch,
-      selectedStudent: !selectedStudent,
-      selectedFee: !selectedFee,
-      amount: !amount,
-    };
-
-    setErrors(newErrors);
-    if (Object.values(newErrors).some(Boolean)) return;
-
-    const selectedFeeObj = (fees?.fees || []).find((fee: any) => fee._id === selectedFee);
-    const feeAmount = selectedFeeObj ? selectedFeeObj.amount : "0";
-
-    const newRefund: RefundData = {
-      refundId: editData?.refundId ?? generateRefundId(),
-      studentId: selectedStudent,
-      studentInfo: selectedCourse,
-      paid: selectedFee ? "Paid" : "Unpaid",
-      payment: parseInt(amount || feeAmount).toLocaleString(),
-      status: editData?.status ?? "Pending",
-      branch: selectedBatch,
-    };
-
-    dispatch(CreateRefundThunk(newRefund));
-    onSubmit(newRefund);
-
-    if (!editData) {
-      refundCounter++;
-    }
+  const newErrors = {
+    branchId: !branchId,
+    selectedCourse: !selectedCourse,
+    selectedBatch: !selectedBatch,
+    selectedStudent: !selectedStudent,
+    selectedFee: !selectedFee,
+    amount: !amount,
   };
+
+  setErrors(newErrors);
+  if (Object.values(newErrors).some(Boolean)) return;
+
+  const selectedFeeObj = (fees?.fees || []).find((fee: any) => fee._id === selectedFee);
+  const feeAmount = selectedFeeObj ? selectedFeeObj.amount : "0";
+
+  const newRefund: RefundData = {
+    refundId: editData?.refundId ?? generateRefundId(),
+    studentId: selectedStudent,
+    studentInfo: selectedCourse,
+    paid: selectedFee ? "Paid" : "Unpaid",
+    payment: parseInt(amount || feeAmount).toLocaleString(),
+    status: editData?.status ?? "Pending",
+    branch: selectedBatch,
+  };
+
+  if (editData?.uuid) {
+    dispatch(UpdateRefundThunk({ ...newRefund, uuid: editData.uuid }));
+  } else {
+    dispatch(CreateRefundThunk(newRefund));
+    refundCounter++;
+  }
+
+  onSubmit(newRefund);
+};
+
 
   const getInputClass = (error: boolean) =>
     `h-10 border px-2 rounded w-full ${

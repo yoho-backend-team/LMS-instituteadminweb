@@ -11,6 +11,7 @@ import {
 } from "../../../features/Refund_management/Reducer/Selector";
 
 export interface RefundData {
+  uuid?: string; 
   refundId: string;
   studentId: string;
   studentInfo: string;
