@@ -1,30 +1,38 @@
-import { useEffect, useState } from "react"
-import { Button } from "../../components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu"
-import { ChevronDown, MoreVertical, FileEdit, Trash2 } from "lucide-react"
-import { FAQActionBar } from "../../components/FAQs/ActionBar"
-import { FAQFilter } from "../../components/FAQs/FaqFilter"
-import { AddFAQDrawer } from "../../components/FAQs/AddQuestion"
-import { EditFAQDrawer } from "../../components/FAQs/Edit"
-import { ConfirmDialog } from "../../components/FAQs/Confirm"
-import { SuccessDialog } from "../../components/FAQs/Succes"
-import { useDispatch, useSelector } from "react-redux"
-import { selectFaq } from "../../features/Faq/reducers/selectors"
-import { getAllFaqsThunk } from "../../features/Faq/reducers/thunks"
-import { StatusDropdown } from "../../components/FAQs/StatusDropdown"
+import { useEffect, useState } from "react";
+import { Button } from "../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import { ChevronDown, MoreVertical, FileEdit, Trash2 } from "lucide-react";
+import { FAQActionBar } from "../../components/FAQs/ActionBar";
+import { FAQFilter } from "../../components/FAQs/FaqFilter";
+import { AddFAQDrawer } from "../../components/FAQs/AddQuestion";
+import { EditFAQDrawer } from "../../components/FAQs/Edit";
+import { ConfirmDialog } from "../../components/FAQs/Confirm";
+import { SuccessDialog } from "../../components/FAQs/Succes";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFaq } from "../../features/Faq/reducers/selectors";
+import { getAllFaqsThunk } from "../../features/Faq/reducers/thunks";
+import { StatusDropdown } from "../../components/FAQs/StatusDropdown";
+import { deleteFaq } from "../../features/Faq/service";
 
 export default function FAQPage() {
-  const [showFilter, setShowFilter] = useState(false)
-  const [isAddFAQDrawerOpen, setIsAddFAQDrawerOpen] = useState(false)
-  const [isEditFAQDrawerOpen, setIsEditFAQDrawerOpen] = useState(false)
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false)
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
-  const [currentFAQToEdit, setCurrentFAQToEdit] = useState<any | null>(null)
-  const [faqToDeleteId, setFaqToDeleteId] = useState<number | null>(null)
+  const [showFilter, setShowFilter] = useState(false);
+  const [isAddFAQDrawerOpen, setIsAddFAQDrawerOpen] = useState(false);
+  const [isEditFAQDrawerOpen, setIsEditFAQDrawerOpen] = useState(false);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
+    useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [currentFAQToEdit, setCurrentFAQToEdit] = useState<any | null>(null);
+  const [faqToDeleteId, setFaqToDeleteId] = useState<string | null>(null);
 
-  const dispatch = useDispatch<any>()
-  const faqselect = useSelector(selectFaq)
-  const [currentPage, setCurrentPage] = useState(1)
+
+  const dispatch = useDispatch<any>();
+  const faqselect = useSelector(selectFaq);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const ParamsData = {
@@ -32,42 +40,66 @@ export default function FAQPage() {
       instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
       page: currentPage,
       perPage: 10,
-    }
+    };
 
-    dispatch(getAllFaqsThunk(ParamsData))
-  }, [dispatch, currentPage])
+    dispatch(getAllFaqsThunk(ParamsData));
+  }, [dispatch, currentPage]);
 
-  const toggleFilter = () => setShowFilter(!showFilter)
+  const toggleFilter = () => setShowFilter(!showFilter);
 
   const handleAddFAQ = (newFAQData: any) => {
     // Ideally dispatch a thunk to POST to backend
-    setIsAddFAQDrawerOpen(false)
-  }
+    setIsAddFAQDrawerOpen(false);
+  };
 
   const handleEditFAQ = (id: number, updatedData: any) => {
     // Ideally dispatch a thunk to PUT to backend
-    setIsEditFAQDrawerOpen(false)
-    setCurrentFAQToEdit(null)
-  }
+    setIsEditFAQDrawerOpen(false);
+    setCurrentFAQToEdit(null);
+  };
 
-  const handleDeleteClick = (id: number) => {
-    setFaqToDeleteId(id)
-    setIsConfirmDeleteModalOpen(true)
-  }
+  const handleDeleteClick = (uuid: string) => {
+    setFaqToDeleteId(uuid);
+    setIsConfirmDeleteModalOpen(true);
+  };
 
-  const handleConfirmDelete = () => {
-    // Ideally dispatch a thunk to DELETE from backend
-    setIsConfirmDeleteModalOpen(false)
-    setIsSuccessModalOpen(true)
-  }
+  console.log(faqToDeleteId, 'id')
+
+  const handleConfirmDelete = async () => {
+    if (!faqToDeleteId) return;
+
+    try {
+      await deleteFaq({ uuid: faqToDeleteId });
+
+      // Close confirmation modal
+      setIsConfirmDeleteModalOpen(false);
+
+      // Show success
+      setIsSuccessModalOpen(true);
+
+      // Refetch FAQs from Redux
+      const ParamsData = {
+        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        page: currentPage,
+        perPage: 10,
+      };
+
+      dispatch(getAllFaqsThunk(ParamsData));
+    } catch (error: any) {
+      console.error("Failed to delete FAQ:", error.message);
+      alert("Failed to delete FAQ: " + error.message); // or show toast
+    }
+  };
 
   const handleSuccessOk = () => {
-    setIsSuccessModalOpen(false)
-  }
+    setIsSuccessModalOpen(false);
+  };
 
   const handleStatusChange = (id: number, newStatus: string) => {
     // Ideally dispatch a thunk to update status
-  }
+  };
+
 
   return (
     <div className="p-6">
@@ -121,27 +153,34 @@ export default function FAQPage() {
                   idx={faq._id}
                   initialStatus={faq.is_active ? "Active" : "Inactive"}
                   options={["Active", "Inactive"]}
-                  itemId={faq.uuid} // Make sure this is correct!
+                  itemId={faq.uuid}
                 />
               </div>
 
               <div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-gray-700 hover:bg-gray-50">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-gray-700 hover:bg-gray-50"
+                    >
                       <MoreVertical className="w-5 h-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => {
-                      setCurrentFAQToEdit(faq)
-                      setIsEditFAQDrawerOpen(true)
-                    }}>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setCurrentFAQToEdit(faq);
+                        setIsEditFAQDrawerOpen(true);
+                      }}
+                    >
                       <FileEdit className="mr-2 h-4 w-4" /> Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleDeleteClick(faq.id)}>
+                    <DropdownMenuItem onClick={() => handleDeleteClick(faq.uuid)}>
                       <Trash2 className="mr-2 h-4 w-4" /> Delete
                     </DropdownMenuItem>
+
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -150,7 +189,11 @@ export default function FAQPage() {
         </div>
       </div>
 
-      <AddFAQDrawer open={isAddFAQDrawerOpen} onOpenChange={setIsAddFAQDrawerOpen} onSave={handleAddFAQ} />
+      <AddFAQDrawer
+        open={isAddFAQDrawerOpen}
+        onOpenChange={setIsAddFAQDrawerOpen}
+        onSave={handleAddFAQ}
+      />
 
       {currentFAQToEdit && (
         <EditFAQDrawer
@@ -178,5 +221,5 @@ export default function FAQPage() {
         onOk={handleSuccessOk}
       />
     </div>
-  )
+  );
 }

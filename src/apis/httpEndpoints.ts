@@ -55,8 +55,12 @@ const generateEndpoints = () => {
 		},
 		branch: {
 			// getAll: `/api/institutes/${instituteId}/branches/`,
-			getAll: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/`,
+			getAll: `/api/institutes/${instituteId}/branches/`,
+			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
 			create: `/api/institutes/${instituteId}/branches/`,
+			edit: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			delete: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			updatestatus: `/api/institutes/${instituteId}/branches/:branchuuid`,
 		},
 		faq: {
 			create: `/api/institutes/faq`,
@@ -104,9 +108,6 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			// delete: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/:batchId`,
-			getBatchwithCourse:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
-            getstudentWithBatch:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches/batch-students`,
 			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`
 		},
 		online_class: {
@@ -135,7 +136,6 @@ const generateEndpoints = () => {
 			get: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/students`,
 			getall: `/api/institutes/${instituteId}/branches/${branchId}/:courseUUID/students`,
 			getWithId: `/api/institutes/auth/student/${instituteId}/students/`,
-			getall: `/api/institutes/${instituteId}/branches/${branchId}/:courseUUID/students`,
 			getWithBatch: `/api/institutes/${instituteId}/branches/`,
 			getWithCourse: `/api/institutes/${instituteId}/branches/`,
 			update: `/api/institutes/:instituteId/students/update/`,
@@ -147,8 +147,11 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
-				getbyID:`/api/institutes/payments/student-fee/:id`
 			},
+			salary: {
+				getall: '/api/institutes/payments/staff-salary/all',
+				create: '/api/institutes/payments/staff-salary',
+			}
 		},
 		id_cards: {
 			student: {
@@ -182,7 +185,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,
 		},
 		community: {
-			all: `/api/institutes/community/${instituteId}/branches/`,
+			all: `/api/institutes/community/${instituteId}/branches/${branchId}`,
 			messages: `/api/institutes/community/messages/`,
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},
@@ -245,13 +248,13 @@ const generateEndpoints = () => {
 			getById: `/api/placements/fetch`,
 			delete: `/api/placements/delete/`
 		},
-		refund:{
-			create:`/api/institutes/payments/refund/create`,
-			getAll:`/api/institutes/payments/refund/all`,
-			getById:`/api/institutes/payments/refund/:id`,
-			update:`/api/institutes/payments/refund/update/:id`,
-			delete:`/api/institutes/payments/refund/:_id`,
-			query:`/api/institutes/payments/refund/:query`
+		refund: {
+			create: `/api/institutes/payments/refund/create`,
+			getAll: `/api/institutes/payments/refund/all`,
+			getById: `/api/institutes/payments/refund/:id`,
+			update: `/api/institutes/payments/refund/update/:id`,
+			delete: `/api/institutes/payments/refund/:_id`,
+			query: `/api/institutes/payments/refund/:query`
 		},
 		notificationSubscription: {
 			post: '/notification/subscribe',
@@ -268,7 +271,7 @@ const generateEndpoints = () => {
 			delete: '/api/helpcenter/delete/',
 			update: '/api/helpcenter/update/',
 		},
-	
+
 	};
 };
 
