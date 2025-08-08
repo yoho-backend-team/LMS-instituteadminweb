@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import HttpClient from './httpClient';
-import { HTTP_END_POINTS } from './httpEndpoints';
+import HttpClient from "./httpClient";
+import { HTTP_END_POINTS } from "./httpEndpoints";
 
 class Client {
 	admin = {
@@ -51,6 +51,10 @@ class Client {
 			HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
 		create: (params: string) =>
 			HttpClient.post(HTTP_END_POINTS.branch.create, params),
+		edit: (data: any, params: string) => HttpClient.update(HTTP_END_POINTS.branch.edit.replace(':branchuuid', params), data),
+		delete: (params: string) => HttpClient.delete(HTTP_END_POINTS.branch.delete.replace(':branchuuid', params)),
+		updatestatus: (params: string, data?: any) => HttpClient.update(HTTP_END_POINTS.branch.updatestatus.replace(':branchuuid', params), data),
+		getByid: (params: string) => HttpClient.get(HTTP_END_POINTS.branch.getByBranchId.replace(':branchuuid', params)),
 	};
 	file = {
 		upload: (data: any) => {

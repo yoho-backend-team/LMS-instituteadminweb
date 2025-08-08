@@ -12,7 +12,7 @@ interface Message {
   time: string;
 }
 
-const TicketDetail: React.FC = () => {
+const StaffTicketDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { updateTicketStatus, tickets } = useTicketContext();
@@ -80,7 +80,7 @@ const TicketDetail: React.FC = () => {
           >
             <FiArrowLeft className="text-lg" /> Back
           </button>
-          <h1 className="text-xl font-bold">Student Ticket</h1>
+          <h1 className="text-xl font-bold">Staff Ticket</h1>
         </div>
       </div>
 
@@ -248,4 +248,4 @@ const TicketDetail: React.FC = () => {
   );
 };
 
-export default TicketDetail;
+export default StaffTicketDetail;

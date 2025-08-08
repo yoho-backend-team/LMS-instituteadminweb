@@ -29,11 +29,21 @@ import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSl
 import PlacementReducer from '../features/placementManagement/Reducer/slice'
 import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
+// import authUserReducer from '../features/Profile_Security/reducer/authUserSlice';
+import timelineReducer from '../features/Profile_Security/reducer/timelineSlice';
+import StaffTicket from "../features/Ticket_Management/reducers/moduleSlice"
+import Studentfees from "../features/Payment_Managemant/salary/fees/reducers/moduleSlice"
+import community from "../features/Community/Reducers/CommunitySlice";
+import refundReducer from "../features/Refund_management/Reducer/refundSlice"
+import CategoriesSlice from '../features/Course mangement/categories/reducers/slice'
+
 
 const store = configureStore({
 	reducer: {
 		staffAttendace: staffattendance,
 		StudentSlice: StudentSlice,
+		// authusers: authUserReducer,	
+		refund: refundReducer,
 		IdcardSlice: IdcardSlice,
 		ModuleSlice: ModuleSlice,
 		note: noteReducer,
@@ -62,14 +72,17 @@ const store = configureStore({
 		placements: PlacementReducer,
 		FaqsSlice: FaqsSlice,
 		faqCategory: faqCategory,
+		timelineReducer: timelineReducer,
+		StaffTicket: StaffTicket,
+		Studentfees: Studentfees,
+		community: community,
+		categoriesSlice: CategoriesSlice
+
+
 	},
 })
 
-
-
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
-
-
-
-
