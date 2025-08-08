@@ -61,7 +61,6 @@ const AccountProfile: React.FC = () => {
 			status: 'Notes Created',
 		},
 	];
-	const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
 	const dispatch = useDispatch<any>();
 	const timeline = useSelector(selectTimeline);
