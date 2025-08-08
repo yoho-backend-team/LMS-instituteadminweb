@@ -26,7 +26,7 @@ const TicketsPage: React.FC = () => {
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
   const [messages, setMessages] = useState()
 
-
+  console.log("Selecteduser", selectedTicketUserDetails)
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
@@ -103,27 +103,23 @@ const TicketsPage: React.FC = () => {
     }
   };
 
-  useEffect(()=>{
-    if(adminTickets?.messages){
-       setMessages(adminTickets.messages)
+  useEffect(() => {
+    if (adminTickets?.messages) {
+      setMessages(adminTickets.messages)
     }
-  },[adminTickets])
+  }, [adminTickets])
 
   useEffect(() => {
-      socket.connect()
-      socket.on("connect", () => {
-        socket.emit("joinTicket", id)
-      });
-  
-      const handleMessage = (message: Message) => {
-        setMessages((prev) => [...prev, message])
-      }
-  
-      socket.on("receiveTeacherTicketMessage", handleMessage)
-      return () => {
-        socket.off("receiveTeacherTicketMessage", handleMessage)
-      }
-    })
+    if (!socket) return;
+    const handleMessage = (message: Message) => {
+      setMessages((prev) => [message, ...prev])
+    }
+
+    socket.on("receiveMessage", handleMessage)
+    return () => {
+      socket.off("receiveMessage", handleMessage)
+    }
+  })
 
   return (
     <div className="h-auto p-0">
@@ -196,16 +192,16 @@ const TicketsPage: React.FC = () => {
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
-                name={ticket.name}
-                email={ticket.email}
+                category={ticket?.description}
+                query={ticket?.query}
                 message={messages}
-                date={new Date(ticket.created_at).toLocaleDateString("en-GB")}
-                time={new Date(ticket.created_at).toLocaleTimeString("en-US", {
+                date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
+                time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
                 priority={ticket.priority}
-                avatarUrl={ticket.avatarUrl}
+                avatarUrl={ticket?.user?.image}
                 onView={() => {
                   setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
@@ -225,7 +221,7 @@ const TicketsPage: React.FC = () => {
       {showChatWindow && (
 
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
-          <ChatWindow user={selectedTicketUser} />
+          <ChatWindow user={selectedTicketUserDetails} />
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}

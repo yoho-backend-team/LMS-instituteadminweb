@@ -11,8 +11,8 @@ interface Message {
 
 type TicketCardProps = {
     name: string;
-    email: string;
-    message: Message;
+    category: string;
+    query: string;
     date: string;
     time: string;
     priority: "High" | "Medium" | "Low";
@@ -22,8 +22,8 @@ type TicketCardProps = {
 
 const TicketCard: React.FC<TicketCardProps> = ({
     name,
-    email,
-    message,
+    category,
+    query,
     date,
     time,
     priority,
@@ -64,9 +64,9 @@ const TicketCard: React.FC<TicketCardProps> = ({
                     className="w-10 h-10 rounded-full mr-3"
                 />
                 <div>
-                    <h2 className="text-gray-500" style={{ ...FONTS.heading_07_bold }}>{name}</h2>
+                    <h2 className="text-gray-500" style={{ ...FONTS.heading_07_bold }}>{query}</h2>
                     
-                    <p className="text-gray-500" style={{ ...FONTS.heading_12 }}>Email: {email}</p>
+                    <p className="text-gray-500" style={{ ...FONTS.heading_12 }}>{category}</p>
                 </div>
 
                 {/* ⋮ icon */}
@@ -95,7 +95,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 </div>
             </div>
 
-            <p className="text-gray-500 mb-6 mt-4" style={{ ...FONTS.heading_13 }}>{message}</p>
+            <p className="text-gray-500 mb-6 mt-4" style={{ ...FONTS.heading_13 }}></p>
             <div className="flex items-center justify-between text-xs text-gray-500">
                 <div className="flex justify-between items-center w-full" style={{ ...FONTS.heading_10 }}>
                     <span className="flex items-center gap-1">
