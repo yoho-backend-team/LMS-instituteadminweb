@@ -153,6 +153,8 @@ const generateEndpoints = () => {
 			 salary: {
                 getall: '/api/institutes/payments/staff-salary/all',
                 create: '/api/institutes/payments/staff-salary',
+				update:'/api/institutes/payments/staff-salary/update/',
+				delete:'/api/institutes/payments/staff-salary/'
             }
 		},
 		id_cards: {

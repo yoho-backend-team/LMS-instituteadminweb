@@ -275,7 +275,11 @@ class Client {
         HttpClient.get(HTTP_END_POINTS.payment.salary.getall, params),
       create: (data: any) =>
         HttpClient.post(HTTP_END_POINTS.payment.salary.create, data),
-    },
+      update:(data:any)=>
+        HttpClient.update(HTTP_END_POINTS.payment.salary.update+data._id, data) ,
+      delete:(data:any)=>
+       httpClient.delete(HTTP_END_POINTS.payment.salary.delete+data.id)
+       },
   };
   nonTeachingStaff = {
     get: (data: any) =>

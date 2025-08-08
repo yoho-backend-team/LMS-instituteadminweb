@@ -9,7 +9,7 @@ import { ConfirmationModal } from "../../components/Fees/confirmation-modal"
 import { SuccessModal } from "../../components/Fees/success-modal"
 import type { Fee } from "../../components/Fees/types"
 import { useDispatch } from "react-redux"
-import {  GetAllFeesThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks"
+import { GetAllFeesThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks"
 
 export const FeesTable: React.FC = () => {
   const dispatch = useDispatch()
@@ -18,9 +18,9 @@ export const FeesTable: React.FC = () => {
   useEffect(() => {
     const fetchFeesData = async () => {
       const result = await dispatch(GetAllFeesThunks({}) as any)
-      console.log(result,"data for fees comming")
-        setCurrentFeesData(result)
-     
+      console.log(result, "data for fees comming")
+      setCurrentFeesData(result)
+
     }
     fetchFeesData()
   }, [])
@@ -30,7 +30,7 @@ export const FeesTable: React.FC = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [selectedFees, setSelectedFees] = useState<any | null>(null)
-  const [actionToPerform, setActionToPerform] = useState< | null>(null)
+  const [actionToPerform, setActionToPerform] = useState<| null>(null)
 
   const handleAddFee = (newFee: Fee) => {
     setCurrentFeesData((prevData) => [...prevData, newFee])
@@ -47,7 +47,7 @@ export const FeesTable: React.FC = () => {
     setShowEditAddDrawer(true)
     setShowConfirmationModal(false)
     setShowSuccessModal(false)
-   
+
   }
 
   const handleView = (fee: any) => {
@@ -127,6 +127,14 @@ export const FeesTable: React.FC = () => {
     }
   }
 
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredFees = currentFeesData.filter((fee) =>
+    fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+
+
   return (
     <>
       <div className="rounded-2xl p-6">
@@ -153,7 +161,8 @@ export const FeesTable: React.FC = () => {
             + Add Fee
           </button>
         </div>
-        {showFilter && <FeesFilter />}
+        {showFilter && <FeesFilter searchQuery={searchQuery}
+          onSearchChange={setSearchQuery} />}
         <div className="overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 text-gray-700">
@@ -168,7 +177,7 @@ export const FeesTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentFeesData.map((fee: any) => (
+              {filteredFees.map((fee: any) => (
                 <FeesTableRow
                   key={fee.id}
                   fee={fee}
