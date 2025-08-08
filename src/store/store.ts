@@ -79,7 +79,7 @@ const store = configureStore({
 		Studentfees: Studentfees,
 		community: community,
 		categoriesSlice: CategoriesSlice,
-	   branches: branchReducer,
+	   branch: branchReducer,
 
 
 	},

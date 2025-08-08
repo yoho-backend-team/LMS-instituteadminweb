@@ -5,14 +5,14 @@ import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
 import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
-import store from './store/store'; // ✅ Correct for default export
-import { Provider } from 'react-redux';
+// import store from './store/store'; // ✅ Correct for default export
+// import { Provider } from 'react-redux';
 
 function App() {
 	return (
 		<BrowserRouter>
 			<AuthProvider>
-				<Provider store={store}>
+				
 					<TicketProvider>
 						<StaffTicketProvider>
 							<AppRoutes />
@@ -42,7 +42,7 @@ function App() {
 							/>
 						</StaffTicketProvider>
 					</TicketProvider>
-				</Provider>
+				
 			</AuthProvider>
 		</BrowserRouter>
 	);
