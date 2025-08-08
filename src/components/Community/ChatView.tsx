@@ -12,6 +12,7 @@ import box from "../../assets/navbar/box.png";
 import clock from "../../assets/navbar/clock.png";
 import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
+import { GetImageUrl } from "../../utils/helper";
 
 interface Message {
   sender: string;
@@ -36,7 +37,7 @@ interface Props {
 }
 
 const ChatView: React.FC<Props> = ({
-  //  selectedBatch,
+   selectedBatch,
   messages,
   message,
   onChangeMessage,
@@ -63,14 +64,18 @@ const ChatView: React.FC<Props> = ({
         onClick={() => setShowProfile(true)}
         >
           <img
-            src={circle}
+            src={selectedBatch ? GetImageUrl(selectedBatch?.groupimage ?? undefined) : circle}
             alt="batch"
             className="w-12 h-12 rounded-full mr-4"
             
           />
           <div>
-            <p className="text-[#7D7D7D] font-bold text-sm">MERN 2025</p>
-            <p className="text-[#7D7D7D] text-xs">MEAN STACK 2024</p>
+            <p className="text-[#7D7D7D] font-bold text-sm">
+              {selectedBatch ? selectedBatch?.group : "Select a Batch"}
+            </p>
+            <p className="text-[#7D7D7D] text-xs">
+              {selectedBatch ? selectedBatch?.batch?.batch_name : "No Batch Selected"}
+            </p>
           </div>
         </div>
 
@@ -201,9 +206,9 @@ const ChatView: React.FC<Props> = ({
           <img src={cancel} alt="cancel" className="w-5 h-5" />
         </button>
       </div>
-      <img src={image} alt="profile" className="w-24 h-24 rounded-full mb-3" />
+      <img src={GetImageUrl(selectedBatch?.groupimage ?? undefined)} alt="profile" className="w-24 h-24 rounded-full mb-3" />
       <h2 className="text-lg font-semibold text-[#716F6F]">
-        {profileData.name}
+        {selectedBatch?.group}
       </h2>
       <p className="text-green-500 text-sm">Online</p>
     </div>
