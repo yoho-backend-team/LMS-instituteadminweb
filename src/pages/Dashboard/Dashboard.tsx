@@ -72,7 +72,7 @@ export default function Component() {
 		const paramsData = { branch: BranchData[0]?.uuid }
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [dispatch,selectedBranch]);
+	}, [selectedBranch]);
 	
 
 

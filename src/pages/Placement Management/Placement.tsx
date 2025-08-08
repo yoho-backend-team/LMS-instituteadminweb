@@ -169,23 +169,24 @@ const Placements = () => {
         <Table className="overflow-auto">
           <TableHeader className="bg-gray-200">
             <TableRow>
-              <TableHead className="px-6 py-3 font-medium">Student</TableHead>
+              {/* <TableHead className="px-6 py-3 font-medium">Student</TableHead> */}
               <TableHead className="px-6 py-3 font-medium">Company Name</TableHead>
               <TableHead className="px-6 py-3 font-medium">Interview Date</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Job</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Role</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Venue</TableHead>
               <TableHead className="px-6 py-3 font-medium text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {placements.map((placement: any) => (
               <TableRow key={placement?._id} className="hover:bg-gray-50">
-                <TableCell className="px-6 py-4">
+                {/* <TableCell className="px-6 py-4">
                   <img
                     src={GetImageUrl(placement?.student?.[0]?.image) ?? undefined}
                     alt="Profile"
                     className="h-[50px] w-[50px] rounded-full"
                   />
-                </TableCell>
+                </TableCell> */}
                 <TableCell className="px-6 py-4">
                   <div className="flex flex-col">
                     <span>{placement?.company?.name ?? "N/A"}</span>
@@ -198,6 +199,7 @@ const Placements = () => {
                     : "N/A"}
                 </TableCell>
                 <TableCell className="px-6 py-4">{placement?.job?.name ?? "N/A"}</TableCell>
+                <TableCell className="px-6 py-4">{placement?.schedule?.venue ?? "N/A"}</TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
                   <Button
                     variant="ghost"
