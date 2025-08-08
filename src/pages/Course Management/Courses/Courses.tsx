@@ -127,7 +127,7 @@ const handleAddCourse = async (formValues: any) => {
     return <AddNewCourseForm onBack={handleBack} onSubmit={handleAddCourse}  branches={branch} categories={category}/>;
 
   if (selectedCourse)
-  return <CourseDetailView course={selectedCourse} onBack={handleBack} courses={course} />;
+  return <CourseDetailView course={selectedCourse} onBack={handleBack} courses={course} categories={category}/>;
 
 
   return (
@@ -189,7 +189,7 @@ const handleAddCourse = async (formValues: any) => {
           ))
         }
         {course.map((course: any, index: any) => (
-          <CourseCard key={index} {...course} onView={() => handleViewCourse(course)} />
+          <CourseCard key={index} {...course} courseStatus={course.is_active}  courseuuid={course.uuid} category_name={course.category.category_name} categoryUuid={course.category.uuid} image={course.image} onView={() => handleViewCourse(course)} />
         ))}
       </div>
     </div>

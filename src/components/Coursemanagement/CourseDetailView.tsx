@@ -23,14 +23,19 @@ actual_price: number;
   mainImage: string;
 }
 
+interface CategoryData{
+  uuid: string;
+}
+
 
 interface CourseDetailViewProps {
   course: CourseFormData;
   courses: any[];
+  categories:  any[];
   onBack: () => void;
 }
 
-const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, courses }) => {
+const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, courses, categories }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [courseData, setCourseData] = useState(course);
   const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
@@ -52,11 +57,26 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, cou
     return String(value || '');
   };
 
+  // Get category UUID from category object or string
+  const getCategoryUuid = (category: any): string => {
+    if (typeof category === 'string') return category;
+    if (typeof category === 'object' && category !== null) {
+      return category.uuid || category.id || '';
+    }
+    return '';
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setCourseData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Special handler for category selection
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUuid = e.target.value;
+    setCourseData((prev) => ({ ...prev, category: selectedUuid }));
   };
 
   const handleImageUpload = (
@@ -74,21 +94,19 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, cou
     ref.current?.click();
   };
 
+  console.log('category in detail',categories)
+
 const handleDelete = async () => {
   const courseUuid = courseData.uuid;
 
-  // Extract category UUID
   const categoryUuid = typeof courseData.category === 'object'
     ? courseData.category.uuid || courseData.category.id
     : courseData.category;
 
   if (!categoryUuid || !courseUuid) {
-    alert("Missing course or category UUID.");
+   
     return;
   }
-
-  const confirmDelete = window.confirm("Are you sure you want to delete this course?");
-  if (!confirmDelete) return;
 
   try {
     await deleteCourse(categoryUuid, courseUuid); 
@@ -99,10 +117,10 @@ const handleDelete = async () => {
    
   }
 };
+
 const handleSubmit = async () => {
   const courseUuid = courseData.uuid;
 
-  // Extract category UUID properly
   const categoryUuid =
     typeof courseData.category === "object"
       ? courseData.category.uuid || courseData.category.id
@@ -114,24 +132,18 @@ const handleSubmit = async () => {
   }
 
   try {
-   
     const payload = {
-      uuid: courseUuid, 
-      title: getStringValue(courseData.title),
-      duration: getStringValue(courseData.duration),
-      format: getStringValue(courseData.format),
-      price: getStringValue(courseData.price),
-      category: categoryUuid, 
-      overview: getStringValue(courseData.overview),
-      description: getStringValue(courseData.description),
-      thumbnail: courseData.thumbnail,
-      mainImage: courseData.mainImage,
+      ...courseData,
+      course: courseUuid,      
+      category: categoryUuid,  
+       price: courseData.actual_price,
     };
 
-    console.log("Payload being sent:", payload); 
+    console.log("Payload:", payload);
 
     await updateCourse(payload);
-    alert("Course updated successfully!");
+
+   
     setIsEditMode(false);
   } catch (error: any) {
     alert("Failed to update course.");
@@ -140,7 +152,6 @@ const handleSubmit = async () => {
 };
 
 
-  // Add safety check
   if (!courseData) {
     return <div>Loading...</div>;
   }
@@ -174,8 +185,8 @@ const handleSubmit = async () => {
               <label className="block text-sm text-gray-700 mb-1">Course Name</label>
               <input 
                 type="text" 
-                name="title" 
-                value={getStringValue(courseData.title)} 
+                name="course_name" 
+                value={getStringValue(courseData.course_name)} 
                 onChange={handleChange} 
                 className="border rounded-md p-2 w-full" 
               />
@@ -211,8 +222,8 @@ const handleSubmit = async () => {
               <label className="block text-sm text-gray-700 mb-1">Price</label>
               <input 
                 type="text" 
-                name="price" 
-                value={getStringValue(courseData.price)} 
+                name="actual_price" 
+                value={getStringValue(courseData.actual_price)} 
                 onChange={handleChange} 
                 className="border rounded-md p-2 w-full" 
               />
@@ -220,13 +231,23 @@ const handleSubmit = async () => {
 
             <div>
               <label className="block text-sm text-gray-700 mb-1">Category</label>
-              <input 
-                type="text" 
+              <select 
                 name="category" 
-                value={getStringValue(courseData.category)} 
-                onChange={handleChange} 
-                className="border rounded-md p-2 w-full" 
-              />
+                value={getCategoryUuid(courseData.category)} 
+                onChange={handleCategoryChange} 
+                className="border rounded-md p-2 w-full"
+              >
+                <option value="">Select Category</option>
+                {categories && categories.length > 0 ? (
+                  categories.map((category) => (
+                    <option key={category.uuid} value={category.uuid}>
+                      {category.name || category.category_name || category.title || 'Unnamed Category'}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>No categories available</option>
+                )}
+              </select>
             </div>
 
             <div>
