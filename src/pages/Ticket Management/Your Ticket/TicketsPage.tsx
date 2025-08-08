@@ -3,11 +3,16 @@ import mask from '../../../assets/navbar/Mask-1.png';
 import prfimg from '../../../assets/navbar/image.png';
 import { FONTS } from '../../../constants/uiConstants';
 import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
+interface Message {
+  sender: "user" | "admin";
+  text: string;
+  time: string;
+}
 
 type TicketCardProps = {
     name: string;
     email: string;
-    message: string;
+    message: Message;
     date: string;
     time: string;
     priority: "High" | "Medium" | "Low";

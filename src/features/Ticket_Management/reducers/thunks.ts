@@ -16,8 +16,8 @@ export const GetStaffTicketServicesThunks = (params: any) => async (dispatch: an
 export const GetIndividualStaffTicketThunks = (id: string) => async (dispatch: any) => {
   try {
     const response = await GetIndividualStaffTicketService(id);
-    dispatch(getindividualStaffdata(response)); // store in reducer
     console.log("Fetched individual staff ticket in thunk:", response);
+    dispatch(getindividualStaffdata(response)); // store in reducer
   } catch (error) {
     console.log("Error in IndividualStaffTicket thunk:", error);
   }
