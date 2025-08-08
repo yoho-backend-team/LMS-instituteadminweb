@@ -13,6 +13,9 @@ import clock from "../../assets/navbar/clock.png";
 import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 
+
+
+
 interface Message {
   sender: string;
   text: string;
@@ -20,6 +23,7 @@ interface Message {
 }
 
 interface Props {
+  
   selectedBatch: string;
   messages: Message[];
   message: string;
@@ -53,6 +57,10 @@ const ChatView: React.FC<Props> = ({
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
+
+
+
+
   return (
     <div className=" h-[83vh] grow  shadow-lg font-poppins rounded-xl ">
 
@@ -85,7 +93,7 @@ const ChatView: React.FC<Props> = ({
             backgroundPosition: "center top",
           }}
         >
-          {messages.map((msg, index) => (
+          {messages?.map((msg, index) => (
             <div
               key={index}
               className={`mb-3 flex ${

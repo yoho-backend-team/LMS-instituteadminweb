@@ -311,7 +311,7 @@ class Client {
                 HTTP_END_POINTS.community.all + '/all-community/'
             ),
         getCommunityMessage: (data: any) =>
-            HttpClient.get(HTTP_END_POINTS.community.messages + data.chatId),
+            HttpClient.get(HTTP_END_POINTS.community.messages + data),
         getMessages: (data: any) =>
             HttpClient.get(
                 HTTP_END_POINTS.community.get_all_messages + data.community

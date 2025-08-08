@@ -47,10 +47,9 @@ const store = configureStore({
     Coursedata: Coursedata,
     StaffSalary: StaffSalary,
     community: community,
+    
   },
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
 
 export default store;
