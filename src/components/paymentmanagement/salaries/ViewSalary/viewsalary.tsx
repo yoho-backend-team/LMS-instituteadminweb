@@ -28,9 +28,9 @@ const Viewsalary: React.FC<ViewSalaryProps> = ({ onClose, salary }) => {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="text-center">
+        <div className="text-center flex flex-col justify-center">
           <p className="font-bold text-[#716F6F]">{salary?.staff?.username}</p>
-          <p className="font-medium text-[#7D7D7D]">{salary?.email}</p>
+          <p className="font-medium text-[#7D7D7D]">????</p>
         </div>
       </div>
 
