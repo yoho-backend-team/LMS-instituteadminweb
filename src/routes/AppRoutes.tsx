@@ -64,6 +64,7 @@ import HistoryPage from '../components/subscription/HistoryPage';
 
 // import SecurityProfile from '../components/Profile/Secprofile';
 import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
+import ClassView from '../components/StudentManagement/ClassView';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
@@ -134,6 +135,7 @@ const AppRoutes = () => {
 				{/* Student Management */}
 				<Route path='students' element={<Students />} />
 				<Route path='students/Profile' element={<Profile />} />
+				<Route path='students/Profile/view' element={<ClassView />} />
 
 				{/* Batch Management */}
 				<Route path='batch' element={<BatchManagement />} />
