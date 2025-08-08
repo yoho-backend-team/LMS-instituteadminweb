@@ -2,14 +2,14 @@
 import {
   fetchBranches,
   addBranch,
-  // editBranch,
+  editBranch,
   deleteBranch,
 } from "../services/index";
 
 import { allbranchSlice } from "./branchSlice"; // Make sure you have this action
 
 // GET ALL BRANCHES
-export const fetchBranch = (params: any) => async (dispatch: any) => {
+export const fetchBranch = (params: { instituteId: string }) => async (dispatch: any) => {
   try {
     const response = await fetchBranches(params);
     if (response) {
@@ -22,7 +22,7 @@ export const fetchBranch = (params: any) => async (dispatch: any) => {
 };
 
 // CREATE BRANCH
-export const createBranch = (params: any) => async () => {
+export const createBranch = (params: { instituteId: string, data: any }) => async () => {
   try {
     const response = await addBranch(params);
     return response;
@@ -32,7 +32,17 @@ export const createBranch = (params: any) => async () => {
 };
 
 // UPDATE BRANCH
-export const updateBranch = (params: { id: string; data: any }) => async () => {
+export const updateBranch = (params: { instituteId: string, branchId: string, data: any }) => async () => {
+  try {
+    const response = await editBranch(params);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+// UPDATE BRANCH STATUS
+export const updateBranchStatus = (params: { instituteId: string, branchId: string, data: any }) => async () => {
   try {
     const response = await editBranch(params);
     return response;
@@ -42,9 +52,9 @@ export const updateBranch = (params: { id: string; data: any }) => async () => {
 };
 
 // DELETE BRANCH
-export const deleteBranchAction = (id: string) => async () => {
+export const deleteBranchAction = (params: { instituteId: string, branchId: string }) => async () => {
   try {
-    const response = await deleteBranch(id);
+    const response = await deleteBranch(params);
     return response;
   } catch (error: any) {
     throw new Error(error.message);

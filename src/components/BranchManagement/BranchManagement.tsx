@@ -6,6 +6,7 @@ import {
   fetchBranch,
   createBranch,
   updateBranch,
+  updateBranchStatus,
   deleteBranchAction,
 } from "../../features/Branch_Management/reducers/branchThunks";
 import TrichyImg from "../../assets/trichy.png";
@@ -125,7 +126,8 @@ export function LocationCardsGrid() {
       setLoading(true);
       if (editingBranch) {
         await dispatch(updateBranch({ 
-          id: editingBranch._id, 
+          instituteId: "YOUR_INSTITUTE_ID",
+          branchId: editingBranch._id, 
           data: branchData 
         }) as any);
       } else {
@@ -151,7 +153,10 @@ export function LocationCardsGrid() {
   const handleDeleteBranch = async (branchId: string) => {
     try {
       setLoading(true);
-      await dispatch(deleteBranchAction(branchId) as any);
+      await dispatch(deleteBranchAction({ 
+        instituteId: "YOUR_INSTITUTE_ID", 
+        branchId: branchId 
+      }) as any);
       // Refresh branches after delete
       const result = await dispatch(fetchBranch({ instituteId: "YOUR_INSTITUTE_ID" }) as any);
       if (result.payload) {
@@ -168,8 +173,9 @@ export function LocationCardsGrid() {
   const handleStatusChange = async (branchId: string, newStatus: string) => {
     try {
       setLoading(true);
-      await dispatch(updateBranch({ 
-        id: branchId, 
+      await dispatch(updateBranchStatus({ 
+        instituteId: "YOUR_INSTITUTE_ID",
+        branchId: branchId, 
         data: { is_active: newStatus === "Active" } 
       }) as any);
       // Refresh branches after status change
@@ -291,6 +297,179 @@ export function LocationCardsGrid() {
           message={editingBranch ? "Branch updated successfully!" : "Branch created successfully!"}
           onClose={() => setShowSuccessPopup(false)}
         />
+      )}
+
+      {/* Add/Edit Branch Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-[#716F6F]">
+                {editingBranch ? "Edit Branch" : "Add New Branch"}
+              </h2>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  resetForm();
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Branch Name */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Branch Name *
+                </label>
+                <input
+                  type="text"
+                  name="branchName"
+                  value={formData.branchName}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter branch name"
+                  required
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter phone number"
+                  required
+                />
+              </div>
+
+              {/* Alternate Number */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Alternate Number
+                </label>
+                <input
+                  type="tel"
+                  name="alternateNumber"
+                  value={formData.alternateNumber}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter alternate number"
+                />
+              </div>
+
+              {/* Address */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Address *
+                </label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter address"
+                  rows={3}
+                  required
+                />
+              </div>
+
+              {/* Pin Code */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Pin Code *
+                </label>
+                <input
+                  type="text"
+                  name="pinCode"
+                  value={formData.pinCode}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter pin code"
+                  required
+                />
+              </div>
+
+              {/* Landmark */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  Landmark
+                </label>
+                <input
+                  type="text"
+                  name="landMark"
+                  value={formData.landMark}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter landmark"
+                />
+              </div>
+
+              {/* City */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter city"
+                  required
+                />
+              </div>
+
+              {/* State */}
+              <div>
+                <label className="block text-sm font-medium text-[#716F6F] mb-1">
+                  State *
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
+                  placeholder="Enter state"
+                  required
+                />
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 bg-[#1BBFCA] text-white py-2 px-4 rounded-lg hover:bg-[#15a9b4] transition-colors disabled:opacity-50"
+                >
+                  {loading ? "Saving..." : (editingBranch ? "Update Branch" : "Create Branch")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    resetForm();
+                  }}
+                  className="flex-1 border border-[#1BBFCA] text-[#1BBFCA] py-2 px-4 rounded-lg hover:bg-[#1BBFCA] hover:text-white transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
