@@ -103,7 +103,7 @@ const ChatView: React.FC<Props> = ({
                 <img
                   src={contact}
                   alt="icon"
-                  className="w-6 h-6 rounded-full mr-2"
+                  className="w-10 h-10 rounded-full mr-1"
                 />
               )}
 
@@ -166,18 +166,18 @@ const ChatView: React.FC<Props> = ({
 
         {/* Input */}
         <div className="flex items-center">
-          <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow">
+          <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow p-1">
             <span className="pl-3 pr-2">
               <img src={emojiIcon} alt="emoji" className="w-5 h-5 -gap-3" />
             </span>
             <input
-              className="w-[350px] outline-none py-2 text-sm"
+              className="w-full outline-none py-2 text-sm"
               placeholder="Type a message"
               value={message}
               onChange={(e) => onChangeMessage(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
             />
-            <button className="opacity-70 ml-auto">
+            <button className="opacity-70 pr-3">
               <img src={attachIcon} alt="attach" className="w-5 h-5" />
             </button>
           </div>

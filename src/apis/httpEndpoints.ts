@@ -108,7 +108,8 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
 			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`
+			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`,
+			getBatchwithCourse:`/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
@@ -147,6 +148,7 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
+				get:`/api/institutes/payments/student-fee/`
 			},
 			salary: {
 				getall: '/api/institutes/payments/staff-salary/all',

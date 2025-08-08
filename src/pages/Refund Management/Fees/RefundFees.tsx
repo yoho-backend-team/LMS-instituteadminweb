@@ -89,9 +89,6 @@ const RefundFees = () => {
         </div>
       </div>
 
-      {/* Loading/Error */}
-  
-
       {/* Table */}
       <div className="flex-1 overflow-auto h-[60vh] border rounded-xl shadow-lg">
         <RefundTable
