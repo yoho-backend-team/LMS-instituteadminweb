@@ -39,9 +39,9 @@ const branchSlice = createSlice({
     deleteBranch: (state, action: PayloadAction<string>) => {
       const idToDelete = action.payload;
       state.branches = state.branches.filter(
-        (branch) => branch.id !== idToDelete && branch._id !== idToDelete
-      );
+ (branch) => branch._id === idToDelete      );
     },
+    
     editBranch: (state, action: PayloadAction<Branch>) => {
       const updatedBranch = action.payload;
       const index = state.branches.findIndex(
@@ -51,6 +51,8 @@ const branchSlice = createSlice({
         state.branches[index] = updatedBranch;
       }
     },
+
+
     updateBranchStatus: (state, action: PayloadAction<{ id: string; status: string }>) => {
       const { id, status } = action.payload;
       const index = state.branches.findIndex(

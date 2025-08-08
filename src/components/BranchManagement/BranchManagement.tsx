@@ -73,41 +73,58 @@ export function LocationCardsGrid() {
 };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const branchData = {
-      imageSrc: TrichyImg,
-      cityName: formData.branchName,
-      address: formData.address,
-      status: "Active",
-      phoneNumber: formData.phoneNumber,
-      alternateNumber: formData.alternateNumber,
-      pinCode: formData.pinCode,
-      landMark: formData.landMark
-    };
-
-    try {
-      if (editingBranch) {
-        await dispatch(EditBranchThunk({ id: editingBranch.id, data: branchData })).unwrap();
-      } else {
-        await dispatch(AddBranchThunk({ instituteId: "YOUR_INSTITUTE_ID", data: branchData })).unwrap();
-      }
-      setShowSuccessPopup(true);
-      resetForm();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Failed to save branch:", error);
-    }
+  const branchData = {
+    imageSrc: TrichyImg,
+    cityName: formData.branchName,
+    address: formData.address,
+    status: "Active",
+    phoneNumber: formData.phoneNumber,
+    alternateNumber: formData.alternateNumber,
+    pinCode: formData.pinCode,
+    landMark: formData.landMark
   };
 
-  const handleDeleteBranch = async (branchId: string) => {
-    try {
-      await dispatch(DeleteBranchThunk(branchId)).unwrap();
-      setShowSuccessPopup(true);
-    } catch (error) {
-      console.error("Failed to delete branch:", error);
+  try {
+    if (editingBranch) {
+      // ✅ Use UUID, not numeric ID
+     await dispatch(
+  EditBranchThunk({
+    instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529", // your real institute ID here
+    branchUuid: branch._id 
+  })
+).unwrap();
+    } else {
+      await dispatch(
+        AddBranchThunk({ instituteId: "YOUR_INSTITUTE_ID", data: branchData })
+      ).unwrap();
     }
-  };
+
+    setShowSuccessPopup(true);
+    resetForm();
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error("Failed to save branch:", error);
+  }
+};
+
+
+
+
+
+const handleDeleteBranch = async (branch: any) => {
+  try {
+    await dispatch(DeleteBranchThunk({
+      instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529", 
+      branchUuid: branch._id 
+    })).unwrap();
+    
+    setShowSuccessPopup(true);
+  } catch (error) {
+    console.error("Delete failed:", error);
+  }
+};
 
   const handleStatusChange = (branchId: string, newStatus: string) => {
     dispatch(updateBranch({ id: branchId, data: { status: newStatus } }));

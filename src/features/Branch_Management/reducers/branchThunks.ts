@@ -1,4 +1,4 @@
-
+// src/features/BranchManagement/reducers/branchThunks.ts
 import {
   CreateBranch,
   DeleteBranch,
@@ -43,10 +43,14 @@ export const GetAllBranchesThunk =
   };
 
 export const DeleteBranchThunk =
-  (params: DeleteBranchParams) => async (dispatch: any) => {
+  (params: { instituteId: string; branchUuid: string }) => 
+  async (dispatch: any) => {
     try {
-      await DeleteBranch(params);
-      dispatch(deleteBranch(params.id));
+      await DeleteBranch({ 
+        institute_id: params.instituteId,
+        uuid: params.branchUuid 
+      });
+      dispatch(deleteBranch(params.branchUuid));
     } catch (error) {
       console.error("Error deleting branch:", error);
       throw error;
@@ -54,8 +58,7 @@ export const DeleteBranchThunk =
   };
 
 export const EditBranchThunk =
-  (params: { id: string; data: any; uuid: string }) =>
-  async (dispatch: any) => {
+  (params: { id: string; data: any; uuid: string }) => async (dispatch: any) => {
     try {
       const updatedData = await EditBranch(params);
       dispatch(editBranch(updatedData));
@@ -91,4 +94,5 @@ export const AddBranchThunk = (data: any) => async (dispatch: any) => {
     console.error("Error adding branch:", error);
     throw error;
   }
+  
 };
