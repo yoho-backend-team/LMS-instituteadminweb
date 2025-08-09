@@ -1,5 +1,5 @@
-import { getDataActivity, getDataClasses, getStaffData, getStaffDataId } from "../services";
-import { getActivity, getClass, getStaffDetails, getStaffDetailsId} from "./slices";
+import { getBranchData, getDataActivity, getDataClasses, getStaffData, getStaffDataId } from "../services";
+import { getActivity, getBranch, getClass, getStaffDetails, getStaffDetailsId, } from "./slices";
 
 export const getStaffDetailsData = (query:any) => async(dispatch: any) => {
     try{
@@ -40,3 +40,13 @@ export const getActivityData = (params: any) => async(dispatch: any) => {
         console.log(error);
     }
 }
+
+export const getBranchDetailsData = (data: any) => async(dispatch: any) => {
+    try{
+        const response = await getBranchData(data);
+        dispatch(getBranch(response));
+    }
+    catch (error) {
+		console.log(error);
+	}
+};

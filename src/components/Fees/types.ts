@@ -1,4 +1,5 @@
 export interface Fee {
+  [x: string]: any
   id: string
   transactionId: string
   name: string
@@ -6,4 +7,5 @@ export interface Fee {
   amount: string
   date: string
   status: string
+  
 }

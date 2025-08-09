@@ -312,7 +312,7 @@ const LiveClasses = () => {
 					</div>
 				)}
 
-				<div className='flex gap-6 flex-wrap'>
+				<div className='flex gap-6'>
 					{filteredClasses?.length > 0 ? (
 						filteredClasses?.map((liveClass: any, index: any) => (
 							<LiveClassCard

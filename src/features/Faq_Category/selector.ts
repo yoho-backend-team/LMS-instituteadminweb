@@ -1,0 +1,1 @@
+export const faqCategory = (state: any) =>  state.faqCategory?.data;

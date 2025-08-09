@@ -11,6 +11,7 @@ import {
   createNoteThunk,
   updateNoteThunk,
   deleteNoteThunk,
+  UpdateModuleStatusThunk,
 } from "../../../features/ContentMangement/Notes/Reducer/noteThunk";
 import { selectNote } from "../../../features/ContentMangement/Notes/Reducer/selectors";
 import toast from "react-hot-toast";
@@ -30,6 +31,9 @@ const Notes = () => {
   const [editNote, setEditNote] = useState<any>(null);
   const [viewNote, setViewNote] = useState<any>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const [toggleStatusMap, setToggleStatusMap] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     const params = {
@@ -39,13 +43,28 @@ const Notes = () => {
     dispatch(fetchNotesThunk(params));
   }, [dispatch]);
 
+  const handleToggleStatus = (id: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus;
+
+    setToggleStatusMap((prev) => ({
+      ...prev,
+      [id]: newStatus,
+    }));
+
+    dispatch(
+      UpdateModuleStatusThunk({
+        id,
+        status: newStatus ? "active" : "inactive",
+      })
+    );
+  };
+
   const handleNoteSubmit = (data: any) => {
     if (editNote) {
       dispatch(updateNoteThunk(data))
         .then(() => toast.success("Note updated"))
         .catch(() => toast.error("Update failed"));
     } else {
-      console.log("Data being sent:", data);
       dispatch(createNoteThunk(data))
         .then(() => toast.success("Note added"))
         .catch(() => toast.error("Add failed"));
@@ -60,6 +79,7 @@ const Notes = () => {
     setShowFilter(false);
     setOpenIndex(null);
   };
+
   const handleDeleteNote = (noteId: string) => {
     toast(
       (t) => (
@@ -116,7 +136,7 @@ const Notes = () => {
 
   return (
     <div className="relative flex flex-col gap-6">
-      {/* Side panel for Add/Edit */}
+      {/* Side panel */}
       {showPanel && (
         <div
           className="fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm"
@@ -151,6 +171,7 @@ const Notes = () => {
           </div>
         </div>
       )}
+
       {/* Top bar */}
       <div className="flex justify-between items-center">
         <div className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center">
@@ -172,6 +193,7 @@ const Notes = () => {
           <span>Add New Note</span>
         </div>
       </div>
+
       {/* Filters */}
       {showFilter && (
         <div className="flex gap-5 bg-white p-2 rounded-lg shadow-lg">
@@ -197,20 +219,27 @@ const Notes = () => {
           </div>
         </div>
       )}
+
       {/* Notes Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {notes.map((note: any, index: number) => (
           <NoteCard
             key={note.uuid || index}
-            {...note}
+            id={note.uuid}
+            title={note.title}
+            course={note.course}
+            isActive={note.isActive}
             index={index}
             openIndex={openIndex}
             setOpenIndex={setOpenIndex}
             onEdit={() => handleEditClick(note)}
             onDelete={() => handleDeleteNote(note.uuid)}
             onView={() => setViewNote(note)}
+            toggleStatusMap={toggleStatusMap}
+            onToggleStatus={handleToggleStatus}
           />
         ))}
+
         {/* View Modal */}
         {viewNote && (
           <ViewNoteModal
@@ -224,7 +253,7 @@ const Notes = () => {
                 typeof viewNote.fileName === "string"
                   ? viewNote.fileName
                   : undefined,
-              status: viewNote.isActive ? "Active" : "Completed",
+              status: viewNote.isActive ? "Active" : "Inactive",
             }}
             onClose={() => setViewNote(null)}
           />
@@ -233,4 +262,5 @@ const Notes = () => {
     </div>
   );
 };
+
 export default Notes;

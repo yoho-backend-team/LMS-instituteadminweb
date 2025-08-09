@@ -56,7 +56,7 @@ export const GetBranch = async (params: any) => {
 
 export const GetBranchCourse = async (branchname: string) => {
   try {
-    const response = await Client.course.getWithBranch(branchname); // <-- pass as object
+    const response = await Client.course.getWithBranch(branchname); 
     console.log("Branch course data getting in services", response);
     return response;
   } catch (error: any) {

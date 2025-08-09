@@ -1,0 +1,1 @@
+export const selectAdminTickets = (state: any) => state.ticketAdmin?.data;

@@ -15,12 +15,12 @@ export const getNotes = async (params: any) => {
 //For ADD Notes
 export const createNote = async (data: any) => {
   try {
-    const response = await Client.notes.create(data);
-    return response
-  } catch (error) {
-    console.log("Adding Note",error)
-    throw error;
-  }
+     const response = await Client.notes.create(data);
+     return response.data;
+   } catch (error) {
+     console.error("Error adding module:", error);
+     throw error;
+   }
   
 };
 
@@ -49,9 +49,7 @@ export const deleteNote = async (id: string) => {
 };
 
 //For Upload Files
-export const uploadFile = async (file: File) => {
-  const formData = new FormData();
-  formData.append("file", file);
+export const uploadFile = async (formData: FormData) => {
   try {
     const response = await Client.file.upload(formData);
     return response;
@@ -61,26 +59,31 @@ export const uploadFile = async (file: File) => {
   }
 };
 
-//For branch Dropdown
-export const BranchDrop =async(params:any)=>{
+export const getBranch = async (params: any) => {
   try {
     const response = await Client.branch.getAll(params);
-    return response
-  } catch (error) {
-    console.log("Branch Dorpdown",error)
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch branches");
   }
 };
 
 //For Course Dropdown
-export const CourseDrop=async(data:any)=>{
-  try {
-    const response= await Client.course.getWithBranch(data);
-    return response
-  } catch (error) {
-    console.log("Course Dorpdown",error)
-    throw error;    
+export const CourseDrop=async(params:any)=>{
+ try {
+    const response = await Client.course.getWithBranch(params);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch courses");
   }
 }
+
+//Toggle Status 
+export const ToggleNoteStatus = async (data: any) => {
+  const response = await Client.notes.update_status(data)
+  console.log("Note status updated successfully in services", response.data);
+  return response.data;
+};
 
 
 

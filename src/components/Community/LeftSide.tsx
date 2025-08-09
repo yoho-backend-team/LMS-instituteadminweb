@@ -4,41 +4,45 @@ import { fetchcommunity, GetCommunityMessageThunks } from "../../features/Commun
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { selectcommunity } from "../../features/Community/Reducers/selectors";
+// import { selectcommunity } from "../../features/Community/Reducers/selectors";
 import { getCommunityMessage } from "../../features/Community/services";
+import type { AppDispatch } from "../../app/store"; 
 
 interface Props {
-  //  selectedBatch: string | null;
-  // batches: any[];
-  batches: string[];
-  selectedBatch: string ;
+  selectedBatch: string | null;
   onSelectBatch: (batch: string) => void;
-  instituteId?: string;
+  batches?: Array<{ _id: string; group: string }>;
 }
 
-const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
-  const batches = useSelector(selectcommunity);
-  console.log(batches, "sjdgfk jkhde");
+const LeftSide: React.FC<Props> = ({
+  selectedBatch,
+  onSelectBatch,
+  batches = [],
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const individualData = useSelector(getCommunityMessage);
 
-  const dispatch = useDispatch<any>();
   useEffect(() => {
     dispatch(fetchcommunity({}));
-  }, []);
+  }, [dispatch]);
+
+  // const onSelectCommunity = async (batch: any) => {
+  //   console.log("Batch selected:", batch._id);
+  //   onSelectBatch(batch._id);
+  //   await dispatch(GetCommunityMessageThunks(batch._id));
+  //   console.log(individualData, "individual messages");
+  // };
+
+// const onSelectCommunity = (batch: any) => {
+//     onSelectBatch(batch._id); // JUST tell parent which batch
+//   };
+
+const onSelectCommunity = (batch: any) => {
+  console.log("Batch selected:", batch._id);
+  onSelectBatch(batch); // triggers useEffect in parent
+};
 
 
-
-  
-      const individualData = useSelector(getCommunityMessage)
-    
-      // useEffect(()=>{
-    const onSelectCommunity = async (batch: any) => {
-        // onSelectBatch(batch);
-                console.log("Sbejdbejhdbjhebdjhedbjhebhj:", batch._id);
-
-       await dispatch(GetCommunityMessageThunks(batch._id));
-        console.log("Selected batch:", batch);
-        console.log(individualData,"................................................")
-      };
 
   return (
     <div className="w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-10 px-4 h-[83vh] rounded-lg overflow-y-auto">
@@ -47,13 +51,12 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
       </div>
 
       <div className="flex flex-col gap-4 w-full">
-        {batches.map((batch: string, index: number) => (
+        {batches.map((batch: any) => (
           <div
-            key={index}
-            // onClick={() => onSelectBatch(batch)}
-            onClick={() =>  onSelectCommunity(batch)}
+            key={batch._id}
+            onClick={() => onSelectCommunity(batch)}
             className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
-              selectedBatch === batch ? "ring-2 ring-cyan-600" : ""
+              selectedBatch === batch._id ? "ring-2 ring-cyan-600" : ""
             }`}
           >
             <img
@@ -62,11 +65,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
               className="w-12 h-12 rounded-full mr-4"
             />
             <div>
-              {batches.map((batch: { group: string; name?: string }, index: number) => (
-  <p>{batch.group}</p>
-))}
-
-              {/* <p className="text-[#7D7D7D] font-bold text-sm">{batch?.group}</p> */}
+              <p className="text-[#7D7D7D] font-bold text-sm">{batch?.group}</p>
               <p className="text-[#7D7D7D] text-xs">MEAN STACK2024</p>
             </div>
           </div>

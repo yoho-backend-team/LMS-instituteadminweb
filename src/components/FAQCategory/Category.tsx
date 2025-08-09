@@ -7,6 +7,10 @@ import button1 from "../../assets/navbar/button1.png";
 import cancel from "../../assets/navbar/cancel.png";
 import sucess from "../../assets/navbar/sucess.png";
 import warning from "../../assets/navbar/warning.png";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { faqCategory } from "../../features/Faq_Category/selector";
+import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 
 type Category = {
   id: number;
@@ -102,6 +106,7 @@ const FaqCategory: React.FC = () => {
     setNewDescription("");
     setIsFormOpen(true);
   };
+
 
   const handleSubmit = () => {
     if (newTitle.trim() === "") return;

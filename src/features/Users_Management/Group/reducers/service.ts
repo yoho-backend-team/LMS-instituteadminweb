@@ -1,5 +1,4 @@
 import Client from "../../../../apis/index.ts";
-import type { CreateGroupParams } from "../../../../types/group.ts";
 
 export const  GetAllGroupCard = async(params:any)=>{
 
@@ -41,3 +40,24 @@ export const  GetViewCard = async(data:any)=>{
         return response;
     }
 }
+export const deleteGroup = async (uuid: any) => {
+  try {
+    const response = await Client.group.delete(uuid);
+    console.log("Deleted group:", response);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to delete group");
+  }
+};
+export const UpdateGroup = async (params: any) => {
+  console.log("UpdateGroup called with", params);
+  try {
+    const response = await Client.group.permissionWithRoleEdit(params);
+    console.log("UpdateGroup response", response);
+    return response.data;
+  } catch (err) {
+    console.error("UpdateGroup error", err);
+    throw err; 
+  }
+};
+

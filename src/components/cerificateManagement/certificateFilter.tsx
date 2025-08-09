@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { TbXboxXFilled } from "react-icons/tb"
 import { FaFilter } from "react-icons/fa"
 import { IoMdAdd } from "react-icons/io"
 import {  FONTS } from '../../constants/uiConstants';
+import { getAllBatches } from '../../features/certificateManagement/services';
+import { getBranchService, getCourseService } from '../../features/batchManagement/services';
+import { useDispatch } from 'react-redux';
+
 
 interface CertificateFilterProps {
   showFilter: boolean
@@ -31,6 +35,55 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   setSelectedStudent,
   onAdd
 }) => {
+
+  const dispatch = useDispatch<any>();
+    const [courses, setCourses] = useState<any[]>([]);
+    const [branches, setBranches] = useState<any[]>([]);
+    const [allBatches, setAllBatches] = useState<any[]>([]);
+  
+    const fetchAllCourses = async () => {
+      try {
+        const response = await getCourseService({});
+        if (response) {
+          setCourses(response?.data);
+        }
+      } catch (error) {
+        console.log('Error fetching course data:', error);
+      }
+    };
+  
+    const fetchAllBranches = async () => {
+      try {
+        const response = await getBranchService({});
+        if (response) {
+          setBranches(response?.data);
+        }
+      } catch (error) {
+        console.log('Error fetching branch data:', error);
+      }
+    };
+  
+    const fetchAllBatches = useCallback(async () => {
+        try {
+          const response = await getAllBatches({});
+          if (response?.data) {
+            setAllBatches(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching batches:', error);
+         // toast.error('Failed to load batches');
+        }
+      }, []);
+      
+      
+  
+    useEffect(() => {
+      fetchAllBranches();
+      fetchAllCourses();
+      fetchAllBatches();
+    }, [dispatch]);
+
+
   return (
     <>
       <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
@@ -58,8 +111,11 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             >
               
               <option value="">All</option>
-              <option value="MERN">MERN</option>
-              <option value="Python">Python</option>
+             {courses?.map((course: any) => (
+                  <option key={course?.uuid} value={course?.uuid}>
+                    {course?.course_name}
+                  </option>
+                ))}
             </select>
           </div>
           <div>
@@ -71,8 +127,11 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               style={{ ...FONTS.heading_08 }}
             >
               <option value="">All</option>
-              <option value="OMR">OMR</option>
-              <option value="Padur">Padur</option>
+               {branches?.map((branch: any) => (
+                  <option key={branch?._id} value={branch?.branch_identity}>
+                    {branch?.branch_identity}
+                  </option>
+                ))}
             </select>
           </div>
           <div>
@@ -85,8 +144,11 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             >
             
               <option value="">All</option>
-              <option value="MERN 2025">MERN 2025</option>
-              <option value="Python 2024">Python 2024</option>
+               {allBatches?.map((batch) => (
+											<option key={batch._id} value={batch._id}>
+												{batch.batch_name}
+											</option>
+										))}
             </select>
           </div>
           <div>

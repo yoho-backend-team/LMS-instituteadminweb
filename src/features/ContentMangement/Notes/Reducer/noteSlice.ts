@@ -21,7 +21,7 @@ const noteSlice = createSlice({
       state.data = action.payload;
     },
     addNote: (state: any, action) => {
-      state.data.push(action.payload);
+      state.data = [...state.data, ...action.payload];
     },
     EditsNote: (state: any, action) => {
       state.data = state.data.map((note: any) =>
@@ -35,11 +35,27 @@ const noteSlice = createSlice({
         (note: any) => note.uuid !== action.payload
       );
     },
-    setBranches: (state: any, action) => {
+    setBranches: (state, action) => {
       state.branches = action.payload;
     },
-    setCourses: (state: any, action) => {
+    setCourses: (state, action) => {
       state.courses = action.payload;
+    },
+    updateNoteStatus: (state: any, action) => {
+      const updatedNote = action.payload;
+
+      if (!updatedNote || !updatedNote.uuid) return;
+
+      const index = state.data.findIndex(
+        (item: any) => item.uuid === updatedNote.uuid
+      );
+
+      if (index !== -1) {
+        state.data[index] = {
+          ...state.data[index],
+          isActive: updatedNote.isActive,
+        };
+      }
     },
   },
 });
@@ -53,6 +69,7 @@ export const {
   deleteNote,
   setBranches,
   setCourses,
+  updateNoteStatus,
 } = noteSlice.actions;
 
 export default noteSlice.reducer;

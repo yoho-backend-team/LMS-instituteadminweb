@@ -7,6 +7,7 @@ import {
   deleteNote,
   setBranches,
   setCourses,
+  updateNoteStatus,
 } from "./noteSlice";
 
 import {
@@ -15,9 +16,10 @@ import {
   updateNote,
   deleteNote as deleteNoteApi,
   uploadFile,
-  BranchDrop,
   CourseDrop,
+  ToggleNoteStatus,
 } from "../Services/index";
+import { getBranch } from "./selectors";
 
 // Fetch Notes
 export const fetchNotesThunk = (params: any) => async (dispatch: any) => {
@@ -45,17 +47,23 @@ export const createNoteThunk = (data: any) => async (dispatch: any) => {
     let payload = { ...data };
     if (payload.file instanceof File) {
       const uploadRes = await uploadFile(payload.file);
-      payload.file = uploadRes.data?.data?.file;
-      delete payload.fileName;
+      if (uploadRes?.data?.file) {
+        payload.file = uploadRes.data.file;
+      } else {
+        throw new Error("File upload failed");
+      }
     }
     payload.slug = payload.title;
-    payload.institute = "67f3a26df4b2c530acd16419";
-    payload.is_active = true;
-    delete payload.isActive;
-
-    const response = await createNote(payload);
-    dispatch(addNote(response.data.data));
+    payload.is_active = payload.isActive ?? true;
+    const result = await createNote(payload);
+    dispatch(addNote(result));
+    // console.log("Added Notes:", result);
+    return result;
   } catch (error: any) {
+    console.error(
+      "Error in AddNoteThunks",
+      error.response?.data || error.message || error
+    );
     dispatch(
       setError(
         error.response?.data?.message ||
@@ -72,7 +80,7 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
     let payload = { ...data };
     if (payload.file instanceof File) {
       const uploadRes = await uploadFile(payload.file);
-      console.log(uploadRes, "upload");
+      // console.log(uploadRes, "upload");
       if (uploadRes) {
         payload.file = uploadRes.data?.file;
       } else {
@@ -86,7 +94,7 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
       delete payload.file;
     }
     const response = await updateNote(payload);
-    console.log("update:", response);
+    // console.log("update:", response);
     dispatch(EditsNote(response.data.data));
   } catch (error: any) {
     dispatch(
@@ -116,34 +124,47 @@ export const deleteNoteThunk = (id: string) => async (dispatch: any) => {
 };
 
 // Branch Dropdown
-export const fetchBranchesThunk = () => async (dispatch: any) => {
-  dispatch(setLoading(true));
+export const GetBranchThunks = (params: any) => async (dispatch: any) => {
   try {
-    const response = await BranchDrop({});
-    const branches = response?.data?.branch ?? [];
-
-    dispatch(setBranches(branches));
+    const result = await getBranch(params);
+    dispatch(setBranches(result));
+    return result.data;
   } catch (error: any) {
-    dispatch(setError("Failed to fetch branches"));
-  } finally {
-    dispatch(setLoading(false));
+    console.error("Error fetching branches:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch branches"
+    );
   }
 };
 
+//Course Dropodown
 export const fetchCoursesByBranchThunk =
-  (payload: { branchId: string; instituteId: string }) =>
-  async (dispatch: any) => {
-    dispatch(setLoading(true));
+  (params: any) => async (dispatch: any) => {
     try {
-      const response = await CourseDrop({
-        branch_id: payload.branchId,
-        institute_id: payload.instituteId,
-      });
-      const courses = response?.data ?? [];
-      dispatch(setCourses(courses));
+      const result = await CourseDrop(params);
+      dispatch(setCourses(result));
+      return result.data;
     } catch (error: any) {
-      dispatch(setError("Failed to fetch courses"));
-    } finally {
-      dispatch(setLoading(false));
+      console.error("Error fetching courses:", error.message || error);
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch courses"
+      );
     }
   };
+
+
+//Toggle Status Thuck
+export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
+  try {
+    const updated = await ToggleNoteStatus(data);
+    // console.log("API response in Thunk:", updated);
+    dispatch(
+      updateNoteStatus({
+        uuid: data._id, 
+        isActive: data.status === "active", 
+      })
+    );
+  } catch (error) {
+    console.error("Error toggling status:", error);
+  }
+};

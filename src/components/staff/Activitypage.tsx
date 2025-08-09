@@ -30,13 +30,20 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, description, timesta
   );
 };
 
-const Activitypage: React.FC = () => {
+interface activityId {
+  activityId: any;
+}
+
+
+const Activitypage: React.FC<activityId> = (activityId) => {
   const dispatch = useDispatch<any>();
   const activity = useSelector(selectActivity);
   const activityData = activity?.data?.logs || [];
 
+  // console.log("activity",activityId?.activityId);
+
   useEffect(() => {
-    dispatch(getActivityData({ staff: "someStaffId" })); // ✅ replace with actual staff ID
+    dispatch(getActivityData({ staff: activityId?.activityId }));
   }, [dispatch]);
 
   return (

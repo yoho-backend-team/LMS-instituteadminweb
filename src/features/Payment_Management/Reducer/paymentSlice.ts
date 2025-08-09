@@ -8,9 +8,9 @@ const   PaymentSlice = createSlice({
     },
     reducers: {
      
-        createpaymentdeatils: (state,action) =>{
+        createpaymentdeatils: (state,action) =>{s
             state.data = action.payload;
-        }
+        },
         
     },
 });

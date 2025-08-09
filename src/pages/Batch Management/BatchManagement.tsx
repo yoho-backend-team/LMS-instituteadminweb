@@ -40,7 +40,6 @@ export default function BatchManagement() {
 			const response = await getCourseService({});
 			if (response) {
 				setCourses(response?.data);
-				// console.log('Courses fetched successfully:', response);
 			} else {
 				console.log('No courses found');
 			}

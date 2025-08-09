@@ -88,7 +88,6 @@ const StudentDetails = () => {
             if (response) {
                 toast.success(response.message);
                 setAlertModal(false);
-                // Refresh attendance data
                 const updatedResponse = await getStudentAttendance({ id });
                 setAttendance(updatedResponse?.data);
             }

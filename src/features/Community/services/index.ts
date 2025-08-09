@@ -27,17 +27,17 @@ export const getMessage = async (params: any) => {
 };
 
 
-// export const getMessages = async (params: any) => {
-//   try {
-//     const response = await Client.community.getMessages(params);
-//     if (response) {
-//       return response;
-//     }
-//   } catch (error) {
-//     console.error("All Messages fetch error:", error);
-//     return null;
-//   }
-// };
+ export const getMessages = async (params: any) => {
+  try {
+    const response = await Client.community.getMessages(params);
+    if (response) {
+      return response;
+    }
+  } catch (error) {
+    console.error("All Messages fetch error:", error);
+    return null;
+  }
+};
 
 
 export const getCommunityMessage = async (params: any) => {

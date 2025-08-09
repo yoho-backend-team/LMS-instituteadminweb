@@ -45,6 +45,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		InstructorOption[]
 	>([]);
 
+	// Format time to 12-hour format for display
 	const formatTimeTo12Hour = (timeString: string) => {
 		if (!timeString || !timeString.includes('T')) return '';
 		const timePart = timeString.split('T')[1].split(':');
@@ -56,6 +57,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		return `${hours}:${minutes} ${ampm}`;
 	};
 
+	// Convert 12-hour format to 24-hour format for API
 	const convertTo24Hour = (time12h: string) => {
 		if (!time12h) return '';
 		const [time, modifier] = time12h.split(' ');
@@ -107,20 +109,20 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 			classDate: Yup.string().required('Class Date is required'),
 			startTime: Yup.string()
 				.required('Start Time is required')
-				.matches(
-					/^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$/i,
-					'Time must be in HH:MM AM/PM format'
-				),
+				.test('valid-time', 'Invalid time format (HH:MM AM/PM)', (value) => {
+					if (!value) return false;
+					return /^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$/i.test(value);
+				}),
 			liveLink: Yup.string().required('Live Link is required'),
 			instructors: Yup.array()
 				.min(1, 'At least one instructor is required')
 				.required('Instructor is required'),
 			endTime: Yup.string()
 				.required('End Time is required')
-				.matches(
-					/^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$/i,
-					'Time must be in HH:MM AM/PM format'
-				)
+				.test('valid-time', 'Invalid time format (HH:MM AM/PM)', (value) => {
+					if (!value) return false;
+					return /^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$/i.test(value);
+				})
 				.test(
 					'is-after-start',
 					'End Time must be after Start time',
@@ -183,7 +185,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 		);
 	};
 
-	// Handle time input change with proper formatting
+	// Handle time input change
 	const handleTimeChange = (field: 'startTime' | 'endTime', value: string) => {
 		// Allow empty value
 		if (value === '') {
@@ -191,31 +193,68 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 			return;
 		}
 
-		// Basic validation for partial input
-		const partialTimeRegex =
-			/^([0-9]|0[0-9]|1[0-2]):?([0-5][0-9])? ?([AP]M)?$/i;
-		if (!partialTimeRegex.test(value)) return;
+		// Basic validation - allow digits, colon, and AM/PM
+		const validCharsRegex = /^[0-9:apmAPM\s]*$/i;
+		if (!validCharsRegex.test(value)) return;
 
-		// Format the value as user types
-		let formattedValue = value.toUpperCase();
+		// Update the field value directly
+		formik.setFieldValue(field, value);
+	};
 
-		// Add colon after 2 digits if not present
-		if (/^\d{2}[^:]/.test(formattedValue)) {
-			formattedValue = `${formattedValue.substring(
-				0,
-				2
-			)}:${formattedValue.substring(2)}`;
+	// Format time on blur
+	const handleTimeBlur = (field: 'startTime' | 'endTime', value: string) => {
+		if (!value) {
+			formik.setFieldTouched(field, true);
+			return;
 		}
 
-		// Add space before AM/PM if not present
-		if (/\d[AP]M$/i.test(formattedValue)) {
-			formattedValue = `${formattedValue.substring(
-				0,
-				formattedValue.length - 2
-			)} ${formattedValue.substring(formattedValue.length - 2)}`;
+		// Try to parse and format the time
+		try {
+			// Remove all whitespace and make uppercase
+			let cleanValue = value.replace(/\s/g, '').toUpperCase();
+
+			// Extract numbers only
+			const numbers = cleanValue.replace(/[^0-9]/g, '');
+
+			// If we have at least 1 number
+			if (numbers.length > 0) {
+				let hours = numbers.slice(0, 2);
+				let minutes = numbers.slice(2, 4);
+				let period = cleanValue.includes('PM') ? 'PM' : 'AM';
+
+				// Validate hours (1-12)
+				const hoursNum = parseInt(hours, 10);
+				if (hoursNum > 12) {
+					hours = '12';
+					period = 'PM';
+				} else if (hoursNum < 1) {
+					hours = '12';
+					period = 'AM';
+				} else {
+					hours = String(hoursNum);
+				}
+
+				// Validate minutes (00-59)
+				const minutesNum = minutes ? parseInt(minutes, 10) : 0;
+				if (minutesNum > 59) minutes = '59';
+				else if (minutesNum < 10)
+					minutes = minutes ? minutes.padStart(2, '0') : '00';
+
+				// If no period specified, use AM
+				if (!cleanValue.includes('AM') && !cleanValue.includes('PM')) {
+					period = 'AM';
+				}
+
+				// Format the final value
+				const formattedTime = `${hours}:${minutes || '00'} ${period}`;
+				formik.setFieldValue(field, formattedTime);
+			}
+		} catch (e) {
+			// If formatting fails, keep the original value (validation will catch it)
 		}
 
-		formik.setFieldValue(field, formattedValue);
+		// Trigger formik's blur handler
+		formik.setFieldTouched(field, true);
 	};
 
 	if (!isOpen) return null;
@@ -326,7 +365,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 										onChange={(e) =>
 											handleTimeChange('startTime', e.target.value)
 										}
-										onBlur={formik.handleBlur}
+										onBlur={(e) => handleTimeBlur('startTime', e.target.value)}
 										className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 										style={{
 											...FONTS.heading_08_bold,
@@ -358,7 +397,7 @@ const EditLiveClass: React.FC<EditBatchModalProps> = ({
 										onChange={(e) =>
 											handleTimeChange('endTime', e.target.value)
 										}
-										onBlur={formik.handleBlur}
+										onBlur={(e) => handleTimeBlur('endTime', e.target.value)}
 										className='w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#1BBFCA] focus:border-transparent'
 										style={{
 											...FONTS.heading_08_bold,

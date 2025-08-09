@@ -9,7 +9,6 @@ import fileIcon from "../../assets/icons/FileIcon.svg";
 import titleIcon from "../../assets/icons/Mask group (2).svg";
 import uploadIcon from "../../assets/icons/upload (2).svg";
 import filterIcon from "../../assets/icons/filter.png";
-import StudyDetailModal from "./StudyDetailModal";
 import { NoteCard } from "./StudyMaterialCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -60,7 +59,7 @@ const NotesManagement = () => {
     {
       id: 2,
       title: "Leo",
-       uuid: "",
+      uuid: "",
       description: "Introduction to React components and JSX",
       course: "React Full Stack",
       branch: "CSE",
@@ -73,6 +72,7 @@ const NotesManagement = () => {
   const dispatch = useDispatch<any>();
   const studyMaterials = useSelector(selectStudyMaterials);
   const branches = useSelector(selectBranches);
+  const courses = useSelector(selectCourses);
 
   useEffect(() => {
     const params = {
@@ -118,13 +118,32 @@ const NotesManagement = () => {
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const filterOptions = [
-    { label: "Status", value: "status", options: ["", "Active", "Completed"] },
-    { label: "Course", value: "course", options: ["", "React", "Node.js"] },
-  ];
-
-  const courses = useSelector(selectCourses);
   console.log("courses", courses);
+  console.log("studyMaterials", studyMaterials);
+
+  // Create mapping objects for course name/ID conversion
+  const courseNameToIdMap = courses.reduce((acc: any, course: any) => {
+    acc[course.course_name] = course._id;
+    return acc;
+  }, {});
+
+  const courseIdToNameMap = courses.reduce((acc: any, course: any) => {
+    acc[course._id] = course.course_name;
+    return acc;
+  }, {});
+
+  const filterOptions = [
+    {
+      label: "Status",
+      value: "status",
+      options: ["", "Active", "Completed"],
+    },
+    {
+      label: "Course",
+      value: "course",
+      options: ["", ...courses.map((course: any) => course.course_name)],
+    },
+  ];
 
   const formFields = [
     {
@@ -201,6 +220,12 @@ const NotesManagement = () => {
         await dispatch(createStudyMaterialThunk(payload));
       }
 
+      const paramsData = {
+        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        page: 1,
+      };
+      dispatch(fetchStudyMaterialsThunk(paramsData));
+
       resetForm();
     } catch (error) {
       console.error("Error in submission:", error);
@@ -238,6 +263,12 @@ const NotesManagement = () => {
   const handleDelete = async (id: string) => {
     try {
       await dispatch(deleteStudyMaterialThunk(id));
+
+      const paramsData = {
+        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        page: 1,
+      };
+      dispatch(fetchStudyMaterialsThunk(paramsData));
     } catch (error) {
       console.error("Failed to delete:", error);
     }
@@ -256,46 +287,81 @@ const NotesManagement = () => {
     });
     setUploadedFile(null);
   };
-  console.log("study", studyMaterials);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilterValues((prev) => ({ ...prev, [key]: value }));
   };
 
-const handleToggleStatus = async (
-  uuid: string,
-  currentStatus: "Active" | "Completed"
-) => {
-  try {
-    const toggledStatus = currentStatus === "Active" ? true : false;
+  const handleToggleStatus = async (
+    uuid: string,
+    currentStatus: "Active" | "Completed"
+  ) => {
+    try {
+      const toggledStatus = currentStatus === "Active" ? true : false;
 
-    const payload = {
-      id: uuid,
-      is_active: toggledStatus, // true if toggled to Active
-    };
+      const payload = {
+        id: uuid,
+        is_active: toggledStatus,
+      };
 
-    await updateStudyMaterialStatus(payload);
+      await updateStudyMaterialStatus(payload);
 
-    dispatch(fetchStudyMaterialsThunk({
-      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      page: 1
-    }));
-  } catch (error) {
-    console.error("Status update failed:", error);
-  }
-};
-
-
-
+      dispatch(
+        fetchStudyMaterialsThunk({
+          branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+          page: 1,
+        })
+      );
+    } catch (error) {
+      console.error("Status update failed:", error);
+    }
+  };
 
   const filteredNotes = Array.isArray(studyMaterials)
-    ? studyMaterials.filter((note: Note) => {
-        const statusMatch = filterValues.status
-          ? note.status === filterValues.status
-          : true;
-        const courseMatch = filterValues.course
-          ? note.course === filterValues.course
-          : true;
+    ? studyMaterials.filter((note: any) => {
+        console.log("Filtering note:", note);
+        console.log("Filter values:", filterValues);
+
+        let statusMatch = true;
+        if (filterValues.status) {
+          if (note.status) {
+            statusMatch = note.status === filterValues.status;
+          } else if (typeof note.is_active === "boolean") {
+            statusMatch =
+              filterValues.status === "Active"
+                ? note.is_active === true
+                : note.is_active === false;
+          } else if (typeof note.active === "boolean") {
+            statusMatch =
+              filterValues.status === "Active"
+                ? note.active === true
+                : note.active === false;
+          } else if (note.status === "active" || note.status === "inactive") {
+            statusMatch =
+              (filterValues.status === "Active" && note.status === "active") ||
+              (filterValues.status === "Completed" &&
+                note.status === "inactive");
+          }
+        }
+
+        let courseMatch = true;
+        if (filterValues.course) {
+          if (note.course_name) {
+            courseMatch = note.course_name === filterValues.course;
+          } else if (note.course) {
+            const filterCourseId = courseNameToIdMap[filterValues.course];
+            courseMatch =
+              note.course === filterCourseId ||
+              note.course === filterValues.course;
+          } else if (note.courseName) {
+            courseMatch = note.courseName === filterValues.course;
+          }
+        }
+
+        console.log(
+          `Note ${note.title}: Status match = ${statusMatch}, Course match = ${courseMatch}`
+        );
+
         return statusMatch && courseMatch;
       })
     : [];
@@ -320,20 +386,30 @@ const handleToggleStatus = async (
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4">
-          {filteredNotes.map((note: any) => {
-            return (
-              <NoteCard
-                key={note.id}
-                note={note}
-                onView={(note: any) => setSelectedNote(note)}
-                onEdit={handleEdit}
+          {filteredNotes.length > 0 ? (
+            filteredNotes.map((note: any) => {
+              return (
+                <NoteCard
+                  key={note.id || note.uuid}
+                  note={note}
+                  onEdit={handleEdit}
+                  onView={(note: any) => setSelectedNote(note)}
                   onToggleStatus={handleToggleStatus}
-                onDelete={() => handleDelete(note.uuid)}
-                fileIcon={fileIcon}
-                titleIcon={titleIcon}
-              />
-            );
-          })}
+                  onDelete={() => handleDelete(note.uuid)}
+                  fileIcon={fileIcon}
+                  titleIcon={titleIcon}
+                />
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center py-8">
+              <p className="text-gray-500">
+                {filterValues.status || filterValues.course
+                  ? "No study materials match the current filters"
+                  : "No study materials found"}
+              </p>
+            </div>
+          )}
         </div>
 
         <NoteModal
@@ -350,14 +426,6 @@ const handleToggleStatus = async (
           onFileChange={setUploadedFile}
           fields={formFields}
         />
-
-        {selectedNote && (
-          <StudyDetailModal
-            isOpen={!!selectedNote}
-            note={selectedNote}
-            onClose={() => setSelectedNote(null)}
-          />
-        )}
       </div>
     </div>
   );

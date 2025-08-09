@@ -4,22 +4,15 @@ import { fetchCommunityMessages } from "../../features/Community/Reducers/thunks
 import { selectMessages } from "../../features/Community/Reducers/selectors"; 
 import LeftSide from "./LeftSide";
 import ChatView from "./ChatView";
-// import { AppDispatch } from '../../store';
+import type { AppDispatch } from "../../app/store";
 
-interface Message {
-  sender: string;
-  text: string;
-  time: string;
-}
 
-const batches = ["MERN 2025", "MEAN STACK 2024"];
 
 const Communitys: React.FC = () => {
-  const dispatch = useDispatch();
-  const messages = useSelector(selectMessages); 
-// const [selectedBatch, setSelectedBatch] = useState<string>(""); // no null
+  const dispatch = useDispatch<AppDispatch>();
+  const messages = useSelector(selectMessages);
 
-   const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -32,43 +25,39 @@ const Communitys: React.FC = () => {
     phone: "+91 98765 43265",
   });
 
+  // 🧠 Whenever selectedBatch changes → fetch messages
   useEffect(() => {
-    
-      dispatch(fetchCommunityMessages({ batch: "688deada6f788de6b9237b53" }));
-    
+    if (selectedBatch) {
+      dispatch(fetchCommunityMessages({ batch: selectedBatch }));
+    }
   }, [selectedBatch, dispatch]);
 
-  const handleSendMessage = () => { 
+  const handleSendMessage = () => {
     if (!message.trim()) return;
 
-    const newMsg: Message = {
-      sender: "user",
-      text: message.trim(),
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    
     console.warn("This just updates locally. Add send message API later.");
-      // setMessages((prev) => [...prev, newMsg]);
-
     setMessage("");
   };
 
-  const handleDeleteMessage = (index: number) => {
-    
+  const handleDeleteMessage = () => {
     console.warn("Implement delete message API later");
   };
+
+  const dummyBatches = [
+    { _id: "688deada6f788de6b9237b53", group: "MERN 2025" },
+    { _id: "688deada6f788de6b9237b54", group: "SVS batch" },
+    { _id: "688deada6f788de6b9237b55", group: "PYTHON 2025" },
+    { _id: "688deada6f788de6b9237b56", group: "C++ 2025" },
+    { _id: "688deada6f788de6b9237b57", group: "mysql 2025" },
+  ];
 
   return (
     <div className="flex justify-between w-full gap-6 bg-white font-poppins">
       <LeftSide
-        batches={batches}
+        batches={dummyBatches}
         selectedBatch={selectedBatch}
-        onSelectBatch={(batch) => {
-          setSelectedBatch(batch);
+        onSelectBatch={(batchId) => {
+          setSelectedBatch(batchId); // This triggers chat load
           setShowProfile(false);
         }}
       />
@@ -81,9 +70,7 @@ const Communitys: React.FC = () => {
           onSendMessage={handleSendMessage}
           onDeleteMessage={handleDeleteMessage}
           selectedBatch={selectedBatch}
-          onClose={() => {
-            setSelectedBatch(null);
-          }}
+          onClose={() => setSelectedBatch(null)}
           showProfile={showProfile}
           setShowProfile={setShowProfile}
           profileData={profileData}

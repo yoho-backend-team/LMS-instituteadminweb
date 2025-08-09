@@ -1,4 +1,4 @@
-import React, { useRef,useState } from "react";
+import React, { useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatBg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
@@ -13,9 +13,6 @@ import clock from "../../assets/navbar/clock.png";
 import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 
-
-
-
 interface Message {
   sender: string;
   text: string;
@@ -23,8 +20,7 @@ interface Message {
 }
 
 interface Props {
-  
-  selectedBatch: string;
+  selectedBatch: { _id: string; group: string } | null;
   messages: Message[];
   message: string;
   onChangeMessage: (msg: string) => void;
@@ -57,24 +53,18 @@ const ChatView: React.FC<Props> = ({
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
-
-
-
-
   return (
     <div className=" h-[83vh] grow  shadow-lg font-poppins rounded-xl ">
-
-
-       <div className=" rounded-lg shadow md:px-6 flex flex-col  pb-6  h-full"> 
+      <div className=" rounded-lg shadow md:px-6 flex flex-col  pb-6  h-full">
         {/* Top Bar */}
-        <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4"
-        onClick={() => setShowProfile(true)}
+        <div
+          className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4"
+          onClick={() => setShowProfile(true)}
         >
           <img
             src={circle}
             alt="batch"
             className="w-12 h-12 rounded-full mr-4"
-            
           />
           <div>
             <p className="text-[#7D7D7D] font-bold text-sm">MERN 2025</p>
@@ -166,7 +156,7 @@ const ChatView: React.FC<Props> = ({
         <div className=" flex items-center ">
           <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow">
             {/* Emoji icon inside input */}
-            <span className="pl-3 pr-2" >
+            <span className="pl-3 pr-2">
               <img src={emojiIcon} alt="emoji" className="w-5 h-5 -gap-3" />
             </span>
 
@@ -189,77 +179,78 @@ const ChatView: React.FC<Props> = ({
           </div>
 
           {/* Send button placed absolutely outside input box */}
-          <button
-            onClick={onSendMessage}
-            className="p-1 mt-2"
-          >
+          <button onClick={onSendMessage} className="p-1 mt-2">
             <img src={send} alt="send" className="w-[50px] h-[50px]" />
           </button>
         </div>
       </div>
 
       {/* Profile Panel */}
-{showProfile && (
-  <div className="absolute top-23 right-6 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
-    
-    {/* Fixed Header */}
-    <div className="p-4 border-b flex flex-col items-center shrink-0">
-      <div className="w-full flex justify-end mb-2">
-        <button onClick={() => setShowProfile(false)}>
-          <img src={cancel} alt="cancel" className="w-5 h-5" />
-        </button>
-      </div>
-      <img src={image} alt="profile" className="w-24 h-24 rounded-full mb-3" />
-      <h2 className="text-lg font-semibold text-[#716F6F]">
-        {profileData.name}
-      </h2>
-      <p className="text-green-500 text-sm">Online</p>
-    </div>
+      {showProfile && (
+        <div className="absolute top-23 right-6 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
+          {/* Fixed Header */}
+          <div className="p-4 border-b flex flex-col items-center shrink-0">
+            <div className="w-full flex justify-end mb-2">
+              <button onClick={() => setShowProfile(false)}>
+                <img src={cancel} alt="cancel" className="w-5 h-5" />
+              </button>
+            </div>
+            <img
+              src={image}
+              alt="profile"
+              className="w-24 h-24 rounded-full mb-3"
+            />
+            <h2 className="text-lg font-semibold text-[#716F6F]">
+              {profileData.name}
+            </h2>
+            <p className="text-green-500 text-sm">Online</p>
+          </div>
 
-    {/*  Scrollable Content */}
-    <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
-      {/* About */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="font-semibold text-[#716F6F]">About</h3>
-          <p>{profileData.about}</p>
+          {/*  Scrollable Content */}
+          <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
+            {/* About */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-[#716F6F]">About</h3>
+                <p>{profileData.about}</p>
+              </div>
+
+              {/* Personal Info */}
+              <div>
+                <h3 className="font-semibold text-[#716F6F]">
+                  Personal Information
+                </h3>
+                <ul className="space-y-2 mt-2">
+                  <li className="flex items-center gap-2">
+                    <img src={box} alt="email" className="w-4 h-4" />
+                    <span>{profileData.email}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <img src={clock} alt="availability" className="w-4 h-4" />
+                    <span>{profileData.availability}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <img src={phone} alt="phone" className="w-4 h-4" />
+                    <span>{profileData.phone}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Staff Section */}
+            <div className="mt-6">
+              <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
+              <p>No Staffs Found</p>
+            </div>
+
+            {/* Students Section */}
+            <div className="mt-6">
+              <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
+              <p>No Students Found</p>
+            </div>
+          </div>
         </div>
-
-        {/* Personal Info */}
-        <div>
-          <h3 className="font-semibold text-[#716F6F]">Personal Information</h3>
-          <ul className="space-y-2 mt-2">
-            <li className="flex items-center gap-2">
-              <img src={box} alt="email" className="w-4 h-4" />
-              <span>{profileData.email}</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <img src={clock} alt="availability" className="w-4 h-4" />
-              <span>{profileData.availability}</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <img src={phone} alt="phone" className="w-4 h-4" />
-              <span>{profileData.phone}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Staff Section */}
-      <div className="mt-6">
-        <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
-        <p>No Staffs Found</p>
-      </div>
-
-      {/* Students Section */}
-      <div className="mt-6">
-        <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
-        <p>No Students Found</p>
-      </div>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };

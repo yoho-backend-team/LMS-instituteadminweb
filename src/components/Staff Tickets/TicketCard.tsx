@@ -27,7 +27,7 @@ const TicketCard: React.FC<TicketProps> = ({
 
   const handleResolve = () => {
     setShowMenu(false);
-    navigate(`/tickets/${id}`);
+    navigate(`/staff-tickets/${id}`);
   };
 
   return (

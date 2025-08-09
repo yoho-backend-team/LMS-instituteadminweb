@@ -22,6 +22,7 @@ const MainPage: React.FC = () => {
   console.log("staffselect :", staffMember);
   const navigate = useNavigate();
 
+
   const handleback = () => {
     navigate(-1);
   };
@@ -41,7 +42,8 @@ const MainPage: React.FC = () => {
     <div className="max-w-6xl mx-auto p-6">
       <IoMdArrowRoundBack onClick={handleback} className="h-10 w-10 text-[#1BBFCA] mb-2 cursor-pointer" />
       <Card className="p-6 mb-6 flex flex-col md:flex-row justify-between items-center bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-        <div className="flex items-center gap-4">
+        <div className="flex items-
+        center gap-4">
           <Avatar className='!w-[70px] !h-[70px]'> 
             <AvatarImage src={GetImageUrl(staffMember?.image)} alt={staffMember?.full_name} />
           </Avatar>
