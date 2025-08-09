@@ -29,8 +29,7 @@ class Client {
 		permissionWithRole: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.group.permissions, data),
 		permissionWithRoleEdit: (data: any) =>
-			HttpClient.update(HTTP_END_POINTS.group.permissions,
-				data),
+			HttpClient.update(HTTP_END_POINTS.group.permissions, data),
 		updateStatus: (data: any) =>
 			HttpClient.update(HTTP_END_POINTS.group.update_status, data),
 		delete: (data: any) =>
@@ -82,7 +81,6 @@ class Client {
 				HTTP_END_POINTS.faq.update.replace(':uuid', uuid),
 				data
 			),
-
 	};
 	faq_category = {
 		create: (data: any) =>
@@ -219,7 +217,9 @@ class Client {
 				data
 			),
 		delete: (data: any) =>
-			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.id),
+			HttpClient.delete(
+				HTTP_END_POINTS.online_class.delete.replace(':classId', data?.uuid)
+			),
 	};
 	offline_class = {
 		create: (data: any) =>
@@ -307,7 +307,8 @@ class Client {
 	staff = {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
-		getCourse: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
+		getCourse: (params: any) =>
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
 		getWithId: (params: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
@@ -323,10 +324,7 @@ class Client {
 			HttpClient.delete(HTTP_END_POINTS.staff.delete, query),
 		getall: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.staff.getWithBranch.replace(
-					':courseUUID',
-					params?.uuid
-				),
+				HTTP_END_POINTS.staff.getWithName.replace(':courseUUID', params?.uuid),
 				{}
 			),
 		getWithCourse: (params: any) =>
@@ -463,7 +461,9 @@ class Client {
 
 			resend_all_notification: (data: any) =>
 				HttpClient.post(
-					HTTP_END_POINTS.notification.all_notification_resend, data),
+					HTTP_END_POINTS.notification.all_notification_resend,
+					data
+				),
 		},
 	};
 	institute_notification = {
@@ -505,10 +505,10 @@ class Client {
 			HttpClient.get(
 				HTTP_END_POINTS.subscription.status_check + params.institute
 			),
-		upgrade_request: ({ institute, body }: { institute: string, body: any }) =>
+		upgrade_request: ({ institute, body }: { institute: string; body: any }) =>
 			HttpClient.update(
-				HTTP_END_POINTS.subscription.upgrade_request +
-				institute + '/request', body
+				HTTP_END_POINTS.subscription.upgrade_request + institute + '/request',
+				body
 			),
 	};
 	activity = {
@@ -529,8 +529,6 @@ class Client {
 			HttpClient.get(HTTP_END_POINTS.placements.getById, params),
 		delete: (params: any) =>
 			HttpClient.delete(HTTP_END_POINTS.placements.delete + params),
-
-
 	};
 	notificatinsubscription = {
 		post: (data: any) =>
@@ -538,17 +536,25 @@ class Client {
 	};
 
 	certificate = {
-		getAll: (params: any) => HttpClient.get(HTTP_END_POINTS.certificate.get.replace(':certificateId', params?.certificateId), params),
-
-
-	}
+		getAll: (params: any) =>
+			HttpClient.get(
+				HTTP_END_POINTS.certificate.get.replace(
+					':certificateId',
+					params?.certificateId
+				),
+				params
+			),
+	};
 
 	helpcenter = {
-		getall: (data: any) => HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
-		post: (data: any) => HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
-		delete: (id: string) => HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
+		getall: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
+		post: (data: any) =>
+			HttpClient.post(HTTP_END_POINTS.helpcenter.getall, data),
+		delete: (id: string) =>
+			HttpClient.delete(`${HTTP_END_POINTS.helpcenter.delete}${id}`),
 		update: (data: any, id: string) =>
-			HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data)
-	}
+			HttpClient.update(`${HTTP_END_POINTS.helpcenter.update}${id}`, data),
+	};
 }
 export default new Client();
