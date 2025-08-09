@@ -8,7 +8,6 @@ import {
   CreateRefundThunk,
   GetStudentsWithBatchThunks,
   GetStudentFeeThunks,
-  UpdateRefundThunk,
 } from "../../features/Refund_management/Reducer/refundThunks";
 
 import {
@@ -26,6 +25,7 @@ import {
   Branch,
   BranchCourse,
 } from "../../features/Content_Management/reducers/selectors";
+import { updateRefund } from "../../features/Refund_management/Service";
 
 interface RefundAddProps {
   onClose: () => void;
@@ -107,11 +107,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   useEffect(() => {
     if (editData) {
       setBranchId(editData.branch);
-      setSelectedCourse(editData.studentInfo);
-      setSelectedBatch(editData.branch);
+      setSelectedCourse(editData.courseId || "");
+      setSelectedBatch(editData.batchId || "");
       setSelectedStudent(editData.studentId);
-      setSelectedFee(editData.paid === "Paid" ? "INR 20,000" : "");
-      setAmount(editData.payment.replace(/,/g, ""));
+      setSelectedFee(editData.feeId || "");
+      setAmount(editData.payment.replace(/,/g, "") || "");
     } else {
       setBranchId("");
       setSelectedCourse("");
@@ -120,7 +120,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       setSelectedFee("");
       setAmount("");
     }
-
     setErrors({
       branchId: false,
       selectedCourse: false,
@@ -130,7 +129,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       amount: false,
     });
   }, [editData]);
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors = {
@@ -144,11 +144,33 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
+    const selectedBatchObj = batches.find(
+      (batch: any) => batch.uuid === selectedBatch
+    );
+    const selectedStudentObj = students.find(
+      (stu: any) => stu.uuid === selectedStudent
+    );
 
-    const selectedFeeObj = (fees?.fees || []).find((fee: any) => fee._id === selectedFee);
+    const batchIdForAPI = selectedBatchObj?._id || "";
+    const studentIdForAPI = selectedStudentObj?._id || "";
+
+    const selectedFeeObj = (fees?.fees || []).find(
+      (fee: any) => fee._id === selectedFee
+    );
     const feeAmount = selectedFeeObj ? selectedFeeObj.amount : "0";
 
-    const newRefund: RefundData = {
+    const apiPayload = {
+      institute_id: instituteId,
+      student: studentIdForAPI,
+      branch_name: branchId,
+      course_name: selectedCourse,
+      batch_name: batchIdForAPI,
+      studentfees: selectedFee,
+      amount: parseFloat(amount) || parseFloat(feeAmount),
+      payment_date: new Date(),
+    };
+
+    const uiRefundData: RefundData = {
       refundId: editData?.refundId ?? generateRefundId(),
       studentId: selectedStudent,
       studentInfo: selectedCourse,
@@ -159,15 +181,16 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     };
 
     if (editData?.uuid) {
-      dispatch(UpdateRefundThunk({ ...newRefund, uuid: editData.uuid }));
+      const updatePayload = { uuid: editData.uuid, ...apiPayload };
+      console.log("Update: coide", editData.uuid);
+      await updateRefund(updatePayload);
     } else {
-      dispatch(CreateRefundThunk(newRefund));
+      dispatch(CreateRefundThunk(apiPayload));
       refundCounter++;
     }
-
-    onSubmit(newRefund);
+    onSubmit(uiRefundData);
+    onClose();
   };
-
 
   const getInputClass = (error: boolean) =>
     `h-10 border px-2 rounded w-full ${error ? "border-red-500" : "border-gray-300"
@@ -272,7 +295,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
               <option value="">Select Student</option>
               {students?.map((student: any) => (
                 <option key={student.uuid} value={student.uuid}>
-                  {/* <option key={student._id} value={student._id}></option> for sending Object ID */}
                   {student.full_name}
                 </option>
               ))}
@@ -288,26 +310,43 @@ const RefundAdd: React.FC<RefundAddProps> = ({
             <label>Student Fee</label>
             <select
               value={selectedFee}
-              onChange={(e) => setSelectedFee(e.target.value)}
+              onChange={(e) => {
+                const selectedFeeId = e.target.value;
+                setSelectedFee(selectedFeeId);
+                const fee = feeList.find((f: any) => f._id === selectedFeeId);
+                if (fee) {
+                  setAmount(fee.paid_amount?.toString() || "0");
+                }
+              }}
               className={getInputClass(errors.selectedFee)}
+              disabled={!selectedStudent}
             >
               <option value="">Select Fee</option>
-              {Array.isArray(feeList) && feeList.length > 0 ? (
-                feeList.map((fee: any) => {
-                  const courseName =
-                    fee?.course_id?.course_name || "Unknown Course";
-                  const coursePrice = fee?.course_price || "N/A";
+              {selectedStudent ? (
+                feeList && feeList.length > 0 ? (
+                  feeList
+                    .filter(
+                      (fee: any) =>
+                        fee.student === selectedStudent ||
+                        fee.student?.uuid === selectedStudent
+                    )
+                    .map((fee: any) => {
 
-                  return (
-                    <option key={fee._id} value={fee._id}>
-                      {courseName} – ₹{coursePrice}
-                    </option>
-                  );
-                })
+                      const paidAmount = fee?.paid_amount ?? 0;
+                      return (
+                        <option key={fee._id} value={fee._id}>
+                          Paid: ₹{paidAmount.toLocaleString()}
+                        </option>
+                      );
+                    })
+                ) : (
+                  <option disabled>No fees found for this student</option>
+                )
               ) : (
-                <option disabled>No course fees found</option>
+                <option disabled>Please select a student first</option>
               )}
             </select>
+
             {errors.selectedFee && (
               <p className="text-red-500 text-sm">Fee is required.</p>
             )}
