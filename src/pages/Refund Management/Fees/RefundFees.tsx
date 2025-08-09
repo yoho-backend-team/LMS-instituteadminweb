@@ -5,13 +5,15 @@ import { BsPlusLg } from "react-icons/bs";
 import RefundAdd from "../../../components/RefundManagement/RefundAdd";
 import RefundTable from "../../../components/RefundManagement/RefundTable";
 
-import { GetAllRefundsThunk } from "../../../features/Refund_management/Reducer/refundThunks";
-import {
-  selectRefundData
-} from "../../../features/Refund_management/Reducer/Selector";
+import { 
+  GetAllRefundsThunk, 
+  DeleteRefundThunk 
+} from "../../../features/Refund_management/Reducer/refundThunks";
+import { selectRefundData } from "../../../features/Refund_management/Reducer/Selector";
+import toast from "react-hot-toast";
 
 export interface RefundData {
-  uuid?: string; 
+  uuid?: string;
   refundId: string;
   studentId: string;
   studentInfo: string;
@@ -28,13 +30,31 @@ const RefundFees = () => {
   const [showPanel, setShowPanel] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState<RefundData | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(GetAllRefundsThunk());
   }, [dispatch]);
 
-  const filteredRefunds = refunds.filter((item: RefundData) =>
-    item.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+  const mappedRefunds: RefundData[] =
+    refunds?.map((item: any) => ({
+      uuid:  item._id || "",
+      refundId: item._id || "",
+      studentId: item.student?.roll_no || "",
+      studentInfo: `${item.student?.first_name || ""} ${
+        item.student?.last_name || ""
+      }`.trim(),
+      paid: item.amount ? item.amount.toString() : "",
+      payment: item.payment_date
+        ? new Date(item.payment_date).toLocaleDateString()
+        : "",
+      status: item.is_active ? "Active" : "Inactive",
+      branch: item.branch_name?.branch_identity || "",
+    })) || [];
+
+  const filteredRefunds = mappedRefunds.filter((item) =>
+    item.studentInfo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEdit = (data: RefundData) => {
@@ -42,13 +62,78 @@ const RefundFees = () => {
     setShowPanel(true);
   };
 
+  const handleDelete = (id: string) => {
+    setDeleteItemId(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    console.log("delete",deleteItemId)
+    if (deleteItemId) {
+      try {
+        await dispatch(DeleteRefundThunk(deleteItemId));
+       
+        dispatch(GetAllRefundsThunk());
+        setShowDeleteConfirm(false);
+        setDeleteItemId(null);
+      } catch (error) {
+        console.error("Failed to delete refund:", error);
+      }
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setDeleteItemId(null);
+  };
+
   const handleClosePanel = () => {
     setShowPanel(false);
     setEditData(null);
   };
 
+  const handleSubmitRefund = async () => {
+  try {
+    await dispatch(GetAllRefundsThunk());
+    handleClosePanel();
+    toast.success("Refund saved successfully!");
+  } catch (error) {
+    console.error("Failed to submit refund:", error);
+    toast.error("Failed to save refund. Please try again.");
+  }
+};
+
+
   return (
     <div className="relative flex flex-col gap-6">
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-30">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-96 max-w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Confirm Delete
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this refund? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add/Edit Panel */}
       {showPanel && (
         <div
@@ -61,7 +146,7 @@ const RefundFees = () => {
           >
             <RefundAdd
               onClose={handleClosePanel}
-              onSubmit={() => {}} 
+              onSubmit={handleSubmitRefund}
               editData={editData}
             />
           </div>
@@ -72,13 +157,13 @@ const RefundFees = () => {
       <div className="flex justify-between items-center">
         <input
           type="search"
-          placeholder="Search by Student ID"
+          placeholder="Search by Student Name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-80"
         />
         <div
-          className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer"
+          className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer hover:bg-[#1AACB7] transition-colors"
           onClick={() => {
             setEditData(null);
             setShowPanel(true);
@@ -94,7 +179,7 @@ const RefundFees = () => {
         <RefundTable
           data={filteredRefunds}
           onEdit={handleEdit}
-          onDelete={() => {}}
+          onDelete={handleDelete}
         />
       </div>
     </div>

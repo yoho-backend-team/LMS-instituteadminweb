@@ -39,14 +39,24 @@ export const GetAllRefundsThunk = (params?: any) => async (dispatch: any) => {
 export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
+    console.log("Creating refund with payload:", payload); 
     const res = await createRefund(payload);
+    console.log("Create refund response:", res); 
+    
     dispatch(addRefund(res.data));
+    
+    dispatch(GetAllRefundsThunk());
+    
+    return res;
   } catch (error: any) {
-    dispatch(setRefundError(error.message || "Failed to create refund"));
+    console.error("Failed to create refund:", error);
+    dispatch(setRefundError(error.response?.data?.error || error.message || "Failed to create refund"));
+    throw error;
   } finally {
     dispatch(setRefundLoading(false));
   }
 };
+
 
 //  Update refund
 export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
@@ -60,18 +70,22 @@ export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
     dispatch(setRefundLoading(false));
   }
 };
+
+
 // Delete refund
-export const DeleteRefundThunk = (payload: any) => async (dispatch: any) => {
+export const DeleteRefundThunk = (refundId: string) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    await deleteRefund(payload);
-    dispatch(deleteRefundInState(payload)); 
+     console.log("Thunk deleting refund ID:", refundId);
+    await deleteRefund(refundId); 
+    dispatch(deleteRefundInState(refundId));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to delete refund"));
   } finally {
     dispatch(setRefundLoading(false));
   }
 };
+
 
 
 // Get Course by Branch

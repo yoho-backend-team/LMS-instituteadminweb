@@ -135,44 +135,69 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       amount: false,
     });
   }, [editData]);
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
 
-  const newErrors = {
-    branchId: !branchId,
-    selectedCourse: !selectedCourse,
-    selectedBatch: !selectedBatch,
-    selectedStudent: !selectedStudent,
-    selectedFee: !selectedFee,
-    amount: !amount,
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newErrors = {
+      branchId: !branchId,
+      selectedCourse: !selectedCourse,
+      selectedBatch: !selectedBatch,
+      selectedStudent: !selectedStudent,
+      selectedFee: !selectedFee,
+      amount: !amount,
+    };
+
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
+
+    // Find actual _id from UUID for batch & student
+    const selectedBatchObj = batches.find(
+      (batch: any) => batch.uuid === selectedBatch
+    );
+    const selectedStudentObj = students.find(
+      (stu: any) => stu.uuid === selectedStudent
+    );
+
+    const batchIdForAPI = selectedBatchObj?._id || "";
+    const studentIdForAPI = selectedStudentObj?._id || "";
+
+    const selectedFeeObj = (fees?.fees || []).find(
+      (fee: any) => fee._id === selectedFee
+    );
+    const feeAmount = selectedFeeObj ? selectedFeeObj.amount : "0";
+
+    const apiPayload = {
+      institute_id: instituteId,
+      student: studentIdForAPI, 
+      branch_name: branchId, 
+      course_name: selectedCourse,
+      batch_name: batchIdForAPI,
+      studentfees: selectedFee,
+      amount: parseFloat(amount) || parseFloat(feeAmount),
+      payment_date: new Date(),
+    };
+
+    const uiRefundData: RefundData = {
+      refundId: editData?.refundId ?? generateRefundId(),
+      studentId: selectedStudent,
+      studentInfo: selectedCourse,
+      paid: selectedFee ? "Paid" : "Unpaid",
+      payment: parseInt(amount || feeAmount).toLocaleString(),
+      status: editData?.status ?? "Pending",
+      branch: selectedBatch,
+    };
+
+    if (editData?.uuid) {
+      const updatePayload = { ...apiPayload, uuid: editData.uuid };
+      dispatch(UpdateRefundThunk(updatePayload));
+    } else {
+      dispatch(CreateRefundThunk(apiPayload));
+      refundCounter++;
+    }
+    onSubmit(uiRefundData);
+     onClose();
   };
-
-  setErrors(newErrors);
-  if (Object.values(newErrors).some(Boolean)) return;
-
-  const selectedFeeObj = (fees?.fees || []).find((fee: any) => fee._id === selectedFee);
-  const feeAmount = selectedFeeObj ? selectedFeeObj.amount : "0";
-
-  const newRefund: RefundData = {
-    refundId: editData?.refundId ?? generateRefundId(),
-    studentId: selectedStudent,
-    studentInfo: selectedCourse,
-    paid: selectedFee ? "Paid" : "Unpaid",
-    payment: parseInt(amount || feeAmount).toLocaleString(),
-    status: editData?.status ?? "Pending",
-    branch: selectedBatch,
-  };
-
-  if (editData?.uuid) {
-    dispatch(UpdateRefundThunk({ ...newRefund, uuid: editData.uuid }));
-  } else {
-    dispatch(CreateRefundThunk(newRefund));
-    refundCounter++;
-  }
-
-  onSubmit(newRefund);
-};
-
 
   const getInputClass = (error: boolean) =>
     `h-10 border px-2 rounded w-full ${
@@ -279,7 +304,6 @@ const handleSubmit = (e: React.FormEvent) => {
               <option value="">Select Student</option>
               {students?.map((student: any) => (
                 <option key={student.uuid} value={student.uuid}>
-                  {/* <option key={student._id} value={student._id}></option> for sending Object ID */}
                   {student.full_name}
                 </option>
               ))}
@@ -301,13 +325,10 @@ const handleSubmit = (e: React.FormEvent) => {
               <option value="">Select Fee</option>
               {Array.isArray(feeList) && feeList.length > 0 ? (
                 feeList.map((fee: any) => {
-                  const courseName =
-                    fee?.course_id?.course_name || "Unknown Course";
-                  const coursePrice = fee?.course_price || "N/A";
-
+                  const coursePrice = fee?.total_fee || "N/A";
                   return (
                     <option key={fee._id} value={fee._id}>
-                      {courseName} – ₹{coursePrice}
+                      ₹{coursePrice}
                     </option>
                   );
                 })

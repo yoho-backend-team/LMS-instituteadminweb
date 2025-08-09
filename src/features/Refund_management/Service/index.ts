@@ -36,16 +36,16 @@ export const updateRefund = async (data: any) => {
 
 
 
-export const deleteRefund = async (data: any) => {
+export const deleteRefund = async (refundId: string) => {
   try {
-    const res =await Client.refund.delete(data);
-    console.log("delete",res)
-    return res
-
+    const res = await Client.refund.delete({ _id: refundId });
+    console.log("delete", res);
+    return res;
   } catch (error) {
     throw error;
   }
 };
+
 
 
 export const getRefundByID = async (data: any) => {
