@@ -410,4 +410,3 @@ const FaqCategory: React.FC = () => {
 };
 
 export default FaqCategory;
-
