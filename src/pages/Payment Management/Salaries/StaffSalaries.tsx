@@ -159,7 +159,7 @@ const StaffSalaries = () => {
           >
             <Viewsalary
               onClose={handleClosePanel}
-              salary={selectedSalary} 
+              salary={selectedSalary}
             />
           </div>
         </div>

@@ -19,7 +19,6 @@ const MainPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const location = useLocation();
   const staffMember = location.state?.staff;
-  console.log("staffselect :", staffMember);
   const navigate = useNavigate();
 
 
@@ -44,10 +43,10 @@ const MainPage: React.FC = () => {
       <Card className="p-6 mb-6 flex flex-col md:flex-row justify-between items-center bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
         <div className="flex items-
         center gap-4">
-          <Avatar className='!w-[70px] !h-[70px]'> 
+          <Avatar className='!w-[70px] !h-[70px]'>
             <AvatarImage src={GetImageUrl(staffMember?.image)} alt={staffMember?.full_name} />
           </Avatar>
-          <h3 style={{...FONTS.heading_02,color:COLORS.gray_dark_02}}>{staffMember?.full_name}</h3>
+          <h3 style={{ ...FONTS.heading_02, color: COLORS.gray_dark_02 }}>{staffMember?.full_name}</h3>
         </div>
         <Button className={`${staffMember?.is_active === 'true' ? 'bg-[#3ABE65]' : 'bg-destructive'} text-white`}>
           {staffMember?.is_active}
@@ -72,9 +71,9 @@ const MainPage: React.FC = () => {
       <div className="p-4">
         {activeTab === "Info" && <Infopage isEditing={isEditing} setIsEditing={setIsEditing} staff={staffMember} />}
         {activeTab === "Security" && <Securitypage />}
-        {activeTab === "Classes" && <Classespage classId = {staffMember._id} />}
+        {activeTab === "Classes" && <Classespage classId={staffMember._id} />}
         {activeTab === "Attendance" && <Attendancepage />}
-        {activeTab === "Activity" && <Activitypage activityId = {staffMember._id} />}
+        {activeTab === "Activity" && <Activitypage activityId={staffMember._id} />}
       </div>
     </div>
   );

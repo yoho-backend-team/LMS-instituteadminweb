@@ -85,16 +85,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     if (selectedStudent) {
       dispatch(GetStudentFeeThunks(selectedStudent));
     }
-  }, [selectedStudent]);
+  }, [dispatch, selectedStudent]);
 
   useEffect(() => {
     if (selectedCourse) {
-      console.log("Fetching batches with:", {
-        instituteId,
-        branchId,
-        selectedCourse,
-      });
-      dispatch(GetBatchThunk(instituteId, branchId, selectedCourse));
+      dispatch(GetBatchThunk(selectedCourse));
     }
   }, [selectedCourse, dispatch, branchId, instituteId]);
 
@@ -138,6 +133,14 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const newErrors = {
+      branchId: !branchId,
+      selectedCourse: !selectedCourse,
+      selectedBatch: !selectedBatch,
+      selectedStudent: !selectedStudent,
+      selectedFee: !selectedFee,
+      amount: !amount,
+    };
     const newErrors = {
       branchId: !branchId,
       selectedCourse: !selectedCourse,
@@ -198,8 +201,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   };
 
   const getInputClass = (error: boolean) =>
-    `h-10 border px-2 rounded w-full ${
-      error ? "border-red-500" : "border-gray-300"
+    `h-10 border px-2 rounded w-full ${error ? "border-red-500" : "border-gray-300"
     }`;
 
   return (
@@ -294,7 +296,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
               value={selectedStudent}
               onChange={(e) => {
                 setSelectedStudent(e.target.value);
-                console.log(e.target.value, "uuid");
                 setSelectedFee("");
               }}
               className={getInputClass(errors.selectedStudent)}

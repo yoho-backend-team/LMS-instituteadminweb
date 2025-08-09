@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { downloadCertificate } from '../../components/cerificateManagement/certificateGenerator'
@@ -12,20 +13,20 @@ import { deleteCertificate } from "../../features/certificateManagement/services
 
 export interface Certificate {
   id: number
-  uuid:string
+  uuid: string
   title: string
   description: string
   branch: string
   batch: string
   student: string
   email: string
-   image?: string
+  image?: string
 }
 
 const initialCertificates: Certificate[] = [
   {
     id: 1,
-    uuid:'',
+    uuid: '',
     title: "MERN STACK 2025",
     description: "The MERN Stack is a collection of Technologies for building web application",
     branch: "OMR",
@@ -35,7 +36,7 @@ const initialCertificates: Certificate[] = [
   },
   {
     id: 2,
-    uuid:'',
+    uuid: '',
     title: "Python 2024",
     description: "The Python Full Stack is a collection of Technologies for building web application",
     branch: "Padur",
@@ -43,9 +44,9 @@ const initialCertificates: Certificate[] = [
     student: "Vigneshwari",
     email: "vikky@gmail.com",
   },
-   {
+  {
     id: 3,
-    uuid:'',
+    uuid: '',
     title: "MEAN STACK 2025",
     description: "The MERN Stack is a collection of Technologies for building web application",
     branch: "OMR",
@@ -57,7 +58,7 @@ const initialCertificates: Certificate[] = [
 
 export const CertificateManager: React.FC = () => {
   const navigate = useNavigate()
-  const dispatch= useDispatch<any>()
+  const dispatch = useDispatch<any>()
   const certificateData = useSelector(selectCertificate)
 
   const [certificates, setCertificates] = useState(initialCertificates)
@@ -71,23 +72,22 @@ export const CertificateManager: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingCertificate, setEditingCertificate] = useState<Certificate | null>(null)
 
-  const fetchgetStudentCertificate = async () =>{
-  try{
-     const params_data ={
-      branchid:'90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-      InstituteId:'973195c0-66ed-47c2-b098-d8989d3e4529',
-      page:1,
-     };
-     dispatch(getStudentCertificate (params_data))
+  const fetchgetStudentCertificate = async () => {
+    try {
+      const params_data = {
+        branchid: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+        InstituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
+        page: 1,
+      };
+      dispatch(getStudentCertificate(params_data))
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
-  catch(error){
-console.log(error)
-  }
-}
-  useEffect(()=>{
+  useEffect(() => {
     fetchgetStudentCertificate()
-  },[dispatch])
-console.log(certificateData,'certificate management...................')
+  }, [dispatch])
 
   const handleAdd = () => {
     setIsEditing(false)
@@ -110,17 +110,16 @@ console.log(certificateData,'certificate management...................')
     await downloadCertificate(cert)
   }
 
-  const handleDelete = async (certificateid:any) => {
+  const handleDelete = async (certificateid: any) => {
     try {
-      console.log(certificateid,'iddddddddddddddddddd')
       const data = {
-      certificateid,
+        certificateid,
         InstituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",    
+        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
       };
       const result = await deleteCertificate(data);
       if (result) {
-        fetchgetStudentCertificate(); 
+        fetchgetStudentCertificate();
       } else {
         console.error("Failed to delete certificate");
       }
@@ -152,11 +151,8 @@ console.log(certificateData,'certificate management...................')
     }
     setIsModalOpen(false)
   }
-  const filteredCertificates = certificateData?.data?.flatMap((cert: any) => 
-    {
+  const filteredCertificates = certificateData?.data?.flatMap((cert: any) => {
     if (!cert.student || !Array.isArray(cert.student)) return [];
-
-    console.log(cert, 'cert')
 
     return cert.student.map((student: any) => {
       const fullName = student.full_name || `${student.first_name || ""} ${student.last_name || ""}`.trim();
@@ -229,6 +225,7 @@ console.log(certificateData,'certificate management...................')
         editingCertificate={editingCertificate}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+        fetchgetStudentCertificate={fetchgetStudentCertificate}
       />
     </div>
   )

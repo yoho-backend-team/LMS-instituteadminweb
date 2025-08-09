@@ -77,7 +77,7 @@ const StaffTicketDetail: React.FC = () => {
       user: adminProfile?._id
     };
     socket.emit("sendTeacherTicketMessage", newMessage)
-    setMessages((prev) => [...prev, { sender: "admin", content: inputValue }]);
+    setMessages((prev) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
     setInputValue("");
   };
 
@@ -94,7 +94,8 @@ const StaffTicketDetail: React.FC = () => {
     });
 
     const handleMessage = (message: Message) => {
-      setMessages((prev) => [...prev, message])
+      console.log(" Staff Mess", message)
+      setMessages((prev) => [message, ...prev])
     }
 
     socket.on("receiveTeacherTicketMessage", handleMessage)
@@ -166,7 +167,7 @@ const StaffTicketDetail: React.FC = () => {
               {messages?.map((msg: any, idx: any) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2 ${msg.sender === "admin" ? "justify-end" : ""
+                  className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? "justify-end" : ""
                     }`}
                 >
                   {msg.sender === "user" && (
@@ -177,14 +178,14 @@ const StaffTicketDetail: React.FC = () => {
                     />
                   )}
                   <div
-                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === "admin"
+                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === adminProfile?._id
                         ? "bg-[#14b8c6] text-white"
                         : "bg-white text-gray-800"
                       }`}
                   >
                     {msg.content}
                     <div
-                      className={`text-[10px] text-right mt-1 ${msg.sender === "admin"
+                      className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
                           ? "text-white"
                           : "text-gray-500"
                         }`}

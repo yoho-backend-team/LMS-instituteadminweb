@@ -23,7 +23,6 @@ const EditUserInfo: React.FC = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            console.log('Selected file:', file);
             e.target.value = '';
         }
     };
@@ -50,7 +49,6 @@ const EditUserInfo: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(userInfo);
     };
 
     return (
@@ -67,13 +65,13 @@ const EditUserInfo: React.FC = () => {
                 {/* <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>*/}
 
                 <span onClick={handleUploadClick} className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer">Upload</span>
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        className="hidden"
-                                        accept="image/*"
-                                        />
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*"
+                />
             </div>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 px-4">

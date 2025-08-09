@@ -75,7 +75,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 	)} - ${getFormattedTime(data?.end_time)}`;
 
 	return (
-		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] flex flex-1 flex-wrap bg-white'>
+		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
 				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
 					<div className='flex justify-between w-full px-4'>

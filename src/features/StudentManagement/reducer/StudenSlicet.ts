@@ -4,8 +4,9 @@ const   StudentSlice = createSlice({
 	name: 'StudentSlice',
 	initialState: {
 		data: [],
-		data2:[]
-        
+		data2:[],
+		liveClassdata:[],
+		activitydata:[],        
 	},
 	reducers: {
 		getstudentdetails: (state, action) => {
@@ -15,14 +16,19 @@ const   StudentSlice = createSlice({
 		getcoursedetails: (state, action) => {
 			state.data2 = action.payload;
 
-		},
-		
-		
-		
+		},	
+		getLiveClassDetails: (state, action) => {
+			state.liveClassdata = action.payload;
+
+		},	
+		getActivityDetails: (state, action) => {
+			state.activitydata = action.payload;
+
+		},	
 	},
 	
 });
-export const { getstudentdetails,getcoursedetails } = StudentSlice.actions;
+export const { getstudentdetails,getcoursedetails,getLiveClassDetails,getActivityDetails } = StudentSlice.actions;
 
 
 export default StudentSlice.reducer;

@@ -21,10 +21,16 @@ const ModuleSlice = createSlice({
     getstaffnamewithbranch(state, action) {
       state.staffname = action.payload;
     },
+    updateSalary: (state, action) => {
+      state.salary= action.payload;
+    },
+    deleteSalary: (state, action) => {
+      state.salary= action.payload;
+    },
 
   },
 });
 export const {
-  getSalary,getBranches,addSalary,getstaffnamewithbranch
+  getSalary,getBranches,addSalary,getstaffnamewithbranch,updateSalary,deleteSalary
 } = ModuleSlice.actions;
 export default ModuleSlice.reducer;

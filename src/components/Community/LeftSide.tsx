@@ -17,7 +17,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
 
   useEffect(() => {
     dispatch(fetchCommunity({}));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-10 px-4 h-[83vh] rounded-lg overflow-y-auto">
@@ -29,10 +29,9 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
         {batches.map((batch: any, index: number) => (
           <div
             key={index}
-            onClick={() => onSelectBatch(batch)} 
-            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
-              selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
-            }`}
+            onClick={() => onSelectBatch(batch)}
+            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
+              }`}
           >
             <img
               src={GetImageUrl(batch?.groupimage) ?? circle}

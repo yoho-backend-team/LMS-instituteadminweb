@@ -149,7 +149,7 @@ const LiveClasses = () => {
 
 	return (
 		<>
-			<div className='my-4 min-h-screen'>
+			<div className='min-h-screen bg-cover bg-no-repeat bg-center p-4'>
 				<div className='mb-8'>
 					<h2
 						className=' mb-6'
@@ -312,7 +312,7 @@ const LiveClasses = () => {
 					</div>
 				)}
 
-				<div className='flex gap-6'>
+				<div className='flex gap-6 flex-wrap'>
 					{filteredClasses?.length > 0 ? (
 						filteredClasses?.map((liveClass: any, index: any) => (
 							<LiveClassCard

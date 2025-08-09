@@ -1,0 +1,1 @@
+export const selectCoursesData = (state: any) => state?.CoursesReducer?.data;
