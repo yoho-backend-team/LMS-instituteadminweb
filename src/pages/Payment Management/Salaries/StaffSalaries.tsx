@@ -1,6 +1,4 @@
 
-
-
 import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";

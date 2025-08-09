@@ -157,9 +157,9 @@ class Client {
 				options
 			);
 		},
-		 getAll:async(data:any)=>{
-       return await HttpClient.get(HTTP_END_POINTS.course.getAll,data)
-    },
+		getAll: async (data: any) => {
+			return await HttpClient.get(HTTP_END_POINTS.course.getAll, data)
+		},
 		getWithBranch: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.course.withBranch + data + '/courses'),
 		update: (data: any) =>
@@ -340,7 +340,7 @@ class Client {
 		delete: (data: any) =>
 			HttpClient.delete(HTTP_END_POINTS.student.delete + data.uuid),
 		get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get + data.uuid),
-		getLiveClass: (query:any) => HttpClient.get(HTTP_END_POINTS.student.liveClasses,  query),
+		getLiveClass: (query: any) => HttpClient.get(HTTP_END_POINTS.student.liveClasses, query),
 		getWithId: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.student.getWithId + params?.uuid),
 		getWithCourse: (params: any) =>

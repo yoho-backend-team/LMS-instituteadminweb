@@ -6,7 +6,6 @@ import { SlidersHorizontal } from "lucide-react"
 import { FeesFilter } from "../../components/Fees/fees-filter"
 import { FeesTableRow } from "../../components/Fees/fees-table-row"
 import { FeeDrawer } from "../../components/Fees/fee-drawer"
-import { FeeDetailsDrawer } from "../../components/Fees/fee-details-drawer"
 import { ConfirmationModal } from "../../components/Fees/confirmation-modal"
 import { SuccessModal } from "../../components/Fees/success-modal"
 import type { Fee } from "../../components/Fees/types"
@@ -20,20 +19,19 @@ export const FeesTable: React.FC = () => {
   useEffect(() => {
     const fetchFeesData = async () => {
       const result = await dispatch(GetAllFeesThunks({}) as any)
-      // if (result && result.payload) {
+      console.log(result, "data for fees comming")
       setCurrentFeesData(result)
-      // }
+
     }
     fetchFeesData()
   }, [dispatch])
 
   const [showFilter, setShowFilter] = useState(false)
   const [showEditAddDrawer, setShowEditAddDrawer] = useState(false)
-  const [showDetailsDrawer, setShowDetailsDrawer] = useState(false)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [selectedFee, setSelectedFee] = useState<Fee | null>(null)
-  const [actionToPerform, setActionToPerform] = useState<string | null>(null)
+  const [selectedFees, setSelectedFees] = useState<any | null>(null)
+  const [actionToPerform, setActionToPerform] = useState<| null>(null)
 
   const handleAddFee = (newFee: Fee) => {
     setCurrentFeesData((prevData) => [...prevData, newFee])
@@ -45,40 +43,41 @@ export const FeesTable: React.FC = () => {
     )
   }
 
-  const handleEdit = (fee: Fee) => {
-    setSelectedFee(fee)
+  const handleEdit = (selectedFee: any) => {
+    setSelectedFees(selectedFee)
     setShowEditAddDrawer(true)
-    setShowDetailsDrawer(false)
     setShowConfirmationModal(false)
     setShowSuccessModal(false)
+
   }
 
-  const handleView = (fee: Fee) => {
-    setSelectedFee(fee)
-    setShowDetailsDrawer(true)
+  const handleView = (fee: any) => {
+    setSelectedFees(fee)
     setShowEditAddDrawer(false)
     setShowConfirmationModal(false)
     setShowSuccessModal(false)
   }
 
   const handleDelete = (fee: Fee) => {
-    setSelectedFee(fee)
+    setSelectedFees(fee)
     setActionToPerform("delete")
     setShowConfirmationModal(true)
   }
 
   const handleDownload = (fee: Fee) => {
-    setSelectedFee(fee)
+    setSelectedFees(fee)
+    console.log("Downloading fee:", fee)
   }
 
   const handleConfirm = () => {
     setShowConfirmationModal(false)
-    if (!selectedFee || !actionToPerform) return
+    if (!selectedFees || !actionToPerform) return
 
     switch (actionToPerform) {
       case "delete":
+        console.log("Deleting fee:", selectedFees)
         setCurrentFeesData((prevData) =>
-          prevData.filter((feeItem) => feeItem.id !== selectedFee.id)
+          prevData.filter((feeItem) => feeItem.id !== selectedFees.id)
         )
         setShowSuccessModal(true)
         break
@@ -88,14 +87,14 @@ export const FeesTable: React.FC = () => {
   }
 
   const getConfirmationMessage = () => {
-    if (!actionToPerform || !selectedFee) return ""
+    if (!actionToPerform || !selectedFees) return ""
     switch (actionToPerform) {
       case "edit":
-        return `Are you sure you want to edit fee ID ${selectedFee.id.split("-")[0]}?`
+        return `Are you sure you want to edit fee ID ${selectedFees.id}?`
       case "delete":
-        return `Are you sure you want to delete fee ID ${selectedFee.id.split("-")[0]}? This action cannot be undone.`
+        return `Are you sure you want to delete fee ID ${selectedFees.id.split("-")[0]}? This action cannot be undone.`
       case "download":
-        return `Are you sure you want to download details for fee ID ${selectedFee.id.split("-")[0]}?`
+        return `Are you sure you want to download details for fee ID ${selectedFees.id.split("-")[0]}?`
       default:
         return "Are you sure you want to proceed with this action?"
     }
@@ -129,6 +128,14 @@ export const FeesTable: React.FC = () => {
     }
   }
 
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredFees = currentFeesData.filter((fee) =>
+    fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+
+
   return (
     <>
       <div className="rounded-2xl p-6">
@@ -145,9 +152,8 @@ export const FeesTable: React.FC = () => {
           </div>
           <button
             onClick={() => {
-              setSelectedFee(null)
+              setSelectedFees(null)
               setShowEditAddDrawer(true)
-              setShowDetailsDrawer(false)
               setShowConfirmationModal(false)
               setShowSuccessModal(false)
             }}
@@ -156,7 +162,8 @@ export const FeesTable: React.FC = () => {
             + Add Fee
           </button>
         </div>
-        {showFilter && <FeesFilter />}
+        {showFilter && <FeesFilter searchQuery={searchQuery}
+          onSearchChange={setSearchQuery} />}
         <div className="overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 text-gray-700">
@@ -171,7 +178,7 @@ export const FeesTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentFeesData?.map((fee: any) => (
+              {filteredFees.map((fee: any) => (
                 <FeesTableRow
                   key={fee.id}
                   fee={fee}
@@ -189,15 +196,10 @@ export const FeesTable: React.FC = () => {
       <FeeDrawer
         isOpen={showEditAddDrawer}
         onClose={() => setShowEditAddDrawer(false)}
-        selectedFee={selectedFee}
+        selectedFee={selectedFees}
         onSuccess={() => setShowSuccessModal(true)}
         onAddFee={handleAddFee}
         onUpdateFee={handleUpdateFee}
-      />
-      <FeeDetailsDrawer
-        isOpen={showDetailsDrawer}
-        onClose={() => setShowDetailsDrawer(false)}
-        fee={selectedFee}
       />
       <ConfirmationModal
         isOpen={showConfirmationModal}

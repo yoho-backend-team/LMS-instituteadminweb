@@ -61,8 +61,6 @@ import TicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 import LogoutRoute from '../components/shared/Navbar';
 import UsersDetails from '../features/Users_Management/Users/components/UsersDetails';
 import HistoryPage from '../components/subscription/HistoryPage';
-
-// import SecurityProfile from '../components/Profile/Secprofile';
 import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 import ClassView from '../components/StudentManagement/ClassView';
 const AppRoutes = () => {
@@ -89,6 +87,7 @@ const AppRoutes = () => {
 				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
 				<Route path='StaffTicketDetail' element={<StaffTicketDetail />} />
 				<Route path='/staff-tickets/:id' element={<TicketDetail />} />
+				{/* <Route path='StaffTicketDetail' element={<StaffTicketDetail />} /> */}
 
 				<Route path='noti/msg' element={<NotificationPage />} />
 

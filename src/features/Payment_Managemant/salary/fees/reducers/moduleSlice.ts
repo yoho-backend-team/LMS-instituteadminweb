@@ -32,8 +32,14 @@ const ModuleSlice = createSlice({
     getstudent: (state, action) => {
       state.student = action.payload;
     },
+    deletestudent: (state, action) => {
+      state.fees = action.payload;
+    },
+    editstudent: (state, action) => {
+      state.fees = action.payload;
+    },
     
   },
 });
-export const { getcreat,getBranches,getBranchCourse,getbatchwith_id,getstudent,getallfees } = ModuleSlice.actions;
+export const { getcreat,getBranches,getBranchCourse,getbatchwith_id,getstudent,getallfees,deletestudent,editstudent } = ModuleSlice.actions;
 export default ModuleSlice.reducer;
