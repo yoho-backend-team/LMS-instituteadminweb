@@ -157,6 +157,9 @@ class Client {
 				options
 			);
 		},
+		 getAll:async(data:any)=>{
+       return await HttpClient.get(HTTP_END_POINTS.course.getAll,data)
+    },
 		getWithBranch: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.course.withBranch + data + '/courses'),
 		update: (data: any) =>
