@@ -1,23 +1,25 @@
 "use client";
-import { Plus, X, MoreVertical, ArrowRight } from "lucide-react";
+import { Plus, X, MoreVertical, ArrowRight, Eye, Edit2, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import TrichyImg from "../../assets/trichy.png";
-import ViewIcon from "../../assets/vieweye.png";
-import EditIcon from "../../assets/editicon.png";
-import DeleteIcon from "../../assets/delete.png";
 import { ConfirmationPopup } from "../../components/BranchManagement/ConfirmationPopup";
+
+type BranchStatus = "Active" | "Inactive";
+type HoveredButton = "view" | "edit" | "delete" | null;
 
 interface LocationCardProps {
   id: string;
   imageSrc?: string;
   cityName: string;
   address: string;
-  status: "Active" | "Inactive";
+  status: BranchStatus;
   onViewDetails: () => void;
   onEdit: () => void;
-  onStatusChange: (id: string, newStatus: "Active" | "Inactive") => void;
+  onStatusChange: (id: string, newStatus: BranchStatus) => void;
   onDelete: (id: string) => void;
 }
+
+const statusOptions: BranchStatus[] = ["Active", "Inactive"];
 
 export function LocationCard({
   id,
@@ -32,33 +34,27 @@ export function LocationCard({
 }: LocationCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState(initialStatus);
-  const [hoveredButton, setHoveredButton] = useState<
-    "view" | "edit" | "delete" | null
-  >(null);
+  const [currentStatus, setCurrentStatus] = useState<BranchStatus>(initialStatus);
+  const [hoveredButton, setHoveredButton] = useState<HoveredButton>(null);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [pendingStatus, setPendingStatus] = useState<
-    "Active" | "Inactive" | null
-  >(null);
+  const [pendingStatus, setPendingStatus] = useState<BranchStatus | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
-  const statusOptions: ("Active" | "Inactive")[] = ["Active", "Inactive"];
-
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen(prev => !prev);
     setIsStatusDropdownOpen(false);
   };
 
   const toggleStatusDropdown = () => {
-    setIsStatusDropdownOpen(!isStatusDropdownOpen);
+    setIsStatusDropdownOpen(prev => !prev);
     setIsMenuOpen(false);
   };
 
-  const requestStatusChange = (newStatus: "Active" | "Inactive") => {
+  const requestStatusChange = (newStatus: BranchStatus) => {
     setPendingStatus(newStatus);
     setShowConfirmPopup(true);
   };
@@ -89,23 +85,26 @@ export function LocationCard({
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
       }
-      if (
-        statusRef.current &&
-        !statusRef.current.contains(event.target as Node)
-      ) {
+      if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
         setIsStatusDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const getButtonClasses = (buttonType: HoveredButton) => 
+    `flex items-center px-3 py-2 gap-2 w-full rounded-lg border transition-colors ${
+      hoveredButton === buttonType
+        ? "bg-[#1BBFCA] border-transparent text-white"
+        : "border-[#716F6F] bg-white text-[#716F6F]"
+    }`;
 
   return (
     <>
       <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
+        {/* Image with menu button */}
         <div className="w-full rounded-xl overflow-hidden relative h-48">
           <img
             src={imageSrc || TrichyImg}
@@ -126,17 +125,14 @@ export function LocationCard({
           </div>
         </div>
 
+        {/* Dropdown Menu */}
         {isMenuOpen && (
           <div
             ref={menuRef}
             className="flex flex-col items-start p-3 gap-4 w-[170px] bg-white rounded-xl absolute right-4 top-16 shadow-lg z-20"
           >
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "view"
-                  ? "bg-[#1BBFCA] border-transparent text-white"
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={getButtonClasses("view")}
               onClick={() => {
                 setIsMenuOpen(false);
                 onViewDetails();
@@ -145,28 +141,14 @@ export function LocationCard({
               onMouseLeave={() => setHoveredButton(null)}
               aria-label="View branch details"
             >
-              <img
-                src={ViewIcon}
-                alt="View"
-                className="w-5 h-5"
-                style={{
-                  filter:
-                    hoveredButton === "view"
-                      ? "brightness(0) invert(1)"
-                      : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)",
-                }}
-              />
+              <Eye className={`w-5 h-5 ${hoveredButton === "view" ? "text-white" : "text-[#716F6F]"}`} />
               <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
                 View
               </span>
             </button>
 
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "edit"
-                  ? "bg-[#1BBFCA] border-transparent text-white"
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={getButtonClasses("edit")}
               onClick={() => {
                 setIsMenuOpen(false);
                 onEdit();
@@ -175,44 +157,20 @@ export function LocationCard({
               onMouseLeave={() => setHoveredButton(null)}
               aria-label="Edit branch"
             >
-              <img
-                src={EditIcon}
-                alt="Edit"
-                className="w-5 h-5"
-                style={{
-                  filter:
-                    hoveredButton === "edit"
-                      ? "brightness(0) invert(1)"
-                      : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)",
-                }}
-              />
+              <Edit2 className={`w-5 h-5 ${hoveredButton === "edit" ? "text-white" : "text-[#716F6F]"}`} />
               <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
                 Edit
               </span>
             </button>
 
             <button
-              className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border ${
-                hoveredButton === "delete"
-                  ? "bg-[#1BBFCA] border-transparent text-white"
-                  : "border-[#716F6F] bg-white text-[#716F6F]"
-              } transition-colors`}
+              className={getButtonClasses("delete")}
               onClick={handleDelete}
               onMouseEnter={() => setHoveredButton("delete")}
               onMouseLeave={() => setHoveredButton(null)}
               aria-label="Delete branch"
             >
-              <img
-                src={DeleteIcon}
-                alt="Delete"
-                className="w-5 h-5"
-                style={{
-                  filter:
-                    hoveredButton === "delete"
-                      ? "brightness(0) invert(1)"
-                      : "brightness(0) invert(44%) sepia(3%) saturate(675%) hue-rotate(314deg)",
-                }}
-              />
+              <Trash2 className={`w-5 h-5 ${hoveredButton === "delete" ? "text-white" : "text-[#716F6F]"}`} />
               <span className="font-[Poppins] text-[15px] font-medium leading-[22px]">
                 Delete
               </span>
@@ -220,6 +178,7 @@ export function LocationCard({
           </div>
         )}
 
+        {/* Branch Info */}
         <div className="flex flex-col items-start gap-4 w-full">
           <div className="flex flex-col items-start gap-3 w-full">
             <h3 className="text-lg font-semibold capitalize text-[#716F6F]">
@@ -230,14 +189,13 @@ export function LocationCard({
             </p>
           </div>
 
+          {/* Status Dropdown */}
           <div className="relative" ref={statusRef}>
             <button
               onClick={toggleStatusDropdown}
               className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
-                currentStatus === "Active" || currentStatus === "Inactive"
-                  ? "bg-[#1BBFCA] text-white"
-                  : "border border-[#716F6F] text-[#716F6F]"
-              }`}
+                currentStatus === "Active" ? "bg-[#1BBFCA]" : "bg-gray-200"
+              } text-white`}
               aria-label="Change status"
               aria-expanded={isStatusDropdownOpen}
             >
@@ -245,17 +203,11 @@ export function LocationCard({
                 <span className="text-xs font-medium capitalize font-poppins leading-[18px]">
                   {currentStatus}
                 </span>
-                <div className="w-5 h-5 flex items-center justify-center">
-                  <ArrowRight
-                    className={`w-full h-full transform ${
-                      isStatusDropdownOpen ? "rotate-270" : "rotate-90"
-                    } ${
-                      currentStatus === "Active" || currentStatus === "Inactive"
-                        ? "text-white"
-                        : "text-[#716F6F]"
-                    }`}
-                  />
-                </div>
+                <ArrowRight
+                  className={`w-5 h-5 transform ${
+                    isStatusDropdownOpen ? "rotate-270" : "rotate-90"
+                  }`}
+                />
               </div>
             </button>
 
@@ -280,6 +232,7 @@ export function LocationCard({
         </div>
       </div>
 
+      {/* Confirmation Popups */}
       {showConfirmPopup && (
         <ConfirmationPopup
           type="confirm"

@@ -1,52 +1,98 @@
-// src/features/Branch_Management/reducers/branchThunks.ts
+// src/features/BranchManagement/reducers/branchThunks.ts
 import {
-  fetchBranches,
-  addBranch,
-  // editBranch,
-  deleteBranch,
+  CreateBranch,
+  DeleteBranch,
+  EditBranch,
+  GetAllBranches,
+  ToggleBranchStatus,
 } from "../services/index";
+import {
+  addBranch,
+  deleteBranch,
+  editBranch,
+  getBranches,
+  updateBranchStatus,
+} from "./branchSlice";
 
-import { allbranchSlice } from "./branchSlice"; // Make sure you have this action
+interface BranchParams {
+  institute_id: string;
+  page?: number;
+}
 
-// GET ALL BRANCHES
-export const fetchBranch = (params: any) => async (dispatch: any) => {
-  try {
-    const response = await fetchBranches(params);
-    if (response) {
-      dispatch(allbranchSlice(response.data));
-      return { payload: response.data };
+interface DeleteBranchParams {
+  id: string;
+  uuid: string;
+}
+
+interface StatusUpdateParams {
+  branch_id: string;
+  status: "active" | "inactive";
+  uuid: string;
+}
+
+export const GetAllBranchesThunk =
+  (params: BranchParams) => async (dispatch: any) => {
+    try {
+      const response = await GetAllBranches(params);
+      dispatch(getBranches(response.data));
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      throw error;
     }
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
+  };
 
-// CREATE BRANCH
-export const createBranch = (params: any) => async () => {
-  try {
-    const response = await addBranch(params);
-    return response;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
+export const DeleteBranchThunk =
+  (params: { instituteId: string; branchUuid: string }) => 
+  async (dispatch: any) => {
+    try {
+      await DeleteBranch({ 
+        institute_id: params.instituteId,
+        uuid: params.branchUuid 
+      });
+      dispatch(deleteBranch(params.branchUuid));
+    } catch (error) {
+      console.error("Error deleting branch:", error);
+      throw error;
+    }
+  };
 
-// UPDATE BRANCH
-export const updateBranch = (params: { id: string; data: any }) => async () => {
-  try {
-    const response = await editBranch(params);
-    return response;
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
-};
+export const EditBranchThunk =
+  (params: { id: string; data: any; uuid: string }) => async (dispatch: any) => {
+    try {
+      const updatedData = await EditBranch(params);
+      dispatch(editBranch(updatedData));
+      return updatedData;
+    } catch (error) {
+      console.error("Error editing branch:", error);
+      throw error;
+    }
+  };
 
-// DELETE BRANCH
-export const deleteBranchAction = (id: string) => async () => {
+export const UpdateBranchStatusThunk =
+  (data: StatusUpdateParams) => async (dispatch: any) => {
+    try {
+      await ToggleBranchStatus(data);
+      dispatch(
+        updateBranchStatus({
+          branch_id: data.branch_id,
+          status: data.status,
+        })
+      );
+    } catch (error) {
+      console.error("Error toggling branch status:", error);
+      throw error;
+    }
+  };
+
+export const AddBranchThunk = (data: any) => async (dispatch: any) => {
   try {
-    const response = await deleteBranch(id);
-    return response;
-  } catch (error: any) {
-    throw new Error(error.message);
+    const result = await CreateBranch(data);
+    dispatch(addBranch(result));
+    return result;
+  } catch (error) {
+    console.error("Error adding branch:", error);
+    throw error;
   }
+  
 };
