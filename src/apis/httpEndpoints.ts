@@ -144,32 +144,36 @@ const generateEndpoints = () => {
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
-				get: `/api/institutes/payments/student-fee/`
+				getAllSalary: `/api/institutes/payments/student-fee/all/?branch_id=${branchId}`,
+				delete: '/api/institutes/payments/student-fee/',
+				update: '/api/institutes/payments/student-fee/update',
 			},
+			salary: {
+				getall: '/api/institutes/payments/staff-salary/all',
+				create: '/api/institutes/payments/staff-salary',
+				update: '/api/institutes/payments/staff-salary/update/',
+				delete: '/api/institutes/payments/staff-salary/'
+			}
 		},
 		id_cards: {
 			student: {
 				all: '/api/institute/student/id_cards/all',
 			},
 			staff: {
-				all: '/api/staffidcard/:instituteId/:branceId/',
+				all: `/api/staffidcard/${instituteId}/${branchId}/`,
 			},
 		},
 		staff: {
 			get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
-			// getWithName: `/api/institutes/${instituteId}/branches/${branchId}/staff`,
 			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
 			getWithId: `/api/institutes/${instituteId}/staff/`,
 			getWithcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/`,
 			getWithBranch: `/api/institutes/${instituteId}/branches/`,
-			// getWithid: `/api/institutes/${instituteId}/branches/${branchId}/staff/`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
-			// getActivtiy: "/api/institutes/user/activity/staff/",
 			getActivtiy: "/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec",
 			getClasses: "/api/institutes/class/staff/:id",
-			// getClasses: "/api/institutes/class/staff/67f3bebeb8d2634300cc8aec",
 			update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/:staffId`,
-			// update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22/teaching-staff/update/:staffId`,
+			updateStatus: `api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/:staff`,
 			create: 'api/institutes/auth/teaching-staff/register',
 			delete:
 				'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff',
@@ -178,7 +182,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,
 		},
 		community: {
-			all: `/api/institutes/community/${instituteId}/branches/`,
+			all: `/api/institutes/community/${instituteId}/branches/${branchId}`,
 			messages: `/api/institutes/community/messages/`,
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},

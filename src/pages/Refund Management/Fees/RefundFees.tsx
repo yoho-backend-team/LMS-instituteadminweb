@@ -11,7 +11,7 @@ import {
 } from "../../../features/Refund_management/Reducer/Selector";
 
 export interface RefundData {
-  uuid?: string; 
+  uuid?: string;
   refundId: string;
   studentId: string;
   studentInfo: string;
@@ -34,7 +34,7 @@ const RefundFees = () => {
   }, [dispatch]);
 
   const filteredRefunds = refunds.filter((item: RefundData) =>
-    item.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+    item.studentId?.toLowerCase().includes(searchTerm?.toLowerCase())
   );
 
   const handleEdit = (data: RefundData) => {
@@ -61,7 +61,7 @@ const RefundFees = () => {
           >
             <RefundAdd
               onClose={handleClosePanel}
-              onSubmit={() => {}} 
+              onSubmit={() => { }}
               editData={editData}
             />
           </div>
@@ -94,7 +94,7 @@ const RefundFees = () => {
         <RefundTable
           data={filteredRefunds}
           onEdit={handleEdit}
-          onDelete={() => {}}
+          onDelete={() => { }}
         />
       </div>
     </div>

@@ -17,7 +17,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
 
   useEffect(() => {
     dispatch(fetchCommunity({}));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-10 px-4 h-[83vh] rounded-lg overflow-y-auto">

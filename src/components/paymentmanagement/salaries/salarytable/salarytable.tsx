@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from "react";
 import { MoreVertical, Download, CheckCircle } from "lucide-react";
@@ -36,6 +37,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     const [showSuccess, setShowSuccess] = useState(false);
     const [showView, setShowView] = useState(false);
     const [branches, setBranches] = useState<any[]>([]);
+    const dispatch = useDispatch<any>()
 
 
     const [formData, setFormData] = useState({
@@ -187,7 +189,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 
         fetchData();
         fetchBranches();
-    }, [dispatch]);
+    }, [setCardData]);
 
     return (
         <>

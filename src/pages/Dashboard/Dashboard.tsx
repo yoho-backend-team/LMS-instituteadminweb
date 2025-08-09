@@ -38,7 +38,6 @@ export default function Component() {
 		return branch?.branch_identity
 	})
 
-	console.log(BranchData, "branch")
 	const branchList = BranchOptions;
 	const [selectedBranch, setSelectedBranch] = useState(BranchData?.[0]?.branch_identity);
 	console.log(selectedBranch, "selected branch")
