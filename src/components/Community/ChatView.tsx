@@ -12,6 +12,7 @@ import clock from "../../assets/navbar/clock.png";
 import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 
 interface Message {
   sender: string;
@@ -50,9 +51,13 @@ const ChatView: React.FC<Props> = ({
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    onChangeMessage(message + emojiData.emoji);
+  };
 
   return (
-    <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl">
+    <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl relative">
       <div className="rounded-lg shadow md:px-6 flex flex-col pb-6 h-full">
         {/* Top Bar */}
         <div
@@ -109,7 +114,7 @@ const ChatView: React.FC<Props> = ({
 
               <div className="relative max-w-[70%]">
                 <div
-                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex ${
+                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${
                     msg.sender === userId
                       ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
                       : "bg-white border text-black rounded-bl-none"
@@ -167,8 +172,11 @@ const ChatView: React.FC<Props> = ({
         {/* Input */}
         <div className="flex items-center">
           <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow p-1">
-            <span className="pl-3 pr-2">
-              <img src={emojiIcon} alt="emoji" className="w-5 h-5 -gap-3" />
+            <span
+              className="pl-3 pr-2 cursor-pointer"
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+            >
+              <img src={emojiIcon} alt="emoji" className="w-5 h-5" />
             </span>
             <input
               className="w-full outline-none py-2 text-sm"
@@ -185,6 +193,11 @@ const ChatView: React.FC<Props> = ({
           <button onClick={onSendMessage} className="p-1 mt-2">
             <img src={send} alt="send" className="w-[50px] h-[50px]" />
           </button>
+          {showEmojiPicker && (
+            <div className="absolute bottom-16 left-4 z-50">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
         </div>
       </div>
 

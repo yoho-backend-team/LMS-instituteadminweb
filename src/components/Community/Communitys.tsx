@@ -116,7 +116,7 @@ const Communitys: React.FC = () => {
     };
 
     socket.emit("sendMessage", msgData);
-
+    console.log("emitted message", msgData)
     setMessages((prev) => [
       ...prev,
       {
