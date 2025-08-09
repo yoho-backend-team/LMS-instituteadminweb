@@ -64,7 +64,7 @@ const Card: React.FC<CardProps> = ({ title, imageSrc, status, onStatusChange, on
         <select
           value={status}
           onChange={(e) => onStatusChange(title, e.target.value)}
-          className="mt-1 w-full border border-gray-300 rounded px-3 py-1 text-xs text-white"
+          className="mt-1 border border-gray-300 rounded px-3 py-1 text-xs text-white w-auto"
           style={{ 
             backgroundColor: '#1BBFCA',
             borderRadius: '6px',
@@ -243,7 +243,7 @@ const DashboardCards: React.FC = () => {
         </div>
       )}
 
-      {/* Edit Category Modal - Updated to match the screenshot */}
+      {/* Edit Category Modal */}
       {showEditModal && editingCategory && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
@@ -330,7 +330,7 @@ const DashboardCards: React.FC = () => {
             onClick={() => setShowFilter(!showFilter)}
             style={{ borderRadius: '8px' }}
           >
-            {showFilter ? 'Hide' : 'Show Filter'}
+            {showFilter ? 'Hide Filter' : 'Show Filter'}
           </button>
           <button 
             className="px-4 py-2 bg-[#1BBFCA] text-white rounded text-xs flex items-center"
@@ -345,20 +345,24 @@ const DashboardCards: React.FC = () => {
         </div>
       </div>
 
+      {/* Search Input - Only shown when filter is shown */}
+      {showFilter && (
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search Categories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-1/4 p-2 border border-[#1BBFCA] rounded focus:outline-none text-xs text-[#7D7D7D] font-medium"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Filter Section */}
       {showFilter && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <div className="mb-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search Categories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-1/4 p-2 border border-[#1BBFCA] rounded focus:outline-none text-xs text-[#7D7D7D] font-medium"
-              />
-            </div>
-          </div>
           <div className="flex gap-4">
             <div className="flex-1">
               <label className="block text-xs font-semibold text-[#7D7D7D]">Status</label>

@@ -15,7 +15,7 @@ import addQuestion from "../features/HelpManagement/AddQuestion/slice"
 import GroupCardSlice from "../features/Users_Management/Group/reducers/Slice"
 import StaffSlice from '../features/staff/reducers/slices'
 import AllNotificationReducer from '../features/AllNotifications/Reducers/slices';
-
+import categoryslice from "../features/Category/Reducer/Reducer/categoryslice"
 
 const store = configureStore({
 	reducer: {
@@ -35,6 +35,7 @@ const store = configureStore({
 		GroupCardSlice: GroupCardSlice,
 		StaffSlice: StaffSlice,
 		AllNotificationReducer: AllNotificationReducer,
+		categoryslice: categoryslice,
 	},
 })
 

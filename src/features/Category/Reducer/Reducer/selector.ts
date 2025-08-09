@@ -1,0 +1,1 @@
+export const selectCategory = (state: any) => state.categoryslice.data;
