@@ -17,6 +17,7 @@ interface SalaryTableProps {
     endDate: string;
     cardData: any[];
     setCardData: React.Dispatch<React.SetStateAction<any[]>>;
+    onView: (salary: any) => void;
 }
 
 const SalaryTable: React.FC<SalaryTableProps> = ({
@@ -25,6 +26,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     startDate,
     endDate,
     cardData,
+    onView,
     setCardData,
 }) => {
     const [openCardId, setOpenCardId] = useState<number | null>(null);
@@ -60,8 +62,9 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
         return matchesSearch && matchesBranch && matchesStartDate && matchesEndDate;
     });
 
-    const dispatch = useDispatch();
-
+    // const handleViewClick = (card: any) => {
+    //     onView(card);
+    // };
 
 
     const handleEditClick = (card: any) => {

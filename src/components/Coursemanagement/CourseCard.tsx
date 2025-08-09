@@ -1,4 +1,3 @@
-// CourseCard.tsx
 import React, { useState } from "react";
 import card1 from "../../assets/navbar/card1.png";
 import arr from "../../assets/navbar/arrow.png";
@@ -7,9 +6,9 @@ import { updateCourse } from "../../features/CourseManagement/Course/service";
 
 interface CourseCardProps {
   course_name: string;
-   courseuuid: string;
+  courseuuid: string;
   categoryUuid: string;
-   category_name: string;
+  category_name: string;
   price: string;
   image: string;
   courseStatus: boolean;
@@ -17,66 +16,61 @@ interface CourseCardProps {
   onView: () => void;
   onEdit?: () => void;
 }
-
 const CourseCard: React.FC<CourseCardProps> = ({
   course_name,
-   category_name,
+  category_name,
   categoryUuid,
   price,
   image,
-   courseuuid,
-   courseStatus,
+  courseuuid,
+  courseStatus,
   onView,
 }) => {
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [showDropdown, setShowDropdown] = useState(false);
 
-    const baseUrl = import.meta.env.VITE_PUBLIC_API_URL;
+  const baseUrl = import.meta.env.VITE_PUBLIC_API_URL;
   const imageUrl = image?.startsWith('http') ? image : `${baseUrl}${image}`;
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
-  console.log('is active',courseStatus)
+  console.log('is active', courseStatus)
 
-const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
-  try {
-    setStatus(newStatus);
-    setShowDropdown(false);
+  const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
+    try {
+      setStatus(newStatus);
+      setShowDropdown(false);
 
-    const payload = {
-      category: categoryUuid,
-      course:  courseuuid,
-      is_active: newStatus === "Active",
-    };
+      const payload = {
+        category: categoryUuid,
+        course: courseuuid,
+        is_active: newStatus === "Active",
+      };
 
-    await updateCourse(payload);
-  } catch (error) {
-    console.error("Failed to update status", error);
-  }
-};
+      await updateCourse(payload);
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
 
 
   return (
     <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
-     
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
-         {category_name}
+          {category_name}
         </span>
         <span className="bg-[#3ABE65] text-white text-sm font-medium px-3 py-1 rounded-md">
           Online
         </span>
       </div>
 
-     
-    <img
-  src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
-  alt="Course"
-  className="rounded-md w-full h-30 object-cover"
-/>
+      <img
+        src={image || card1}
+        alt={title}
+        className="rounded-md w-full h-30 object-cover"
+      />
 
-
-     
       <div className="flex flex-col gap-y-1">
         <h2 className="text-lg font-semibold text-[#1BBFCA]">{course_name}</h2>
         <div className="flex justify-between items-center">
@@ -88,24 +82,21 @@ const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
         </div>
       </div>
 
-    
+
       <div className="flex justify-between items-center relative">
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className={`px-3 py-1 rounded-md flex items-center gap-1 ${
-              status === "Active"
+            className={`px-3 py-1 rounded-md inline-block items-center gap-1 ${status === "Active"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-black border border-gray-300"
-            }`}
+              }`}
           >
-            <span>{courseStatus ? 'Active' : 'InActive'}</span>
+            {status}
             <img
               src={arr}
               alt="arrow"
-              className={`w-3 h-3 ${
-                status === "Inactive" ? "filter invert" : ""
-              }`}
+              className={`w-3 h-3 ${status === "Inactive" ? "filter invert" : ""}`}
             />
           </button>
 
@@ -113,21 +104,19 @@ const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
             <div className="absolute left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md z-10">
               <div
                 onClick={() => handleStatusChange("Active")}
-                className={`block px-4 py-2 text-sm cursor-pointer rounded-t-md ${
-                  status === "Active"
+                className={`block px-4 py-2 text-sm cursor-pointer rounded-t-md ${status === "Active"
                     ? "bg-[#1BBFCA] text-white"
                     : "hover:bg-gray-100 text-gray-800"
-                }`}
+                  }`}
               >
                 Active
               </div>
               <div
                 onClick={() => handleStatusChange("Inactive")}
-                className={`block px-4 py-2 text-sm cursor-pointer rounded-b-md ${
-                  status === "Inactive"
+                className={`block px-4 py-2 text-sm cursor-pointer rounded-b-md ${status === "Inactive"
                     ? "bg-[#1BBFCA] text-white"
                     : "hover:bg-gray-100 text-gray-800"
-                }`}
+                  }`}
               >
                 Inactive
               </div>

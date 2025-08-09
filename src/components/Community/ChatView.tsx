@@ -1,4 +1,4 @@
-import React, { useRef,useState } from "react";
+import React, { useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatBg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
@@ -8,11 +8,11 @@ import Button from "../../assets/navbar/Button.png";
 import circle from "../../assets/navbar/circle.png";
 import contact from "../../assets/navbar/contact.png";
 import box from "../../assets/navbar/box.png";
-
 import clock from "../../assets/navbar/clock.png";
 import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 
 interface Message {
   sender: string;
@@ -21,7 +21,8 @@ interface Message {
 }
 
 interface Props {
-  selectedBatch: string;
+  userId: string | null;
+  selectedBatch: any;
   messages: Message[];
   message: string;
   onChangeMessage: (msg: string) => void;
@@ -37,51 +38,57 @@ interface Props {
 }
 
 const ChatView: React.FC<Props> = ({
-   selectedBatch,
+  userId,
+  selectedBatch,
   messages,
   message,
   onChangeMessage,
   onSendMessage,
   onDeleteMessage,
-  //  onClose,
   showProfile,
   setShowProfile,
   profileData,
-  // setProfileData,
-  //  isEditing,
-  //  setIsEditing,
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    onChangeMessage(message + emojiData.emoji);
+  };
 
   return (
-    <div className=" h-[83vh] grow  shadow-lg font-poppins rounded-xl ">
-
-
-       <div className=" rounded-lg shadow md:px-6 flex flex-col  pb-6  h-full"> 
+    <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl relative">
+      <div className="rounded-lg shadow md:px-6 flex flex-col pb-6 h-full">
         {/* Top Bar */}
-        <div className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4"
-        onClick={() => setShowProfile(true)}
+        <div
+          className="w-full h-[80px] bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 flex items-center cursor-pointer transition my-4"
+          onClick={() => setShowProfile(true)}
         >
           <img
-            src={selectedBatch ? GetImageUrl(selectedBatch?.groupimage ?? undefined) : circle}
+            src={
+              selectedBatch
+                ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
+                  undefined
+                : circle
+            }
             alt="batch"
             className="w-12 h-12 rounded-full mr-4"
-            
           />
           <div>
             <p className="text-[#7D7D7D] font-bold text-sm">
               {selectedBatch ? selectedBatch?.group : "Select a Batch"}
             </p>
             <p className="text-[#7D7D7D] text-xs">
-              {selectedBatch ? selectedBatch?.batch?.batch_name : "No Batch Selected"}
+              {selectedBatch
+                ? selectedBatch?.batch?.batch_name
+                : "No Batch Selected"}
             </p>
           </div>
         </div>
 
         {/* Messages */}
         <div
-          className="flex-1 overflow-y-auto p-4 h-fit  "
+          className="flex-1 overflow-y-auto p-4 h-fit"
           style={{
             backgroundImage: `url(${chatBg})`,
             backgroundAttachment: "fixed",
@@ -94,21 +101,22 @@ const ChatView: React.FC<Props> = ({
             <div
               key={index}
               className={`mb-3 flex ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
+                msg.sender === userId ? "justify-end" : "justify-start"
               } group items-end`}
             >
-              {msg.sender !== "user" && (
+              {msg.sender !== userId && (
                 <img
                   src={contact}
                   alt="icon"
-                  className="w-6 h-6 rounded-full mr-2"
+                  className="w-10 h-10 rounded-full mr-1"
                 />
               )}
+
               <div className="relative max-w-[70%]">
                 <div
-                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm ${
-                    msg.sender === "user"
-                      ? "bg-[#1BBFCA] text-white rounded-br-none"
+                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${
+                    msg.sender === userId
+                      ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
                       : "bg-white border text-black rounded-bl-none"
                   }`}
                 >
@@ -118,7 +126,7 @@ const ChatView: React.FC<Props> = ({
                   </p>
                 </div>
 
-                {msg.sender === "user" && (
+                {msg.sender === userId && (
                   <div className="absolute top-1 -left-8">
                     <button
                       onClick={() =>
@@ -149,7 +157,7 @@ const ChatView: React.FC<Props> = ({
                 )}
               </div>
 
-              {msg.sender === "user" && (
+              {msg.sender === userId && (
                 <img
                   src={image}
                   alt="You"
@@ -160,103 +168,104 @@ const ChatView: React.FC<Props> = ({
           ))}
           <div ref={chatEndRef} />
         </div>
-        <div className=" flex items-center ">
-          <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow">
-            {/* Emoji icon inside input */}
-            <span className="pl-3 pr-2" >
-              <img src={emojiIcon} alt="emoji" className="w-5 h-5 -gap-3" />
+
+        {/* Input */}
+        <div className="flex items-center">
+          <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow p-1">
+            <span
+              className="pl-3 pr-2 cursor-pointer"
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+            >
+              <img src={emojiIcon} alt="emoji" className="w-5 h-5" />
             </span>
-
-            {/* Input box with fixed width */}
-            <div className=" ">
-              {/* Moves only the box */}
-              <input
-                className="w-[350px] outline-none py-2 text-sm  "
-                placeholder="Type a message"
-                value={message}
-                onChange={(e) => onChangeMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
-              />
-            </div>
-
-            {/* Attach icon */}
-            <button className=" opacity-70  ml-auto ">
+            <input
+              className="w-full outline-none py-2 text-sm"
+              placeholder="Type a message"
+              value={message}
+              onChange={(e) => onChangeMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
+            />
+            <button className="opacity-70 pr-3">
               <img src={attachIcon} alt="attach" className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Send button placed absolutely outside input box */}
-          <button
-            onClick={onSendMessage}
-            className="p-1 mt-2"
-          >
+          <button onClick={onSendMessage} className="p-1 mt-2">
             <img src={send} alt="send" className="w-[50px] h-[50px]" />
           </button>
+          {showEmojiPicker && (
+            <div className="absolute bottom-16 left-4 z-50">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Profile Panel */}
-{showProfile && (
-  <div className="absolute top-23 right-6 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
-    
-    {/* Fixed Header */}
-    <div className="p-4 border-b flex flex-col items-center shrink-0">
-      <div className="w-full flex justify-end mb-2">
-        <button onClick={() => setShowProfile(false)}>
-          <img src={cancel} alt="cancel" className="w-5 h-5" />
-        </button>
-      </div>
-      <img src={GetImageUrl(selectedBatch?.groupimage ?? undefined)} alt="profile" className="w-24 h-24 rounded-full mb-3" />
-      <h2 className="text-lg font-semibold text-[#716F6F]">
-        {selectedBatch?.group}
-      </h2>
-      <p className="text-green-500 text-sm">Online</p>
-    </div>
+      {showProfile && (
+        <div className="absolute top-23 right-6 bg-white w-[300px] h-auto shadow-xl rounded-lg z-50 flex flex-col font-['Inter','sans-serif'] text-[#7D7D7D] text-sm overflow-hidden">
+          <div className="p-4 border-b flex flex-col items-center shrink-0">
+            <div className="w-full flex justify-end mb-2">
+              <button onClick={() => setShowProfile(false)}>
+                <img src={cancel} alt="cancel" className="w-5 h-5" />
+              </button>
+            </div>
+            <img
+              src={
+                selectedBatch
+                  ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
+                    undefined
+                  : circle
+              }
+              alt="profile"
+              className="w-24 h-24 rounded-full mb-3"
+            />
+            <h2 className="text-lg font-semibold text-[#716F6F]">
+              {selectedBatch?.group}
+            </h2>
+            <p className="text-green-500 text-sm">Online</p>
+          </div>
 
-    {/*  Scrollable Content */}
-    <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
-      {/* About */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="font-semibold text-[#716F6F]">About</h3>
-          <p>{profileData.about}</p>
+          <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-[#716F6F]">About</h3>
+                <p>{profileData.about}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-[#716F6F]">
+                  Personal Information
+                </h3>
+                <ul className="space-y-2 mt-2">
+                  <li className="flex items-center gap-2">
+                    <img src={box} alt="email" className="w-4 h-4" />
+                    <span>{profileData.email}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <img src={clock} alt="availability" className="w-4 h-4" />
+                    <span>{profileData.availability}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <img src={phone} alt="phone" className="w-4 h-4" />
+                    <span>{profileData.phone}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
+              <p>No Staffs Found</p>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
+              <p>No Students Found</p>
+            </div>
+          </div>
         </div>
-
-        {/* Personal Info */}
-        <div>
-          <h3 className="font-semibold text-[#716F6F]">Personal Information</h3>
-          <ul className="space-y-2 mt-2">
-            <li className="flex items-center gap-2">
-              <img src={box} alt="email" className="w-4 h-4" />
-              <span>{profileData.email}</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <img src={clock} alt="availability" className="w-4 h-4" />
-              <span>{profileData.availability}</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <img src={phone} alt="phone" className="w-4 h-4" />
-              <span>{profileData.phone}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Staff Section */}
-      <div className="mt-6">
-        <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
-        <p>No Staffs Found</p>
-      </div>
-
-      {/* Students Section */}
-      <div className="mt-6">
-        <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
-        <p>No Students Found</p>
-      </div>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };

@@ -1,27 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import circle from "../../assets/navbar/circle.png"
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import circle from "../../assets/navbar/circle.png";
+import { useDispatch, useSelector } from "react-redux";
 import { selectcommunity } from "../../features/Community/Reducers/selectors";
 import { fetchCommunity } from "../../features/Community/Reducers/thunks";
 import { GetImageUrl } from "../../utils/helper";
 
 interface Props {
-  selectedBatch: string;
-  onSelectBatch: (batch: string) => void;
+  selectedBatch: any;
+  onSelectBatch: (batch: any) => void;
   instituteId: string;
 }
 
-
-
 const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
+  const batches = useSelector(selectcommunity);
+  const dispatch = useDispatch<any>();
 
-
-  const batches = useSelector(selectcommunity)
-
-  const dispatch = useDispatch<any>()
   useEffect(() => {
     dispatch(fetchCommunity({}));
   }, []);
@@ -33,15 +26,15 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
       </div>
 
       <div className="flex flex-col gap-4 w-full">
-        {batches.map((batch: string, index: number) => (
+        {batches.map((batch: any, index: number) => (
           <div
             key={index}
             onClick={() => onSelectBatch(batch)}
-            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch === batch ? "ring-2 ring-cyan-600" : ""
+            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
               }`}
           >
             <img
-              src={GetImageUrl(batch?.groupimage) ?? undefined}
+              src={GetImageUrl(batch?.groupimage) ?? circle}
               alt="batch"
               className="w-12 h-12 rounded-full mr-4"
             />
