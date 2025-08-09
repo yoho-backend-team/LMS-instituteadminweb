@@ -225,6 +225,7 @@ export const CertificateManager: React.FC = () => {
         editingCertificate={editingCertificate}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+        fetchgetStudentCertificate={fetchgetStudentCertificate}
       />
     </div>
   )
