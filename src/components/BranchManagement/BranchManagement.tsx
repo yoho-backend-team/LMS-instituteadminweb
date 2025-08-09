@@ -8,6 +8,7 @@ import {
   AddBranchThunk,
   DeleteBranchThunk,
   EditBranchThunk,
+  UpdateBranchStatusThunk,
   
  
 } from "../../features/Branch_Management/reducers/branchThunks";
@@ -126,9 +127,11 @@ const handleDeleteBranch = async (branch: any) => {
   }
 };
 
-  const handleStatusChange = (branchId: string, newStatus: string) => {
-    dispatch(updateBranch({ id: branchId, data: { status: newStatus } }));
-  };
+ const handleStatusChange = (branch_id: string, newStatus: string) => {
+  dispatch(UpdateBranchStatusThunk({ branch_id, status: newStatus }));
+};
+
+
 
   const resetForm = () => {
     setFormData({
