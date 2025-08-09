@@ -173,6 +173,9 @@ class Client {
       ),
     add_template: (data: any) =>
       HttpClient.post(HTTP_END_POINTS.course.template, data),
+    get_course_data: (data: any) =>
+      HttpClient.get(
+        HTTP_END_POINTS.course.get, data),
   };
   batch = {
     // create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
@@ -438,12 +441,20 @@ class Client {
           HTTP_END_POINTS.notification.student_notification,
           query
         ),
+      resend_student_notification: (params: any) => HttpClient.post(
+        HTTP_END_POINTS.notification.student_notification_resend, params
+      )
     },
     staff: {
       add_staff_notification: (data: any) =>
         HttpClient.post(
           HTTP_END_POINTS.notification.create_staff_notification,
           data
+        ),
+      resend_staff_notification: (params: any) =>
+        HttpClient.post(
+          HTTP_END_POINTS.notification.staff_notification_resend,
+          params
         ),
       get_staff_notification: (query: any) =>
         HttpClient.get(HTTP_END_POINTS.notification.staff_notification, query),
@@ -477,6 +488,11 @@ class Client {
       HttpClient.update(
         HTTP_END_POINTS.institute_notification.update + data.id,
         body
+      ),
+    resend_institute_notification: (data: any) =>
+      HttpClient.get(
+        HTTP_END_POINTS.notification.institute_notification_resend,
+        data
       ),
   };
   id_cards = {

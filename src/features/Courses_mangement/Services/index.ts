@@ -2,9 +2,9 @@ import Client from "../../../apis/index";
 
 export const getCourse = async (params: any) => {
   try {
-    const response: any = await Client.course.get(params);
+    const response: any = await Client.course.getAll(params);
     console.log("Service Res", response)
-    return response; 
+    return response;
   } catch (error) {
     console.error("Getting Course Error:", error);
     throw error;

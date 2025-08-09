@@ -3,7 +3,7 @@ import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
 	if (typeof secureLocalStorage !== 'undefined') {
-		const institute = GetLocalStorage('institute');
+		const institute = GetLocalStorage('instituteId');
 		return institute;
 	}
 };
@@ -16,10 +16,8 @@ export const getSelectedBranchId = () => {
 };
 
 const generateEndpoints = () => {
-	const instituteId =
-		getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
-	const branchId =
-		getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+	const instituteId = getInstituteDetails()
+	const branchId = getSelectedBranchId()
 
 	return {
 		admin: {
@@ -75,8 +73,8 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		course: {
-			get: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
-			getall: `/api/institutes/ ${instituteId}/${branchId}/course/:courseId`,
+			getall: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
+			get: `/api/institutes/ ${instituteId}/${branchId}/course/:courseId`,
 			update: `/api/institutes/${instituteId}/categories/`,
 			withBranch: `/api/institutes/${instituteId}/branches/`,
 			add: `/api/institutes/${instituteId}/categories/`,
@@ -214,10 +212,13 @@ const generateEndpoints = () => {
 		notification: {
 			student_notification: `/api/institutes/students/notifications/all`,
 			student_notification_get: `/api/institutes/students/notifications`,
+			student_notification_resend: `/api/notification/student-notification-resend`,
 			staff_notification: `/api/institutes/staff/notifications/all`,
+			staff_notification_resend: `/api/notification/staff-notification-resend`,
 			create_staff_notification: `/api/institutes/staff/notifications/`,
 			institute_notification: `/api/institutes/branch/notifications`,
 			all_notification_resend: `api/notification/student-notification-resend`,
+			institute_notification_resend: `/api/notification/institute/resend-notification`,
 		},
 		institute_notification: {
 			get_all: `/api/notification/institute/`,
