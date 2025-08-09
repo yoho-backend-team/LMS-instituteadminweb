@@ -74,8 +74,8 @@ const UsersList: React.FC<props> = ({ Users }) => {
   }, []);
 
     return (
-        <div className=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Users?.map((card, index)=> (<div key={index} className="shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px] p-[16px] grid gap-[20px] bg-white">
+        <div className=" w-full grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
+            {Users?.map((card, index)=> (<div key={index} className="shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px] p-5 grid gap-4 bg-white">
                 <div className="flex gap-3.5 items-center justify-between relative">
                     <div className="flex gap-4">
                         <img
@@ -91,7 +91,7 @@ const UsersList: React.FC<props> = ({ Users }) => {
                                 {card?.first_name +" "+card?.last_name}
                             </p>
                             <p
-                                className={`text-[${COLORS.gray_light}]`}
+                                className={`text-[${COLORS.gray_light}] w-full`}
                                 style={{ ...FONTS.heading_12 }}
                             >
                                 {card?.email}

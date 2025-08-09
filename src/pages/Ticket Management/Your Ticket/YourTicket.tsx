@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAdminTickets } from "../../../features/TicketManagement/YourTicket/selector";
 import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourTicket/thunks";
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
+import socket from "../../../utils/socket";
 
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
@@ -23,9 +24,9 @@ const TicketsPage: React.FC = () => {
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
   const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
+  const [messages, setMessages] = useState()
 
-
-
+  console.log("Selecteduser", selectedTicketUserDetails)
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
@@ -102,6 +103,24 @@ const TicketsPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (adminTickets?.messages) {
+      setMessages(adminTickets.messages)
+    }
+  }, [adminTickets])
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleMessage = (message: Message) => {
+      setMessages((prev) => [message, ...prev])
+    }
+
+    socket.on("receiveMessage", handleMessage)
+    return () => {
+      socket.off("receiveMessage", handleMessage)
+    }
+  })
+
   return (
     <div className="h-auto p-0">
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
@@ -173,16 +192,16 @@ const TicketsPage: React.FC = () => {
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
-                name={ticket.name}
-                email={ticket.email}
-                message={ticket.description || ticket.message}
-                date={new Date(ticket.created_at).toLocaleDateString("en-GB")}
-                time={new Date(ticket.created_at).toLocaleTimeString("en-US", {
+                category={ticket?.description}
+                query={ticket?.query}
+                message={messages}
+                date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
+                time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
                 priority={ticket.priority}
-                avatarUrl={ticket.avatarUrl}
+                avatarUrl={ticket?.user?.image}
                 onView={() => {
                   setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
@@ -202,7 +221,7 @@ const TicketsPage: React.FC = () => {
       {showChatWindow && (
 
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
-          <ChatWindow user={selectedTicketUser} />
+          <ChatWindow user={selectedTicketUserDetails} />
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}

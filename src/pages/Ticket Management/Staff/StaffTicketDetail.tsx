@@ -11,6 +11,8 @@ import { GetIndividualStaffTicketThunks } from "../../../features/Ticket_Managem
 import { GetImageUrl } from "../../../utils/helper";
 import dayjs from "dayjs";
 import { updateStaffTicketService } from "../../../features/Ticket_Management/services";
+import socket from "../../../utils/socket";
+import { GetProfileDetail } from "../../../features/Auth/service";
 
 interface Message {
   sender: "user" | "admin";
@@ -22,68 +24,60 @@ const StaffTicketDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { updateTicketStatus, tickets } = useTicketContext();
+  const [adminProfile, SetAdminProfile] = useState();
+  const [messages, setMessages] = useState<Message[]>()
 
-  const ticketId:any = id;
-  const ticket = tickets.find((t:any) => t.id === ticketId);
+  const ticketId: any = id;
+  const ticket = tickets.find((t: any) => t.id === ticketId);
   const status = ticket?.status ?? "opened";
 
-  console.log(ticketId,"asdfghjkl")
-
-  const dispatch=useDispatch<any>()
+  const dispatch = useDispatch<any>()
 
   const individualData = useSelector(getindividualStaffdata)
 
-  useEffect(()=>{
+  useEffect(() => {
 
     dispatch(GetIndividualStaffTicketThunks(ticketId))
-  
-  },[])
 
-console.log(individualData,"................................................")
+  }, [])
 
-  const handleCloseTicket = async (ticketId:any) => {
-    // updateTicketStatus(ticketId, "closed");
+
+  const handleCloseTicket = async (ticketId: any) => {
+
     const respone = await updateStaffTicketService(ticketId)
     console.log(respone)
 
-    // navigate(-1);
   };
-  
-  const [messages, setMessages] = useState<Message[]>([
-    { sender: "user", text: "Hi there, How are you?", time: "12:24 PM" },
-    {
-      sender: "user",
-      text: "Waiting for your reply. As I have to go back soon.",
-      time: "12:25 PM",
-    },
-    {
-      sender: "admin",
-      text: "Hi! I am coming there in few minutes. Please wait!",
-      time: "12:26 PM",
-    },
-    {
-      sender: "user",
-      text: "Thank you very much. I am waiting here at Starbucks cafe.",
-      time: "12:35 PM",
-    },
-  ]);
 
   const [inputValue, setInputValue] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
+
+  const getProfile = async () => {
+    const response = await GetProfileDetail();
+    SetAdminProfile(response?.data)
+  }
+
+  useEffect(() => {
+    if (individualData?.messages) {
+      setMessages(individualData.messages)
+    }
+  }, [individualData])
+
+  useEffect(() => {
+    getProfile();
+  }, [])
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
 
     const newMessage: Message = {
-      sender: "admin",
+      ticket_id: id,
       text: inputValue,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      senderType: "InstituteAdmin",
+      user: adminProfile?._id
     };
-
-    setMessages((prev) => [...prev, newMessage]);
+    socket.emit("sendTeacherTicketMessage", newMessage)
+    setMessages((prev) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
     setInputValue("");
   };
 
@@ -91,7 +85,25 @@ console.log(individualData,"................................................")
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [inputValue]);
+
+  useEffect(() => {
+    socket.connect()
+    socket.on("connect", () => {
+      socket.emit("joinTicket", id)
+    });
+
+    const handleMessage = (message: Message) => {
+      console.log(" Staff Mess", message)
+      setMessages((prev) => [message, ...prev])
+    }
+
+    socket.on("receiveTeacherTicketMessage", handleMessage)
+    return () => {
+      socket.off("receiveTeacherTicketMessage", handleMessage)
+    }
+  })
+
 
   return (
     <div className="p-6 pt-0">
@@ -152,12 +164,11 @@ console.log(individualData,"................................................")
               ref={chatRef}
               className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
             >
-              {individualData?.messages?.map((msg:any, idx:any) => (
+              {messages?.map((msg: any, idx: any) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2 ${
-                    msg.sender === "admin" ? "justify-end" : ""
-                  }`}
+                  className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? "justify-end" : ""
+                    }`}
                 >
                   {msg.sender === "user" && (
                     <img
@@ -167,19 +178,17 @@ console.log(individualData,"................................................")
                     />
                   )}
                   <div
-                    className={`p-2 rounded shadow text-sm max-w-[75%] ${
-                      msg.sender === "admin"
+                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === adminProfile?._id
                         ? "bg-[#14b8c6] text-white"
                         : "bg-white text-gray-800"
-                    }`}
+                      }`}
                   >
                     {msg.content}
                     <div
-                      className={`text-[10px] text-right mt-1 ${
-                        msg.sender === "admin"
+                      className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
                           ? "text-white"
                           : "text-gray-500"
-                      }`}
+                        }`}
                     >
                       {dayjs(msg.date).format("HH:MM A")}
                     </div>
@@ -197,7 +206,7 @@ console.log(individualData,"................................................")
               {status !== "closed" && (
                 <div className="flex gap-2 px-4 py-2 border-t">
                   <button
-                    onClick={()=>handleCloseTicket(individualData?.uuid)}
+                    onClick={() => handleCloseTicket(individualData?.uuid)}
                     className="border border-[#1BBFCA] text-[#1BBFCA] text-sm font-medium px-4 py-2 rounded"
                   >
                     Solved
@@ -236,7 +245,7 @@ console.log(individualData,"................................................")
               Issue Description:
             </p>
             <p className="text-sm text-gray-600">
-             {individualData?.description}
+              {individualData?.description}
             </p>
           </div>
           <div>
@@ -246,20 +255,19 @@ console.log(individualData,"................................................")
           <div>
             <p className="font-semibold text-gray-800 mb-1">Attachments:</p>
             <p className="text-sm text-gray-600 break-all">
-             {GetImageUrl(individualData?.file)}
+              {GetImageUrl(individualData?.file)}
             </p>
-            <a href={GetImageUrl(individualData?.file)?? undefined} target="_blank" className="text-blue-500 underline text-sm">
+            <a href={GetImageUrl(individualData?.file) ?? undefined} target="_blank" className="text-blue-500 underline text-sm">
               View
             </a>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
-              className={`inline-block px-3 py-2 rounded text-sm ${
-                status === "opened"
+              className={`inline-block px-3 py-2 rounded text-sm ${status === "opened"
                   ? "text-white bg-[#1BBFCA]"
                   : "text-white bg-[#3ABE65]"
-              }`}
+                }`}
             >
               {status}
             </span>
