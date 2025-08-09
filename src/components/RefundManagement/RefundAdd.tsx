@@ -89,7 +89,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
   useEffect(() => {
     if (selectedCourse) {
-      dispatch(GetBatchThunk(instituteId, branchId, selectedCourse));
+      dispatch(GetBatchThunk(selectedCourse));
     }
   }, [selectedCourse, dispatch, branchId, instituteId]);
 

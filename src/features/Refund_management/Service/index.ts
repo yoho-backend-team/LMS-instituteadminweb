@@ -70,8 +70,8 @@ export const GetBranchCourse = async (data: any) => {
 };
 
 
-export const GetBatch = async (instituteId: any, branchId: any, courseId: any) => {
-  const response = await Client.batch.getWithCourseId(instituteId, branchId, courseId);
+export const GetBatch = async (courseId: any) => {
+  const response = await Client.batch.getWithCourseId(courseId);
   console.log("Batch data getting", response);
   if (response) {
     return response;

@@ -158,7 +158,7 @@ class Client {
       );
     },
     getAll: async (data: any) => {
-      return await HttpClient.get(HTTP_END_POINTS.course.getAll, data)
+      return await HttpClient.get(HTTP_END_POINTS.course.getall, data)
     },
     getWithBranch: (data: any) =>
       HttpClient.get(HTTP_END_POINTS.course.withBranch + data + '/courses'),
@@ -199,7 +199,7 @@ class Client {
         HTTP_END_POINTS.batch.delete.replace(':batchId', data?.uuid),
         data
       ),
-    getWithCourseId: (branchId: any, courseId: any) =>
+    getWithCourseId: (courseId: any) =>
       HttpClient.get(HTTP_END_POINTS.batch.getBatchwithCourse.replace(':courseId', courseId)),
   };
   online_class = {

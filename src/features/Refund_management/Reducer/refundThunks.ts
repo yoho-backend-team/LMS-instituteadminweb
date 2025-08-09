@@ -89,10 +89,10 @@ export const GetCourseThunk = (branchId: string) => async (dispatch: any) => {
 
 
 //  Get Batch by Course ID
-export const GetBatchThunk = (instituteId: string, branchId: string, courseId: string) => async (dispatch: any) => {
+export const GetBatchThunk = (courseId: string) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    const res = await GetBatch(instituteId, branchId, courseId);
+    const res = await GetBatch(courseId);
     dispatch(getbatchwith_id(res.data));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to fetch batches"));

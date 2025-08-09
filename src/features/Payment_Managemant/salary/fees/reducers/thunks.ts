@@ -38,12 +38,10 @@ export const GetBranchCourseThunks = (branchname: string) => async (dispatch: an
 
 
 export const GetBatchThunks = (
-  instituteId: any,
-  branchId: any,
   courseId: any
 ) => async (dispatch: any) => {
   try {
-    const response = await GetBatch(instituteId, branchId, courseId);
+    const response = await GetBatch(courseId);
     dispatch(getbatchwith_id(response.data));
     return response;
   } catch (error) {
@@ -73,10 +71,10 @@ export const GetAllFeesThunks = (params: any) => async (dispatch: any) => {
 
 export const DeleteAllThunks = (params: any) => async (dispatch: any) => {
   try {
-    const response = await  DeleteAll(params);
-    dispatch(deletestudent(response));  
+    const response = await DeleteAll(params);
+    dispatch(deletestudent(response));
     console.log("fees data fetched in thunk", response);
-    return  response;
+    return response;
   } catch (error) {
     console.log("Error in getallfees Thunks:", error);
   }
@@ -85,9 +83,9 @@ export const DeleteAllThunks = (params: any) => async (dispatch: any) => {
 export const EditStudentthunks = (params: any) => async (dispatch: any) => {
   try {
     const response = await EditStudent(params);
-    dispatch(editstudent(response));  
+    dispatch(editstudent(response));
     console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa comming", response);
-    return  response;
+    return response;
   } catch (error) {
     console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa", error);
   }
