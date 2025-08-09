@@ -26,6 +26,7 @@ import {
   Branch,
   BranchCourse,
 } from "../../features/Content_Management/reducers/selectors";
+import { updateRefund } from "../../features/Refund_management/Service";
 
 interface RefundAddProps {
   onClose: () => void;
@@ -112,11 +113,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   useEffect(() => {
     if (editData) {
       setBranchId(editData.branch);
-      setSelectedCourse(editData.studentInfo);
-      setSelectedBatch(editData.branch);
+      setSelectedCourse(editData.courseId || "");
+      setSelectedBatch(editData.batchId || "");
       setSelectedStudent(editData.studentId);
-      setSelectedFee(editData.paid === "Paid" ? "INR 20,000" : "");
-      setAmount(editData.payment.replace(/,/g, ""));
+      setSelectedFee(editData.feeId || "");
+      setAmount(editData.payment.replace(/,/g, "") || "");
     } else {
       setBranchId("");
       setSelectedCourse("");
@@ -125,7 +126,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       setSelectedFee("");
       setAmount("");
     }
-
     setErrors({
       branchId: false,
       selectedCourse: false,
@@ -136,7 +136,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     });
   }, [editData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors = {
@@ -150,8 +150,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
-
-    // Find actual _id from UUID for batch & student
     const selectedBatchObj = batches.find(
       (batch: any) => batch.uuid === selectedBatch
     );
@@ -169,8 +167,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     const apiPayload = {
       institute_id: instituteId,
-      student: studentIdForAPI, 
-      branch_name: branchId, 
+      student: studentIdForAPI,
+      branch_name: branchId,
       course_name: selectedCourse,
       batch_name: batchIdForAPI,
       studentfees: selectedFee,
@@ -189,14 +187,15 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     };
 
     if (editData?.uuid) {
-      const updatePayload = { ...apiPayload, uuid: editData.uuid };
-      dispatch(UpdateRefundThunk(updatePayload));
+      const updatePayload = { uuid: editData.uuid, ...apiPayload };
+      console.log("Update: coide", editData.uuid);
+      await updateRefund(updatePayload);
     } else {
       dispatch(CreateRefundThunk(apiPayload));
       refundCounter++;
     }
     onSubmit(uiRefundData);
-     onClose();
+    onClose();
   };
 
   const getInputClass = (error: boolean) =>
@@ -319,23 +318,43 @@ const RefundAdd: React.FC<RefundAddProps> = ({
             <label>Student Fee</label>
             <select
               value={selectedFee}
-              onChange={(e) => setSelectedFee(e.target.value)}
+              onChange={(e) => {
+                const selectedFeeId = e.target.value;
+                setSelectedFee(selectedFeeId);
+                const fee = feeList.find((f: any) => f._id === selectedFeeId);
+                if (fee) {
+                  setAmount(fee.paid_amount?.toString() || "0");
+                }
+              }}
               className={getInputClass(errors.selectedFee)}
+              disabled={!selectedStudent}
             >
               <option value="">Select Fee</option>
-              {Array.isArray(feeList) && feeList.length > 0 ? (
-                feeList.map((fee: any) => {
-                  const coursePrice = fee?.total_fee || "N/A";
-                  return (
-                    <option key={fee._id} value={fee._id}>
-                      ₹{coursePrice}
-                    </option>
-                  );
-                })
+              {selectedStudent ? (
+                feeList && feeList.length > 0 ? (
+                  feeList
+                    .filter(
+                      (fee: any) =>
+                        fee.student === selectedStudent ||
+                        fee.student?.uuid === selectedStudent
+                    )
+                    .map((fee: any) => {
+                     
+                      const paidAmount = fee?.paid_amount ?? 0;
+                      return (
+                        <option key={fee._id} value={fee._id}>
+                           Paid: ₹{paidAmount.toLocaleString()}
+                        </option>
+                      );
+                    })
+                ) : (
+                  <option disabled>No fees found for this student</option>
+                )
               ) : (
-                <option disabled>No course fees found</option>
+                <option disabled>Please select a student first</option>
               )}
             </select>
+
             {errors.selectedFee && (
               <p className="text-red-500 text-sm">Fee is required.</p>
             )}

@@ -26,13 +26,15 @@ export const getAllRefunds = async (params: any) => {
 
 export const updateRefund = async (data: any) => {
   try {
-    const res = await Client.refund.update(data); 
+    const res = await Client.refund.update(data);
     console.log("update", res);
     return res;
   } catch (error) {
+    console.log("Update Servier",error)
     throw error;
   }
 };
+
 
 
 

@@ -585,7 +585,7 @@ class Client {
 
     update: (data: any) =>
       HttpClient.update(
-        HTTP_END_POINTS.refund.update.replace(":id", data._id),
+        HTTP_END_POINTS.refund.update+data.uuid,
         data
       ),
 

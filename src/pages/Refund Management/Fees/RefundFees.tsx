@@ -5,9 +5,9 @@ import { BsPlusLg } from "react-icons/bs";
 import RefundAdd from "../../../components/RefundManagement/RefundAdd";
 import RefundTable from "../../../components/RefundManagement/RefundTable";
 
-import { 
-  GetAllRefundsThunk, 
-  DeleteRefundThunk 
+import {
+  GetAllRefundsThunk,
+  DeleteRefundThunk,
 } from "../../../features/Refund_management/Reducer/refundThunks";
 import { selectRefundData } from "../../../features/Refund_management/Reducer/Selector";
 import toast from "react-hot-toast";
@@ -17,10 +17,14 @@ export interface RefundData {
   refundId: string;
   studentId: string;
   studentInfo: string;
+  studentEmail?: string;
   paid: string;
   payment: string;
   status: string;
   branch: string;
+  courseId?: string;
+  batchId?: string;
+  feeId?: string;
 }
 
 const RefundFees = () => {
@@ -37,27 +41,29 @@ const RefundFees = () => {
     dispatch(GetAllRefundsThunk());
   }, [dispatch]);
 
-  const mappedRefunds: RefundData[] =
-    refunds?.map((item: any) => ({
-      uuid:  item._id || "",
-      refundId: item._id || "",
-      studentId: item.student?.roll_no || "",
-      studentInfo: `${item.student?.first_name || ""} ${
-        item.student?.last_name || ""
-      }`.trim(),
-      paid: item.amount ? item.amount.toString() : "",
-      payment: item.payment_date
-        ? new Date(item.payment_date).toLocaleDateString()
-        : "",
-      status: item.is_active ? "Active" : "Inactive",
-      branch: item.branch_name?.branch_identity || "",
-    })) || [];
+  const mappedRefunds: RefundData[] = refunds?.map((item: any) => ({
+    uuid: item._id || "",
+    refundId: item._id || "",
+    studentId: item.student?.id || item.student?.uuid || "",
+    studentInfo: `${item.student?.first_name || ""} ${
+      item.student?.last_name || ""
+    }`.trim(),
+    studentEmail: item.student?.email || "",
+    paid: item.studentfees?.paid_amount ? item.studentfees.paid_amount.toString() : "0",
+    payment: item.payment_date ? new Date(item.payment_date).toISOString() : "",
+    status: item.is_active ? "Active" : "Inactive",
+    branch: item.branch_name?.uuid || "",
+    courseId: item.course?.uuid || "",
+    batchId: item.batch?.uuid || "",
+    feeId: item.studentfees || "",
+  }));
 
   const filteredRefunds = mappedRefunds.filter((item) =>
     item.studentInfo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEdit = (data: RefundData) => {
+    console.log("code :",data)
     setEditData(data);
     setShowPanel(true);
   };
@@ -68,11 +74,11 @@ const RefundFees = () => {
   };
 
   const confirmDelete = async () => {
-    console.log("delete",deleteItemId)
+    console.log("delete", deleteItemId);
     if (deleteItemId) {
       try {
         await dispatch(DeleteRefundThunk(deleteItemId));
-       
+
         dispatch(GetAllRefundsThunk());
         setShowDeleteConfirm(false);
         setDeleteItemId(null);
@@ -93,16 +99,15 @@ const RefundFees = () => {
   };
 
   const handleSubmitRefund = async () => {
-  try {
-    await dispatch(GetAllRefundsThunk());
-    handleClosePanel();
-    toast.success("Refund saved successfully!");
-  } catch (error) {
-    console.error("Failed to submit refund:", error);
-    toast.error("Failed to save refund. Please try again.");
-  }
-};
-
+    try {
+      await dispatch(GetAllRefundsThunk());
+      handleClosePanel();
+      toast.success("Refund saved successfully!");
+    } catch (error) {
+      console.error("Failed to submit refund:", error);
+      toast.error("Failed to save refund. Please try again.");
+    }
+  };
 
   return (
     <div className="relative flex flex-col gap-6">
@@ -114,7 +119,8 @@ const RefundFees = () => {
               Confirm Delete
             </h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this refund? This action cannot be undone.
+              Are you sure you want to delete this refund? This action cannot be
+              undone.
             </p>
             <div className="flex justify-end gap-3">
               <button

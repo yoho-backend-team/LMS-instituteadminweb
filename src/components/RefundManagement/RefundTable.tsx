@@ -1,4 +1,3 @@
-// RefundTable.tsx
 import React, { useState } from "react";
 import type { RefundData } from "../../pages/Refund Management/Fees/RefundFees";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
@@ -96,7 +95,13 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
               <tr key={item.refundId} className="border-t">
                 <td className="px-4 py-4">{item.refundId}</td>
                 <td className="px-4 py-4">{item.studentId}</td>
-                <td className="px-4 py-4">{item.studentInfo}</td>
+                <td className="px-4 py-4 flex flex-col">
+                  <span>{item.studentInfo}</span>
+                  <span className="text-xs text-gray-500">
+                    {item.studentEmail}
+                  </span>
+                </td>
+
                 <td className="px-4 py-4">{item.paid}</td>
                 <td className="px-4 py-4">{item.payment}</td>
                 <td className="px-4 py-4">{item.status}</td>
@@ -111,7 +116,7 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
                     <button
                       onClick={() => {
                         if (item.uuid) {
-                          onDelete(item.uuid); 
+                          onDelete(item.uuid);
                         } else {
                           console.warn("Cannot delete: Missing uuid");
                         }

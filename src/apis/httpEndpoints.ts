@@ -254,7 +254,7 @@ const generateEndpoints = () => {
 			create: `/api/institutes/payments/refund/create`,
 			getAll: `/api/institutes/payments/refund/all`,
 			getById: `/api/institutes/payments/refund/:id`,
-			update: `/api/institutes/payments/refund/update/:id`,
+			update: `/api/institutes/payments/refund/update/`,
 			delete: `/api/institutes/payments/refund/:_id`,
 			query: `/api/institutes/payments/refund/:query`
 		},

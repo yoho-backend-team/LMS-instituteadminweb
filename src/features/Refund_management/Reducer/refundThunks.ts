@@ -62,9 +62,11 @@ export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
 export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    const res:any = await updateRefund(payload);
+    const res: any = await updateRefund(payload); 
+    console.log("Update thunk",payload)
     dispatch(updateRefundInState(res.data));
   } catch (error: any) {
+    console.log("update thunk",error)
     dispatch(setRefundError(error.message || "Failed to update refund"));
   } finally {
     dispatch(setRefundLoading(false));
