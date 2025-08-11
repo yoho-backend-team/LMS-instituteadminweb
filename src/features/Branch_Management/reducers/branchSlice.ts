@@ -9,7 +9,7 @@ interface Branch {
     address?: string;
     phone_no?: string;
   };
-  status?: string;
+  status?: string;  
   is_active?: boolean;
 }
 
@@ -17,12 +17,16 @@ interface BranchState {
   branches: Branch[];
   loading: boolean;
   error: string | null;
+    instituteId: string | null; // <-- ADD THIS
+
 }
 
 const initialState: BranchState = {
   branches: [],
   loading: false,
   error: null,
+    instituteId: null, // <-- INIT
+
 };
 
 const branchSlice = createSlice({

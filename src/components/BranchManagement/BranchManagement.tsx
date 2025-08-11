@@ -9,8 +9,6 @@ import {
   DeleteBranchThunk,
   EditBranchThunk,
   UpdateBranchStatusThunk,
-  
- 
 } from "../../features/Branch_Management/reducers/branchThunks";
 import { BranchDetailsPage } from "./BranchDetailsPage";
 import TrichyImg from "../../assets/trichy.png";
@@ -20,7 +18,9 @@ import { LocationCard } from "../BranchManagement/Location-card";
 
 export function LocationCardsGrid() {
   const dispatch = useDispatch<AppDispatch>();
-  const { branches, loading, error } = useSelector((state: RootState) => state.branch);
+  const { branches, loading, error } = useSelector(
+    (state: RootState) => state.branch
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,120 +29,126 @@ export function LocationCardsGrid() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const [formData, setFormData] = useState({
-    branchName: '',
-    phoneNumber: '',
-    alternateNumber: '',
-    address: '',
-    pinCode: '',
-    landMark: '',
-    city: '',
-    state: 'Tamil Nadu'
+    _id:"",
+    branchName: "",
+    phoneNumber: "",
+    alternateNumber: "",
+    address: "",
+    pinCode: "",
+    landMark: "",
+    city: "",
+    state: "Tamil Nadu",
   });
 
   useEffect(() => {
-    dispatch(GetAllBranchesThunk({ instituteId: "YOUR_INSTITUTE_ID" }));
+    dispatch(GetAllBranchesThunk({ instituteId: "67f3a26df4b2c530acd16419" }));
   }, [dispatch]);
 
   const filteredBranches = searchTerm
-    ? branches.filter(branch =>
+    ? branches.filter((branch) =>
         branch.cityName.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : branches;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.trim());
   };
 
- const handleEditBranch = (branch: any) => {
-  setEditingBranch(branch);
-  setFormData({
-    branchName: branch.branch_identity, // Changed from cityName to branch_identity
-    phoneNumber: branch.contact_info.phone_no,
-    alternateNumber: branch.contact_info.alternate_number || '', // Added fallback
-    address: branch.contact_info.address,
-    pinCode: branch.contact_info.pincode || '', // Assuming this exists
-    landMark: branch.contact_info.landmark || '', // Assuming this exists
-    city: branch.branch_identity.split(',')[0], // Or use proper city field if available
-    state: 'Tamil Nadu'
-  });
-  setIsModalOpen(true);
-};
-
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  const branchData = {
-    imageSrc: TrichyImg,
-    cityName: formData.branchName,
-    address: formData.address,
-    status: "Active",
-    phoneNumber: formData.phoneNumber,
-    alternateNumber: formData.alternateNumber,
-    pinCode: formData.pinCode,
-    landMark: formData.landMark
+  const handleEditBranch = (branch: any) => {
+    console.log(branch);
+    setEditingBranch(branch);
+    setFormData({
+      _id:branch._id,
+      branchName: branch.branch_identity,
+      phoneNumber: branch.contact_info.phone_no,
+      alternateNumber: branch.contact_info.alternate_number || "",
+      address: branch.contact_info.address,
+      pinCode: branch.contact_info.pincode || "",
+      landMark: branch.contact_info.landmark || "",
+      city: branch.branch_identity.split(",")[0],
+      state: "Tamil Nadu",
+    });
+    setIsModalOpen(true);
   };
 
-  try {
-    if (editingBranch) {
-      // ✅ Use UUID, not numeric ID
-     await dispatch(
-  EditBranchThunk({
-    instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529", // your real institute ID here
-    branchUuid: branch._id 
-  })
-).unwrap();
-    } else {
-      await dispatch(
-        AddBranchThunk({ instituteId: "YOUR_INSTITUTE_ID", data: branchData })
-      ).unwrap();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const branchData = {
+      _id:formData._id,
+      imageSrc: TrichyImg,
+      cityName: formData.branchName,
+      address: formData.address,
+      status: "Active",
+      phoneNumber: formData.phoneNumber,
+      alternateNumber: formData.alternateNumber,
+      pinCode: formData.pinCode,
+      landMark: formData.landMark,
+    };
+
+    try {
+      if (editingBranch) {
+        // ✅ Use UUID, not numeric ID
+
+        console.log(editingBranch,branchData._id)
+        await dispatch(
+          EditBranchThunk({
+           id: editingBranch._id, data: editingBranch, uuid: editingBranch.uuid,
+          })
+          
+        );
+      } else {
+        await dispatch(
+          AddBranchThunk({
+            instituteId: "67f3a26df4b2c530acd16419",
+            data: branchData,
+          })
+        );
+      }
+
+      setShowSuccessPopup(true);
+      resetForm();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to save branch:", error);
     }
+  };
 
-    setShowSuccessPopup(true);
-    resetForm();
-    setIsModalOpen(false);
-  } catch (error) {
-    console.error("Failed to save branch:", error);
-  }
-};
+  const handleDeleteBranch = async (branch: any) => {
+    try {
+      await dispatch(
+        DeleteBranchThunk({
+          instituteId: "67f3a26df4b2c530acd16419",
+          branchUuid: branch._id,
+        })
+      );
 
+      setShowSuccessPopup(true);
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  };
 
-
-
-
-const handleDeleteBranch = async (branch: any) => {
-  try {
-    await dispatch(DeleteBranchThunk({
-      instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529", 
-      branchUuid: branch._id 
-    })).unwrap();
-    
-    setShowSuccessPopup(true);
-  } catch (error) {
-    console.error("Delete failed:", error);
-  }
-};
-
- const handleStatusChange = (branch_id: string, newStatus: string) => {
-  dispatch(UpdateBranchStatusThunk({ branch_id, status: newStatus }));
-};
-
-
+  const handleStatusChange = (branch_id: string, newStatus: string) => {
+    dispatch(UpdateBranchStatusThunk({ branch_id, status: newStatus }));
+  };
 
   const resetForm = () => {
     setFormData({
-      branchName: '',
-      phoneNumber: '',
-      alternateNumber: '',
-      address: '',
-      pinCode: '',
-      landMark: '',
-      city: '',
-      state: 'Tamil Nadu'
+      _id:"",
+      branchName: "",
+      phoneNumber: "",
+      alternateNumber: "",
+      address: "",
+      pinCode: "",
+      landMark: "",
+      city: "",
+      state: "Tamil Nadu",
     });
     setEditingBranch(null);
   };
@@ -164,7 +170,10 @@ const handleDeleteBranch = async (branch: any) => {
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       {/* Search & Add Button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <form onSubmit={(e) => e.preventDefault()} className="w-full md:w-[360px] h-[48px] relative">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="w-full md:w-[360px] h-[48px] relative"
+        >
           <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
           <input
             type="text"
@@ -192,24 +201,29 @@ const handleDeleteBranch = async (branch: any) => {
       {/* Loading Skeleton */}
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-          {Array(6).fill(null).map((_, index) => (
-            <div className="w-full h-[340px] shadow-lg rounded-lg p-2" key={index}>
-              <ContentLoader
-                speed={1}
-                width="100%"
-                height="100%"
-                viewBox="0 0 390 330"
-                backgroundColor="#f3f3f3"
-                foregroundColor="#ecebeb"
-                className="w-full h-[310px] rounded-lg"
+          {Array(6)
+            .fill(null)
+            .map((_, index) => (
+              <div
+                className="w-full h-[340px] shadow-lg rounded-lg p-2"
+                key={index}
               >
-                <rect x="0" y="0" rx="10" ry="10" width="400" height="200" />
-                <rect x="0" y="220" rx="8" ry="8" width="60%" height="20" />
-                <rect x="0" y="250" rx="8" ry="8" width="100%" height="28" />
-                <rect x="0" y="290" rx="8" ry="8" width="30%" height="58" />
-              </ContentLoader>
-            </div>
-          ))}
+                <ContentLoader
+                  speed={1}
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 390 330"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                  className="w-full h-[310px] rounded-lg"
+                >
+                  <rect x="0" y="0" rx="10" ry="10" width="400" height="200" />
+                  <rect x="0" y="220" rx="8" ry="8" width="60%" height="20" />
+                  <rect x="0" y="250" rx="8" ry="8" width="100%" height="28" />
+                  <rect x="0" y="290" rx="8" ry="8" width="30%" height="58" />
+                </ContentLoader>
+              </div>
+            ))}
         </div>
       )}
 
@@ -222,34 +236,33 @@ const handleDeleteBranch = async (branch: any) => {
 
       {/* Branch Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-       {!loading && filteredBranches.length > 0 ? (
-  filteredBranches.map((branch: any) => (
-           <LocationCard
-      key={branch._id}  // Changed from id to _id
-      id={branch._id}   // Changed from id to _id
-      imageSrc={TrichyImg} // You might want to get this from API if available
-      cityName={branch.branch_identity} // Using branch_identity instead of cityName
-      address={branch.contact_info.address} // Updated path to address
-      status={branch.is_active ? "Active" : "Inactive"} // Convert boolean to status string
-      phoneNumber={branch.contact_info.phone_no} // Added phone number
-      onViewDetails={() => setViewingBranch(branch)}
-      onEdit={() => handleEditBranch(branch)}
-      onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
-
-              onStatusChange={(newStatus) => handleStatusChange(branch.id, newStatus)}
-            />
-          ))
-        ) : (
-          !loading && (
-            <div className="col-span-full text-center py-10">
-              <p className="text-lg text-[#716F6F]">
-                {searchTerm
-                  ? `No branches found matching "${searchTerm}"`
-                  : "No branches available"}
-              </p>
-            </div>
-          )
-        )}
+        {!loading && filteredBranches.length > 0
+          ? filteredBranches.map((branch: any) => (
+              <LocationCard
+                key={branch._id} // Changed from id to _id
+                id={branch._id} // Changed from id to _id
+                imageSrc={TrichyImg} // You might want to get this from API if available
+                cityName={branch.branch_identity} // Using branch_identity instead of cityName
+                address={branch.contact_info.address} // Updated path to address
+                status={branch.is_active ? "Active" : "Inactive"} // Convert boolean to status string
+                phoneNumber={branch.contact_info.phone_no} // Added phone number
+                onViewDetails={() => setViewingBranch(branch)}
+                onEdit={() => handleEditBranch(branch)}
+                onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
+                onStatusChange={(newStatus) =>
+                  handleStatusChange(branch.id, newStatus)
+                }
+              />
+            ))
+          : !loading && (
+              <div className="col-span-full text-center py-10">
+                <p className="text-lg text-[#716F6F]">
+                  {searchTerm
+                    ? `No branches found matching "${searchTerm}"`
+                    : "No branches available"}
+                </p>
+              </div>
+            )}
       </div>
 
       {/* Modal */}
@@ -258,7 +271,10 @@ const handleDeleteBranch = async (branch: any) => {
           isEditing={!!editingBranch}
           formData={formData}
           onChange={handleInputChange}
-          onCancel={() => { setIsModalOpen(false); resetForm(); }}
+          onCancel={() => {
+            setIsModalOpen(false);
+            resetForm();
+          }}
           onSubmit={handleSubmit}
         />
       )}
@@ -267,7 +283,11 @@ const handleDeleteBranch = async (branch: any) => {
       {showSuccessPopup && (
         <ConfirmationPopup
           type="success"
-          message={editingBranch ? "Branch updated successfully!" : "Branch created successfully!"}
+          message={
+            editingBranch
+              ? "Branch updated successfully!"
+              : "Branch created successfully!"
+          }
           onClose={() => setShowSuccessPopup(false)}
         />
       )}
@@ -278,13 +298,13 @@ const handleDeleteBranch = async (branch: any) => {
 function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div 
+      <div
         className="bg-white rounded-xl overflow-y-auto"
         style={{
-          width: '1022px',
-          height: '617px',
-          borderRadius: '12px',
-          padding: '16px',
+          width: "1022px",
+          height: "617px",
+          borderRadius: "12px",
+          padding: "16px",
         }}
       >
         <div className="flex flex-col gap-[30px] h-full">
@@ -341,7 +361,7 @@ function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }) {
                   required
                 />
               </div>
-              
+
               {/* Right Column */}
               <div className="flex flex-col gap-6">
                 <FormField

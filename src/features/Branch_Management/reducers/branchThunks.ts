@@ -34,8 +34,11 @@ export const GetAllBranchesThunk =
   (params: BranchParams) => async (dispatch: any) => {
     try {
       const response = await GetAllBranches(params);
+      
       dispatch(getBranches(response.data));
+      
       return response.data;
+      
     } catch (error) {
       console.error("Error fetching branches:", error);
       throw error;
@@ -85,9 +88,10 @@ export const UpdateBranchStatusThunk =
     }
   };
 
-export const AddBranchThunk = (data: any) => async (dispatch: any) => {
+export const AddBranchThunk =  ({ instituteId, data }: { instituteId: string; data: any }) =>
+  async (dispatch: any) =>{
   try {
-    const result = await CreateBranch(data);
+    const result = await CreateBranch(instituteId, data);
     dispatch(addBranch(result));
     return result;
   } catch (error) {
@@ -95,4 +99,4 @@ export const AddBranchThunk = (data: any) => async (dispatch: any) => {
     throw error;
   }
   
-};
+};  
