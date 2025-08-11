@@ -1,5 +1,5 @@
-import { AddSalary, GetAllSalary, GetBranch } from "../services/index"; // update the import path as needed
-import { addSalary, getBranches, getSalary } from "../reducers/moduleSlice"; // update with your slice path
+import { AddSalary, DeleteSalary, GetAllSalary, GetBranch, updateSalary } from "../services/index";
+import { addSalary, deleteSalary, getBranches, getSalary } from "../reducers/moduleSlice";
 
 
 
@@ -8,7 +8,7 @@ export const GetAllSalaryThunks = (params: any) => async (dispatch: any) => {
     const response = await GetAllSalary(params);
     dispatch(getSalary(response.data));
     console.log("Salary data in thunks", response.data);
-    return { payload: response.data }; // ✅ Return payload
+    return { payload: response.data };
   } catch (error) {
     console.log("Error in GetAllSalaryThunks:", error);
   }
@@ -17,12 +17,12 @@ export const GetAllSalaryThunks = (params: any) => async (dispatch: any) => {
 
 export const GetBranchThunks = (params: any) => async (dispatch: any) => {
   try {
-    const result = await GetBranch(params); // API call
-    dispatch(getBranches(result.data)); // Update the reducer
-    return { payload: result.data }; // ✅ Ensure payload is returned
+    const result = await GetBranch(params);
+    dispatch(getBranches(result.data));
+    return { payload: result.data };
   } catch (error) {
     console.error("Error in GetBranchThunks", error);
-    return { payload: [] }; 
+    return { payload: [] };
   }
 };
 
@@ -31,12 +31,32 @@ export const GetBranchThunks = (params: any) => async (dispatch: any) => {
 
 export const AddSalaryThunks = (data: any) => async (dispatch: any) => {
   try {
-    const result = await AddSalary(data); 
-    dispatch(addSalary(result));         
-    return { payload: result };         
+    const result = await AddSalary(data);
+    dispatch(addSalary(result));
+    return { payload: result };
   } catch (error) {
     console.error("Error in AddSalaryThunks", error);
-    return { payload: null };             
+    return { payload: null };
   }
 };
 
+export const UpdateAllSalaryThunks = (params: any) => async (dispatch: any) => {
+  try {
+    const response = await updateSalary(params);
+    dispatch(updateSalary(response.data));
+    return { payload: response.data };
+  } catch (error) {
+    console.log("Error in UpdateAllSalaryThunks:", error);
+  }
+};
+
+export const DeleteSalaryThunk = (data: any) => async (dispatch: any) => {
+  try {
+    const response = await DeleteSalary(data);
+    dispatch(deleteSalary(response.data));
+    console.log("deelete successfully", response)
+    return { payload: response.data };
+  } catch (error) {
+    console.log("Error in UpdateAllSalaryThunks:", error);
+  }
+};

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   setLoading,
   setError,
@@ -32,8 +33,8 @@ export const fetchNotesThunk = (params: any) => async (dispatch: any) => {
     dispatch(
       setError(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to fetch notes"
+        error.message ||
+        "Failed to fetch notes"
       )
     );
   } finally {
@@ -57,7 +58,6 @@ export const createNoteThunk = (data: any) => async (dispatch: any) => {
     payload.is_active = payload.isActive ?? true;
     const result = await createNote(payload);
     dispatch(addNote(result));
-    // console.log("Added Notes:", result);
     return result;
   } catch (error: any) {
     console.error(
@@ -67,8 +67,8 @@ export const createNoteThunk = (data: any) => async (dispatch: any) => {
     dispatch(
       setError(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to create note"
+        error.message ||
+        "Failed to create note"
       )
     );
   }
@@ -80,7 +80,6 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
     let payload = { ...data };
     if (payload.file instanceof File) {
       const uploadRes = await uploadFile(payload.file);
-      // console.log(uploadRes, "upload");
       if (uploadRes) {
         payload.file = uploadRes.data?.file;
       } else {
@@ -94,14 +93,13 @@ export const updateNoteThunk = (data: any) => async (dispatch: any) => {
       delete payload.file;
     }
     const response = await updateNote(payload);
-    // console.log("update:", response);
     dispatch(EditsNote(response.data.data));
   } catch (error: any) {
     dispatch(
       setError(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to update note"
+        error.message ||
+        "Failed to update note"
       )
     );
   }
@@ -116,8 +114,8 @@ export const deleteNoteThunk = (id: string) => async (dispatch: any) => {
     dispatch(
       setError(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to delete note"
+        error.message ||
+        "Failed to delete note"
       )
     );
   }
@@ -156,12 +154,11 @@ export const fetchCoursesByBranchThunk =
 //Toggle Status Thuck
 export const UpdateModuleStatusThunk = (data: any) => async (dispatch: any) => {
   try {
-    const updated = await ToggleNoteStatus(data);
-    // console.log("API response in Thunk:", updated);
+    await ToggleNoteStatus(data);
     dispatch(
       updateNoteStatus({
-        uuid: data._id, 
-        isActive: data.status === "active", 
+        uuid: data._id,
+        isActive: data.status === "active",
       })
     );
   } catch (error) {

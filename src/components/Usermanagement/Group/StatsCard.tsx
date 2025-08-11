@@ -34,13 +34,10 @@ function StatsCard() {
     dispatch(GetGroupCardthunks(ParamsData));
   }, [dispatch, currentPage]);
 
-  console.log(groupCard.data, "response");
 
   const handledelete = async (id: any) => {
     try {
-      console.log(id, "id");
       await dispatch(deleteGroupThunk({ id }));
-      console.log("group deleted");
     } catch (error) {
       console.error("failed to delete", error);
     }

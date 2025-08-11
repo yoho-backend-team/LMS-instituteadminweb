@@ -33,11 +33,12 @@ export const Subscriptions = () => {
       <div className="flex justify-end">
         <p
           onClick={() => navigate('/subscriptions/history')}
-          className="text-[#1BBFCA] mb-4 font-semibold cursor-pointer"
+          // className="text-[#1BBFCA] mb-4 font-semibold cursor-pointer "
+          className="gap-2 flex items-center cursor-pointer bg-[#1BBFCA] px-4 py-2 rounded-lg text-md font-semibold text-white shadow-md "
         >View History</p>
       </div>
 
-      <Table className="border-separate border-spacing-0 w-full">
+      {/* <Table className="border-separate border-spacing-0 w-full">
         <TableHeader className="bg-gray-100">
           <TableRow>
             <TableHead className="w-[80px] px-4 py-2">ID</TableHead>
@@ -67,7 +68,7 @@ export const Subscriptions = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 };

@@ -11,11 +11,14 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getcoursesdata } from "../../features/StudentManagement/reducer/thunks"
-import { selectCoursedata } from "../../features/StudentManagement/reducer/selector"
+import { getcoursesdata, getLiveClassDataSet, getStudentActivityData } from "../../features/StudentManagement/reducer/thunks"
+import { selectCoursedata, selectStudentActivityData } from "../../features/StudentManagement/reducer/selector"
 import { deletestudentdata, updatestudentdata } from "../../features/StudentManagement/services/Student"
 import { GetImageUrl } from "../../utils/helper"
 import toast from "react-hot-toast"
+import { getInstituteDetails, getSelectedBranchId } from "../../apis/httpEndpoints"
+import { Card, CardContent } from "../ui/card"
+import { COLORS, FONTS } from "../../constants/uiConstants"
 
 export const Profile = () => {
   const navigate = useNavigate()
@@ -28,6 +31,45 @@ export const Profile = () => {
 
   // Get student data from navigation state
   const studentDataFromLocation = location.state?.studentData || {}
+
+  const instituteId = getInstituteDetails();
+    const branchId = getSelectedBranchId();
+
+    const studentActivityData = useSelector(selectStudentActivityData)?.data;
+    console.log("student activity data :", studentActivityData);
+
+
+  const fetchLiveData = async() => {
+    try {
+       await dispatch(getLiveClassDataSet({
+        type: "live",
+        branch: branchId,
+        course_name: studentDataFromLocation?._id,
+        insitute: instituteId,
+        uuid: studentDataFromLocation?.uuid,
+       }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  const fetchActivityData = async() => {
+    try {
+       await dispatch(getStudentActivityData({
+        id: studentDataFromLocation?.uuid,
+        
+       }))
+       console.log("activity id:",studData?.data?.uuid);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchLiveData();
+    fetchActivityData();
+  },[])
 
   const fetchData = async () => {
     try {
@@ -44,7 +86,6 @@ export const Profile = () => {
     fetchData()
   }, [dispatch, studentDataFromLocation.uuid])
 
-  console.log(studData, 'stud .......')
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -147,10 +188,11 @@ export const Profile = () => {
   const handleSubmit = async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       // Prepare the data to send to the API
-      const updateData = { ...formData,
+      const updateData = {
+        ...formData,
         uuid: studData?.data?.uuid,
         _id: studData?.data?._id, // Ensure you have the student ID
         first_name: formData.fullName,
@@ -171,11 +213,9 @@ export const Profile = () => {
         is_active: formData.status === "Active"
       }
 
-      console.log(updateData, 'updated')
-
       // Call the update service
       const response = await updatestudentdata(updateData)
-      
+
       if (response) {
         // Refresh the data after successful update
         await fetchData()
@@ -189,11 +229,10 @@ export const Profile = () => {
     }
   }
 
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     try {
-      const response = await deletestudentdata({uuid: studData?.data?.uuid})
-      console.log(response, 'response')
-      if(response){
+      const response = await deletestudentdata({ uuid: studData?.data?.uuid })
+      if (response) {
         toast.success('profile deleted successfully!')
       }
     } catch (error) {
@@ -226,7 +265,7 @@ export const Profile = () => {
   }
 
 
-  
+
 
   // Edit Mode
   if (isEditing) {
@@ -236,7 +275,7 @@ export const Profile = () => {
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-semibold text-gray-800 mb-1">Student Information</h1>
-            
+
             {error && <div className="text-red-500 mb-2">{error}</div>}
           </div>
 
@@ -265,7 +304,7 @@ export const Profile = () => {
                     </Button>
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={handleCancel}
                   className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white px-6"
                 >
@@ -484,8 +523,8 @@ export const Profile = () => {
                 >
                   Cancel
                 </Button>
-                <Button 
-                  onClick={handleSubmit} 
+                <Button
+                  onClick={handleSubmit}
                   className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white px-8"
                   disabled={isLoading}
                 >
@@ -764,14 +803,79 @@ export const Profile = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="classes">
-              <div className="text-center py-30 text-gray-500">Classes content will be displayed here</div>
+            <TabsContent className="grid grid-cols-3" value="classes">
+            
+              <Card
+             
+              className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex-grow space-y-2">
+                  <h3 className='whitespace-nowrap' style={{...FONTS.heading_06,color:COLORS.gray_dark_02}}>
+                    
+                  </h3>
+                  <p style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>
+                     Students on this Class
+                  </p>
+                  <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
+                   
+                  </p>
+                </div>
+                <div className="flex justify-end mt-4">
+                  <Button 
+  className="bg-green-500 hover:bg-green-600 text-white"
+  onClick={() => navigate("/students/Profile/view")} 
+>
+  View 
+</Button>
+                </div>
+              </CardContent>
+            </Card>
             </TabsContent>
 
-            <TabsContent value="activity">
-              <div className="text-center py-30 text-gray-500">Activity content will be displayed here</div>
-            </TabsContent>
-          </Tabs>
+           <TabsContent value="activity">
+  <div className="bg-white p-6 min-h-screen">
+    <h1
+      style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }}
+      className="mb-6"
+    >
+      User Activity Timeline
+    </h1>
+
+    <div className="relative">
+      {/* Timeline item */}
+      {studentActivityData?.map((item) => (
+      <div key={item.id} className="flex items-start relative">
+        <div className="flex flex-col items-center mr-6">
+          {/* Label */}
+          <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+            Notes Created
+          </span>
+
+          {/* Dot */}
+          <span className="w-2 h-2 bg-[#1BBFCA] rounded-full mt-1"></span>
+
+          {/* Visible teal line */}
+          <div className="w-px h-30 bg-[#1BBFCA]"></div>
+        </div>
+
+        {/* Card */}
+        <div  className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
+          <h3 className="text-gray-800 font-semibold text-sm mb-1">{item?.titlte}</h3>
+          <p className="text-xs text-gray-600">Create</p>
+          <p className="text-xs text-gray-600">{item?.description}</p>
+          <p className="text-[10px] text-gray-400 mt-2">
+            July 17, 2025 at 06:13:23 PM
+          </p>
+        </div>
+        
+      </div>
+        ))}
+      
+    </div>
+  </div>
+</TabsContent>
+         </Tabs>
         </div>
       </div>
     </div>

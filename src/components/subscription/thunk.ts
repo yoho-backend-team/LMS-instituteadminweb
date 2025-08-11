@@ -6,27 +6,24 @@ export const getAllPlanThunk = () => async (dispatch: any) => {
   try {
     const response = await getAllPlan();
     dispatch(setAllPlan(response.data));
-    console.log("plans : ",response.data )
   } catch (error) {
     console.error("Error fetching plans:", error);
   }
 };
 
-export const getInstituteSubcriptionThunk = (params?:any) => async (dispatch: any) =>{
-  try{
+export const getInstituteSubcriptionThunk = (params?: any) => async (dispatch: any) => {
+  try {
     const response = await getInstituteSubscription(params)
     dispatch(setInstituteSubscription(response.data))
-    console.log("Subscriptions : ",response.data)
-  } catch(error){
+  } catch (error) {
     console.error("Error fetching subscriptions:", error)
   }
 }
 
-export const getSubscriptionStatusThunk = (params?:any) => async (dispatch: any) => {
+export const getSubscriptionStatusThunk = (params?: any) => async (dispatch: any) => {
   try {
     const response = await getSubscriptionStatus(params);
     dispatch(setSubscriptionStatus(response.data));
-    console.log("Sub status: ", response.data);
   } catch (error) {
     console.error("Error fetching subscriptionStatus:", error);
   }

@@ -22,14 +22,8 @@ const ViewModal: React.FC<{
 }> = ({ note, isOpen, onClose, titleIcon }) => {
   if (!isOpen) return null;
 
-  console.log("Note object in ViewModal:", note);
-  console.log("Note file:", note.file);
-  console.log("Note file type:", typeof note.file);
-  console.log("Is File object:", note.file instanceof File);
-
   const renderFilePreview = () => {
     if (!note.file) {
-      console.log("No file found");
       return (
         <div className="w-full h-60 bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-500">
           No file uploaded
@@ -45,11 +39,9 @@ const ViewModal: React.FC<{
       fileUrl = URL.createObjectURL(note.file);
       fileName = note.file.name;
       fileType = note.file.type;
-      console.log("File object detected:", { fileName, fileType, fileUrl });
     } else {
       fileUrl = String(note.file);
       fileName = String(note.file);
-      console.log("String URL detected:", fileUrl);
     }
 
     // Check if the file is a PDF
@@ -58,19 +50,12 @@ const ViewModal: React.FC<{
         const result =
           note.file.type === "application/pdf" ||
           note.file.name.toLowerCase().endsWith(".pdf");
-        console.log(
-          "PDF check (File):",
-          result,
-          note.file.type,
-          note.file.name
-        );
         return result;
       }
       const fileStr = String(note.file);
       const result =
         fileStr.toLowerCase().includes(".pdf") ||
         fileStr.toLowerCase().includes("pdf");
-      console.log("PDF check (String):", result, fileStr);
       return result;
     };
 
@@ -78,7 +63,6 @@ const ViewModal: React.FC<{
     const isImage = () => {
       if (note.file instanceof File) {
         const result = note.file.type.startsWith("image/");
-        console.log("Image check (File):", result, note.file.type);
         return result;
       }
       const fileStr = String(note.file);
@@ -93,17 +77,14 @@ const ViewModal: React.FC<{
       const result = imageExtensions.some((ext) =>
         fileStr.toLowerCase().includes(ext)
       );
-      console.log("Image check (String):", result, fileStr);
       return result;
     };
 
     const pdfCheck = isPDF();
     const imageCheck = isImage();
 
-    console.log("File type checks:", { isPDF: pdfCheck, isImage: imageCheck });
 
     if (pdfCheck) {
-      console.log("Rendering PDF with URL:", fileUrl);
       return (
         <div className="w-full h-96 bg-gray-100 rounded mb-4 border-2 border-gray-300">
           <div className="mb-2 text-sm text-gray-600 p-2">
@@ -138,7 +119,6 @@ const ViewModal: React.FC<{
     }
 
     if (imageCheck) {
-      console.log("Rendering Image with URL:", fileUrl);
       return (
         <div className="w-full h-60 bg-gray-100 rounded mb-4 flex items-center justify-center border-2 border-gray-300">
           <img
@@ -147,7 +127,6 @@ const ViewModal: React.FC<{
             className="max-w-full max-h-full object-contain rounded"
             onLoad={() => console.log("Image loaded successfully")}
             onError={(e) => {
-              console.log("Image failed to load");
               const target = e.target as HTMLImageElement;
               target.style.display = "none";
               target.parentElement!.innerHTML = `
@@ -162,7 +141,6 @@ const ViewModal: React.FC<{
       );
     }
 
-    console.log("Rendering generic file preview");
     return (
       <div className="w-full h-60 bg-gray-100 rounded mb-4 flex flex-col items-center justify-center text-gray-500 border-2 border-dashed border-gray-300">
         <div className="text-center">
@@ -224,11 +202,10 @@ const ViewModal: React.FC<{
             <span className="text-yellow-400">★</span>
           </h1>
           <span
-            className={`text-xs px-3 py-1 rounded-full ${
-              note?.is_active
-                ? "bg-green-500 text-white"
-                : "bg-gray-500 text-white"
-            }`}
+            className={`text-xs px-3 py-1 rounded-full ${note?.is_active
+              ? "bg-green-500 text-white"
+              : "bg-gray-500 text-white"
+              }`}
           >
             {note?.is_active ? "Active" : "Completed"}
           </span>

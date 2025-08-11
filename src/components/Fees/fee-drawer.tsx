@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type React from "react"
 import { useState, useEffect } from "react"
@@ -8,16 +9,16 @@ import {
   GetBranchThunks,
   GetBranchCourseThunks,
   GetBatchThunks,
-  GetStudentsWithBatchThunks
+  GetStudentsWithBatchThunks,
+  GetAllFeesThunks,
+  EditStudentthunks
 } from "../../features/Payment_Managemant/salary/fees/reducers/thunks"
 import { creatFees } from "../../features/Payment_Managemant/salary/fees/services"
-import { GetAllSalaryThunks } from "../../features/Payment_Management/salary/fees/reducers/thunks"; // adjust path
-
 
 interface FeeDrawerProps {
   isOpen: boolean
   onClose: () => void
-  selectedFee: Fee | null
+  selectedFee: any | null
   onSuccess: () => void
   onAddFee: (newFee: Fee) => void
   onUpdateFee: (updatedFee: Fee) => void
@@ -37,7 +38,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   const [batch, setBatch] = useState("")
   const [studentName, setStudentName] = useState("")
   const [studentEmail, setStudentEmail] = useState("")
-  const [studentId, setStudentId] = useState("") // <-- NEW
+  const [studentId, setStudentId] = useState("")
   const [paymentDate, setPaymentDate] = useState("")
   const [transactionId, setTransactionId] = useState("")
   const [paidAmount, setPaidAmount] = useState("")
@@ -47,6 +48,19 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   const [courseOptions, setCourseOptions] = useState([])
   const [batchOptions, setBatchOptions] = useState([])
   const [students, setStudents] = useState([])
+  const [UpdateStudentfees, setUpdateStudentFees] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchStudentUpdateData = async () => {
+      const result = await dispatch(EditStudentthunks({}) as any)
+      console.log(result, "Update Student Fees data")
+      setUpdateStudentFees(result)
+    }
+
+    if (isOpen && selectedFee) {
+      fetchStudentUpdateData()
+    }
+  }, [isOpen, selectedFee])
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -66,13 +80,12 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
       }
     }
     fetchCourses()
-  }, [branch])
+  }, [branch, dispatch])
 
   useEffect(() => {
     const fetchBatches = async () => {
       if (branch && course) {
-        const instituteId = "973195c0-66ed-47c2-b098-d8989d3e4529"
-        const res = await dispatch(GetBatchThunks(instituteId, branch, course) as any)
+        const res = await dispatch(GetBatchThunks(course) as any)
         if (res?.data) {
           setBatchOptions(res.data)
         }
@@ -81,7 +94,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
       }
     }
     fetchBatches()
-  }, [branch, course])
+  }, [branch, course, dispatch])
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -91,20 +104,18 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         }
         const res = await dispatch(GetStudentsWithBatchThunks(params) as any)
-        console.log("Fetching students with name", res)
 
         if (res?.data && Array.isArray(res.data)) {
           setStudents(res.data)
 
           const firstStudent = res.data[0]
-          setStudentName(firstStudent?.full_name || "")
           setStudentEmail(firstStudent?.email || "")
-          setStudentId(firstStudent?._id || "") // <-- Set ID
+          setStudentId(firstStudent?._id || "")
         } else {
           setStudents([])
           setStudentName("")
           setStudentEmail("")
-          setStudentId("") // <-- Clear ID
+          setStudentId("")
         }
       }
     }
@@ -115,24 +126,23 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   useEffect(() => {
     if (isOpen) {
       if (selectedFee) {
-        setTransactionId(selectedFee.transactionId)
+        setTransactionId(selectedFee.transaction_id)
         setPaidAmount(selectedFee.paid_amount)
-        setPaymentDate(selectedFee.payment_date === "N/A" ? "" : selectedFee.payment_date)
-        setStudentName(selectedFee.name)
+        setPaymentDate(selectedFee.payment_date)
+        setStudentName(selectedFee.student.full_name)
         setStudentEmail(selectedFee.email)
         setBalance(selectedFee.balance)
-        setDueDate(selectedFee.duepaymentdate === "NA" ? "" : selectedFee.duepaymentdate)
+        setDueDate(selectedFee.duepaymentdate)
         setBranch(selectedFee.branch_id)
         setCourse(selectedFee.course_name)
         setBatch(selectedFee.batch_name)
-        // NOTE: If editing, we assume studentId won't be changed
       } else {
         setBranch("")
         setCourse("")
         setBatch("")
         setStudentName("")
         setStudentEmail("")
-        setStudentId("") // <-- Reset ID
+        setStudentId("")
         setPaymentDate("")
         setTransactionId("")
         setPaidAmount("")
@@ -146,7 +156,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     if (selectedFee) {
       const updatedFee: Fee = {
         ...selectedFee,
-        transactionId,
+        transaction_id: transactionId,
         paid_amount: paidAmount,
         payment_date: paymentDate,
         balance,
@@ -156,16 +166,15 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
         course_name: course,
       }
       onUpdateFee(updatedFee)
-      console.log("Updated fee:", updatedFee)
     }
   }
 
   const handleAddFeeLogic = async () => {
-    const newFee: Fee = {
+    const newFee: any = {
       id: 1,
       transaction_id: transactionId || "N/A",
       institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      student: studentId || "N/A", // <-- Use ID here
+      student: studentId || "N/A",
       balance: balance || "0",
       batch_name: batch || "N/A",
       branch_id: branch || "N/A",
@@ -186,7 +195,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
 
     await creatFees(newFee)
     onAddFee(newFee)
-    console.log("New fee added:", newFee)
     onSuccess()
   }
 
@@ -198,6 +206,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
       await handleAddFeeLogic()
     }
     onClose()
+    dispatch(GetAllFeesThunks({}) as any)
   }
 
   if (!isOpen) return null
@@ -215,7 +224,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
         {selectedFee && (
           <div className="flex flex-col items-center mb-6">
             <div className="w-24 h-24 bg-cyan-500 rounded-full overflow-hidden border-2 border-gray-200 mb-3 flex items-center justify-center text-white text-4xl font-bold">
-              {selectedFee.name.charAt(0).toUpperCase()}
+              {selectedFee?.name?.charAt(0).toUpperCase()}
             </div>
             <p className="font-semibold text-lg text-gray-800">{selectedFee.name}</p>
             <p className="text-sm text-gray-500">{selectedFee.email}</p>
@@ -224,9 +233,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="select-branch" className="block text-sm text-gray-700">Select Branch</label>
+            <label className="block text-sm text-gray-700">Select Branch</label>
             <select
-              id="select-branch"
               className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
               value={branch}
               onChange={(e) => setBranch(e.target.value)}
@@ -239,9 +247,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="select-course" className="block text-sm text-gray-700">Select Course</label>
+            <label className="block text-sm text-gray-700">Select Course</label>
             <select
-              id="select-course"
               className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
               value={course}
               onChange={(e) => setCourse(e.target.value)}
@@ -254,9 +261,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="batch" className="block text-sm text-gray-700">Select Batch</label>
+            <label className="block text-sm text-gray-700">Select Batch</label>
             <select
-              id="batch"
               value={batch}
               onChange={(e) => setBatch(e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
@@ -269,15 +275,14 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="student-name" className="block text-sm text-gray-700">Student Name</label>
+            <label className="block text-sm text-gray-700">Student Name</label>
             <select
-              id="student-name"
               value={studentName}
               onChange={(e) => {
                 const selected: any = students.find((s: any) => s.full_name === e.target.value)
                 setStudentName(selected?.full_name || "")
                 setStudentEmail(selected?.email || "")
-                setStudentId(selected?.uuid || "") // <-- Set ID
+                setStudentId(selected?._id || "")
               }}
               className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
             >
@@ -289,9 +294,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="payment-date" className="block text-sm text-gray-700">Payment Date</label>
+            <label className="block text-sm text-gray-700">Payment Date</label>
             <input
-              id="payment-date"
               type="date"
               value={paymentDate}
               onChange={(e) => setPaymentDate(e.target.value)}
@@ -300,9 +304,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="transaction-id" className="block text-sm text-gray-700">Transaction ID</label>
+            <label className="block text-sm text-gray-700">Transaction ID</label>
             <input
-              id="transaction-id"
               type="text"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
@@ -311,9 +314,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="paid-amount" className="block text-sm text-gray-700">Paid Amount</label>
+            <label className="block text-sm text-gray-700">Paid Amount</label>
             <input
-              id="paid-amount"
               type="text"
               value={paidAmount}
               onChange={(e) => setPaidAmount(e.target.value)}
@@ -322,9 +324,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="balance" className="block text-sm text-gray-700">Balance</label>
+            <label className="block text-sm text-gray-700">Balance</label>
             <input
-              id="balance"
               type="text"
               value={balance}
               onChange={(e) => setBalance(e.target.value)}
@@ -333,9 +334,8 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="due-date" className="block text-sm text-gray-700">Due Payment Date</label>
+            <label className="block text-sm text-gray-700">Due Payment Date</label>
             <input
-              id="due-date"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}

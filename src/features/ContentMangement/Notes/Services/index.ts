@@ -4,48 +4,48 @@ import Client from '../../../../apis/index';
 export const getNotes = async (params: any) => {
   try {
     const response = await Client.notes.get(params);
-  return response;
+    return response;
   } catch (error) {
-    console.log("Getting Note",error)
+    console.log("Getting Note", error)
     throw error;
   }
-  
+
 };
 
 //For ADD Notes
 export const createNote = async (data: any) => {
   try {
-     const response = await Client.notes.create(data);
-     return response.data;
-   } catch (error) {
-     console.error("Error adding module:", error);
-     throw error;
-   }
-  
+    const response = await Client.notes.create(data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding module:", error);
+    throw error;
+  }
+
 };
 
 //For Updating Notes
 export const updateNote = async (params: any) => {
   try {
-    const response= await Client.notes.update(params);
+    const response = await Client.notes.update(params);
     return response
   } catch (error) {
-    console.log("Updating Note",error)
+    console.log("Updating Note", error)
     throw error;
   }
-  
+
 };
 
 //For Deleting Notes
 export const deleteNote = async (id: string) => {
   try {
-    const response =await Client.notes.delete({ id });
+    const response = await Client.notes.delete({ id });
     return response
   } catch (error) {
-    console.log("Delete Note",error)
+    console.log("Delete Note", error)
     throw error;
   }
- 
+
 };
 
 //For Upload Files
@@ -69,8 +69,8 @@ export const getBranch = async (params: any) => {
 };
 
 //For Course Dropdown
-export const CourseDrop=async(params:any)=>{
- try {
+export const CourseDrop = async (params: any) => {
+  try {
     const response = await Client.course.getWithBranch(params);
     return response.data;
   } catch (error: any) {
@@ -81,19 +81,18 @@ export const CourseDrop=async(params:any)=>{
 //Toggle Status 
 export const ToggleNoteStatus = async (data: any) => {
   const response = await Client.notes.update_status(data)
-  console.log("Note status updated successfully in services", response.data);
   return response.data;
 };
 
 
 
 //  notes = {
-    //     get: (params: string) => HttpClient.get(HTTP_END_POINTS.notes.index, params),
-    //     create: (data: any) => HttpClient.post(HTTP_END_POINTS.notes.index, data),
-    //     update: (data: any) => HttpClient.update(HTTP_END_POINTS.notes.index + `/update/${data.uuid}`, data),
-    //     update_status: (data: any) => HttpClient.update(HTTP_END_POINTS.notes.update_status + data.id, data),
-    //     delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.notes.index + '/' + data.id)
-    // };
+//     get: (params: string) => HttpClient.get(HTTP_END_POINTS.notes.index, params),
+//     create: (data: any) => HttpClient.post(HTTP_END_POINTS.notes.index, data),
+//     update: (data: any) => HttpClient.update(HTTP_END_POINTS.notes.index + `/update/${data.uuid}`, data),
+//     update_status: (data: any) => HttpClient.update(HTTP_END_POINTS.notes.update_status + data.id, data),
+//     delete: (data: any) => HttpClient.delete(HTTP_END_POINTS.notes.index + '/' + data.id)
+// };
 //  file = {
 //         upload: (data: any) => {
 //             return HttpClient.uploadFile(HTTP_END_POINTS.file.upload, data);
