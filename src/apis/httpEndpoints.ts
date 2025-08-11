@@ -51,10 +51,12 @@ const generateEndpoints = () => {
 		},
 		branch: {
 			// getAll: `/api/institutes/${instituteId}/branches/`,
-			getAll: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/`,
+			getAll: `/api/institutes/${instituteId}/branches/`,
 			create: `/api/institutes/${instituteId}/branches/`,
-			update: `/api/institutes/ ${instituteId}/branches/:branchId`,
-			delete: `/api/institutes/ ${instituteId} /:branchId`
+			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			edit: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			delete: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			updatestatus: `/api/institutes/${instituteId}/branches/:branchuuid`,
 		},
 		faq: {
 			create: `/api/institutes/faq`,

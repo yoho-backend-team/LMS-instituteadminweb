@@ -331,11 +331,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
                         fee.student?.uuid === selectedStudent
                     )
                     .map((fee: any) => {
-                     
+
                       const paidAmount = fee?.paid_amount ?? 0;
                       return (
                         <option key={fee._id} value={fee._id}>
-                           Paid: ₹{paidAmount.toLocaleString()}
+                          Paid: ₹{paidAmount.toLocaleString()}
                         </option>
                       );
                     })

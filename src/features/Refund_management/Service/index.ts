@@ -28,7 +28,7 @@ export const updateRefund = async (data: any) => {
     console.log("update", res);
     return res;
   } catch (error) {
-    console.log("Update Servier",error)
+    console.log("Update Servier", error)
     throw error;
   }
 };

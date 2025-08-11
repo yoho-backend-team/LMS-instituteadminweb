@@ -39,14 +39,14 @@ export const GetAllRefundsThunk = (params?: any) => async (dispatch: any) => {
 export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    console.log("Creating refund with payload:", payload); 
+    console.log("Creating refund with payload:", payload);
     const res = await createRefund(payload);
-    console.log("Create refund response:", res); 
-    
+    console.log("Create refund response:", res);
+
     dispatch(addRefund(res.data));
-    
+
     dispatch(GetAllRefundsThunk());
-    
+
     return res;
   } catch (error: any) {
     console.error("Failed to create refund:", error);
@@ -62,11 +62,11 @@ export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
 export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-    const res: any = await updateRefund(payload); 
-    console.log("Update thunk",payload)
+    const res: any = await updateRefund(payload);
+    console.log("Update thunk", payload)
     dispatch(updateRefundInState(res.data));
   } catch (error: any) {
-    console.log("update thunk",error)
+    console.log("update thunk", error)
     dispatch(setRefundError(error.message || "Failed to update refund"));
   } finally {
     dispatch(setRefundLoading(false));
@@ -78,8 +78,8 @@ export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
 export const DeleteRefundThunk = (refundId: string) => async (dispatch: any) => {
   try {
     dispatch(setRefundLoading(true));
-     console.log("Thunk deleting refund ID:", refundId);
-    await deleteRefund(refundId); 
+    console.log("Thunk deleting refund ID:", refundId);
+    await deleteRefund(refundId);
     dispatch(deleteRefundInState(refundId));
   } catch (error: any) {
     dispatch(setRefundError(error.message || "Failed to delete refund"));

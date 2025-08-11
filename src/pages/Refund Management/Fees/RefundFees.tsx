@@ -45,9 +45,8 @@ const RefundFees = () => {
     uuid: item._id || "",
     refundId: item._id || "",
     studentId: item.student?.id || item.student?.uuid || "",
-    studentInfo: `${item.student?.first_name || ""} ${
-      item.student?.last_name || ""
-    }`.trim(),
+    studentInfo: `${item.student?.first_name || ""} ${item.student?.last_name || ""
+      }`.trim(),
     studentEmail: item.student?.email || "",
     paid: item.studentfees?.paid_amount ? item.studentfees.paid_amount.toString() : "0",
     payment: item.payment_date ? new Date(item.payment_date).toISOString() : "",
@@ -63,7 +62,7 @@ const RefundFees = () => {
   );
 
   const handleEdit = (data: RefundData) => {
-    console.log("code :",data)
+    console.log("code :", data)
     setEditData(data);
     setShowPanel(true);
   };
