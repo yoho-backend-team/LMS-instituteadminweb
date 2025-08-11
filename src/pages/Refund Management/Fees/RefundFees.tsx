@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 
 export interface RefundData {
   uuid?: string;
-  uuid?: string;
   refundId: string;
   studentId: string;
   studentInfo: string;

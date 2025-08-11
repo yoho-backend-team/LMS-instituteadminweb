@@ -25,7 +25,7 @@ interface CreateBranchParams {
   city: string;
   state: string;
   status?: "active" | "inactive";
-  institute_id: string;
+  institute_id?: string;
 }
 
 interface UpdateBranchParams {
@@ -65,7 +65,7 @@ export const CreateBranch = async (data: CreateBranchParams) => {
 
 // Update branch
 export const EditBranch = async (params: { id: string; data: any }) => {
-  const response = await Client.branch.edit(params.data, params.id);
+  const response = await Client.branch.update(params.data, params.id);
   return response.data;
 };
 

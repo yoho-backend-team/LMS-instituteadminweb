@@ -52,6 +52,19 @@ class Client {
       HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
     create: (params: string) =>
       HttpClient.post(HTTP_END_POINTS.branch.create, params),
+     update: (data: any) =>
+      HttpClient.update(
+        HTTP_END_POINTS.branch.update+data.uuid,
+        data
+      ),
+      delete:(data:any)=>
+         HttpClient.delete(
+      HTTP_END_POINTS.branch.delete
+        .replace(':instituteId', data.institute_id)
+        .replace(':branchId', data.uuid),
+      data
+    ),
+    
   };
   file = {
     upload: (data: any) => {

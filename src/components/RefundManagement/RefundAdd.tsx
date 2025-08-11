@@ -141,14 +141,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       selectedFee: !selectedFee,
       amount: !amount,
     };
-    const newErrors = {
-      branchId: !branchId,
-      selectedCourse: !selectedCourse,
-      selectedBatch: !selectedBatch,
-      selectedStudent: !selectedStudent,
-      selectedFee: !selectedFee,
-      amount: !amount,
-    };
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) return;
