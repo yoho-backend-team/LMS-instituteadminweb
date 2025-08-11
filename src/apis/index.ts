@@ -49,7 +49,7 @@ class Client {
 	};
 	branch = {
 		getAll: (params: string) =>
-			HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
+			HttpClient.get(HTTP_END_POINTS.branch.getAll.replace(':instituteId',params), params),
 		create: (params: string) =>
 			HttpClient.post(HTTP_END_POINTS.branch.create, params),
 		edit: (data: any, params: string) => HttpClient.update(HTTP_END_POINTS.branch.edit.replace(':branchuuid', params), data),
@@ -513,7 +513,7 @@ class Client {
 	};
 	reports = {
 		get: (query: any) =>
-			HttpClient.get(HTTP_END_POINTS.reports.get + query?.branch, query),
+			HttpClient.get(HTTP_END_POINTS.reports.get.replace(":instituteId", query?.instituteId) + query?.branch, query),
 	};
 	placements = {
 		getAll: (data: any) =>

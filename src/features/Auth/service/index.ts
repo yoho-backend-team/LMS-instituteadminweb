@@ -32,7 +32,7 @@ export const AuthOtp = async (data: any) => {
 export const GetProfileDetail = async () => {
     try {
         const response: any = await Client.admin.me()
-        const institute = response?.data?.institute_id["uuid"]
+        const institute = response?.data?.institute_id?.uuid
         StoreLocalStorage('instituteId', institute)
         return response
     } catch (error) {

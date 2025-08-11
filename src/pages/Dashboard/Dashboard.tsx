@@ -13,6 +13,8 @@ import { selectActivityData, selectDashboardData } from '../../features/Dashboar
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
 import { RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
+import { GetBranchThunks } from '../../features/StudyMaterials/thunk';
+import { getInstituteDetails } from '../../apis/httpEndpoints';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -27,58 +29,53 @@ export default function Component() {
 
 	const [selectedMonth, setSelectedMonth] = useState('July');
 	const [selectedYear, setSelectedYear] = useState('2025');
-	const dispatch = useDispatch<any>()
+	const dispatch = useDispatch<any>();
 
-	const DashboardData = useSelector(selectDashboardData)
-	const ActivityData = useSelector(selectActivityData)
-	const BranchData = useSelector(selectBranches)
+	const DashboardData = useSelector(selectDashboardData);
+	const ActivityData = useSelector(selectActivityData);
+	const BranchData = useSelector(selectBranches);
 
-	const BranchOptions = BranchData.map((branch:any)=>{
-		return branch?.branch_identity
-	})
-	
-	console.log(BranchData,"branch")
-	const branchList = BranchOptions;
-	const [selectedBranch, setSelectedBranch] = useState(BranchData[0]?.branch_identity);
-	console.log(selectedBranch,"selected branch")
-
+	const BranchOptions = BranchData?.map((branch: any) => branch?.branch_identity);
+	const [selectedBranch, setSelectedBranch] = useState('');
+	const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>(undefined);
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-	
+	const instituteId = getInstituteDetails();
+
 	const handleBranchChange = (branch: string) => {
-
-		BranchData.map((branchID:any)=>{
-			if(branchID?.branch_identity === branch){
-				RemoveLocalStorage("selectedBranchId")
-				StoreLocalStorage("selectedBranchId",branchID.uuid)
-			}
-		})
-
-		setSelectedBranch(branch);
+		const branchObj = BranchData?.find((b: any) => b?.branch_identity === branch);
+		if (branchObj) {
+			StoreLocalStorage('selectedBranchId', branchObj?.uuid);
+			setSelectedBranch(branch);
+			setSelectedBranchId(branchObj?.uuid);
+		}
 		setBranchMenuOpen(false);
 	};
 
 	const handleApply = () => {
-		console.log('Selected Month:', selectedMonth);
-		console.log('Selected Year:', selectedYear);
 		setPeriodOpen(false);
 	};
 
-
-
-
-
+	useEffect(() => {
+		dispatch(GetBranchThunks({}));
+	}, [dispatch]);
 
 	useEffect(() => {
-		const paramsData = { branch: BranchData[0]?.uuid }
+		if (BranchData?.length > 0 && !selectedBranchId) {
+			setSelectedBranch(BranchData?.[0]?.branch_identity);
+			setSelectedBranchId(BranchData?.[0]?.uuid);
+			StoreLocalStorage('selectedBranchId', BranchData?.[0]?.uuid);
+		}
+	}, [BranchData, selectedBranchId]);
+
+	useEffect(() => {
+		if (!selectedBranchId && !instituteId ) return; 
+		const paramsData = { branch: selectedBranchId, instituteId: instituteId };
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [dispatch,selectedBranch]);
-	
-
-
-
+	}, [dispatch, selectedBranchId]);
 
 	return (
+	
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
 			{/* SearchBAr */}
 			<div className=' mx-auto space-y-6'>
@@ -96,7 +93,7 @@ export default function Component() {
 					color: '#716F6F',
 				}}
 			>
-				<span>{BranchData[0]?.branch_identity}</span>
+				<span>{BranchData?.[0]?.branch_identity}</span>
 				<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
 			</button>
 
@@ -104,7 +101,7 @@ export default function Component() {
 			{branchMenuOpen && (
 				<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
 					<div className='space-y-2 p-2'>
-						{branchList.map((branch:any) => (
+						{BranchOptions?.map((branch: any) => (
 							<button
 								key={branch}
 								onClick={() => handleBranchChange(branch)}

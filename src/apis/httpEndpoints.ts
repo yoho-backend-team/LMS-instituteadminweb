@@ -1,26 +1,25 @@
-import secureLocalStorage from 'react-secure-storage';
 import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
+	try {
 		const institute = GetLocalStorage('instituteId');
 		return institute;
-	} else {
+	} catch(error) {
 		return null;
 	}
 };
 
 export const getSelectedBranchId = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
+	try{
 		const branch = GetLocalStorage('selectedBranchId');
 		return branch;
-	} else {
+	} catch(error) {
 		return null;
 	}
 };
 
-const generateEndpoints = () => {
-	const instituteId = getInstituteDetails();
+export const generateEndpoints = () => {
+	const instituteId = GetLocalStorage('instituteId');
 	const branchId = getSelectedBranchId();
 
 	return {
@@ -55,7 +54,7 @@ const generateEndpoints = () => {
 		},
 		branch: {
 			// getAll: `/api/institutes/${instituteId}/branches/`,
-			getAll: `/api/institutes/${instituteId}/branches/`,
+			getAll: `/api/institutes/:instituteId/branches/`,
 			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
 			create: `/api/institutes/${instituteId}/branches/`,
 			edit: `/api/institutes/${instituteId}/branches/:branchuuid`,
@@ -238,7 +237,7 @@ const generateEndpoints = () => {
 			get: '/api/institutes/user/activities/',
 		},
 		reports: {
-			get: `/api/institutes/${instituteId}/report/`,
+			get: `/api/institutes/:instituteId/report/`,
 		},
 		placements: {
 			create: `/api/placements/create`,

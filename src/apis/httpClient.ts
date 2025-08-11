@@ -40,9 +40,7 @@ Axios.interceptors.response.use(
 	(error) => {
 		if (error?.response?.status === 401) {
 			ClearLocalStorage();
-
 			showSessionExpiredModal();
-
 		}
 		return Promise.reject(error);
 	}

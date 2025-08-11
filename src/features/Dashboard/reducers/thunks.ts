@@ -6,7 +6,6 @@ export const getDashboardthunks =
         try {
             const response = await getDashboard(params);
             dispatch(getDashboardData(response));
-            console.log(response,"Dashboard Response")
         } catch (error) {
             console.log(error);
         }
