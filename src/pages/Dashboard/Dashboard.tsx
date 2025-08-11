@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActivityData, selectDashboardData } from '../../features/Dashboard/reducers/selectors';
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
-import { RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
+import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -32,15 +32,16 @@ export default function Component() {
 
 	const DashboardData = useSelector(selectDashboardData)
 	const ActivityData = useSelector(selectActivityData)
-	const BranchData = useSelector(selectBranches)
+	const BranchData: any = useSelector(selectBranches)
+	const [selectedBranch, setSelectedBranch] = useState('');
 
 	const BranchOptions = BranchData?.map((branch: any) => {
 		return branch?.branch_identity
 	})
 
+	const localBranch = GetLocalStorage('selectedBranchId')
+
 	const branchList = BranchOptions;
-	const [selectedBranch, setSelectedBranch] = useState(BranchData?.[0]?.branch_identity);
-	console.log(selectedBranch, "selected branch")
 
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
@@ -49,6 +50,7 @@ export default function Component() {
 		BranchData.map((branchID: any) => {
 			if (branchID?.branch_identity === branch) {
 				RemoveLocalStorage("selectedBranchId")
+				setSelectedBranch(branchID?.branch_identity)
 				StoreLocalStorage("selectedBranchId", branchID.uuid)
 			}
 		})
@@ -64,15 +66,18 @@ export default function Component() {
 	};
 
 
-
-
-
-
 	useEffect(() => {
-		const paramsData = { branch: BranchData?.[0]?.uuid }
+		const paramsData = { branch: GetLocalStorage('selectedBranchId') }
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [BranchData, dispatch, selectedBranch]);
+		(() => {
+			if (localBranch == null) {
+				return setSelectedBranch(BranchData?.[0]?.branch_identity)
+			}
+			const foundBranch = BranchData?.find((item: any) => item.uuid === localBranch);
+			setSelectedBranch(foundBranch?.branch_identity)
+		})()
+	}, [BranchData, dispatch, localBranch]);
 
 
 
@@ -96,7 +101,7 @@ export default function Component() {
 								color: '#716F6F',
 							}}
 						>
-							<span>{BranchData?.[0]?.branch_identity}</span>
+							<span>{selectedBranch}</span>
 							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
 						</button>
 
