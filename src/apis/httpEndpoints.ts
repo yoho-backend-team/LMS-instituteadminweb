@@ -54,8 +54,8 @@ const generateEndpoints = () => {
 			getAll: `/api/institutes/${instituteId}/branches/`,
 			create: `/api/institutes/${instituteId}/branches/`,
 			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
-			edit: `/api/institutes/${instituteId}/branches/:branchuuid`,
-			delete: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			edit: `/api/institutes/${instituteId}/branches/`,
+			delete: `/api/institutes/${instituteId}/branches/`,
 			updatestatus: `/api/institutes/${instituteId}/branches/:branchuuid`,
 		},
 		faq: {

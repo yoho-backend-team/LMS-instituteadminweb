@@ -49,12 +49,21 @@ class Client {
   branch = {
     getAll: (params: string) =>
       HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
-    create: (params: string) =>
-      HttpClient.post(HTTP_END_POINTS.branch.create, params),
-    edit: (data: any, params: string) => HttpClient.update(HTTP_END_POINTS.branch.edit.replace(':branchuuid', params), data),
-    delete: (params: string) => HttpClient.delete(HTTP_END_POINTS.branch.delete.replace(':branchuuid', params)),
-    updatestatus: (params: string, data?: any) => HttpClient.update(HTTP_END_POINTS.branch.updatestatus.replace(':branchuuid', params), data),
-    getByid: (params: string) => HttpClient.get(HTTP_END_POINTS.branch.getByBranchId.replace(':branchuuid', params)),
+    create: (data:any) =>
+      HttpClient.post(HTTP_END_POINTS.branch.create,data),
+    edit: (params: string, data: any) =>
+      HttpClient.patch(HTTP_END_POINTS.branch.edit + params, data),
+    delete: (data: any) =>
+      HttpClient.delete(HTTP_END_POINTS.branch.delete + data.uuid),
+    updatestatus: (params: string, data?: any) =>
+      HttpClient.update(
+        HTTP_END_POINTS.branch.updatestatus.replace(":branchuuid", params),
+        data
+      ),
+    getByid: (params: string) =>
+      HttpClient.get(
+        HTTP_END_POINTS.branch.getByBranchId.replace(":branchuuid", params)
+      ),
   };
   file = {
     upload: (data: any) => {
@@ -606,10 +615,7 @@ class Client {
       HttpClient.get(HTTP_END_POINTS.refund.getById.replace(":id", data._id)),
 
     update: (data: any) =>
-      HttpClient.update(
-        HTTP_END_POINTS.refund.update + data.uuid,
-        data
-      ),
+      HttpClient.update(HTTP_END_POINTS.refund.update + data.uuid, data),
 
     delete: (data: any) =>
       HttpClient.delete(

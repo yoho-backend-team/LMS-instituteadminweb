@@ -1,5 +1,4 @@
-"use client";
-import { Plus, X, MoreVertical, ArrowRight, Eye, Edit2, Trash2 } from "lucide-react";
+import {  MoreVertical, ArrowRight, Eye, Edit2, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import TrichyImg from "../../assets/trichy.png";
 import { ConfirmationPopup } from "../../components/BranchManagement/ConfirmationPopup";
@@ -12,6 +11,7 @@ interface LocationCardProps {
   imageSrc?: string;
   cityName: string;
   address: string;
+  phoneNumber?: string;
   status: BranchStatus;
   onViewDetails: () => void;
   onEdit: () => void;

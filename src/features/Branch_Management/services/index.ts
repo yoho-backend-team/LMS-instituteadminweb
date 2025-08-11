@@ -10,13 +10,8 @@ interface GetAllBranchesParams {
 interface GetBranchByIdParams {
   uuid: string;
 }
-interface DeleteBranchParams {
-  institute_id: string;
-  uuid: string;
-}
-
 interface CreateBranchParams {
-  branch_name: string;
+  branch_identity: string;
   phone_number: string;
   alternate_number?: string;
   address: string;
@@ -38,11 +33,9 @@ interface UpdateStatusParams {
   status: "active" | "inactive";
 }
 
-
-
 // Get all branches
 export const GetAllBranches = async (params: GetAllBranchesParams) => {
-  const response = await Client.branch.getAll(params);
+  const response = await Client.branch.getAll(params.institute_id);
   return response;
 };
 
@@ -64,22 +57,22 @@ export const CreateBranch = async (data: CreateBranchParams) => {
 };
 
 // Update branch
-export const EditBranch = async (params: { id: string; data: any }) => {
-  const response = await Client.branch.update(params.data, params.id);
+export const EditBranch = async (params: string, data: UpdateBranchParams) => {
+  const response = await Client.branch.edit(params, data);
+  console.log("update data service:", response);
   return response.data;
 };
-
 
 // Update branch status
 export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
-  const response = await Client.branch.updatestatus(params.uuid, { status: params.status });
+  const response = await Client.branch.updatestatus(params.uuid, {
+    status: params.status,
+  });
   return response.data;
 };
 
-export const DeleteBranch = async (params: DeleteBranchParams) => {
-  const response = await Client.branch.delete(
-    params.institute_id, 
-    params.uuid
-  );
+// Delete branch service
+export const DeleteBranch = async ( uuid: string ) => {
+  const response = await Client.branch.delete({uuid});
   return response.data;
 };

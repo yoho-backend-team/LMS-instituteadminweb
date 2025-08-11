@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface Branch {
   id?: string;
@@ -24,47 +24,54 @@ const initialState: BranchState = {
   branches: [],
   loading: false,
   error: null,
-  searchTerm: undefined
+  searchTerm: undefined,
 };
 
 const branchSlice = createSlice({
-  name: 'branch',
+  name: "branch",
   initialState,
   reducers: {
     getBranches: (state, action: PayloadAction<Branch[]>) => {
       state.branches = action.payload || [];
     },
     addBranch: (state, action: PayloadAction<Branch | Branch[]>) => {
-      const newBranches = Array.isArray(action.payload) ? action.payload : [action.payload];
+      const newBranches = Array.isArray(action.payload)
+        ? action.payload
+        : [action.payload];
       state.branches = [...state.branches, ...newBranches];
     },
+    
     deleteBranch: (state, action: PayloadAction<string>) => {
       const idToDelete = action.payload;
       state.branches = state.branches.filter(
-        (branch) => branch._id === idToDelete);
+        (branch) => branch._id !== idToDelete && branch.id !== idToDelete
+      );
     },
 
     editBranch: (state, action: PayloadAction<Branch>) => {
       const updatedBranch = action.payload;
       const index = state.branches.findIndex(
-        (branch) => branch.id === updatedBranch.id || branch._id === updatedBranch._id
+        (branch) =>
+          branch._id === updatedBranch._id || branch.id === updatedBranch.id
       );
       if (index !== -1) {
-        state.branches[index] = updatedBranch;
+        state.branches[index] = { ...state.branches[index], ...updatedBranch };
       }
     },
 
-
-    updateBranchStatus: (state, action: PayloadAction<{ id: string; status: string }>) => {
-      const { id, status } = action.payload;
+    updateBranchStatus: (
+      state,
+      action: PayloadAction<{ branch_id: string; status: string }>
+    ) => {
+      const { branch_id, status } = action.payload;
       const index = state.branches.findIndex(
-        (branch) => branch.id === id || branch._id === id
+        (branch) => branch.id === branch_id || branch._id === branch_id
       );
       if (index !== -1) {
         state.branches[index] = {
           ...state.branches[index],
           status,
-          is_active: status.toLowerCase() === 'active',
+          is_active: status.toLowerCase() === "active",
         };
       }
     },
@@ -84,7 +91,7 @@ export const {
   editBranch,
   updateBranchStatus,
   setLoading,
-  setError
+  setError,
 } = branchSlice.actions;
 
 export default branchSlice.reducer;

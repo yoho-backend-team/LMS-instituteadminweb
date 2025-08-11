@@ -19,11 +19,6 @@ interface BranchParams {
   page?: number;
 }
 
-interface DeleteBranchParams {
-  id: string;
-  uuid: string;
-}
-
 interface StatusUpdateParams {
   branch_id: string;
   status: "active" | "inactive";
@@ -34,6 +29,7 @@ export const GetAllBranchesThunk =
   (params: BranchParams) => async (dispatch: any) => {
     try {
       const response = await GetAllBranches(params);
+      console.log("branchall.....", response.data);
       dispatch(getBranches(response.data));
       return response.data;
     } catch (error) {
@@ -43,14 +39,10 @@ export const GetAllBranchesThunk =
   };
 
 export const DeleteBranchThunk =
-  (params: { instituteId: string; branchUuid: string }) => 
-  async (dispatch: any) => {
+  (branchUuid: string) => async (dispatch: any) => {
     try {
-      await DeleteBranch({ 
-        institute_id: params.instituteId,
-        uuid: params.branchUuid 
-      });
-      dispatch(deleteBranch(params.branchUuid));
+      await DeleteBranch(branchUuid );
+      dispatch(deleteBranch(branchUuid)); 
     } catch (error) {
       console.error("Error deleting branch:", error);
       throw error;
@@ -58,11 +50,17 @@ export const DeleteBranchThunk =
   };
 
 export const EditBranchThunk =
-  (params: { id: string; data: any; uuid: string }) => async (dispatch: any) => {
+  (params: string, data: any) => async (dispatch: any) => {
     try {
-      const updatedData = await EditBranch(params);
-      dispatch(editBranch(updatedData));
-      return updatedData;
+      const res = await EditBranch(params, data);
+      console.log("Edit API response", res);
+      // if (!res?.data) {
+      //   await dispatch(GetAllBranchesThunk({ institute_id: params.data.institute_id }));
+      //   return;
+      // }
+
+      dispatch(editBranch(res.data));
+      return res.data;
     } catch (error) {
       console.error("Error editing branch:", error);
       throw error;
@@ -88,11 +86,11 @@ export const UpdateBranchStatusThunk =
 export const AddBranchThunk = (data: any) => async (dispatch: any) => {
   try {
     const result = await CreateBranch(data);
+    console.log("Create branch ", data);
     dispatch(addBranch(result));
     return result;
   } catch (error) {
     console.error("Error adding branch:", error);
     throw error;
   }
-  
 };

@@ -56,6 +56,10 @@ class HttpClient {
         const response = await Axios.put(url, data)
         return response.data
     }
+    async patch(url: string, data?: any) {
+        const response = await Axios.patch(url, data)
+        return response.data
+    }
 
     async delete(url: string, data?: any) {
         const response = await Axios.delete(url, data)
