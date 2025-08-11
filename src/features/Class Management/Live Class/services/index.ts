@@ -39,7 +39,7 @@ export const getAllBatches = async (params: any) => {
 
 export const getAllBranches = async (params: any) => {
 	try {
-		const response = await Client.branch.getAll(params);
+		const response = await Client.branch.getdash(params);
 		if (response) {
 			return response;
 		}

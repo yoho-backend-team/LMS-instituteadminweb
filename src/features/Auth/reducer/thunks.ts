@@ -16,14 +16,15 @@ export const GetProfileThunk = () => async (dispatch: any) => {
     try {
         const response = await GetProfileDetail()
         dispatch(setUSerDetails(response.data))
+        return response.institute_id
     } catch (error) {
         console.log(error)
     }
 }
 
-export const GetBranchThunks = () => async (dispatch: any) => {
+export const GetBranchThunks = (institute: { uuid: string }) => async (dispatch: any) => {
     try {
-        const response = await getAllBranches({})
+        const response = await getAllBranches(institute)
         StoreLocalStorage('selectedBranchId', response?.data?.[0]?.uuid)
         dispatch(setAllBranch(response?.data))
     } catch (error) {

@@ -50,7 +50,7 @@ const generateEndpoints = () => {
 			getWithRoleName: '/api/institutes/attedance/user-list/',
 		},
 		branch: {
-			// getAll: `/api/institutes/${instituteId}/branches/`,
+			getDash: `/api/institutes/:instituteId/branches/`,
 			getAll: `/api/institutes/${instituteId}/branches/`,
 			create: `/api/institutes/${instituteId}/branches/`,
 			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
@@ -238,7 +238,7 @@ const generateEndpoints = () => {
 			get: '/api/institutes/user/activities/',
 		},
 		reports: {
-			get: `/api/institutes/${instituteId}/report/`,
+			get: `/api/institutes/:instituteId/report/`,
 		},
 		placements: {
 			create: `/api/placements/create`,
