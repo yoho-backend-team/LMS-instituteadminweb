@@ -30,30 +30,24 @@ export default function Component() {
 	const options = ['Trending', 'Price - Low to High', 'Price - High to Low'];
 	const [trendingOpen, setTrendingOpen] = useState(false);
 	const [selectedOption, setSelectedOption] = useState(options[0]);
+	const [selectedMonth, setSelectedMonth] = useState('July');
+	const [selectedYear, setSelectedYear] = useState('2025');
+	const dispatch = useDispatch<any>();
+	const DashboardData = useSelector(selectDashboardData);
+	const ActivityData = useSelector(selectActivityData);
+	const BranchData: any = useSelector(selectBranches);
+	const [selectedBranch, setSelectedBranch] = useState('');
+	const BranchOptions = BranchData?.map((branch: any) => {
+		return branch?.branch_identity;
+	});
+	const localBranch = GetLocalStorage('selectedBranchId');
+	const branchList = BranchOptions;
+	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
 		setTrendingOpen(false);
 	};
-
-	const [selectedMonth, setSelectedMonth] = useState('July');
-	const [selectedYear, setSelectedYear] = useState('2025');
-	const dispatch = useDispatch<any>();
-
-	const DashboardData = useSelector(selectDashboardData);
-	const ActivityData = useSelector(selectActivityData);
-	const BranchData: any = useSelector(selectBranches);
-	const [selectedBranch, setSelectedBranch] = useState('');
-
-	const BranchOptions = BranchData?.map((branch: any) => {
-		return branch?.branch_identity;
-	});
-
-	const localBranch = GetLocalStorage('selectedBranchId');
-
-	const branchList = BranchOptions;
-
-	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
 	const handleBranchChange = (branch: string) => {
 		BranchData.map((branchID: any) => {
@@ -71,8 +65,6 @@ export default function Component() {
 	const handleApply = () => {
 		setPeriodOpen(false);
 	};
-
-	console.log(localBranch, 'branch');
 
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };

@@ -18,6 +18,7 @@ export const getSelectedBranchId = () => {
 const generateEndpoints = () => {
 	const instituteId = getInstituteDetails();
 	const branchId = getSelectedBranchId();
+
 	return {
 		admin: {
 			me: `/api/institutes/auth/admin/me`,

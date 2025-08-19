@@ -18,7 +18,6 @@ export const GetAllSalaryThunks = (params: any) => async (dispatch: any) => {
 		dispatch(setLoading(true));
 		const response = await GetAllSalary(params);
 		dispatch(getSalary(response.data));
-		return { payload: response.data };
 	} catch (error) {
 		console.log('Error in GetAllSalaryThunks:', error);
 	} finally {

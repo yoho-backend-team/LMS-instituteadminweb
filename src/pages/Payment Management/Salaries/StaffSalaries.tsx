@@ -24,7 +24,7 @@ const StaffSalaries = () => {
 	const [branches, setBranches] = useState<any[]>([]);
 	const [staffList, setStaffList] = useState<any[]>([]);
 	const [selectedSalary, setSelectedSalary] = useState<any | null>(null);
-	const loading = useSelector(selectLoading);
+	const [loading, setLoading] = useState(false);
 	const [filters, setFilters] = useState({
 		search: '',
 		branch: '',
@@ -43,21 +43,29 @@ const StaffSalaries = () => {
 		balance: '',
 	});
 
-	useEffect(() => {
-		const fetchData = async () => {
+	const fetchData = async () => {
+		try {
+			setLoading(true);
 			const result = await dispatch(GetAllSalaryThunks({}));
 			if (result?.payload && Array.isArray(result.payload)) {
 				setCardData(result.payload);
 			}
-		};
+			setLoading(false);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-		const fetchBranches = async () => {
-			const branchRes = await dispatch(GetBranchThunks({}));
-			if (branchRes?.payload && Array.isArray(branchRes.payload)) {
-				setBranches(branchRes.payload);
-			}
-		};
+	const fetchBranches = async () => {
+		const branchRes = await dispatch(GetBranchThunks({}));
+		if (branchRes?.payload && Array.isArray(branchRes.payload)) {
+			setBranches(branchRes.payload);
+		}
+	};
 
+	useEffect(() => {
 		fetchData();
 		fetchBranches();
 	}, [dispatch]);
