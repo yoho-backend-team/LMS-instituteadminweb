@@ -1,17 +1,23 @@
-import secureLocalStorage from 'react-secure-storage';
 import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
+	try {
 		const institute = GetLocalStorage('instituteId');
 		return institute;
+	}
+	catch(error){
+		console.log(error)
 	}
 };
 
 export const getSelectedBranchId = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
+	try{
 		const branch = GetLocalStorage('selectedBranchId');
+		console.log("branch status",branch)
 		return branch;
+	}
+		catch(error){
+		console.log(error)
 	}
 };
 

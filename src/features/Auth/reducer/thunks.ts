@@ -24,11 +24,9 @@ export const GetProfileThunk = () => async (dispatch: any) => {
 
 export const GetBranchThunks = (institute: { uuid: string }) => async (dispatch: any) => {
     try {
-        const response = await getAllBranches(institute)
-        const branch = GetLocalStorage('selectedBranchId')
-        if (!branch) {
-            StoreLocalStorage('selectedBranchId', response?.data?.[0]?.uuid)
-        }
+        const response = await getAllBranches('')
+        console.log(response?.data[0], "branck")
+        StoreLocalStorage('selectedBranchId', response?.data?.[0]?.uuid)
         dispatch(setAllBranch(response?.data))
     } catch (error) {
         console.log(error)
