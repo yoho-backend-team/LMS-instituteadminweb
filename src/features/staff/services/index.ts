@@ -33,14 +33,14 @@ export const updateStaff = async (data: any) => {
 export const deleteStaff = async (query: any) => {
 	const response = await Client.staff.delete(query);
 	if (response) return response;
-}
+};
 
 export const uploadFile = async (data: any) => {
-	const response = await Client.file.upload(data)
+	const response = await Client.file.upload(data);
 	if (response) return response;
-}
+};
 
 export const getBranchData = async (data: any) => {
-	const response = await Client.staff.getWithBranch(data)
+	const response = await Client.staff.getWithBranch(data);
 	if (response) return response;
-}
+};
