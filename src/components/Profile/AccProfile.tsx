@@ -156,12 +156,12 @@ const AccountProfile: React.FC = () => {
 								<div>
 									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>{profile?.first_name + ' ' + profile?.last_name}</h3>
 									{/* <p className="mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p> */}
-									<img
+									{/* <img
 										src={actimg}// replace with your actual image path
 										alt="Active"
 										className="inline-block mt-2 w-[90px] h-[38px] rounded-lg"
 										style={{ objectFit: "cover" }} // Optional styling
-									/>
+									/> */}
 									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>Albert Elnstein</h3>
 									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
 									<button className="bg-green-500 h-[38px] w-[107px] text-white  rounded-2xl hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
