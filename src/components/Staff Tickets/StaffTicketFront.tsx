@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
-	FiCalendar,
-	FiClock,
-	FiMoreVertical,
-	FiCheckCircle,
-} from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { GetStaffTicketServicesThunks } from '../../features/Ticket_Management/reducers/thunks';
-import avatarimg from '../../assets/navbar/avatarimg.png';
-import { GetStaffTicket } from '../../features/Ticket_Management/reducers/selectors';
-// import React, { useState } from "react";
-// import TicketCard from "./TicketCard";
-import ticket1 from '../../assets/ticket1.png';
-import { GetImageUrl } from '../../utils/helper';
-// import { useTicketContext } from "../../components/Staff Tickets/StaffTicketContext";
+  FiCalendar,
+  FiClock,
+  FiMoreVertical,
+  FiCheckCircle,
+} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { GetStaffTicketServicesThunks } from "../../features/Ticket_Management/reducers/thunks";
+import ticket1 from "../../assets/ticket1.png";
+import { GetStaffTicket, selectLoading } from "../../features/Ticket_Management/reducers/selectors";
+import { GetImageUrl } from "../../utils/helper";
 
 interface Ticket {
 	uuid: string;
@@ -42,40 +38,54 @@ const StaffTickets: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const staffTickets = useSelector(GetStaffTicket);
-	const loading: boolean = useSelector(
-		(state: any) => state.staffTickets?.loading || false
-	);
-	const error: any = useSelector((state: any) => state.staffTickets?.error);
+  const staffTickets = useSelector(GetStaffTicket);
+  const loading: boolean = useSelector(
+    selectLoading
+  );
+  const error: any = useSelector((state: any) => state.staffTickets?.error);
 
-	useEffect(() => {
-		if (showOpenTickets) {
-			const params: GetTicketsParams = {
-				branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-				institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
-				page: 1,
-				status: 'opened',
-			};
-			dispatch(GetStaffTicketServicesThunks(params) as any);
-		} else if (showClosedTickets) {
-			const params: GetTicketsParams = {
-				branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-				institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
-				page: 1,
-				status: 'closed',
-			};
-			dispatch(GetStaffTicketServicesThunks(params) as any);
-		}
-	}, [dispatch, showOpenTickets, showClosedTickets]);
+  useEffect(() => {
+    const params: GetTicketsParams = {
+      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      status: showOpenTickets ? "opened" : "closed",
+    };
+    dispatch(GetStaffTicketServicesThunks(params) as any);
+  }, [dispatch, showOpenTickets, showClosedTickets]);
 
-	const handleResolve = (ticket: Ticket) => {
-		setMenuOpenId(null);
-		if (ticket.status === 'opened') {
-			navigate(`/staff-tickets/${ticket.uuid}`);
-		} else {
-			console.log('Ticket is not open, cannot navigate');
-		}
-	};
+  const handleResolve = (ticket: Ticket) => {
+    setMenuOpenId(null);
+    if (ticket.status === "opened") {
+      navigate(`/staff-tickets/${ticket.uuid}`);
+    }
+  };
+
+  // Skeleton component
+  const TicketSkeleton = () => (
+    <div className="bg-white shadow-md rounded-lg p-4 border-2 animate-pulse">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          <div>
+            <div className="h-4 w-24 bg-gray-300 rounded mb-2"></div>
+            <div className="h-3 w-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+      </div>
+
+      <div className="h-3 w-full bg-gray-200 rounded mb-4"></div>
+      <div className="h-3 w-3/4 bg-gray-200 rounded mb-4"></div>
+
+      <div className="flex justify-between text-sm mb-4">
+        <div className="h-3 w-16 bg-gray-200 rounded"></div>
+        <div className="h-3 w-24 bg-gray-200 rounded"></div>
+      </div>
+
+      <div className="h-8 w-28 bg-gray-300 rounded"></div>
+    </div>
+  );
 
 	return (
 		<div>
@@ -84,36 +94,36 @@ const StaffTickets: React.FC = () => {
 				STAFF TICKETS
 			</div>
 
-			{/* Toggle Buttons */}
-			<div className='flex gap-4 mb-4'>
-				<button
-					onClick={() => {
-						setShowOpenTickets(true);
-						setShowClosedTickets(false);
-					}}
-					className={`px-4 py-2 rounded-md font-semibold text-sm ${
-						showOpenTickets
-							? 'bg-[#14b8c6] text-white'
-							: 'bg-gray-200 text-gray-700'
-					}`}
-				>
-					Open Tickets
-				</button>
+      {/* Toggle Buttons */}
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={() => {
+            setShowOpenTickets(true);
+            setShowClosedTickets(false);
+          }}
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${
+            showOpenTickets
+              ? "bg-[#14b8c6] text-white"
+              : "bg-gray-200 text-gray-700"
+          }`}
+        >
+          Open Tickets
+        </button>
 
-				<button
-					onClick={() => {
-						setShowOpenTickets(false);
-						setShowClosedTickets(true);
-					}}
-					className={`px-4 py-2 rounded-md font-semibold text-sm ${
-						showClosedTickets
-							? 'bg-[#14b8c6] text-white'
-							: 'bg-gray-200 text-gray-700'
-					}`}
-				>
-					Closed Tickets
-				</button>
-			</div>
+        <button
+          onClick={() => {
+            setShowOpenTickets(false);
+            setShowClosedTickets(true);
+          }}
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${
+            showClosedTickets
+              ? "bg-[#14b8c6] text-white"
+              : "bg-gray-200 text-gray-700"
+          }`}
+        >
+          Closed Tickets
+        </button>
+      </div>
 
 			{(showOpenTickets || showClosedTickets) && (
 				<div className='mb-6'>
@@ -121,55 +131,59 @@ const StaffTickets: React.FC = () => {
 						{showOpenTickets ? 'Open Tickets' : 'Closed Tickets'}
 					</h3>
 
-					{loading ? (
-						<p>Loading tickets...</p>
-					) : error ? (
-						<p className='text-red-500'>Error loading tickets.</p>
-					) : staffTickets.length > 0 ? (
-						<div className='grid md:grid-cols-3 gap-6'>
-							{staffTickets.map((ticket: any) => (
-								<div
-									key={ticket.id}
-									className='bg-white shadow-md rounded-lg p-4 relative border-2'
-								>
-									<div className='flex items-center justify-between mb-2 relative'>
-										<div className='flex items-center gap-3'>
-											<img
-												src={GetImageUrl(ticket?.user?.image) ?? undefined}
-												alt='Avatar'
-												className='w-10 h-10 rounded-full object-cover'
-											/>
-											<div>
-												<h2 className='text-gray-800 font-semibold'>
-													{ticket.user.full_name}
-												</h2>
-												<p className='text-gray-500 text-sm'>
-													{ticket.user.email}
-												</p>
-											</div>
-										</div>
+          {loading ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <TicketSkeleton key={idx} />
+              ))}
+            </div>
+          ) : error ? (
+            <p className="text-red-500">Error loading tickets.</p>
+          ) : staffTickets.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {staffTickets.map((ticket: any) => (
+                <div
+                  key={ticket.id}
+                  className="bg-white shadow-md rounded-lg p-4 relative border-2"
+                >
+                  <div className="flex items-center justify-between mb-2 relative">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={GetImageUrl(ticket?.user?.image) ?? undefined}
+                        alt="Avatar"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <h2 className="text-gray-800 font-semibold">
+                          {ticket.user.full_name}
+                        </h2>
+                        <p className="text-gray-500 text-sm">
+                          {ticket.user.email}
+                        </p>
+                      </div>
+                    </div>
 
-										<div className='relative'>
-											<FiMoreVertical
-												className='text-gray-400 cursor-pointer'
-												onClick={() =>
-													setMenuOpenId(
-														menuOpenId === ticket.id ? null : ticket.id
-													)
-												}
-											/>
-											{menuOpenId === ticket.id && (
-												<div className='absolute right-0 mt-2 z-10 w-25'>
-													<button
-														className='w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2'
-														onClick={() => handleResolve(ticket)}
-													>
-														<FiCheckCircle /> Resolve
-													</button>
-												</div>
-											)}
-										</div>
-									</div>
+                    <div className="relative">
+                      <FiMoreVertical
+                        className="text-gray-400 cursor-pointer"
+                        onClick={() =>
+                          setMenuOpenId(
+                            menuOpenId === ticket.id ? null : ticket.id
+                          )
+                        }
+                      />
+                      {menuOpenId === ticket.id && (
+                        <div className="absolute right-0 mt-2 z-10 w-25">
+                          <button
+                            className="w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
+                            onClick={() => handleResolve(ticket)}
+                          >
+                            <FiCheckCircle /> Resolve
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
 									<p className='text-gray-700 mb-4'>{ticket.query}</p>
 
@@ -190,28 +204,28 @@ const StaffTickets: React.FC = () => {
 										</div>
 									</div>
 
-									<button
-										className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
-											ticket.priority === 'High'
-												? 'bg-[#14b8c6]'
-												: 'bg-[#14b8c6]'
-										}`}
-									>
-										<FiCalendar />
-										Priority: {ticket.priority}
-									</button>
-								</div>
-							))}
-						</div>
-					) : (
-						<p className='text-gray-500'>
-							No {showOpenTickets ? 'open' : 'closed'} tickets found.
-						</p>
-					)}
-				</div>
-			)}
-		</div>
-	);
+                  <button
+                    className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
+                      ticket.priority === "High"
+                        ? "bg-[#14b8c6]"
+                        : "bg-[#14b8c6]"
+                    }`}
+                  >
+                    <FiCalendar />
+                    Priority: {ticket.priority}
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">
+              No {showOpenTickets ? "open" : "closed"} tickets found.
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default StaffTickets;
