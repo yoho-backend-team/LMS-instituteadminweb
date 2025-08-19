@@ -1,0 +1,1 @@
+export const getCategories = (state: any) => state.categoryReducer.data;

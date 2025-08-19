@@ -4,11 +4,14 @@ import { COLORS, FONTS } from '../../constants/uiConstants';
 import {
   getBranchService,
   getCourseService,
-  getStudentService
 } from '../../features/batchManagement/services';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import { createCertificate, getAllBatches } from '../../features/certificateManagement/services';
+import {
+  createCertificate,
+  getAllBatches,
+  updateCertificate,
+} from '../../features/certificateManagement/services';
 import { getStudentmanagement } from '../../features/StudentManagement/reducer/thunks';
 import { selectStudent } from '../../features/StudentManagement/reducer/selector';
 
@@ -20,11 +23,17 @@ export interface Certificate {
   batch: string;
   student: string;
   email: string;
+  course?: string;
+  certificateid: string;
+  uuid: string;
+  batch_id: string;
+  certificate_name:string
 }
 
 interface CertificateModalProps {
   isOpen: boolean;
   isEditing: boolean;
+  fetchgetStudentCertificate:()=>void;
   editingCertificate: Certificate | null;
   onClose: () => void;
   onSave: (formData: Partial<Certificate>) => void;
@@ -35,99 +44,89 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   isEditing,
   editingCertificate,
   onClose,
-  onSave
+  onSave,
+  fetchgetStudentCertificate,
 }) => {
   const dispatch = useDispatch<any>();
+
   const [courses, setCourses] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
   const [allBatches, setAllBatches] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
-  const [courseUUID, setCourseUUID] = useState('');
-  const [courseObjectId, setCourseObjectId] = useState('');
-
   const studentData = useSelector(selectStudent)?.data;
 
-  const fetchAllCourses = async () => {
-    try {
-      const response = await getCourseService({});
-      if (response) {
-        setCourses(response?.data);
+  // Fetch all required data
+  useEffect(() => {
+    (async () => {
+      try {
+        const [coursesRes, branchesRes, batchesRes] = await Promise.all([
+          getCourseService({}),
+          getBranchService({}),
+          getAllBatches({}),
+        ]);
+        setCourses(coursesRes?.data || []);
+        setBranches(branchesRes?.data || []);
+        setAllBatches(batchesRes?.data || []);
+      } catch (error) {
+        console.error('Error fetching certificate data:', error);
       }
-    } catch (error) {
-      console.log('Error fetching course data:', error);
-    }
-  };
-
-  const fetchAllBranches = async () => {
-    try {
-      const response = await getBranchService({});
-      if (response) {
-        setBranches(response?.data);
-      }
-    } catch (error) {
-      console.log('Error fetching branch data:', error);
-    }
-  };
-
-  const fetchAllBatches = useCallback(async () => {
-    try {
-      const response = await getAllBatches({});
-      if (response?.data) {
-        setAllBatches(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching batches:', error);
-    }
-  }, []);
-
-  const fetchStudentManagement = () => {
+    })();
     dispatch(
       getStudentmanagement({
         branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-        page: 1
+        page: 1,
       })
     );
-  };
-
-  useEffect(() => {
-    fetchAllBranches();
-    fetchAllCourses();
-    fetchAllBatches();
-    fetchStudentManagement();
   }, [dispatch]);
 
+  // Set students from redux
   useEffect(() => {
-    if (studentData && Array.isArray(studentData)) {
-      setStudents(studentData);
-    }
+    if (Array.isArray(studentData)) setStudents(studentData);
   }, [studentData]);
 
- const formik = useFormik({
-  initialValues: {
-    title: editingCertificate?.title || '',
-    course: editingCertificate?.course || '',
-    branch: editingCertificate?.branch || '',
-    batch: editingCertificate?.batch || '',
-    student: editingCertificate?.student || ''
-  },
-  enableReinitialize: true,
-  onSubmit: async (values) => {
-    const payload = {
-      batch_id: values.batch,
-      branch_id: values.branch,
-      course: values.course,
-      institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529', // Replace this with dynamic value if needed
-      student: values.student
-    };
-
-    onSave(payload); // optional, if you're using this for state update or local storage
-    await createCertificate(payload); // sends data to backend
-    onClose(); // close modal after submission
-  }
-});
-
+  // Formik setup
+  const formik = useFormik({
+    initialValues: {
+      title: editingCertificate?.title || '',
+      course: editingCertificate?.course || '',
+      branch: editingCertificate?.branch || '',
+      batch: editingCertificate?.batch || '',
+      student: editingCertificate?.student || '',
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        let payload;
+        if (isEditing) {
+          payload = {
+           certificate_name: values.title,
+            id: editingCertificate?.id,
+            certificateid: editingCertificate?.uuid,
+            description: editingCertificate?.description
+          };
+          await updateCertificate(payload);
+          fetchgetStudentCertificate();
+        } else {
+          payload = {
+            batch_id: values.batch,
+            branch_id: values.branch,
+            course: values.course,
+            student: values.student,
+            institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+          };
+          await createCertificate(payload);
+        }
+        onSave(payload);
+        onClose();
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+    },
+  });
 
   if (!isOpen) return null;
+
+  console.log(editingCertificate, 'certif')
 
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
@@ -145,33 +144,42 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         </div>
 
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 overflow-auto">
-          {/* Course */}
-          <div>
-            <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
-              Course
-            </label>
-            <select
-              name="course"
-              className="w-full border rounded-md px-4 py-2"
-              value={formik.values.course}
-              onChange={(e) => {
-                const selectedCourse = courses.find((c) => c.uuid === e.target.value);
-                formik.handleChange(e);
-                setCourseUUID(selectedCourse?.uuid || '');
-                setCourseObjectId(selectedCourse?._id || '');
-              }}
-              onBlur={formik.handleBlur}
-            >
-              <option value="">Select Course</option>
-              {courses.map((course: any) => (
-                <option key={course?.uuid} value={course?.uuid}>
-                  {course?.course_name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Conditional: Title for editing, Course for creating */}
+          {isEditing ? (
+            <div>
+              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                Certificate Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                placeholder="Enter certificate title"
+              />
+            </div>
+          ) : (
+            <div>
+              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                Course
+              </label>
+              <select
+                name="course"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.course}
+                onChange={formik.handleChange}
+              >
+                <option value="">Select Course</option>
+                {courses.map((course) => (
+                  <option key={course.uuid} value={course.uuid}>
+                    {course.course_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-          {/* Branch */}
           {!isEditing && (
             <>
               <div>
@@ -183,10 +191,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   className="w-full border rounded-md px-4 py-2"
                   value={formik.values.branch}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                 >
                   <option value="">Select Branch</option>
-                  {branches.map((branch: any) => (
+                  {branches.map((branch) => (
                     <option key={branch._id} value={branch.uuid}>
                       {branch.branch_identity}
                     </option>
@@ -194,7 +201,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
 
-              {/* Batch */}
               <div>
                 <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                   Batch
@@ -204,10 +210,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   className="w-full border rounded-md px-4 py-2"
                   value={formik.values.batch}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                 >
                   <option value="">Select Batch</option>
-                  {allBatches.map((batch: any) => (
+                  {allBatches.map((batch) => (
                     <option key={batch._id} value={batch._id}>
                       {batch.batch_name}
                     </option>
@@ -215,7 +220,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
 
-              {/* Student */}
               <div>
                 <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
                   Student
@@ -225,10 +229,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   className="w-full border rounded-md px-4 py-2"
                   value={formik.values.student}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                 >
                   <option value="">Select Student</option>
-                  {students.map((student: any) => (
+                  {students.map((student) => (
                     <option key={student._id} value={student._id}>
                       {student.full_name}
                     </option>
@@ -238,7 +241,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </>
           )}
 
-          {/* Buttons */}
+          {/* Actions */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"

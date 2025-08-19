@@ -11,3 +11,15 @@ export const getCommunity = async (params: any) => {
     return null;
 }
 }
+
+export const getcommunityById = async (data: any) => {
+    try {
+        const response = await Client.community.getMessages(data);
+        if (response) {
+            return response;
+        }
+    } catch (error) {
+        console.error("Error fetching community by ID:", error);
+        return null;
+    }
+}

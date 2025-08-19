@@ -94,8 +94,10 @@ const Navbar = () => {
       }
     }
 
-    dispatch(GetProfileThunk())
-    dispatch(GetBranchThunks())
+    (async () => {
+      const institute = await dispatch(GetProfileThunk())
+      await dispatch(GetBranchThunks(institute))
+    })()
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);

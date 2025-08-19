@@ -31,3 +31,17 @@ export const createstudentdata = async (data: any) => {
 		return response;
 	}
 };
+
+export const getLiveClassData = async (query: any) => {
+	const response = await Client.student.getLiveClass(query)
+	if (response) {
+		return response;
+	}
+};
+
+export const getActivityStudentdata = async (data: any) => {
+	const response = await Client.student.activity(data)
+	if (response) {
+		return response;
+	}
+};

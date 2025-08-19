@@ -14,10 +14,22 @@ export const GetStaffTicketServices = async (data: any) => {
 export const GetIndividualStaffTicketService = async (id: string) => {
   try {
     const response = await Client.ticket.staff_ticket_with_id({ id });
-    console.log("Fetched individual staff ticket successfully:", response.data);
-    return response.data;
+    console.log("Fetched individual staff ticket successfully:", response);
+    return response.ticket;
   } catch (error) {
     console.error("Error fetching individual staff ticket:", error);
+    throw error;
+  }
+};
+
+
+export const updateStaffTicketService = async (id: string) => {
+  try {
+    const response = await Client.ticket.staff_ticket_update({ id });
+    console.log("Updated staff ticket successfully:", response);
+    return response.ticket;
+  } catch (error) {
+    console.error("Error updating staff ticket:", error);
     throw error;
   }
 };

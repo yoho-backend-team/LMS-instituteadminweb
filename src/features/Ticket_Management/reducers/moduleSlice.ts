@@ -4,7 +4,7 @@ const ModuleSlice = createSlice({
   name: "StaffTicket",
   initialState: {
     data: [],
-    
+    individualData:[]
   },
   reducers: {
     getstaffticket: (state, action) => {
@@ -12,7 +12,7 @@ const ModuleSlice = createSlice({
     },
 
     getindividualStaffdata: (state, action) => {
-      state.data = action.payload;
+      state.individualData = action.payload;
     },
 
 

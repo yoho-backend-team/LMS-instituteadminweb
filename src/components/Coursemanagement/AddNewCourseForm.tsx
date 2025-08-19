@@ -4,11 +4,17 @@ import cloud from "../../assets/cloud.png";
 interface AddNewCourseFormProps {
   onBack: () => void;
   onSubmit: (course: any) => void;
+  branches: any[];
+   initialValues?: any; 
+   categories: any[];
 }
 
 const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
   onBack,
   onSubmit,
+  branches,
+  initialValues,
+  categories = [],
 }) => {
   const courseImageInputRef = useRef<HTMLInputElement>(null);
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
@@ -147,32 +153,38 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
 
         <div>
           <label className="text-sm text-gray-600">Select Branches</label>
-          <select
-            name="branch"
-            value={formData.branch}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-          >
-            <option value=""></option>
-            <option>Chennai</option>
-            <option>Bangalore</option>
-            <option>Hyderabad</option>
-          </select>
+         <select
+  name="branch"
+  value={formData.branch}
+  onChange={handleChange}
+  className="border rounded-md p-2 w-full"
+>
+  <option value="">Select Branch</option>
+  {branches.map((br) => (
+    <option key={br.uuid} value={br.uuid}>
+      {br.branch_identity}
+    </option>
+  ))}
+</select>
         </div>
 
-        <div>
-          <label className="text-sm text-gray-600">Select Category</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-          >
-            <option value=""></option>
-            <option>Web Development</option>
-            <option>Testing</option>
-          </select>
-        </div>
+       <div>
+  <label className="text-sm text-gray-600">Select Category</label>
+  <select
+    name="category"
+    value={formData.category}
+    onChange={handleChange}
+    className="border rounded-md p-2 w-full"
+  >
+    <option value="">Select Category</option>
+   {Array.isArray(categories) &&
+  categories.map((cat) => (
+    <option key={cat.uuid} value={cat.uuid}>
+      {cat.category_name}
+    </option>
+))}
+  </select>
+</div>
 
         <div>
           <label className="text-sm text-gray-600">Learning Format</label>

@@ -1,71 +1,85 @@
-// src/services/branchService.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../apis/index";
 
-// GET ALL BRANCHES
-export const fetchBranches = async (params: { instituteId: string }) => {
-   try {
-     const response = await Client.branch.getAll(""); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
+// Type definitions
+interface GetAllBranchesParams {
+  institute_id: string;
+  page?: number;
+}
+
+interface GetBranchByIdParams {
+  uuid: string;
+}
+interface DeleteBranchParams {
+  institute_id: string;
+  uuid: string;
+}
+
+interface CreateBranchParams {
+  branch_name: string;
+  phone_number: string;
+  alternate_number?: string;
+  address: string;
+  pincode: string;
+  landmark?: string;
+  city: string;
+  state: string;
+  status?: "active" | "inactive";
+  institute_id: string;
+}
+
+interface UpdateBranchParams {
+  uuid: string;
+  data: Partial<CreateBranchParams>;
+}
+
+interface UpdateStatusParams {
+  uuid: string;
+  status: "active" | "inactive";
+}
+
+
+
+// Get all branches
+export const GetAllBranches = async (params: GetAllBranchesParams) => {
+  const response = await Client.branch.getAll(params);
+  return response;
+};
+
+// Get branch by ID
+export const GetBranchById = async (params: GetBranchByIdParams) => {
+  const response = await Client.branch.getByid(params.uuid);
+  return response.data;
+};
+
+// Create new branch
+export const CreateBranch = async (data: CreateBranchParams) => {
+  try {
+    const response = await Client.branch.create(data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating branch:", error);
+    throw error;
   }
- };
+};
 
-// GET BRANCH BY ID
-export const fetchBranchesid = async (params: { instituteId: string, branchId: string }) => {
-   try {
-     const response = await Client.branch.getByid(params.branchId); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
-  }
- };
-
-// CREATE BRANCH
-export const addBranch = async (params: { instituteId: string, data: any }) => {
-    try {
-     const response = await Client.branch.create(params.data); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
-  }
- };
-
-// UPDATE BRANCH STATUS
-export const updateBranch = async (params: { instituteId: string, branchId: string, data: any }) => {
-   try {
-     const response = await Client.branch.updatestatus(params.branchId, params.data); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
-  }
- };
-
-// EDIT BRANCH
-export const editBranch = async (params: { instituteId: string, branchId: string, data: any }) => {
-   try {
-     const response = await Client.branch.edit(params.data, params.branchId); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
-  }
- };
-
-// DELETE BRANCH
-export const deleteBranch = async (params: { instituteId: string, branchId: string }) => {
-   try {
-     const response = await Client.branch.delete(params.branchId); 
-     return response;
-   } catch (error: any) {
-     throw new Error(error.message);
-  }
- };
+// Update branch
+export const EditBranch = async (params: { id: string; data: any }) => {
+  const response = await Client.branch.edit(params.data, params.id);
+  return response.data;
+};
 
 
+// Update branch status
+export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
+  const response = await Client.branch.updatestatus(params.uuid, { status: params.status });
+  return response.data;
+};
 
-
-
-
-
-
-
+export const DeleteBranch = async (params: DeleteBranchParams) => {
+  const response = await Client.branch.delete(
+    params.institute_id, 
+    params.uuid
+  );
+  return response.data;
+};

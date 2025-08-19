@@ -1,55 +1,34 @@
 "use client";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
 import {
-  fetchBranch,
-  createBranch,
-  updateBranch,
-  updateBranchStatus,
-  deleteBranchAction,
+  GetAllBranchesThunk,
+  AddBranchThunk,
+  DeleteBranchThunk,
+  EditBranchThunk,
+  UpdateBranchStatusThunk,
+
+
 } from "../../features/Branch_Management/reducers/branchThunks";
+import { BranchDetailsPage } from "./BranchDetailsPage";
 import TrichyImg from "../../assets/trichy.png";
 import ContentLoader from "react-content-loader";
 import { ConfirmationPopup } from "../BranchManagement/ConfirmationPopup";
 import { LocationCard } from "../BranchManagement/Location-card";
 
-interface Branch {
-  _id: string;
-  branch_identity: string;
-  contact_info: {
-    phone_no: string;
-    alternate_no?: string;
-    address: string;
-    pin_code: string;
-    landmark?: string;
-  };
-  is_active: boolean;
-}
-
-interface FormData {
-  branchName: string;
-  phoneNumber: string;
-  alternateNumber: string;
-  address: string;
-  pinCode: string;
-  landMark: string;
-  city: string;
-  state: string;
-}
-
 export function LocationCardsGrid() {
-  const dispatch = useDispatch();
-  const [branches, setBranches] = useState<Branch[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const { branches, loading, error } = useSelector((state: RootState) => state.branches);
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
-  const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingBranch, setViewingBranch] = useState<any>(null);
+  const [editingBranch, setEditingBranch] = useState<any>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     branchName: '',
     phoneNumber: '',
     alternateNumber: '',
@@ -61,25 +40,13 @@ export function LocationCardsGrid() {
   });
 
   useEffect(() => {
-    const loadBranches = async () => {
-      setLoading(true);
-      try {
-        const result = await dispatch(fetchBranch({ instituteId: "YOUR_INSTITUTE_ID" }) as any);
-        if (result.payload) {
-          setBranches(result.payload);
-        }
-      } catch (err: any) {
-        setError(err.message || "Failed to load branches");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadBranches();
+    dispatch(GetAllBranchesThunk({ instituteId: "YOUR_INSTITUTE_ID" }));
   }, [dispatch]);
 
   const filteredBranches = searchTerm
     ? branches.filter(branch =>
-        branch.branch_identity?.toLowerCase().includes(searchTerm.toLowerCase()))
+      branch.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : branches;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,16 +58,16 @@ export function LocationCardsGrid() {
     setSearchTerm(e.target.value.trim());
   };
 
-  const handleEditBranch = (branch: Branch) => {
+  const handleEditBranch = (branch: any) => {
     setEditingBranch(branch);
     setFormData({
-      branchName: branch.branch_identity || '',
-      phoneNumber: branch.contact_info?.phone_no || '',
-      alternateNumber: branch.contact_info?.alternate_no || '',
-      address: branch.contact_info?.address || '',
-      pinCode: branch.contact_info?.pin_code || '',
-      landMark: branch.contact_info?.landmark || '',
-      city: branch.branch_identity?.split(',')[0] || '',
+      branchName: branch.branch_identity, // Changed from cityName to branch_identity
+      phoneNumber: branch.contact_info.phone_no,
+      alternateNumber: branch.contact_info.alternate_number || '', // Added fallback
+      address: branch.contact_info.address,
+      pinCode: branch.contact_info.pincode || '', // Assuming this exists
+      landMark: branch.contact_info.landmark || '', // Assuming this exists
+      city: branch.branch_identity.split(',')[0], // Or use proper city field if available
       state: 'Tamil Nadu'
     });
     setIsModalOpen(true);
@@ -111,84 +78,60 @@ export function LocationCardsGrid() {
 
     const branchData = {
       imageSrc: TrichyImg,
-      branch_identity: formData.branchName,
-      contact_info: {
-        phone_no: formData.phoneNumber,
-        alternate_no: formData.alternateNumber,
-        address: formData.address,
-        pin_code: formData.pinCode,
-        landmark: formData.landMark
-      },
-      is_active: true
+      cityName: formData.branchName,
+      address: formData.address,
+      status: "Active",
+      phoneNumber: formData.phoneNumber,
+      alternateNumber: formData.alternateNumber,
+      pinCode: formData.pinCode,
+      landMark: formData.landMark
     };
 
     try {
-      setLoading(true);
       if (editingBranch) {
-        await dispatch(updateBranch({ 
-          instituteId: "YOUR_INSTITUTE_ID",
-          branchId: editingBranch._id, 
-          data: branchData 
-        }) as any);
+        // ✅ Use UUID, not numeric ID
+        await dispatch(
+          EditBranchThunk({
+            instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529", // your real institute ID here
+            branchUuid: branch._id
+          })
+        ).unwrap();
       } else {
-        await dispatch(createBranch({ 
-          instituteId: "YOUR_INSTITUTE_ID", 
-          data: branchData 
-        }) as any);
+        await dispatch(
+          AddBranchThunk({ instituteId: "YOUR_INSTITUTE_ID", data: branchData })
+        ).unwrap();
       }
-      // Refresh branches after update
-      const result = await dispatch(fetchBranch({ instituteId: "YOUR_INSTITUTE_ID" }) as any);
-      if (result.payload) {
-        setBranches(result.payload);
-      }
+
       setShowSuccessPopup(true);
+      resetForm();
       setIsModalOpen(false);
-    } catch (error: any) {
-      setError(error.message || "Operation failed");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Failed to save branch:", error);
     }
   };
 
-  const handleDeleteBranch = async (branchId: string) => {
+
+
+
+
+  const handleDeleteBranch = async (branch: any) => {
     try {
-      setLoading(true);
-      await dispatch(deleteBranchAction({ 
-        instituteId: "YOUR_INSTITUTE_ID", 
-        branchId: branchId 
-      }) as any);
-      // Refresh branches after delete
-      const result = await dispatch(fetchBranch({ instituteId: "YOUR_INSTITUTE_ID" }) as any);
-      if (result.payload) {
-        setBranches(result.payload);
-      }
+      await dispatch(DeleteBranchThunk({
+        instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branchUuid: branch._id
+      })).unwrap();
+
       setShowSuccessPopup(true);
-    } catch (error: any) {
-      setError(error.message || "Failed to delete branch");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Delete failed:", error);
     }
   };
 
-  const handleStatusChange = async (branchId: string, newStatus: string) => {
-    try {
-      setLoading(true);
-      await dispatch(updateBranchStatus({ 
-        instituteId: "YOUR_INSTITUTE_ID",
-        branchId: branchId, 
-        data: { is_active: newStatus === "Active" } 
-      }) as any);
-      // Refresh branches after status change
-      const result = await dispatch(fetchBranch({ instituteId: "YOUR_INSTITUTE_ID" }) as any);
-      if (result.payload) {
-        setBranches(result.payload);
-      }
-    } catch (error: any) {
-      setError(error.message || "Failed to update status");
-    } finally {
-      setLoading(false);
-    }
+  const handleStatusChange = (branch_id: string, newStatus: string) => {
+    dispatch(UpdateBranchStatusThunk({ branch_id, status: newStatus }));
   };
+
+
 
   const resetForm = () => {
     setFormData({
@@ -204,6 +147,19 @@ export function LocationCardsGrid() {
     setEditingBranch(null);
   };
 
+  const handleBackFromBranchDetails = () => {
+    setViewingBranch(null);
+  };
+
+  if (viewingBranch) {
+    return (
+      <BranchDetailsPage
+        locationName={viewingBranch.cityName}
+        onBack={handleBackFromBranchDetails}
+      />
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       {/* Search & Add Button */}
@@ -212,7 +168,7 @@ export function LocationCardsGrid() {
           <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-white/0 bg-white/30 border-2 border-[#1BBFCA] rounded-lg pointer-events-none"></div>
           <input
             type="text"
-            placeholder="Search Branch by Name"
+            placeholder="Search Branch by City"
             value={searchTerm}
             onChange={handleSearchChange}
             className="w-full h-full pl-4 pr-12 bg-transparent text-[#6C6C6C] font-poppins font-medium text-lg capitalize focus:outline-none relative z-10"
@@ -233,7 +189,7 @@ export function LocationCardsGrid() {
         </button>
       </div>
 
-      {/* Loading */}
+      {/* Loading Skeleton */}
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
           {Array(6).fill(null).map((_, index) => (
@@ -258,23 +214,29 @@ export function LocationCardsGrid() {
       )}
 
       {/* Error */}
-      {error && <div className="text-red-500 text-center py-4">Error: {error}</div>}
+      {error && (
+        <div className="text-red-500 text-center py-4">
+          Error loading branches: {error}
+        </div>
+      )}
 
-      {/* Cards */}
+      {/* Branch Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
         {!loading && filteredBranches.length > 0 ? (
-          filteredBranches.map((branch) => (
+          filteredBranches.map((branch: any) => (
             <LocationCard
-              key={branch._id}
-              id={branch._id}
-              imageSrc={TrichyImg}
-              cityName={branch.branch_identity}
-              address={branch.contact_info?.address}
-              status={branch.is_active ? "Active" : "Inactive"}
-              phoneNumber={branch.contact_info?.phone_no}
+              key={branch._id}  // Changed from id to _id
+              id={branch._id}   // Changed from id to _id
+              imageSrc={TrichyImg} // You might want to get this from API if available
+              cityName={branch.branch_identity} // Using branch_identity instead of cityName
+              address={branch.contact_info.address} // Updated path to address
+              status={branch.is_active ? "Active" : "Inactive"} // Convert boolean to status string
+              phoneNumber={branch.contact_info.phone_no} // Added phone number
+              onViewDetails={() => setViewingBranch(branch)}
               onEdit={() => handleEditBranch(branch)}
-              onDelete={() => handleDeleteBranch(branch._id)}
-              onStatusChange={(newStatus) => handleStatusChange(branch._id, newStatus)}
+              onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
+
+              onStatusChange={(newStatus) => handleStatusChange(branch.id, newStatus)}
             />
           ))
         ) : (
@@ -290,6 +252,17 @@ export function LocationCardsGrid() {
         )}
       </div>
 
+      {/* Modal */}
+      {isModalOpen && (
+        <BranchModal
+          isEditing={!!editingBranch}
+          formData={formData}
+          onChange={handleInputChange}
+          onCancel={() => { setIsModalOpen(false); resetForm(); }}
+          onSubmit={handleSubmit}
+        />
+      )}
+
       {/* Success Popup */}
       {showSuccessPopup && (
         <ConfirmationPopup
@@ -298,179 +271,148 @@ export function LocationCardsGrid() {
           onClose={() => setShowSuccessPopup(false)}
         />
       )}
+    </div>
+  );
+}
 
-      {/* Add/Edit Branch Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-[#716F6F]">
-                {editingBranch ? "Edit Branch" : "Add New Branch"}
+function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div
+        className="bg-white rounded-xl overflow-y-auto"
+        style={{
+          width: '1022px',
+          height: '617px',
+          borderRadius: '12px',
+          padding: '16px',
+        }}
+      >
+        <div className="flex flex-col gap-[30px] h-full">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-3">
+              <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
+                {isEditing ? "Edit Branch" : "Create a New Branch"}
               </h2>
-              <button
-                onClick={() => {
-                  setIsModalOpen(false);
-                  resetForm();
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <p className="text-lg font-light text-[#7D7D7D] font-poppins capitalize">
+                {isEditing
+                  ? "Update the branch details below"
+                  : "Fill in the details below to add a new branch"}
+              </p>
             </div>
+            <button
+              onClick={onCancel}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+          </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Branch Name */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Branch Name *
-                </label>
-                <input
-                  type="text"
+          {/* Form */}
+          <form onSubmit={onSubmit} className="flex-1 flex flex-col">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="flex flex-col gap-6">
+                <FormField
+                  label="Branch Name"
                   name="branchName"
                   value={formData.branchName}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter branch name"
+                  onChange={onChange}
                   required
                 />
-              </div>
-
-              {/* Phone Number */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
+                <FormField
+                  label="Phone Number"
                   name="phoneNumber"
                   value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter phone number"
+                  onChange={onChange}
                   required
                 />
-              </div>
-
-              {/* Alternate Number */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Alternate Number
-                </label>
-                <input
-                  type="tel"
+                <FormField
+                  label="Alternate Number"
                   name="alternateNumber"
                   value={formData.alternateNumber}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter alternate number"
+                  onChange={onChange}
                 />
-              </div>
-
-              {/* Address */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Address *
-                </label>
-                <textarea
+                <FormField
+                  label="Address"
                   name="address"
                   value={formData.address}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter address"
-                  rows={3}
+                  onChange={onChange}
                   required
                 />
               </div>
 
-              {/* Pin Code */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Pin Code *
-                </label>
-                <input
-                  type="text"
+              {/* Right Column */}
+              <div className="flex flex-col gap-6">
+                <FormField
+                  label="Pin Code"
                   name="pinCode"
                   value={formData.pinCode}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter pin code"
+                  onChange={onChange}
                   required
                 />
-              </div>
-
-              {/* Landmark */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  Landmark
-                </label>
-                <input
-                  type="text"
+                <FormField
+                  label="Land Mark"
                   name="landMark"
                   value={formData.landMark}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter landmark"
+                  onChange={onChange}
                 />
-              </div>
-
-              {/* City */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  City *
-                </label>
-                <input
-                  type="text"
+                <FormField
+                  label="City"
                   name="city"
                   value={formData.city}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter city"
+                  onChange={onChange}
                   required
                 />
-              </div>
-
-              {/* State */}
-              <div>
-                <label className="block text-sm font-medium text-[#716F6F] mb-1">
-                  State *
-                </label>
-                <input
-                  type="text"
+                <FormField
+                  label="State"
                   name="state"
                   value={formData.state}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1BBFCA]"
-                  placeholder="Enter state"
+                  onChange={onChange}
                   required
                 />
               </div>
+            </div>
 
-              {/* Form Actions */}
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-[#1BBFCA] text-white py-2 px-4 rounded-lg hover:bg-[#15a9b4] transition-colors disabled:opacity-50"
-                >
-                  {loading ? "Saving..." : (editingBranch ? "Update Branch" : "Create Branch")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    resetForm();
-                  }}
-                  className="flex-1 border border-[#1BBFCA] text-[#1BBFCA] py-2 px-4 rounded-lg hover:bg-[#1BBFCA] hover:text-white transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            {/* Footer Buttons */}
+            <div className="flex justify-end gap-4 mt-auto pt-6">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-6 py-2 border border-[#1BBFCA] text-[#1BBFCA] font-poppins font-medium rounded-lg bg-[rgba(27,191,202,0.1)] hover:bg-[rgba(27,191,202,0.2)] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-[#1BBFCA] text-white font-poppins font-medium rounded-lg hover:bg-[#15a9b4] transition-colors"
+              >
+                {isEditing ? "Update Branch" : "Create Branch"}
+              </button>
+            </div>
+          </form>
         </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+// Helper component for form fields
+function FormField({ label, name, value, onChange, required = false }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-[#716F6F] font-poppins font-medium text-base capitalize">
+        {label}
+      </label>
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full h-12 px-4 border border-[#716F6F] rounded-lg font-poppins font-light text-lg focus:outline-none focus:ring-1 focus:ring-[#1BBFCA]"
+        placeholder={`Enter ${label.toLowerCase()}`}
+        required={required}
+      />
     </div>
   );
 }

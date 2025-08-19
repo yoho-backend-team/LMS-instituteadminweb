@@ -27,7 +27,7 @@ const refundSlice = createSlice({
     },
     updateRefundInState: (state: any, action) => {
       const index = state.data.findIndex(
-        (item: any) => item.uuid === action.payload.uuid
+        (item: any) => item._id === action.payload._id
       );
       if (index !== -1) {
         state.data[index] = action.payload;
@@ -39,6 +39,7 @@ const refundSlice = createSlice({
         (item: any) => item._id !== action.payload
       );
     },
+
     getBranchCourse: (state, action) => {
       state.course = action.payload;
     },

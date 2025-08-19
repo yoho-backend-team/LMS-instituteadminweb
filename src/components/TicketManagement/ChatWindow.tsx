@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LuSend } from "react-icons/lu";
 
 import { FiPlus } from "react-icons/fi";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import chatimg from '../../assets/navbar/chatbackgroundimg.png'
+import { GetProfileDetail } from "../../features/Auth/service";
+import socket from "../../utils/socket";
+import dayjs from "dayjs";
+import { FONTS } from "../../constants/uiConstants";
 
 interface ChatWindowProps {
   user: {
@@ -14,6 +18,37 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
+  const [inputValue, setInputValue] = useState();
+  const [adminProfile, setAdminProfile] = useState();
+  const [messages,setMessages] = useState();
+
+  const getProfile = async () => {
+    const response = await GetProfileDetail();
+    setAdminProfile(response?.data)
+  }
+
+  useEffect(() => {
+    getProfile();
+  }, [])
+
+  const handleSend = () => {
+    const newMessage = {
+      ticket_id: user?.uuid,
+      text: inputValue,
+      senderType: "InstituteAdmin",
+      user: adminProfile?._id
+    }
+    socket.emit("sendTicketMessage", newMessage)
+    setMessages((prev)=> [...prev, {content: inputValue, sender: adminProfile?._id}])
+    setInputValue("");
+  }
+
+  useEffect(()=>{
+    if(user?.messages){
+        setMessages(user.messages)
+    }
+  },[user])
+
   return (
     <div className="flex flex-col justify-between w-[70%] border border-[#E2E8F0] rounded-xl bg-white ">
       {/* Top Bar */}
@@ -24,7 +59,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
           className="w-10 h-10 rounded-full object-cover"
         />
         <div>
-          <div className="font-semibold">{user.first_name}</div>
+          <div className="font-semibold">{user?.user?.first_name + " " + user?.user?.last_name}</div>
           <div className={`text-sm ${user.is_active ? 'text-green-500' : 'text-red-500'}`}>
             {user.is_active ? 'Active Now' : 'Inactive'}
           </div>
@@ -35,11 +70,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
       <div className="flex-1 p-4 overflow-y-auto"
         style={{ backgroundImage: `url(${chatimg})` }}>
         {/* Example message bubble */}
-        <div className="mb-2 flex flex-col items-start">
-          <div className="bg-gray-200 text-black p-2 rounded-xl max-w-[70%]">
-            Hello! How can I help you today?
+        {messages?.map((msg:any, index:any) => (<div key={index} className="mb-2 flex flex-col items-end">
+          <div className={`bg-gray-200 text-black p-2 rounded-xl max-w-[70%] ${msg?.sender === adminProfile?._id ? 'bg-[#14b8c6] text-white': 'bg-white text-gray-800'}`}>
+            <p style={{...FONTS.heading_07}}>{msg.content}</p>
+            <p className="" style={{...FONTS.description}}>{dayjs(msg.date).format("HH:MM A")}</p>
           </div>
-        </div>
+        </div>))}
       </div>
 
       {/* Input Bar */}
@@ -47,11 +83,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
         <FiPlus className="text-gray-500 text-xl cursor-pointer" />
         <MdOutlineEmojiEmotions className="text-gray-500 text-xl cursor-pointer" />
         <input
+          value={inputValue}
+          onChange={(e: any) => setInputValue(e.target.value)}
           type="text"
           placeholder="Type your message..."
           className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          onKeyDown={(e)=> e.key === "Enter" && handleSend()}
         />
-        <button className="ml-2 bg-[#1E40AF] hover:bg-blue-800 text-white p-2 rounded-full">
+        <button
+          onClick={handleSend}
+          className="ml-2 bg-[#1E40AF] hover:bg-blue-800 text-white p-2 rounded-full">
           <LuSend />
         </button>
       </div>
