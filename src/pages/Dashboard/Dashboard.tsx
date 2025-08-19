@@ -13,9 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActivityData, selectDashboardData } from '../../features/Dashboard/reducers/selectors';
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
-import { RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
-import { GetBranchThunks } from '../../features/StudyMaterials/thunk';
-import { getInstituteDetails } from '../../apis/httpEndpoints';
+import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -30,93 +28,105 @@ export default function Component() {
 
 	const [selectedMonth, setSelectedMonth] = useState('July');
 	const [selectedYear, setSelectedYear] = useState('2025');
-	const dispatch = useDispatch<any>();
+	const dispatch = useDispatch<any>()
 
-	const DashboardData = useSelector(selectDashboardData);
-	const ActivityData = useSelector(selectActivityData);
-	const BranchData = useSelector(selectBranches);
-
-	const BranchOptions = BranchData?.map((branch: any) => branch?.branch_identity);
+	const DashboardData = useSelector(selectDashboardData)
+	const ActivityData = useSelector(selectActivityData)
+	const BranchData: any = useSelector(selectBranches)
 	const [selectedBranch, setSelectedBranch] = useState('');
-	const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>(undefined);
+
+	const BranchOptions = BranchData?.map((branch: any) => {
+		return branch?.branch_identity
+	})
+
+	const localBranch = GetLocalStorage('selectedBranchId')
+
+	const branchList = BranchOptions;
+
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-	const instituteId = getInstituteDetails();
 
 	const handleBranchChange = (branch: string) => {
-		const branchObj = BranchData?.find((b: any) => b?.branch_identity === branch);
-		if (branchObj) {
-			StoreLocalStorage('selectedBranchId', branchObj?.uuid);
-			setSelectedBranch(branch);
-			setSelectedBranchId(branchObj?.uuid);
-		}
+
+		BranchData.map((branchID: any) => {
+			if (branchID?.branch_identity === branch) {
+				RemoveLocalStorage("selectedBranchId")
+				setSelectedBranch(branchID?.branch_identity)
+				StoreLocalStorage("selectedBranchId", branchID.uuid)
+			}
+		})
+
+		setSelectedBranch(branch);
 		setBranchMenuOpen(false);
 	};
 
 	const handleApply = () => {
+		console.log('Selected Month:', selectedMonth);
+		console.log('Selected Year:', selectedYear);
 		setPeriodOpen(false);
 	};
 
-	useEffect(() => {
-		dispatch(GetBranchThunks({}));
-	}, [dispatch]);
 
 	useEffect(() => {
-		if (BranchData?.length > 0 && !selectedBranchId) {
-			setSelectedBranch(BranchData?.[0]?.branch_identity);
-			setSelectedBranchId(BranchData?.[0]?.uuid);
-			StoreLocalStorage('selectedBranchId', BranchData?.[0]?.uuid);
-		}
-	}, [BranchData, selectedBranchId]);
-
-	useEffect(() => {
-		if (!selectedBranchId && !instituteId ) return; 
-		const paramsData = { branch: selectedBranchId, instituteId: instituteId };
+		const paramsData = { branch: GetLocalStorage('selectedBranchId') }
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [dispatch, selectedBranchId]);
+		(() => {
+			if (localBranch == null) {
+				return setSelectedBranch(BranchData?.[0]?.branch_identity)
+			}
+			const foundBranch = BranchData?.find((item: any) => item.uuid === localBranch);
+			setSelectedBranch(foundBranch?.branch_identity)
+		})()
+	}, [BranchData, dispatch, localBranch]);
+
+
+
+
 
 	return (
-	
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
 			{/* SearchBAr */}
 			<div className=' mx-auto space-y-6'>
 				{/* Header */}
 				<div className='flex justify-between items-center'>
 					<div className='relative'>
-			{/* Trigger Button */}
-			<button
-				onClick={() => setBranchMenuOpen(!branchMenuOpen)}
-				className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
-				style={{
-					background: 'white',
-					border: `2px solid ${COLORS.primary}`,
-					...FONTS.heading_07,
-					color: '#716F6F',
-				}}
-			>
-				<span>{BranchData?.[0]?.branch_identity}</span>
-				<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
-			</button>
+						{/* Trigger Button */}
+						<button
+							onClick={() => setBranchMenuOpen(!branchMenuOpen)}
+							className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
+							style={{
+								background: 'white',
+								border: `2px solid ${COLORS.primary}`,
+								...FONTS.heading_07,
+								color: '#716F6F',
+							}}
+						>
+							<span>{selectedBranch}</span>
+							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
+						</button>
 
-			{/* Dropdown Options */}
-			{branchMenuOpen && (
-				<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
-					<div className='space-y-2 p-2'>
-						{BranchOptions?.map((branch: any) => (
-							<button
-								key={branch}
-								onClick={() => handleBranchChange(branch)}
-								className='w-full text-left p-2 rounded-md'
-								style={{
-									...FONTS.heading_08,
-									backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
-									color: selectedBranch === branch ? '#fff' : '#716F6F',
-									border: '1px solid #ddd',
-								}}
-							>
-								{branch}
-							</button>
-						))}
+						{/* Dropdown Options */}
+						{branchMenuOpen && (
+							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
+								<div className='space-y-2 p-2'>
+									{branchList.map((branch: any) => (
+										<button
+											key={branch}
+											onClick={() => handleBranchChange(branch)}
+											className='w-full text-left p-2 rounded-md'
+											style={{
+												...FONTS.heading_08,
+												backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
+												color: selectedBranch === branch ? '#fff' : '#716F6F',
+												border: '1px solid #ddd',
+											}}
+										>
+											{branch}
+										</button>
+									))}
+								</div>
+							</div>
+						)}
 					</div>
 					<div className='relative'>
 						<button
@@ -499,5 +509,4 @@ export default function Component() {
 			</div>
 		</div>
 	);
-
 }
