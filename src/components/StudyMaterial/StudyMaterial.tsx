@@ -327,38 +327,6 @@ const NotesManagement = () => {
 		  })
 		: [];
 
-	if (loading) {
-		return (
-			<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5'>
-				{[...Array(6)].map((_, index) => (
-					<ContentLoader
-						speed={1}
-						width='100%'
-						height='100%'
-						backgroundColor='#f3f3f3'
-						foregroundColor='#ecebeb'
-						className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
-						key={index}
-					>
-						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
-						<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
-
-						<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
-
-						<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
-
-						<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
-						<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
-
-						<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
-
-						<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
-					</ContentLoader>
-				))}
-			</div>
-		);
-	}
-
 	return (
 		<div className='min-h-screen p-3 w-full bg-cover bg-center'>
 			<div>
@@ -379,7 +347,42 @@ const NotesManagement = () => {
 				/>
 
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4'>
-					{filteredNotes.length > 0 ? (
+					{loading ? (
+						<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3'>
+							{[...Array(6)].map((_, index) => (
+								<ContentLoader
+									speed={1}
+									width='100%'
+									height='100%'
+									backgroundColor='#f3f3f3'
+									foregroundColor='#ecebeb'
+									className='w-full h-[210px] p-4 rounded-2xl border shadow-md'
+									key={index}
+								>
+									<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
+									<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
+
+									<rect
+										x='0'
+										y='36'
+										rx='10'
+										ry='10'
+										width='100%'
+										height='120'
+									/>
+
+									<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
+
+									<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
+									<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
+
+									<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
+
+									<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
+								</ContentLoader>
+							))}
+						</div>
+					) : filteredNotes.length > 0 ? (
 						filteredNotes.map((note: any) => {
 							return (
 								<NoteCard

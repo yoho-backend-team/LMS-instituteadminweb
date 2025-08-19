@@ -95,7 +95,7 @@ export function LocationCardsGrid() {
 				// ✅ Use UUID, not numeric ID
 				await dispatch(
 					EditBranchThunk({
-						instituteId: '973195c0-66ed-47c2-b098-d8989d3e4529', // your real institute ID here
+						instituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
 						branchUuid: branch._id,
 					})
 				).unwrap();
@@ -156,38 +156,6 @@ export function LocationCardsGrid() {
 				locationName={viewingBranch.cityName}
 				onBack={handleBackFromBranchDetails}
 			/>
-		);
-	}
-
-	if (loading) {
-		return (
-			<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5'>
-				{[...Array(6)].map((_, index) => (
-					<ContentLoader
-						speed={1}
-						width='100%'
-						height='100%'
-						backgroundColor='#f3f3f3'
-						foregroundColor='#ecebeb'
-						className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
-						key={index}
-					>
-						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
-						<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
-
-						<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
-
-						<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
-
-						<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
-						<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
-
-						<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
-
-						<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
-					</ContentLoader>
-				))}
-			</div>
 		);
 	}
 

@@ -57,7 +57,7 @@ function StatsCard() {
 						height='100%'
 						backgroundColor='#f3f3f3'
 						foregroundColor='#ecebeb'
-						className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
+						className='w-full h-[160px] p-4 rounded-2xl border shadow-md'
 						key={index}
 					>
 						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />

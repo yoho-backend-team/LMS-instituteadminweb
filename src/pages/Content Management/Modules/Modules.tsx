@@ -112,38 +112,6 @@ const Modules = () => {
 		dispatch(UpdateModuleStatusThunk(payload));
 	};
 
-	if (loading) {
-		return (
-			<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5'>
-				{[...Array(6)].map((_, index) => (
-					<ContentLoader
-						speed={1}
-						width='100%'
-						height='100%'
-						backgroundColor='#f3f3f3'
-						foregroundColor='#ecebeb'
-						className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
-						key={index}
-					>
-						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
-						<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
-
-						<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
-
-						<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
-
-						<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
-						<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
-
-						<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
-
-						<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
-					</ContentLoader>
-				))}
-			</div>
-		);
-	}
-
 	return (
 		<div className='relative flex flex-col h-fit max-h-fit w-full gap-6'>
 			{showPanel && (
@@ -269,139 +237,169 @@ const Modules = () => {
 			)}
 
 			<div className='flex flex-wrap gap-4'>
-				{Module?.filter((card: ModuleCardProps) => {
-					const statusFromToggle = toggleStatusMap[card.id];
-					const isActive =
-						statusFromToggle !== undefined ? statusFromToggle : card.isActive;
+				{loading ? (
+					<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3'>
+						{[...Array(6)].map((_, index) => (
+							<ContentLoader
+								speed={1}
+								width='100%'
+								height='100%'
+								backgroundColor='#f3f3f3'
+								foregroundColor='#ecebeb'
+								className='w-full h-[210px] p-4 rounded-2xl border shadow-md'
+								key={index}
+							>
+								<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
+								<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
 
-					if (statusFilter === '') return true;
-					if (statusFilter === 'active') return isActive;
-					if (statusFilter === 'inactive') return !isActive;
-					return true;
-				}).map((card: ModuleCardProps) => (
-					<div
-						key={card.id}
-						className='relative w-80 p-4 border rounded-lg shadow-[4px_4px_24px_0px_#0000001A] bg-white'
-					>
-						<div className='flex justify-end text-gray-400 cursor-pointer'>
-							<FaEllipsisV
-								onClick={() =>
-									setOpenCardId(openCardId === card.id ? null : card.id)
-								}
-							/>
-						</div>
+								<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
 
-						<div className='flex items-center gap-2 bg-gray-100 p-3 rounded mt-5'>
-							<FaFileAlt className='text-gray-600 text-lg' />
-							<span className='text-sm font-medium text-gray-700'>
-								{card?.title}
-							</span>
-						</div>
+								<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
 
-						<div className='mt-4 flex items-center gap-2'>
-							<FaGraduationCap className='text-gray-600 text-xl' />
-							<span className='text-base font-semibold text-gray-700'>
-								{card.course?.course_name}
-							</span>
-						</div>
+								<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
+								<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
 
-						<div className='mt-4 flex justify-between items-center'>
-							<div
-								className={`flex items-center gap-1 font-medium ${
-									toggleStatusMap[card.id] !== undefined
-										? toggleStatusMap[card.id]
+								<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
+
+								<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
+							</ContentLoader>
+						))}
+					</div>
+				) : (
+					Module?.filter((card: ModuleCardProps) => {
+						const statusFromToggle = toggleStatusMap[card.id];
+						const isActive =
+							statusFromToggle !== undefined ? statusFromToggle : card.isActive;
+
+						if (statusFilter === '') return true;
+						if (statusFilter === 'active') return isActive;
+						if (statusFilter === 'inactive') return !isActive;
+						return true;
+					}).map((card: ModuleCardProps) => (
+						<div
+							key={card.id}
+							className='relative w-80 p-4 border rounded-lg shadow-[4px_4px_24px_0px_#0000001A] bg-white'
+						>
+							<div className='flex justify-end text-gray-400 cursor-pointer'>
+								<FaEllipsisV
+									onClick={() =>
+										setOpenCardId(openCardId === card.id ? null : card.id)
+									}
+								/>
+							</div>
+
+							<div className='flex items-center gap-2 bg-gray-100 p-3 rounded mt-5'>
+								<FaFileAlt className='text-gray-600 text-lg' />
+								<span className='text-sm font-medium text-gray-700'>
+									{card?.title}
+								</span>
+							</div>
+
+							<div className='mt-4 flex items-center gap-2'>
+								<FaGraduationCap className='text-gray-600 text-xl' />
+								<span className='text-base font-semibold text-gray-700'>
+									{card.course?.course_name}
+								</span>
+							</div>
+
+							<div className='mt-4 flex justify-between items-center'>
+								<div
+									className={`flex items-center gap-1 font-medium ${
+										toggleStatusMap[card.id] !== undefined
+											? toggleStatusMap[card.id]
+												? 'text-green-500'
+												: 'text-red-500'
+											: card.isActive
 											? 'text-green-500'
 											: 'text-red-500'
-										: card.isActive
-										? 'text-green-500'
-										: 'text-red-500'
-								}`}
-							>
-								<span className='text-sm'>
-									{toggleStatusMap[card.id] !== undefined
-										? toggleStatusMap[card.id]
-											? 'Active'
-											: 'Inactive'
-										: card.isActive
-										? 'Active'
-										: 'Inactive'}
-								</span>
-								<span
-									className={`w-2 h-2 rounded-full ${
-										toggleStatusMap[card.id] !== undefined
+									}`}
+								>
+									<span className='text-sm'>
+										{toggleStatusMap[card.id] !== undefined
 											? toggleStatusMap[card.id]
+												? 'Active'
+												: 'Inactive'
+											: card.isActive
+											? 'Active'
+											: 'Inactive'}
+									</span>
+									<span
+										className={`w-2 h-2 rounded-full ${
+											toggleStatusMap[card.id] !== undefined
+												? toggleStatusMap[card.id]
+													? 'bg-green-500'
+													: 'bg-red-500'
+												: card.isActive
 												? 'bg-green-500'
 												: 'bg-red-500'
-											: card.isActive
-											? 'bg-green-500'
-											: 'bg-red-500'
-									}`}
-								/>
-							</div>
+										}`}
+									/>
+								</div>
 
-							<label className='relative inline-block w-11 h-6 cursor-pointer'>
-								<input
-									type='checkbox'
-									className='sr-only peer'
-									checked={
-										toggleStatusMap[card.id] !== undefined
-											? toggleStatusMap[card.id]
-											: card.isActive
-									}
-									onChange={() =>
-										handleToggle({
-											module_id: card.id,
-											status:
-												toggleStatusMap[card.id] !== undefined
-													? toggleStatusMap[card.id]
+								<label className='relative inline-block w-11 h-6 cursor-pointer'>
+									<input
+										type='checkbox'
+										className='sr-only peer'
+										checked={
+											toggleStatusMap[card.id] !== undefined
+												? toggleStatusMap[card.id]
+												: card.isActive
+										}
+										onChange={() =>
+											handleToggle({
+												module_id: card.id,
+												status:
+													toggleStatusMap[card.id] !== undefined
+														? toggleStatusMap[card.id]
+															? 'active'
+															: 'inactive'
+														: card.isActive
 														? 'active'
-														: 'inactive'
-													: card.isActive
-													? 'active'
-													: 'inactive',
-										})
-									}
-								/>
-								<div className='w-full h-full bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors duration-300' />
-								<div className='absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-2.5' />
-							</label>
-						</div>
-
-						{openCardId === card.id && (
-							<div
-								ref={dropdownRef}
-								className='absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2'
-							>
-								<button
-									className='flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600'
-									onClick={() => handleViewClick(card)}
-								>
-									<FaEye />
-									View
-								</button>
-
-								<button
-									onClick={() => {
-										setSelectedModule(card);
-										setShowEditPanel(true);
-									}}
-									className='flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700'
-								>
-									<FaEdit />
-									Edit
-								</button>
-
-								<button
-									onClick={() => handleDelete(card.id, card.uuid)}
-									className='flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700'
-								>
-									<FaTrash />
-									Delete
-								</button>
+														: 'inactive',
+											})
+										}
+									/>
+									<div className='w-full h-full bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors duration-300' />
+									<div className='absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-2.5' />
+								</label>
 							</div>
-						)}
-					</div>
-				))}
+
+							{openCardId === card.id && (
+								<div
+									ref={dropdownRef}
+									className='absolute top-10 right-4 z-10 w-32 bg-white shadow-md rounded-xl p-2'
+								>
+									<button
+										className='flex items-center gap-2 w-full px-4 py-2 text-white bg-cyan-500 rounded-md hover:bg-cyan-600'
+										onClick={() => handleViewClick(card)}
+									>
+										<FaEye />
+										View
+									</button>
+
+									<button
+										onClick={() => {
+											setSelectedModule(card);
+											setShowEditPanel(true);
+										}}
+										className='flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700'
+									>
+										<FaEdit />
+										Edit
+									</button>
+
+									<button
+										onClick={() => handleDelete(card.id, card.uuid)}
+										className='flex items-center gap-2 w-full px-4 py-2 mt-2 border rounded-md hover:bg-gray-100 text-gray-700'
+									>
+										<FaTrash />
+										Delete
+									</button>
+								</div>
+							)}
+						</div>
+					))
+				)}
 			</div>
 		</div>
 	);

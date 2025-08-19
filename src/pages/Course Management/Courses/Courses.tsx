@@ -15,6 +15,7 @@ import { selectCoursesData } from '../../../features/CourseManagement/Course/sel
 import { GetAllCoursesThunk } from '../../../features/CourseManagement/Course/thunks';
 import { getCategories } from '../../../features/Category/selector';
 import { GetAllCategoryThunk } from '../../../features/Category/thunks';
+import { Card } from '../../../components/ui/card';
 
 const Courses: React.FC = () => {
 	const [courses, setCourses] = useState([
@@ -188,18 +189,26 @@ const Courses: React.FC = () => {
 								<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
 							</ContentLoader>
 						))}
-				{course.map((course: any, index: any) => (
-					<CourseCard
-						key={index}
-						{...course}
-						courseStatus={course.is_active}
-						courseuuid={course.uuid}
-						category_name={course.category.category_name}
-						categoryUuid={course.category.uuid}
-						image={course.image}
-						onView={() => handleViewCourse(course)}
-					/>
-				))}
+				{course.length ? (
+					course?.map((course: any, index: any) => (
+						<CourseCard
+							key={index}
+							{...course}
+							courseStatus={course.is_active}
+							courseuuid={course.uuid}
+							category_name={course.category.category_name}
+							categoryUuid={course.category.uuid}
+							image={course.image}
+							onView={() => handleViewCourse(course)}
+						/>
+					))
+				) : (
+					<Card className='col-span-3 mt-8'>
+						<p className='font-lg text-gray-900 text-center'>
+							No Courses available
+						</p>
+					</Card>
+				)}
 			</div>
 		</div>
 	);

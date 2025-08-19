@@ -217,38 +217,6 @@ const TeachingStaffs: React.FC = () => {
 
 	const handleUploadClick = () => {};
 
-	if (loading) {
-		return (
-			<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5'>
-				{[...Array(6)].map((_, index) => (
-					<ContentLoader
-						speed={1}
-						width='100%'
-						height='100%'
-						backgroundColor='#f3f3f3'
-						foregroundColor='#ecebeb'
-						className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
-						key={index}
-					>
-						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
-						<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
-
-						<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
-
-						<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
-
-						<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
-						<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
-
-						<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
-
-						<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
-					</ContentLoader>
-				))}
-			</div>
-		);
-	}
-
 	return (
 		<div className='space-y-4 min-h-screen overflow-y-auto'>
 			<h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -613,101 +581,152 @@ const TeachingStaffs: React.FC = () => {
 					)}
 
 					<div className='w-full grid grid-cols-3'>
-						{classData.map((member: any) => (
-							<Card
-								key={member?.id}
-								className='max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]'
-							>
-								<div className='divide-y'>
-									<div className='p-4'>
-										<div className='flex items-center gap-3 '>
-											<Avatar className='!w-[80px] !h-[80px]'>
-												<AvatarImage
-													src={GetImageUrl(member?.image) ?? undefined}
-													alt={member?.full_name}
-												/>
-											</Avatar>
-											<h3
-												style={{
-													...FONTS.heading_02,
-													color: COLORS.gray_dark_02,
-												}}
-												className='text-center '
-											>
-												{member.full_name}
-											</h3>
-										</div>
+						{loading ? (
+							<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3'>
+								{[...Array(6)].map((_, index) => (
+									<ContentLoader
+										speed={1}
+										width='100%'
+										height='100%'
+										backgroundColor='#f3f3f3'
+										foregroundColor='#ecebeb'
+										className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
+										key={index}
+									>
+										<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
+										<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
 
-										<div className='flex items-center gap-2 mb-3 text-muted-foreground'>
-											<Mail size={16} />
-											<span
-												style={{
-													...FONTS.heading_06,
-													color: COLORS.gray_dark_02,
-												}}
-											>
-												{member.email}
-											</span>
-										</div>
+										<rect
+											x='0'
+											y='36'
+											rx='10'
+											ry='10'
+											width='100%'
+											height='120'
+										/>
 
-										<div className='flex items-center justify-between mb-4 bg-white'>
-											<span
-												style={{
-													...FONTS.heading_07,
-													color: COLORS.gray_dark_02,
-												}}
-											>
-												Status
-											</span>
-											<Select
-												value={member?.is_active ? 'Active' : 'Inactive'}
-												onValueChange={(value: 'Active' | 'Inactive') =>
-													toggleStatus(member.id)
-												}
-											>
-												<SelectTrigger
-													className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(
-														member.status
-													)}`}
+										<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
+
+										<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
+										<rect
+											x='280'
+											y='200'
+											rx='4'
+											ry='4'
+											width='60'
+											height='20'
+										/>
+
+										<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
+
+										<rect
+											x='260'
+											y='240'
+											rx='6'
+											ry='6'
+											width='80'
+											height='32'
+										/>
+									</ContentLoader>
+								))}
+							</div>
+						) : (
+							classData.map((member: any) => (
+								<Card
+									key={member?.id}
+									className='max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]'
+								>
+									<div className='divide-y'>
+										<div className='p-4'>
+											<div className='flex items-center gap-3 '>
+												<Avatar className='!w-[80px] !h-[80px]'>
+													<AvatarImage
+														src={GetImageUrl(member?.image) ?? undefined}
+														alt={member?.full_name}
+													/>
+												</Avatar>
+												<h3
+													style={{
+														...FONTS.heading_02,
+														color: COLORS.gray_dark_02,
+													}}
+													className='text-center '
 												>
-													<SelectValue placeholder={member?.is_active} />
-												</SelectTrigger>
-												<SelectContent className='bg-[#1BBFCA]'>
-													<SelectItem
-														value='Active'
-														className='focus:bg-white cursor-pointer'
+													{member.full_name}
+												</h3>
+											</div>
+
+											<div className='flex items-center gap-2 mb-3 text-muted-foreground'>
+												<Mail size={16} />
+												<span
+													style={{
+														...FONTS.heading_06,
+														color: COLORS.gray_dark_02,
+													}}
+												>
+													{member.email}
+												</span>
+											</div>
+
+											<div className='flex items-center justify-between mb-4 bg-white'>
+												<span
+													style={{
+														...FONTS.heading_07,
+														color: COLORS.gray_dark_02,
+													}}
+												>
+													Status
+												</span>
+												<Select
+													value={member?.is_active ? 'Active' : 'Inactive'}
+													onValueChange={(value: 'Active' | 'Inactive') =>
+														toggleStatus(member.id)
+													}
+												>
+													<SelectTrigger
+														className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(
+															member.status
+														)}`}
 													>
-														Active
-													</SelectItem>
-													<SelectItem
-														value='Inactive'
-														className='focus:bg-white cursor-pointer'
-													>
-														Inactive
-													</SelectItem>
-												</SelectContent>
-											</Select>
+														<SelectValue placeholder={member?.is_active} />
+													</SelectTrigger>
+													<SelectContent className='bg-[#1BBFCA]'>
+														<SelectItem
+															value='Active'
+															className='focus:bg-white cursor-pointer'
+														>
+															Active
+														</SelectItem>
+														<SelectItem
+															value='Inactive'
+															className='focus:bg-white cursor-pointer'
+														>
+															Inactive
+														</SelectItem>
+													</SelectContent>
+												</Select>
+											</div>
+
+											<Button
+												onClick={() => handleProfile(member)}
+												className={`w-full bg-[#0400ff] ${theme.primary.text}`}
+											>
+												View Profile
+											</Button>
 										</div>
-
-										<Button
-											onClick={() => handleProfile(member)}
-											className={`w-full bg-[#0400ff] ${theme.primary.text}`}
-										>
-											View Profile
-										</Button>
 									</div>
-								</div>
 
-								{staff.length === 0 && (
-									<div className='p-8 text-center text-muted-foreground'>
-										<p>No staff members found.</p>
-										<p className='text-sm mt-1'>
-											Click "Add New Staff" to get started.
-										</p>
-									</div>
-								)}
-							</Card>
-						))}
+									{staff.length === 0 && (
+										<div className='p-8 text-center text-muted-foreground'>
+											<p>No staff members found.</p>
+											<p className='text-sm mt-1'>
+												Click "Add New Staff" to get started.
+											</p>
+										</div>
+									)}
+								</Card>
+							))
+						)}
 					</div>
 				</>
 			)}
