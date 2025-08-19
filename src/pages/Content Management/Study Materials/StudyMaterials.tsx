@@ -2,9 +2,11 @@ import React from 'react';
 import NotesManagement from '../../../components/StudyMaterial/StudyMaterial';
 
 const StudyMaterials = () => {
-	return <div>
-		<NotesManagement />
-	</div>;
+	return (
+		<div>
+			<NotesManagement />
+		</div>
+	);
 };
 
 export default StudyMaterials;
