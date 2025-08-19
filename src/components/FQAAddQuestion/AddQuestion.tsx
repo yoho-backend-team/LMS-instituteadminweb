@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -6,8 +7,6 @@ import success from "../../assets/tick.png";
 import warning from "../../assets/warning.png";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAddQuestion } from "../../features/HelpManagement/AddQuestion/selector";
-import { fetchAddQuestionThunk } from "../../features/HelpManagement/AddQuestion/thunks";
 import { faqCategory } from "../../features/Faq_Category/selector";
 import { fetchHelpCenterThunk } from "../../features/HelpCenter/thunks";
 import { selectFaq } from "../../features/HelpCenter/selector";
@@ -18,33 +17,8 @@ import {
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 
-interface FAQItem {
-  id: number;
-  uuid: string; // Add UUID field
-  category: string;
-  videoLink: string;
-  videolink: string; // Backend field name
-  question: string; // Backend field name
-  answer: string; // Backend field name
-  status: string;
-  description: string;
-}
 
 const AddQuestion = () => {
-  const [faqList, setFaqList] = useState<FAQItem[]>([
-    {
-      id: 1,
-      uuid: "", // Add UUID to initial state
-      category: "Classes",
-      videoLink: "https://youtu.be/sample1",
-      videolink: "https://youtu.be/sample1",
-      question: "How to Learn",
-      answer: "Sample Video",
-      status: "How to Learn",
-      description: "Sample Video",
-    },
-    // ... other items
-  ]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -66,7 +40,6 @@ const AddQuestion = () => {
 
   const dispatch = useDispatch<any>();
   const questions = useSelector(selectFaq);
-  console.log("help center question", questions);
 
   useEffect(() => {
     const params = {
@@ -109,7 +82,6 @@ const AddQuestion = () => {
     }
   };
 
-  console.log("category data", categories);
   useEffect(() => {
     const params = {
       branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
@@ -124,7 +96,6 @@ const AddQuestion = () => {
   const handleEdit = (item: any) => {
     setIsEditing(true);
     setEditUuid(item.uuid);
-    console.log("Edit UUID:", item.uuid);
     setFormData({
       category: item.category,
       videoLink: item.videolink,
@@ -266,11 +237,10 @@ const AddQuestion = () => {
       {/* Modal */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
-            modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
-              ? "justify-center"
-              : "justify-end"
-          } z-50`}
+          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
+            ? "justify-center"
+            : "justify-end"
+            } z-50`}
         >
           <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
             {/* Form Stage */}
@@ -396,18 +366,12 @@ const AddQuestion = () => {
                     onClick={async () => {
                       if (isEditing && editUuid !== null) {
                         try {
-                          console.log("editUuid value:", editUuid);
-                          console.log("editUuid type:", typeof editUuid);
-
                           const updateData = {
                             category: formData.category,
                             videolink: formData.videoLink,
                             question: formData.status,
                             answer: formData.description,
                           };
-
-                          const uuidString = String(editUuid);
-                          console.log("UUID string:", uuidString);
 
                           await updateHelpCenter(updateData, editUuid);
 

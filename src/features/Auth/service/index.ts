@@ -34,7 +34,7 @@ export const GetProfileDetail = async () => {
         const response: any = await Client.admin.me()
         const institute = response?.data?.institute_id?.uuid
         StoreLocalStorage('instituteId', institute)
-        return response
+        return response.data
     } catch (error) {
         console.log(error)
     }

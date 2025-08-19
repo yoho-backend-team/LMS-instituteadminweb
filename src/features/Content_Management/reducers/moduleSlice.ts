@@ -5,15 +5,15 @@ const ModuleSlice = createSlice({
   initialState: {
     data: [],
     upload_editdata: [],
-    branch:[],
-    branch_course:[],
+    branch: [],
+    branch_course: [],
   },
   reducers: {
     getModule: (state, action) => {
       state.data = action.payload;
     },
 
-     getBranchCourse: (state, action) => {
+    getBranchCourse: (state, action) => {
       state.branch_course = action.payload;
     },
 
@@ -34,14 +34,13 @@ const ModuleSlice = createSlice({
         state.data[index] = updatedModule;
       }
     },
-    updateModuleStatus: (state:any, action) => {
-      console.log("Reducer payload:", action.payload); 
+    updateModuleStatus: (state: any, action) => {
       const updatedModule = action.payload;
 
-      if (!updatedModule || !updatedModule.module_id) return; 
+      if (!updatedModule || !updatedModule.module_id) return;
 
       const index = state.data.findIndex(
-        (item:any) => item.module_id === updatedModule.module_id
+        (item: any) => item.module_id === updatedModule.module_id
       );
       if (index !== -1) {
         state.data[index] = {
@@ -54,7 +53,7 @@ const ModuleSlice = createSlice({
     upload_editdata: (state, action) => {
       state.upload_editdata = action.payload;
     },
-        getBranches(state, action) {
+    getBranches(state, action) {
       state.branch = action.payload;
     },
 

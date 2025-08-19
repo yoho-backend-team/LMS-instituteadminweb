@@ -1,8 +1,9 @@
-import { getActivity, getDashboard } from '../services'; 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getActivity, getDashboard } from '../services';
 import { getActivityData, getDashboardData } from './DashboardSlice';
 
 export const getDashboardthunks =
-    (params:any) => async (dispatch: any) => {
+    (params: any) => async (dispatch: any) => {
         try {
             const response = await getDashboard(params);
             dispatch(getDashboardData(response));
@@ -11,12 +12,11 @@ export const getDashboardthunks =
         }
     };
 
-export const getActivitythunks = (params:any)=> async (dispatch:any)=>{
+export const getActivitythunks = (params: any) => async (dispatch: any) => {
     try {
         const response = await getActivity(params);
         dispatch(getActivityData(response.data));
-        console.log(response.data,"Activity Data")
     } catch (error) {
-            console.log(error);
-        }
+        console.log(error);
+    }
 }

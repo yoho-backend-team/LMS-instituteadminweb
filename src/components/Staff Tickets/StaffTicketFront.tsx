@@ -14,10 +14,11 @@ import { GetStaffTicket } from "../../features/Ticket_Management/reducers/select
 // import React, { useState } from "react";
 // import TicketCard from "./TicketCard";
 import ticket1 from "../../assets/ticket1.png";
+import { GetImageUrl } from "../../utils/helper";
 // import { useTicketContext } from "../../components/Staff Tickets/StaffTicketContext";
 
 interface Ticket {
-  id: number;
+  uuid: string;
   name: string;
   email: string;
   message: string;
@@ -71,7 +72,7 @@ const StaffTickets: React.FC = () => {
   const handleResolve = (ticket: Ticket) => {
     setMenuOpenId(null);
     if (ticket.status === "opened") {
-      navigate(`/tickets/${ticket.id}`);
+      navigate(`/staff-tickets/${ticket.uuid}`);
     } else {
       console.log("Ticket is not open, cannot navigate");
     }
@@ -135,9 +136,9 @@ const StaffTickets: React.FC = () => {
                   <div className="flex items-center justify-between mb-2 relative">
                     <div className="flex items-center gap-3">
                       <img
-                        src={avatarimg}
+                        src={GetImageUrl(ticket?.user?.image) ?? undefined}
                         alt="Avatar"
-                        className="w-10 h-10 rounded-full"
+                        className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>
                         <h2 className="text-gray-800 font-semibold">

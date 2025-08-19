@@ -95,7 +95,13 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
               <tr key={item.refundId} className="border-t">
                 <td className="px-4 py-4">{item.refundId}</td>
                 <td className="px-4 py-4">{item.studentId}</td>
-                <td className="px-4 py-4">{item.studentInfo}</td>
+                <td className="px-4 py-4 flex flex-col">
+                  <span>{item.studentInfo}</span>
+                  <span className="text-xs text-gray-500">
+                    {item.studentEmail}
+                  </span>
+                </td>
+
                 <td className="px-4 py-4">{item.paid}</td>
                 <td className="px-4 py-4">{item.payment}</td>
                 <td className="px-4 py-4">{item.status}</td>
@@ -108,7 +114,6 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit }) => {
                       <FaEdit size={18} />
                     </button>
                     <button
-                      className="text-red-400"
                       onClick={() => {
                         if (item.uuid) {
                           onDelete(item.uuid);

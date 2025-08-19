@@ -197,10 +197,8 @@ function AddNewGroup({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const payload = buildPayload()
-    console.log("Payload being sent:", JSON.stringify(payload, null, 2))
     try {
       const response = await CreateGroup(payload)
-      console.log("group created", response)
       toast.success("Group created successfully")
       dispatch(GetGroupCardthunks({}))
       navigate("/group")
