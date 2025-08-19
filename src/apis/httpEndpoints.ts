@@ -5,6 +5,9 @@ export const getInstituteDetails = () => {
 		const institute = GetLocalStorage('instituteId');
 		return institute;
 	}
+	catch(error){
+		console.log(error)
+	}
 };
 
 export const getSelectedBranchId = () => {
@@ -12,6 +15,9 @@ export const getSelectedBranchId = () => {
 		const branch = GetLocalStorage('selectedBranchId');
 		console.log("branch status",branch)
 		return branch;
+	}
+		catch(error){
+		console.log(error)
 	}
 };
 

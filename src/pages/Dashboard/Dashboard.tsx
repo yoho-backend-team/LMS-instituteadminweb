@@ -13,13 +13,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActivityData, selectDashboardData } from '../../features/Dashboard/reducers/selectors';
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
-<<<<<<< HEAD
 import { RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
 import { GetBranchThunks } from '../../features/StudyMaterials/thunk';
 import { getInstituteDetails } from '../../apis/httpEndpoints';
-=======
-import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
->>>>>>> 792d31db2b2bf76980698f6521db8f6f92e2e697
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -36,30 +32,14 @@ export default function Component() {
 	const [selectedYear, setSelectedYear] = useState('2025');
 	const dispatch = useDispatch<any>();
 
-<<<<<<< HEAD
 	const DashboardData = useSelector(selectDashboardData);
 	const ActivityData = useSelector(selectActivityData);
 	const BranchData = useSelector(selectBranches);
-=======
-	const DashboardData = useSelector(selectDashboardData)
-	const ActivityData = useSelector(selectActivityData)
-	const BranchData: any = useSelector(selectBranches)
-	const [selectedBranch, setSelectedBranch] = useState('');
-
-	const BranchOptions = BranchData?.map((branch: any) => {
-		return branch?.branch_identity
-	})
-
-	const localBranch = GetLocalStorage('selectedBranchId')
-
-	const branchList = BranchOptions;
->>>>>>> 792d31db2b2bf76980698f6521db8f6f92e2e697
 
 	const BranchOptions = BranchData?.map((branch: any) => branch?.branch_identity);
 	const [selectedBranch, setSelectedBranch] = useState('');
 	const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>(undefined);
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-<<<<<<< HEAD
 	const instituteId = getInstituteDetails();
 
 	const handleBranchChange = (branch: string) => {
@@ -69,20 +49,6 @@ export default function Component() {
 			setSelectedBranch(branch);
 			setSelectedBranchId(branchObj?.uuid);
 		}
-=======
-
-	const handleBranchChange = (branch: string) => {
-
-		BranchData.map((branchID: any) => {
-			if (branchID?.branch_identity === branch) {
-				RemoveLocalStorage("selectedBranchId")
-				setSelectedBranch(branchID?.branch_identity)
-				StoreLocalStorage("selectedBranchId", branchID.uuid)
-			}
-		})
-
-		setSelectedBranch(branch);
->>>>>>> 792d31db2b2bf76980698f6521db8f6f92e2e697
 		setBranchMenuOpen(false);
 	};
 
@@ -90,7 +56,6 @@ export default function Component() {
 		setPeriodOpen(false);
 	};
 
-<<<<<<< HEAD
 	useEffect(() => {
 		dispatch(GetBranchThunks({}));
 	}, [dispatch]);
@@ -109,25 +74,6 @@ export default function Component() {
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
 	}, [dispatch, selectedBranchId]);
-=======
-
-	useEffect(() => {
-		const paramsData = { branch: GetLocalStorage('selectedBranchId') }
-		dispatch(getDashboardthunks(paramsData));
-		dispatch(getActivitythunks({ page: 1 }));
-		(() => {
-			if (localBranch == null) {
-				return setSelectedBranch(BranchData?.[0]?.branch_identity)
-			}
-			const foundBranch = BranchData?.find((item: any) => item.uuid === localBranch);
-			setSelectedBranch(foundBranch?.branch_identity)
-		})()
-	}, [BranchData, dispatch, localBranch]);
-
-
-
-
->>>>>>> 792d31db2b2bf76980698f6521db8f6f92e2e697
 
 	return (
 	
@@ -137,7 +83,6 @@ export default function Component() {
 				{/* Header */}
 				<div className='flex justify-between items-center'>
 					<div className='relative'>
-<<<<<<< HEAD
 			{/* Trigger Button */}
 			<button
 				onClick={() => setBranchMenuOpen(!branchMenuOpen)}
@@ -172,45 +117,6 @@ export default function Component() {
 								{branch}
 							</button>
 						))}
-=======
-						{/* Trigger Button */}
-						<button
-							onClick={() => setBranchMenuOpen(!branchMenuOpen)}
-							className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
-							style={{
-								background: 'white',
-								border: `2px solid ${COLORS.primary}`,
-								...FONTS.heading_07,
-								color: '#716F6F',
-							}}
-						>
-							<span>{selectedBranch}</span>
-							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
-						</button>
-
-						{/* Dropdown Options */}
-						{branchMenuOpen && (
-							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
-								<div className='space-y-2 p-2'>
-									{branchList.map((branch: any) => (
-										<button
-											key={branch}
-											onClick={() => handleBranchChange(branch)}
-											className='w-full text-left p-2 rounded-md'
-											style={{
-												...FONTS.heading_08,
-												backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
-												color: selectedBranch === branch ? '#fff' : '#716F6F',
-												border: '1px solid #ddd',
-											}}
-										>
-											{branch}
-										</button>
-									))}
-								</div>
-							</div>
-						)}
->>>>>>> 792d31db2b2bf76980698f6521db8f6f92e2e697
 					</div>
 					<div className='relative'>
 						<button
@@ -593,4 +499,5 @@ export default function Component() {
 			</div>
 		</div>
 	);
+
 }
