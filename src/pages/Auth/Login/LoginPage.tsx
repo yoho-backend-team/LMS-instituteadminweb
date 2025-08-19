@@ -26,6 +26,7 @@ const LoginPage = () => {
 		const email = Inputemail?.current?.value;
 		const password = Inputpassword?.current?.value;
 		const response = await AuthLogin({ email, password });
+		console.log(response,"response");
 		if (response) {
 			if (response?.data?.otpVerify) {
 				toast.success(response?.message);

@@ -12,15 +12,19 @@ export const getInstituteDetails = () => {
 export const getSelectedBranchId = () => {
 	try{
 		const branch = GetLocalStorage('selectedBranchId');
+		console.log("branch status",branch)
 		return branch;
 	} catch(error) {
 		return null;
 	}
 };
 
+
 export const generateEndpoints = () => {
 	const instituteId = GetLocalStorage('instituteId');
+	console.log("institute",instituteId)
 	const branchId = getSelectedBranchId();
+	console.log("branch",branchId)
 
 	return {
 		admin: {
