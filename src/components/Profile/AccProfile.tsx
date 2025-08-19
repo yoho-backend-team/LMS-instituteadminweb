@@ -69,7 +69,7 @@ const AccountProfile: React.FC = () => {
 		if (activePanel === "third") {
 			dispatch(fetchTimeline({ page: 1 }));
 		}
-	}, [activePanel]);
+	}, [activePanel, dispatch]);
 
 	const handleChangePassword = async () => {
 		try {
@@ -80,7 +80,7 @@ const AccountProfile: React.FC = () => {
 			const response = await getsecurity(data)
 			console.log(response)
 		} catch (error) {
-
+			console.log(error)
 		}
 	}
 	return (
@@ -406,7 +406,7 @@ const AccountProfile: React.FC = () => {
 				{/* TimeLine Page Content */}
 				{activePanel === 'third' && (
 					<div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
-						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(100vh-180px)] scrollbar-hidden">
+						<div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(90vh-180px)] scrollbar-hidden">
 
 							{timeline?.map((item: any, index: any) => (
 								<div key={index} className="mb-1 ml-4 relative">
@@ -420,10 +420,10 @@ const AccountProfile: React.FC = () => {
 									</div>
 									<br></br>
 									<div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg shadow-md px-4 py-4 w-[500px]" >
-										<h3 className="text-md font-semibold" style={{ ...FONTS.heading_05_bold }}>{item.title}</h3>&nbsp;
+										<h3 className="text-md font-semibold" style={{ ...FONTS.heading_05_bold }}>{item.title}</h3>
 										<p className="text-sm text-gray-600 ">
 											<span className='block mb-3' style={{ ...FONTS.heading_06_light }}>{item.action}</span>
-											<span className="block font-medium" style={{ ...FONTS.heading_06_bold }} >{item.details}</span>
+											<span className="block font-medium" style={{ ...FONTS.heading_07 }} >{item.details}</span>
 										</p>
 										<p className="text-sm text-gray-500 text-right mt-0" >{item.createdAt}</p>
 									</div>

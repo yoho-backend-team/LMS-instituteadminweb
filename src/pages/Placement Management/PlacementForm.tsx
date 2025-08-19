@@ -1,16 +1,16 @@
 import { Controller, useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import ReactSelect from "react-select";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import { useDispatch, useSelector } from "react-redux";
-import { getStudentsThunk } from "@/features/placementManagement/Reducer/thunk";
+import { getStudentsThunk } from "../../features/placementManagement/Reducer/thunk";
 
 export interface PlacementFormData {
   companyName: string;
@@ -49,7 +49,7 @@ const PlacementForm = ({
     formState: { errors },
   } = useForm<PlacementFormData>();
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
   const students = useSelector((state: any) =>
     Array.isArray(state.placements.students)
       ? state.placements.students
@@ -57,18 +57,21 @@ const PlacementForm = ({
   );
 
   useEffect(() => {
-    dispatch(getStudentsThunk());
+    dispatch(getStudentsThunk(''));
   }, [dispatch]);
 
   useEffect(() => {
     if (initialData) reset(initialData);
   }, [initialData, reset]);
 
+  console.log(initialData,"asdfghjkjhgfd")
   const onFormSubmit = (data: PlacementFormData) => {
     onSubmit(data);
     onClose();
     reset();
   };
+  const isEditMode = mode === "edit";
+
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -93,6 +96,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("companyName", { required: "Company name is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
                 </div>
@@ -101,6 +105,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("companyAddress", { required: "Company address is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.companyAddress && <p className="text-red-500 text-sm">{errors.companyAddress.message}</p>}
                 </div>
@@ -109,6 +114,8 @@ const PlacementForm = ({
                   <Input
                     type="email"
                     {...register("contactEmail", { required: "Contact email is required" })}
+                    readOnly={isEditMode}
+                    
                   />
                   {errors.contactEmail && <p className="text-red-500 text-sm">{errors.contactEmail.message}</p>}
                 </div>
@@ -117,6 +124,7 @@ const PlacementForm = ({
                   <Input
                     type="tel"
                     {...register("contactNumber", { required: "Contact number is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.contactNumber && <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>}
                 </div>
@@ -132,6 +140,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("jobName", { required: "Job name is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.jobName && <p className="text-red-500 text-sm">{errors.jobName.message}</p>}
                 </div>
@@ -140,6 +149,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("jobDescription", { required: "Job description is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.jobDescription && <p className="text-red-500 text-sm">{errors.jobDescription.message}</p>}
                 </div>
@@ -148,8 +158,10 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("skills", { required: "Skills are required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.skills && <p className="text-red-500 text-sm">{errors.skills.message}</p>}
+                  
                 </div>
               </CardContent>
             </Card>
@@ -192,17 +204,17 @@ const PlacementForm = ({
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Interview Date</label>
-                  <Input type="date" {...register("interviewDate", { required: "Interview date is required" })} />
+                  <Input type="date" {...register("interviewDate", { required: "Interview date is required" })} readOnly={isEditMode} />
                   {errors.interviewDate && <p className="text-red-500 text-sm">{errors.interviewDate.message}</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Venue</label>
-                  <Input type="text" {...register("venue", { required: "Venue is required" })} />
+                  <Input type="text" {...register("venue", { required: "Venue is required" })} readOnly={isEditMode} />
                   {errors.venue && <p className="text-red-500 text-sm">{errors.venue.message}</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Address</label>
-                  <Input type="text" {...register("address", { required: "Address is required" })} />
+                  <Input type="text" {...register("address", { required: "Address is required" })} readOnly={isEditMode}/>
                   {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
                 </div>
               </CardContent>
@@ -217,6 +229,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("courseName", { required: "Course name is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.courseName && <p className="text-red-500 text-sm">{errors.courseName.message}</p>}
                 </div>
@@ -225,6 +238,7 @@ const PlacementForm = ({
                   <Input
                     type="text"
                     {...register("education", { required: "Education level is required" })}
+                    readOnly={isEditMode}
                   />
                   {errors.education && <p className="text-red-500 text-sm">{errors.education.message}</p>}
                 </div>

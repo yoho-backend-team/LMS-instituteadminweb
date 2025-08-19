@@ -12,8 +12,11 @@ import { GetImageUrl } from '../../../utils/helper';
 import { updateStudentTicketService } from '../../../features/StudentTicket/Services';
 import toast from 'react-hot-toast';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
+import socket from '../../../utils/socket';
+import { GetProfileDetail } from '../../../features/Auth/service';
 
 interface Message {
+	ticket_id: 'string';
 	sender: 'user' | 'admin';
 	text: string;
 	time: string;
@@ -28,6 +31,7 @@ const TicketDetailsPage: React.FC = () => {
 	const ticketId = Number(id);
 	const ticket = tickets.find((t) => t.id === ticketId);
 	const status = ticket?.status ?? 'opened';
+	const [adminProfile, SetAdminProfile] = useState();
 
 	const updateStatus = async () => {
 		try {
@@ -64,22 +68,53 @@ const TicketDetailsPage: React.FC = () => {
 	const [inputValue, setInputValue] = useState('');
 	const chatRef = useRef<HTMLDivElement>(null);
 
+	const getProfile = async () => {
+		const response = await GetProfileDetail();
+		console.log("STDTicket", response)
+		SetAdminProfile(response?.data)
+	}
+
+	useEffect(() => {
+		if (ticketData?.messages) {
+			setMessages(ticketData.messages)
+		}
+	}, [ticketData])
+
+	useEffect(() => {
+		getProfile();
+	}, [])
+
 	const handleSend = () => {
-		if (inputValue.trim() === '') return;
+		if (inputValue.trim() === "") return;
 
 		const newMessage: Message = {
-			sender: 'admin',
+			ticket_id: id,
 			text: inputValue,
-			time: new Date().toLocaleTimeString([], {
-				hour: '2-digit',
-				minute: '2-digit',
-			}),
+			senderType: "InstituteAdmin",
+			user: adminProfile?._id
 		};
-
-		setMessages((prev) => [...prev, newMessage]);
-		setInputValue('');
+		socket.emit("sendStudentTicketMessage", newMessage)
+		setMessages((prev)=> [...prev, {sender: adminProfile?._id, content: inputValue, date: new Date()}])
+		setInputValue("");
 	};
 
+
+	useEffect(() => {
+		socket.connect()
+		socket.on("connect", () => {
+			socket.emit("joinTicket", id)
+		});
+
+		const handleMessage = (message: Message) => {
+			console.log("message", message)
+			setMessages((prev) => [message, ...prev])
+		}
+
+		socket.on("receiveStudentTicketMessage", handleMessage)
+		return () => {
+			socket.off("receiveStudentTicketMessage", handleMessage)
+		}
+	})
 	useEffect(() => {
 		if (chatRef.current) {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -144,15 +179,15 @@ const TicketDetailsPage: React.FC = () => {
 					<div className='bg-white rounded-md border-t-2 shadow p-4'>
 						<div className='flex items-center gap-3'>
 							<img
-								src={circleblue}
+								src={GetImageUrl(ticketData?.user?.image) ?? undefined}
 								alt='User Avatar'
 								className='w-12 h-12 rounded-full object-cover'
 							/>
 							<div>
 								<h2 className='font-semibold text-gray-800 text-base'>
-									Oliver Smith
+									{ticketData?.user?.full_name}
 								</h2>
-								<p className='text-green-600 text-sm'>Active Now</p>
+								<p className='text-green-600 text-sm'>{socket ? "Active": "offline"}</p>
 							</div>
 						</div>
 					</div>
@@ -165,10 +200,10 @@ const TicketDetailsPage: React.FC = () => {
 							ref={chatRef}
 							className='h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center'
 						>
-							{ticketData?.messages?.map((msg: any, idx: any) => (
+							{messages?.map((msg: any, idx: any) => (
 								<div
 									key={idx}
-									className={`flex items-start gap-2 ${msg.sender === 'admin' ? 'justify-end' : ''
+									className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? 'justify-end' : ''
 										}`}
 								>
 									{msg?.sender === 'user' && (
@@ -179,14 +214,14 @@ const TicketDetailsPage: React.FC = () => {
 										/>
 									)}
 									<div
-										className={`p-2 rounded shadow text-sm max-w-[75%] ${msg?.sender === 'admin'
-												? 'bg-[#14b8c6] text-white'
-												: 'bg-white text-gray-800'
+										className={`p-2 rounded shadow text-sm max-w-[75%] ${msg?.sender === adminProfile?._id
+											? 'bg-[#14b8c6] text-white'
+											: 'bg-white text-gray-800'
 											}`}
 									>
 										{msg.content}
 										<div
-											className={`text-[10px] text-right mt-1 ${msg.sender === 'admin' ? 'text-white' : 'text-gray-500'
+											className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id ? 'text-white' : 'text-gray-500'
 												}`}
 										>
 											{msg?.date
@@ -197,7 +232,7 @@ const TicketDetailsPage: React.FC = () => {
 												: 'N/A'}
 										</div>
 									</div>
-									{msg.sender === 'admin' && (
+									{msg.sender === adminProfile?._id && (
 										<img
 											src={userblue}
 											alt='Admin'
@@ -271,8 +306,8 @@ const TicketDetailsPage: React.FC = () => {
 						<p className='font-semibold text-gray-800 mb-1'>Status:</p>
 						<span
 							className={`inline-block px-3 py-2 rounded text-sm ${ticketData?.status === 'opened'
-									? 'text-white bg-[#1BBFCA]'
-									: 'text-white bg-[#be3a3a]'
+								? 'text-white bg-[#1BBFCA]'
+								: 'text-white bg-[#be3a3a]'
 								}`}
 						>
 							{ticketData?.status}

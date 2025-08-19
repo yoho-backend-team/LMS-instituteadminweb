@@ -43,7 +43,6 @@ const AddNotes: React.FC<AddNotesProps> = ({ onClose, onSubmit }) => {
   const courses = useSelector(BranchCourse);
 
   const instituteId = useSelector((state: any) => state.authuser?.user?.institute_id?.uuid);
-  console.log("ins Id", instituteId);
 
   useEffect(() => {
     dispatch(GetBranchThunks([]));

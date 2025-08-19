@@ -1,29 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import circle from "../../assets/navbar/circle.png";
-import { fetchcommunity } from "../../features/Community/Reducers/thunks";
-import {useEffect} from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectcommunity } from "../../features/Community/Reducers/selectors";
+import { fetchCommunity } from "../../features/Community/Reducers/thunks";
+import { GetImageUrl } from "../../utils/helper";
 
 interface Props {
-  selectedBatch: string;
-  onSelectBatch: (batch: string) => void;
+  selectedBatch: any;
+  onSelectBatch: (batch: any) => void;
   instituteId: string;
 }
 
-
-
 const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
-  
-  
-  const batches = useSelector(selectcommunity)
-  console.log(batches,"sjdgfk jkhde")
+  const batches = useSelector(selectcommunity);
+  const dispatch = useDispatch<any>();
 
-  const dispatch = useDispatch<any>()
   useEffect(() => {
-			dispatch(fetchcommunity({}));
-	}, []);
+    dispatch(fetchCommunity({}));
+  }, [dispatch]);
+
   return (
     <div className="w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-10 px-4 h-[83vh] rounded-lg overflow-y-auto">
       <div className="text-xl text-[#BBFCA] font-bold mr-auto mb-4 -mt-2">
@@ -31,16 +26,15 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
       </div>
 
       <div className="flex flex-col gap-4 w-full">
-        {batches.map((batch: string, index: number) => (
+        {batches.map((batch: any, index: number) => (
           <div
             key={index}
             onClick={() => onSelectBatch(batch)}
-            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
-              selectedBatch === batch ? "ring-2 ring-cyan-600" : ""
-            }`}
+            className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
+              }`}
           >
             <img
-              src={circle}
+              src={GetImageUrl(batch?.groupimage) ?? circle}
               alt="batch"
               className="w-12 h-12 rounded-full mr-4"
             />

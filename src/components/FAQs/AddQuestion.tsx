@@ -42,14 +42,13 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
     const payload = {
       title,
       description,
-      category_id:"6825d76c8245c52fee70cc27", // category1 is used for category_id
+      category_id: "6825d76c8245c52fee70cc27", // category1 is used for category_id
       accessby: ["Teaching Staff"], // hardcoded access
     };
 
     try {
       setLoading(true);
-      const result = await CreateFaq(payload);
-      console.log(" Created FAQ:", result);
+      await CreateFaq(payload);
       onOpenChange(false);
     } catch (err) {
       console.error(" Failed to create FAQ", err);
