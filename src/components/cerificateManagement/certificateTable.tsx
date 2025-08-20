@@ -67,7 +67,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
 }) => {
 	return (
 		<div className='bg-white shadow-2xl p-4 mt-5 rounded-2xl'>
-			<div className='bg-white rounded-xl overflow-hidden'>
+			<div className='bg-white rounded-xl'>
 				<table className='w-full text-sm'>
 					<thead className='bg-[#F8F8F8] text-[#716F6F] text-lg h-15'>
 						<tr>
@@ -156,7 +156,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
 											<BsThreeDotsVertical />
 										</button>
 										{openDropdownId === cert.id && (
-											<div className='fixed right-0 mt-2 w-40 gap-2 grid p-3 bg-white border rounded-lg shadow-lg z-10'>
+											<div className='absolute right-14 top-0 mt-2 w-40 gap-2 grid p-3 bg-white border rounded-lg shadow-lg z-99'>
 												<button
 													className='w-full flex text-left hover:bg-[#1BBFCA] hover:text-white px-4 py-2 border rounded-md'
 													onClick={() => {
