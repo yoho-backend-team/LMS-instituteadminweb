@@ -1,1 +1,4 @@
-export const selectAllNotification = (state:any) => state.allNotificationReducer.allNotification; 
+export const selectAllNotification = (state: any) =>
+	state.AllNotificationReducer.allNotification;
+export const selectLoading = (state: any) =>
+	state.AllNotificationReducer.loading;

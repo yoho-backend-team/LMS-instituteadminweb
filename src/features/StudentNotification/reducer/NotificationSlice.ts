@@ -1,26 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const   StudentNotificationSlice = createSlice({
+const StudentNotificationSlice = createSlice({
 	name: 'StudentNotificationSlice',
 	initialState: {
 		notificationdata: [],
-		coursedata:[],
-        
+		coursedata: [],
+		loading: false,
 	},
 	reducers: {
 		getstudentnotificationdetails: (state, action) => {
 			state.notificationdata = action.payload;
-
 		},
-        getcoursedetails: (state, action) => { 	 	
-			console.log("Reducer called with course data:", action.payload);
+		getcoursedetails: (state, action) => {
 			state.coursedata = action.payload;
-
+		},
+		setLoading: (state, action) => {
+			state.loading = action.payload;
 		},
 	},
-	
 });
-export const { getstudentnotificationdetails,getcoursedetails} = StudentNotificationSlice.actions;
 
+export const { getstudentnotificationdetails, getcoursedetails, setLoading } =
+	StudentNotificationSlice.actions;
 
 export default StudentNotificationSlice.reducer;
