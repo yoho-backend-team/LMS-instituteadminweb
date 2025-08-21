@@ -68,22 +68,14 @@ const TicketsPage: React.FC = () => {
     };
   }, []);
 
-  // 👇 Skeleton Component
- // 👇 Skeleton Component
+  
 const TicketSkeleton = () => (
   <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
-    {/* Title */}
     <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
-
-    {/* Query line */}
     <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
-
-    {/* Description lines */}
     <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
     <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-
-    {/* Footer placeholder */}
     <div className="flex justify-between items-center mt-4">
       <div className="h-3 bg-gray-300 rounded w-1/4"></div>
       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
@@ -94,7 +86,6 @@ const TicketSkeleton = () => (
 
   return (
     <div className="h-auto p-0">
-      {/* Header */}
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
@@ -132,7 +123,7 @@ const TicketSkeleton = () => (
         )}
       </div>
 
-      {/* Tabs */}
+    
       {showbuttonWindow && (
         <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
           <button
@@ -162,7 +153,7 @@ const TicketSkeleton = () => (
         </div>
       )}
 
-      {/* Ticket Grid */}
+  
       {activeTab === "open" && !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
           {loading ? (
@@ -200,7 +191,7 @@ const TicketSkeleton = () => (
         </div>
       )}
 
-      {/* Chat Window */}
+
       {showChatWindow && (
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
           <ChatWindow user={selectedTicketUserDetails} />

@@ -24,6 +24,7 @@ import {
 	RemoveLocalStorage,
 	StoreLocalStorage,
 } from '../../utils/localStorage';
+import { getDashboard } from '../../features/Dashboard/services';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -37,10 +38,11 @@ export default function Component() {
 	const ActivityData = useSelector(selectActivityData);
 	const BranchData: any = useSelector(selectBranches);
 	const [selectedBranch, setSelectedBranch] = useState('');
+	const localBranch = GetLocalStorage('selectedBranchId');
+	const [selectedBranchID, setSelectedBranchID] = useState(localBranch);
 	const BranchOptions = BranchData?.map((branch: any) => {
 		return branch?.branch_identity;
 	});
-	const localBranch = GetLocalStorage('selectedBranchId');
 	const branchList = BranchOptions;
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
@@ -55,6 +57,7 @@ export default function Component() {
 				RemoveLocalStorage('selectedBranchId');
 				setSelectedBranch(branchID?.branch_identity);
 				StoreLocalStorage('selectedBranchId', branchID.uuid);
+				setSelectedBranchID(branchID.uuid)
 			}
 		});
 
@@ -62,9 +65,9 @@ export default function Component() {
 		setBranchMenuOpen(false);
 	};
 
-	const handleApply = () => {
-		setPeriodOpen(false);
-	};
+	// const handleApply = () => {
+	// 	setPeriodOpen(false);
+	// };
 
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
@@ -80,6 +83,49 @@ export default function Component() {
 			setSelectedBranch(foundBranch?.branch_identity);
 		})();
 	}, [BranchData, dispatch, localBranch]);
+
+
+const monthMap: { [key: string]: number } = {
+  January: 1,
+  February: 2,
+  March: 3,
+  April: 4,
+  May: 5,
+  June: 6,
+  July: 7,
+  August: 8,
+  September: 9,
+  October: 10,
+  November: 11,
+  December: 12,
+};
+
+
+
+
+
+
+
+
+	const handleApply = async () => {
+  try {
+    const monthNumber = monthMap[selectedMonth];
+
+    const params = {
+      branch: selectedBranchID, 
+      month: monthNumber,
+      year: selectedYear,
+    };
+
+    const data = await getDashboard(params);
+    console.log("API Response:", data);
+
+    setPeriodOpen(false);
+  } catch (error) {
+    console.error("Error fetching dashboard:", error);
+  }
+};
+
 
 	return (
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
@@ -200,7 +246,7 @@ export default function Component() {
 										</div>
 									</div>
 
-									{/* Apply Button */}
+								
 									<button
 										className='w-full py-2 px-4 text-white rounded-md border-0'
 										onClick={handleApply}
