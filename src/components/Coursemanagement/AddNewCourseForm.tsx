@@ -101,27 +101,40 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
-        <div>
-          <label className="text-sm text-gray-600">Actual Price</label>
-          <input
-            name="actualPrice"
-            value={formData.actualPrice}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-            
-          />
-        </div>
+       <div>
+  <label className="text-sm text-gray-600">Actual Price</label>
+  <input
+    type="text"
+    name="actualPrice"
+    value={formData.actualPrice}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Allow only digits (no letters, no special chars)
+      if (/^\d*$/.test(value)) {
+        setFormData({ ...formData, actualPrice: value });
+      }
+    }}
+    className="border rounded-md p-2 w-full"
+    placeholder="Enter actual price"
+  />
+</div>
 
-        <div>
-          <label className="text-sm text-gray-600">Current Price</label>
-          <input
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-            
-          />
-        </div>
+<div>
+  <label className="text-sm text-gray-600">Current Price</label>
+  <input
+    type="text"
+    name="price"
+    value={formData.price}
+    onChange={(e) => {
+      const value = e.target.value;
+      if (/^\d*$/.test(value)) {
+        setFormData({ ...formData, price: value });
+      }
+    }}
+    className="border rounded-md p-2 w-full"
+    placeholder="Enter current price"
+  />
+</div>
 
         <div>
           <label className="text-sm text-gray-600">Star Rating</label>
@@ -141,15 +154,23 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
         </div>
 
         <div>
-          <label className="text-sm text-gray-600">Total Review</label>
-          <input
-            name="review"
-            value={formData.review}
-            onChange={handleChange}
-            className="border rounded-md p-2 w-full"
-            
-          />
-        </div>
+  <label className="text-sm text-gray-600">Total Review</label>
+  <input
+    type="text"
+    name="review"
+    value={formData.review}
+    onChange={(e) => {
+      const value = e.target.value;
+      // allow only digits
+      if (/^\d*$/.test(value)) {
+        setFormData({ ...formData, review: value });
+      }
+    }}
+    className="border rounded-md p-2 w-full"
+    placeholder="Enter total reviews"
+  />
+</div>
+
 
         <div>
           <label className="text-sm text-gray-600">Select Branches</label>
