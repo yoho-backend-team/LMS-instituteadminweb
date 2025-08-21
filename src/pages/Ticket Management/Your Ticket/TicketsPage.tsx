@@ -34,7 +34,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const popupRef = useRef<HTMLDivElement>(null);
 
-    console.log("name",name)
+   
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
