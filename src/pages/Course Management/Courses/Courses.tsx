@@ -96,6 +96,9 @@ const Courses: React.FC = () => {
 			category: formValues.category,
 			branch_ids: [formValues.branch],
 			institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+			  branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+			
+
 		};
 
 		try {
