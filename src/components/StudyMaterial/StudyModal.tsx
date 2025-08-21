@@ -101,7 +101,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({
                   className="w-full h-64 border rounded-md"
                   title="PDF Preview"
                 />
-              ) : uploadedFile.type.includes("word") ? (
+              ) : uploadedFile?.type?.includes("word") ? (
                 <div className="text-sm text-blue-600">
                   DOC/DOCX file selected. Preview not supported.
                 </div>

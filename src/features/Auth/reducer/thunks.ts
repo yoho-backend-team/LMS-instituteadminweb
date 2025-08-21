@@ -15,7 +15,7 @@ export const AuthThunks = (data: any) => async (dispatch: any) => {
 export const GetProfileThunk = () => async (dispatch: any) => {
 	try {
 		const response = await GetProfileDetail();
-		dispatch(setUSerDetails(response.data));
+		dispatch(setUSerDetails(response));
 		return response.institute_id;
 	} catch (error) {
 		console.log(error);

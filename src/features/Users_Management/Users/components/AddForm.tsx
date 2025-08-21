@@ -14,11 +14,12 @@ import * as Yup from "yup";
 import { ChevronDownIcon } from "lucide-react";
 import { addUser } from "../service";
 import Client from "../../../../apis/index";
-import { getInstituteDetails } from "../../../../apis/httpEndpoints";
+import { getInstituteDetails, getSelectedBranchId } from "../../../../apis/httpEndpoints";
 import { GetImageUrl } from "../../../../utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getAllBranches } from "../../../Class Management/Live Class/services";
+import { GetAllGroupCard } from "../../Group/reducers/service";
 interface Group {
   _id: string;
   identity: string;
@@ -46,10 +47,12 @@ type Props = {
     userDetail: UserDetail | null;
 };
 
+
 const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  
 
   const formik = useFormik({
     initialValues: {
@@ -88,16 +91,15 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm Password is required"),
       file: Yup.mixed()
-        .required("Profile image is required")
-        .test("fileType", "Unsupported file format", (value: any) => {
-          return (
-            value &&
-            ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
-          );
-        }),
+    .nullable()
+    .test("fileType", "Unsupported file format", (value: any) => {
+      if (!value) return true; // allow empty
+      return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
+    }),
       designation: Yup.string().required("Designation is required"),
     }),
     onSubmit: async (values) => {
+    console.log("Form values:", values);
       const formData = new FormData();
       const institute_id =
         getInstituteDetails() ?? "973195c0-66ed-47c2-b098-d8989d3e4529";
@@ -106,8 +108,8 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
       formData.append("last_name", values.last_name);
       formData.append("email", values.email);
       formData.append("phone_number", "+91" + values.contact);
-      formData.append("branch", "67f3a26ef4b2c530acd16425");
-      formData.append("role", values.role);
+    formData.append("branch", values.branch); 
+    formData.append("role", values.role); 
       formData.append("password", values.password);
       formData.append("confirm_password", values.confirm_password);
       formData.append("designation", values.designation);
@@ -115,7 +117,7 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
       formData.append("institute_id", institute_id);
 
       if (values.file) {
-        formData.append("image", values.file);
+        formData.append("image", '');
       }
 
       try {
@@ -161,6 +163,21 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
     fetchAllBranches();
   }, [fetchAllBranches]);
 
+  const fetchGroups = async () => {
+          try {
+              const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
+              const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+              const response = await GetAllGroupCard({ branch_id: branchId, institute_id: instituteId });
+              setGroups(response?.data || []);
+          } catch (error) {
+              console.error("Error fetching groups:", error);
+          }
+      }
+      useEffect
+(() => {
+        fetchGroups();
+      }, []);
+
   return (
     <div className={`p-4`}>
       <div className="flex justify-between pb-5 pt-2">
@@ -177,7 +194,6 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
           <img src={close}></img>
         </button>
       </div>
-
       <form onSubmit={formik.handleSubmit} className="grid gap-4">
         <div className=" p-1  grid justify-center ml-15">
           {formik.values.file && typeof formik.values.file !== "string" && (
@@ -499,7 +515,7 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
             Cancel
           </button>
           <button
-            type="submit"
+           type="submit" onClick={() => console.log("Formik errors:", formik.errors, "values:", formik.values)}
             style={{ ...FONTS.heading_08_bold }}
             className="bg-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]"
           >
