@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import httpClient from './httpClient';
 import HttpClient from './httpClient';
 import { HTTP_END_POINTS } from './httpEndpoints';
 
@@ -414,13 +415,13 @@ class Client {
 			HttpClient.get(HTTP_END_POINTS.ticket.student_ticket, data),
 		update_student_status_ticket: (params: any) =>
 			HttpClient.update(
-				HTTP_END_POINTS.ticket.update_student_status_ticket + params?.id
+				HTTP_END_POINTS.ticket.update_student_status_ticket + params?.uuid,params
 			),
 		update_student_ticket: (data: any) =>
 			HttpClient.update(HTTP_END_POINTS.ticket.update + data?.uuid, data),
 		student_ticket_with_id: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.ticket.student_ticket_with_id + params?.id
+				HTTP_END_POINTS.ticket.student_ticket_with_id + params?.uuid
 			),
 		staff_ticket: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.ticket.staff_ticket, data),
@@ -599,6 +600,8 @@ class Client {
 				),
 				params
 			),
+			create:(params:any) =>
+				httpClient.post(HTTP_END_POINTS.certificate.create,params)
 	};
 
 	helpcenter = {
