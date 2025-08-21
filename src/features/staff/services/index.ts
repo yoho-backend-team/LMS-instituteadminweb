@@ -25,8 +25,8 @@ export const createStaff = async (data: any) => {
 	if (response) return response;
 };
 
-export const updateStaff = async (data: any) => {
-	const response = await Client.staff.update(data);
+export const updateStaff = async (params: any,data: any) => {
+	const response = await Client.staff.update(params,data);
 	if (response) return response;
 };
 
