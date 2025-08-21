@@ -9,16 +9,21 @@ import studentImg from '../../../assets/image 109.png';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import toast from 'react-hot-toast';
 import { useCallback, useEffect, useState } from 'react';
-import {
-	getAllNotificationsService,
-	resendAllNotificationsService,
-} from '../../../features/AllNotifications/Services';
+import { resendAllNotificationsService } from '../../../features/AllNotifications/Services';
 import { useDispatch } from 'react-redux';
+import { getAllNotifications } from '../../../features/AllNotifications/Reducers/thunks';
+import { useSelector } from 'react-redux';
+import {
+	selectAllNotification,
+	selectLoading,
+} from '../../../features/AllNotifications/Reducers/selectors';
+import ContentLoader from 'react-content-loader';
 
 export default function AllNotifications() {
-	const [notifications, setNotifications] = useState<any[]>([]);
+	const notifications = useSelector(selectAllNotification);
 	const [searchText, setSearchText] = useState('');
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<any>();
+	const loading = useSelector(selectLoading);
 
 	const fetchAllNotifications = useCallback(async () => {
 		try {
@@ -27,15 +32,9 @@ export default function AllNotifications() {
 				institute: '973195c0-66ed-47c2-b098-d8989d3e4529',
 				page: 1,
 			};
-			const response = await getAllNotificationsService(params);
-			if (response && Array.isArray(response.data)) {
-				setNotifications(response.data);
-			} else {
-				setNotifications([]);
-			}
+			dispatch(getAllNotifications(params));
 		} catch (error) {
 			console.log('Error fetching notifications:', error);
-			setNotifications([]);
 		}
 	}, [dispatch]);
 
@@ -45,10 +44,10 @@ export default function AllNotifications() {
 
 	const totalCount = notifications.length;
 	const readCount = notifications.filter(
-		(n) => n.status?.toLowerCase() === 'read'
+		(n: any) => n.status?.toLowerCase() === 'read'
 	).length;
 	const unreadCount = notifications.filter(
-		(n) => n.status?.toLowerCase() === 'unread'
+		(n: any) => n.status?.toLowerCase() === 'unread'
 	).length;
 
 	const stats = [
@@ -193,91 +192,129 @@ export default function AllNotifications() {
 			</div>
 
 			<div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
-				{notifications?.filter((n) =>
-					n.title?.toLowerCase().includes(searchText.toLowerCase())
-				).length > 0 ? (
-					notifications
-						.filter((n) =>
-							n.title?.toLowerCase().includes(searchText.toLowerCase())
-						)
-						.map((n: any, index) => (
-							<Card key={index} className='p-4 rounded-2xl shadow-md'>
-								<CardContent className='p-0 flex flex-col items-start'>
-									<div className='flex items-center w-full mb-2'>
-										<img
-											src={n.role === 'Instructor' ? instructorImg : studentImg}
-											alt=''
-											className='w-12 h-12 rounded-full'
-										/>
-										<div className='w-full ml-3'>
-											<span
-												style={{
-													...FONTS.heading_08_bold,
-													color: COLORS.gray_dark_02,
-												}}
-											>
-												{n.name}
-											</span>
-											<p
-												style={{
-													...FONTS.heading_09,
-													color: COLORS.gray_dark_03,
-												}}
-											>
-												{n.role}
-											</p>
-										</div>
-										<div className='flex justify-end w-full'>
-											<span
-												style={{
-													...FONTS.heading_09,
-													color: COLORS.gray_dark_03,
-												}}
-												className='border-2 px-1 py-0.5 rounded-md border-gray-400'
-											>
-												ID : {n.id}
-											</span>
-										</div>
-									</div>
-									<h3
-										style={{
-											...FONTS.heading_08_bold,
-											color: COLORS.gray_dark_02,
-										}}
-									>
-										{n.title}
-									</h3>
-									<p
-										style={{ ...FONTS.heading_09, color: COLORS.black }}
-										className='mb-2'
-									>
-										{n.body}
-									</p>
-									<div className='flex justify-between text-sm w-full mb-2'>
-										<span
-											className={`${
-												n.status === 'read' ? 'bg-green-600' : 'bg-red-600'
-											} text-white px-2 py-0.5 rounded-md`}
-											style={{ ...FONTS.heading_09 }}
-										>
-											Status : {n.status}
-										</span>
-									</div>
-									<Button
-										className='bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end'
-										onClick={() => handleResend(n)}
-									>
-										Resend
-									</Button>
-								</CardContent>
-							</Card>
-						))
-				) : (
-					<div className='flex items-center justify-center col-span-full py-10'>
-						<p className='text-gray-500 text-center'>
-							"No notifications found"
-						</p>
+				{loading ? (
+					<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3'>
+						{[...Array(6)].map((_, index) => (
+							<ContentLoader
+								speed={1}
+								width='100%'
+								height='100%'
+								backgroundColor='#f3f3f3'
+								foregroundColor='#ecebeb'
+								className='w-full h-[110px] p-4 rounded-2xl border shadow-md'
+								key={index}
+							>
+								<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
+								<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
+
+								<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
+
+								<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
+
+								<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
+								<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
+
+								<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
+
+								<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
+							</ContentLoader>
+						))}
 					</div>
+				) : notifications.length ? (
+					notifications?.filter((n: any) =>
+						n.title?.toLowerCase().includes(searchText.toLowerCase())
+					).length > 0 ? (
+						notifications
+							.filter((n: any) =>
+								n.title?.toLowerCase().includes(searchText.toLowerCase())
+							)
+							.map((n: any, index: any) => (
+								<Card key={index} className='p-4 rounded-2xl shadow-md'>
+									<CardContent className='p-0 flex flex-col items-start'>
+										<div className='flex items-center w-full mb-2'>
+											<img
+												src={
+													n.role === 'Instructor' ? instructorImg : studentImg
+												}
+												alt=''
+												className='w-12 h-12 rounded-full'
+											/>
+											<div className='w-full ml-3'>
+												<span
+													style={{
+														...FONTS.heading_08_bold,
+														color: COLORS.gray_dark_02,
+													}}
+												>
+													{n.name}
+												</span>
+												<p
+													style={{
+														...FONTS.heading_09,
+														color: COLORS.gray_dark_03,
+													}}
+												>
+													{n.role}
+												</p>
+											</div>
+											<div className='flex justify-end w-full'>
+												<span
+													style={{
+														...FONTS.heading_09,
+														color: COLORS.gray_dark_03,
+													}}
+													className='border-2 px-1 py-0.5 rounded-md border-gray-400'
+												>
+													ID : {n.id}
+												</span>
+											</div>
+										</div>
+										<h3
+											style={{
+												...FONTS.heading_08_bold,
+												color: COLORS.gray_dark_02,
+											}}
+										>
+											{n.title}
+										</h3>
+										<p
+											style={{ ...FONTS.heading_09, color: COLORS.black }}
+											className='mb-2'
+										>
+											{n.body}
+										</p>
+										<div className='flex justify-between text-sm w-full mb-2'>
+											<span
+												className={`${
+													n.status === 'read' ? 'bg-green-600' : 'bg-red-600'
+												} text-white px-2 py-0.5 rounded-md`}
+												style={{ ...FONTS.heading_09 }}
+											>
+												Status : {n.status}
+											</span>
+										</div>
+										<Button
+											className='bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end'
+											onClick={() => handleResend(n)}
+										>
+											Resend
+										</Button>
+									</CardContent>
+								</Card>
+							))
+					) : (
+						<div className='flex items-center justify-center col-span-full py-10'>
+							<p className='text-gray-500 text-center'>
+								"No notifications found"
+							</p>
+						</div>
+					)
+				) : (
+					<Card className='col-span-3 mt-8'>
+						<p className='font-lg text-gray-900 text-center'>
+							No Notifications available
+						</p>
+					</Card>
 				)}
 			</div>
 		</div>

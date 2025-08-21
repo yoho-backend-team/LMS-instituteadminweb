@@ -1,17 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-const CertificateSlice=createSlice({
-    name:'CertificateSlice',
-    initialState:{
-        data:[],
+const CertificateSlice = createSlice({
+	name: 'CertificateSlice',
+	initialState: {
+		data: [],
+		loading: false,
+	},
+	reducers: {
+		setCertificateClass: (state, action) => {
+			state.data = action.payload;
+		},
+		setLoading: (state, action) => {
+			state.loading = action.payload;
+		},
+	},
+});
 
-    },
-    reducers:{
-        setCertificateClass:(state,action)=>{
-            state.data=action.payload;
-        },
-    }
-})
-
-export const {setCertificateClass}=CertificateSlice.actions;
+export const { setCertificateClass, setLoading } = CertificateSlice.actions;
 export default CertificateSlice.reducer;

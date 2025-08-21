@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
 import { selectDashboardData } from '../../features/Dashboard/reducers/selectors';
+import { GetLocalStorage } from '../../utils/localStorage';
 
 const Bar = () => {
     const [selectedYear, setSelectedYear] = useState('2024');
@@ -11,13 +12,12 @@ const Bar = () => {
 
     const dispatch = useDispatch<any>()
 
-	const DashboardData = useSelector(selectDashboardData)
+    const DashboardData = useSelector(selectDashboardData)
 
-	useEffect(() => {
-		const paramsData = { branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4" }
-		dispatch(getDashboardthunks(paramsData));
-	}, [dispatch]);
-	console.log(DashboardData, "Dashboard Details")
+    useEffect(() => {
+        const paramsData = { branch: GetLocalStorage("selectedBranchId") }
+        dispatch(getDashboardthunks(paramsData));
+    }, [dispatch]);
 
     const annualData: any = {
         '2024': {

@@ -15,7 +15,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ title, description, timesta
     <div className="flex items-start gap-4 pb-6">
       {/* Green dot indicator */}
       <div className="flex-shrink-0 w-3 h-3 bg-green-500 rounded-full mt-1"></div>
-      
+
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-1">
@@ -40,20 +40,19 @@ const Activitypage: React.FC<activityId> = (activityId) => {
   const activity = useSelector(selectActivity);
   const activityData = activity?.data?.logs || [];
 
-  // console.log("activity",activityId?.activityId);
 
   useEffect(() => {
     dispatch(getActivityData({ staff: activityId?.activityId }));
-  }, [dispatch]);
+  }, [activityId?.activityId, dispatch]);
 
   return (
     <div className="bg-white p-6 min-h-screen">
       <h1 style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }} className="mb-6">User Activity Timeline</h1>
-      
+
       <div className="relative">
         {/* Vertical line */}
         <div className="absolute left-1.5 top-3 bottom-0 w-px bg-gray-200"></div>
-        
+
         {/* Timeline items */}
         <div className="relative">
           {activityData.map((act: any, index: number) => (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type React from "react"
 import { useState, useEffect } from "react"
@@ -17,7 +18,7 @@ import { creatFees } from "../../features/Payment_Managemant/salary/fees/service
 interface FeeDrawerProps {
   isOpen: boolean
   onClose: () => void
-  selectedFee: any| null
+  selectedFee: any | null
   onSuccess: () => void
   onAddFee: (newFee: Fee) => void
   onUpdateFee: (updatedFee: Fee) => void
@@ -79,13 +80,12 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
       }
     }
     fetchCourses()
-  }, [branch])
+  }, [branch, dispatch])
 
   useEffect(() => {
     const fetchBatches = async () => {
       if (branch && course) {
-        const instituteId = "973195c0-66ed-47c2-b098-d8989d3e4529"
-        const res = await dispatch(GetBatchThunks(instituteId, branch, course) as any)
+        const res = await dispatch(GetBatchThunks(course) as any)
         if (res?.data) {
           setBatchOptions(res.data)
         }
@@ -94,7 +94,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
       }
     }
     fetchBatches()
-  }, [branch, course])
+  }, [branch, course, dispatch])
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -104,7 +104,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
           branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         }
         const res = await dispatch(GetStudentsWithBatchThunks(params) as any)
-        console.log("Fetching students with name", res)
 
         if (res?.data && Array.isArray(res.data)) {
           setStudents(res.data)
@@ -167,7 +166,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
         course_name: course,
       }
       onUpdateFee(updatedFee)
-      console.log("Updated fee:", updatedFee)
     }
   }
 
@@ -197,7 +195,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
 
     await creatFees(newFee)
     onAddFee(newFee)
-    console.log("New fee added:", newFee)
     onSuccess()
   }
 

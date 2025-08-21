@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -6,8 +7,6 @@ import success from "../../assets/tick.png";
 import warning from "../../assets/warning.png";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAddQuestion } from "../../features/HelpManagement/AddQuestion/selector";
-import { fetchAddQuestionThunk } from "../../features/HelpManagement/AddQuestion/thunks";
 import { faqCategory } from "../../features/Faq_Category/selector";
 import { fetchHelpCenterThunk } from "../../features/HelpCenter/thunks";
 import { selectFaq } from "../../features/HelpCenter/selector";
@@ -18,44 +17,20 @@ import {
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 
-interface FAQItem {
-  id: number;
-  uuid: string; // Add UUID field
-  category: string;
-  videoLink: string;
-  videolink: string; // Backend field name
-  question: string; // Backend field name
-  answer: string; // Backend field name
-  status: string;
-  description: string;
-}
-
 const AddQuestion = () => {
-  const [faqList, setFaqList] = useState<FAQItem[]>([
-    {
-      id: 1,
-      uuid: "", // Add UUID to initial state
-      category: "Classes",
-      videoLink: "https://youtu.be/sample1",
-      videolink: "https://youtu.be/sample1",
-      question: "How to Learn",
-      answer: "Sample Video",
-      status: "How to Learn",
-      description: "Sample Video",
-    },
-    // ... other items
-  ]);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editUuid, setEditUuid] = useState<string | null>(null); // Change to UUID
+  const [editUuid, setEditUuid] = useState<string | null>(null);
   const [dropdownOpenId, setDropdownOpenId] = useState<number | null>(null);
   const [modalStage, setModalStage] = useState<
     "confirm" | "processing" | "success" | "dialog" | null
   >(null);
+  const [loading, setLoading] = useState(true); // Skeleton loader state
 
   const categories = useSelector(faqCategory);
+  const dispatch = useDispatch<any>();
+  const questions = useSelector(selectFaq);
 
   const [formData, setFormData] = useState({
     category: "",
@@ -63,10 +38,6 @@ const AddQuestion = () => {
     status: "",
     description: "",
   });
-
-  const dispatch = useDispatch<any>();
-  const questions = useSelector(selectFaq);
-  console.log("help center question", questions);
 
   useEffect(() => {
     const params = {
@@ -76,12 +47,22 @@ const AddQuestion = () => {
       perPage: 10,
     };
 
-    dispatch(fetchHelpCenterThunk(params));
+    setLoading(true);
+    dispatch(fetchHelpCenterThunk(params)).finally(() => setLoading(false));
+  }, [dispatch]);
+
+  useEffect(() => {
+    const params = {
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    };
+    dispatch(fetchFaqCategoryThunk(params));
   }, [dispatch]);
 
   const handleAddFAQ = async () => {
     setModalStage("processing");
-
     const payload = {
       category: formData.category,
       videolink: formData.videoLink,
@@ -94,6 +75,7 @@ const AddQuestion = () => {
     try {
       await createHelpCenter(payload);
       setModalStage("success");
+      setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
           branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
@@ -101,7 +83,7 @@ const AddQuestion = () => {
           page: 1,
           perPage: 10,
         })
-      );
+      ).finally(() => setLoading(false));
     } catch (err) {
       console.error("Error creating FAQ:", err);
       alert("Failed to create FAQ.");
@@ -109,22 +91,9 @@ const AddQuestion = () => {
     }
   };
 
-  console.log("category data", categories);
-  useEffect(() => {
-    const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      page: 1,
-      perPage: 10,
-    };
-
-    dispatch(fetchFaqCategoryThunk(params));
-  }, [dispatch]);
-
   const handleEdit = (item: any) => {
     setIsEditing(true);
     setEditUuid(item.uuid);
-    console.log("Edit UUID:", item.uuid);
     setFormData({
       category: item.category,
       videoLink: item.videolink,
@@ -139,6 +108,7 @@ const AddQuestion = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteHelpCenter(id);
+      setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
           branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
@@ -146,7 +116,7 @@ const AddQuestion = () => {
           page: 1,
           perPage: 10,
         })
-      );
+      ).finally(() => setLoading(false));
     } catch (error) {
       console.error("Failed to delete FAQ:", error);
     } finally {
@@ -154,11 +124,10 @@ const AddQuestion = () => {
     }
   };
 
-  // Updated resetForm function
   const resetForm = () => {
     setFormData({ category: "", videoLink: "", status: "", description: "" });
     setIsEditing(false);
-    setEditUuid(null); // Reset UUID instead of editId
+    setEditUuid(null);
     setShowModal(false);
     setModalStage("confirm");
   };
@@ -171,6 +140,7 @@ const AddQuestion = () => {
     <div className="p-6">
       <div className="text-2xl font-bold mb-4">FAQ</div>
 
+      {/* Search + Add */}
       <div className="flex gap-4 mb-6">
         <input
           type="text"
@@ -202,75 +172,98 @@ const AddQuestion = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((faq: any) => (
-              <tr
-                key={faq.uuid || faq.id} // Use UUID as key if available
-                className="bg-white/30 shadow-xl backdrop-blur-xl text-md h-22 rounded-xl font-semibold relative overflow-visible"
-              >
-                <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
-                <td className="px-6 py-4 text-lg">{faq.category}</td>
-                <td className="px-6 py-4 text-lg">
-                  <a
-                    href={faq.videolink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-[#1BBFCA]"
+            {loading
+              ? [...Array(5)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-12"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-36"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-6 bg-gray-300 rounded w-40"></div>
+                      <div className="h-4 bg-gray-200 rounded w-28 mt-2"></div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="h-6 w-6 bg-gray-300 rounded-full ml-auto"></div>
+                    </td>
+                  </tr>
+                ))
+              : filteredList.map((faq: any) => (
+                  <tr
+                    key={faq.uuid || faq.id}
+                    className="bg-white/30 shadow-xl backdrop-blur-xl text-md h-22 rounded-xl font-semibold relative overflow-visible"
                   >
-                    {faq.videolink}
-                  </a>
-                </td>
-                <td className="px-6 py-4">
-                  <div>
-                    <div className="text-lg font-semibold">{faq.question}</div>
-                    <div className="text-md">{faq.answer}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 rounded-r-xl relative overflow-visible">
-                  <div className="flex justify-end relative">
-                    <button
-                      onClick={() =>
-                        setDropdownOpenId((prev) =>
-                          prev === faq.id ? null : faq.id
-                        )
-                      }
-                    >
-                      <BsThreeDotsVertical
-                        className="text-[#1BBFCA]"
-                        size={23}
-                      />
-                    </button>
-                    {dropdownOpenId === faq.id && (
-                      <div className="absolute grid z-0 gap-2 right-5 bottom-0 mr-2 p-2 w-28 bg-white shadow-md rounded-md border">
-                        <button
-                          className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                          onClick={() => handleEdit(faq)}
-                        >
-                          <MdEditNote /> Edit
-                        </button>
-                        <button
-                          className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                          onClick={() => handleDelete(faq.uuid)}
-                        >
-                          <MdDelete /> Delete
-                        </button>
+                    <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
+                    <td className="px-6 py-4 text-lg">{faq.category}</td>
+                    <td className="px-6 py-4 text-lg">
+                      <a
+                        href={faq.videolink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#1BBFCA]"
+                      >
+                        {faq.videolink}
+                      </a>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-lg font-semibold">
+                          {faq.question}
+                        </div>
+                        <div className="text-md">{faq.answer}</div>
                       </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                    </td>
+                    <td className="px-6 py-4 rounded-r-xl relative overflow-visible">
+                      <div className="flex justify-end relative">
+                        <button
+                          onClick={() =>
+                            setDropdownOpenId((prev) =>
+                              prev === faq.id ? null : faq.id
+                            )
+                          }
+                        >
+                          <BsThreeDotsVertical
+                            className="text-[#1BBFCA]"
+                            size={23}
+                          />
+                        </button>
+                        {dropdownOpenId === faq.id && (
+                          <div className="absolute grid z-0 gap-2 right-5 bottom-0 mr-2 p-2 w-28 bg-white shadow-md rounded-md border">
+                            <button
+                              className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
+                              onClick={() => handleEdit(faq)}
+                            >
+                              <MdEditNote /> Edit
+                            </button>
+                            <button
+                              className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
+                              onClick={() => handleDelete(faq.uuid)}
+                            >
+                              <MdDelete /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
 
+
       {/* Modal */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
-            modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
-              ? "justify-center"
-              : "justify-end"
-          } z-50`}
+          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
+            ? "justify-center"
+            : "justify-end"
+            } z-50`}
         >
           <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
             {/* Form Stage */}
@@ -396,18 +389,12 @@ const AddQuestion = () => {
                     onClick={async () => {
                       if (isEditing && editUuid !== null) {
                         try {
-                          console.log("editUuid value:", editUuid);
-                          console.log("editUuid type:", typeof editUuid);
-
                           const updateData = {
                             category: formData.category,
                             videolink: formData.videoLink,
                             question: formData.status,
                             answer: formData.description,
                           };
-
-                          const uuidString = String(editUuid);
-                          console.log("UUID string:", uuidString);
 
                           await updateHelpCenter(updateData, editUuid);
 

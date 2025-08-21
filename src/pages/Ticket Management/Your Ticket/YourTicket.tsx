@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAdminTickets } from "../../../features/TicketManagement/YourTicket/selector";
 import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourTicket/thunks";
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
+import socket from "../../../utils/socket";
 
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
@@ -23,8 +24,8 @@ const TicketsPage: React.FC = () => {
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
   const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
-
-
+  const [messages, setMessages] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false); // 👈 New state
 
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
@@ -34,79 +35,72 @@ const TicketsPage: React.FC = () => {
   const adminTickets = useSelector(selectAdminTickets);
 
   useEffect(() => {
-    const params = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      status: activeTab === "open" ? "opened" : "closed",
-      page: 1,
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-    };
-    dispatch(fetchAdminTicketsThunk(params));
-  }, [activeTab, dispatch]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData: any = {
-      query,
-      description,
-      priority,
-      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      status: activeTab === "open" ? "opened" : "closed",
-    };
-
-    if (selectedFile) {
-      const toBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-        });
-
-      try {
-        const base64String = await toBase64(selectedFile);
-        formData.file = base64String;
-      } catch (error) {
-        console.error("Failed to convert file to base64:", error);
-        return;
-      }
-    }
-
-    try {
-      if (isEditMode && editingTicketId) {
-        const response = await updateTicket(formData, editingTicketId);
-        console.log("Ticket successfully updated:", response.data);
-      } else {
-        const response = await createTicket(formData);
-        console.log("Ticket successfully created:", response.data);
-      }
-
+    const fetchTickets = async () => {
+      setLoading(true); // 👈 Start loading
       const params = {
         branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        status: formData.status,
+        status: activeTab === "open" ? "opened" : "closed",
         page: 1,
         institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       };
-      dispatch(fetchAdminTicketsThunk(params));
+      await dispatch(fetchAdminTicketsThunk(params));
+      setLoading(false); // 👈 End loading
+    };
 
-      setQuery("");
-      setDescription("");
-      setPriority("High");
-      setSelectedFile(null);
-      setviewShowModal(false);
-      setIsEditMode(false);
-      setEditingTicketId(null);
-    } catch (error) {
-      console.error("Error submitting ticket:", error);
+    fetchTickets();
+  }, [activeTab, dispatch]);
+
+  useEffect(() => {
+    if (adminTickets?.messages) {
+      setMessages(adminTickets.messages);
     }
-  };
+  }, [adminTickets]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleMessage = (message: any) => {
+      setMessages((prev: any) => [message, ...(prev || [])]);
+    };
+
+    socket.on("receiveMessage", handleMessage);
+    return () => {
+      socket.off("receiveMessage", handleMessage);
+    };
+  }, []);
+
+  // 👇 Skeleton Component
+ // 👇 Skeleton Component
+const TicketSkeleton = () => (
+  <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
+    {/* Title */}
+    <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
+
+    {/* Query line */}
+    <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+
+    {/* Description lines */}
+    <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
+    <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
+    <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+
+    {/* Footer placeholder */}
+    <div className="flex justify-between items-center mt-4">
+      <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+      <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+    </div>
+  </div>
+);
+
 
   return (
     <div className="h-auto p-0">
+      {/* Header */}
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
-        <h1 className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded" style={{ ...FONTS.heading_07_bold }}>
-          <img className="mr-2" src={iconticket} />
+        <h1
+          className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
+          style={{ ...FONTS.heading_07_bold }}
+        >
+          <img className="mr-2" src={iconticket} alt="ticket-icon" />
           YOUR TICKET
         </h1>
         {showCreateButton && (
@@ -138,6 +132,7 @@ const TicketsPage: React.FC = () => {
         )}
       </div>
 
+      {/* Tabs */}
       {showbuttonWindow && (
         <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
           <button
@@ -146,8 +141,8 @@ const TicketsPage: React.FC = () => {
               setShowChatWindow(false);
             }}
             className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
-              ? "bg-[#1BBFCA] text-white"
-              : "bg-white text-teal-500 border border-teal-500"
+                ? "bg-[#1BBFCA] text-white"
+                : "bg-white text-teal-500 border border-teal-500"
               }`}
           >
             Opened Tickets
@@ -158,8 +153,8 @@ const TicketsPage: React.FC = () => {
               setShowChatWindow(false);
             }}
             className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
-              ? "bg-[#1BBFCA] text-white"
-              : "bg-white text-[#1BBFCA] border border-teal-500"
+                ? "bg-[#1BBFCA] text-white"
+                : "bg-white text-[#1BBFCA] border border-teal-500"
               }`}
           >
             Closed Tickets
@@ -167,22 +162,26 @@ const TicketsPage: React.FC = () => {
         </div>
       )}
 
+      {/* Ticket Grid */}
       {activeTab === "open" && !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
-          {Array.isArray(adminTickets) &&
+          {loading ? (
+            
+            [...Array(6)].map((_, i) => <TicketSkeleton key={i} />)
+          ) : Array.isArray(adminTickets) && adminTickets.length > 0 ? (
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
-                name={ticket.name}
-                email={ticket.email}
-                message={ticket.description || ticket.message}
-                date={new Date(ticket.created_at).toLocaleDateString("en-GB")}
-                time={new Date(ticket.created_at).toLocaleTimeString("en-US", {
+                category={ticket?.description}
+                query={ticket?.query}
+                message={messages}
+                date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
+                time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
                 priority={ticket.priority}
-                avatarUrl={ticket.avatarUrl}
+                avatarUrl={ticket?.user?.image}
                 onView={() => {
                   setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
@@ -191,24 +190,25 @@ const TicketsPage: React.FC = () => {
                   setShowCreateButton(false);
                   setShowBackButton(true);
                 }}
-
               />
-            ))}
+            ))
+          ) : (
+            <p className="text-gray-500 col-span-3 text-center">
+              No tickets found.
+            </p>
+          )}
         </div>
       )}
 
-
-
+      {/* Chat Window */}
       {showChatWindow && (
-
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
-          <ChatWindow user={selectedTicketUser} />
+          <ChatWindow user={selectedTicketUserDetails} />
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}
 
-
-
+  
       {viewShowModal && (
         <div className="fixed inset-0 z-30 mt-22 shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] h-full rounded-lg">
           <div className="absolute top-0 right-5 max-w-sm min-w-[300px] h-auto overflow-auto p-2 rounded-lg bg-white shadow-lg z-40 no-scrollbar">

@@ -18,7 +18,7 @@ export const MainLayout = () => {
       .replace(/-/g, '+')
       .replace(/_/g, '/');
 
-    const rawData = window.atob(base64);
+    const rawData = window?.atob(base64);
     return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
   }
 

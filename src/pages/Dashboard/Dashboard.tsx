@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
@@ -7,76 +8,78 @@ import Instructor from '../../assets/Dashboard/Instructor.png';
 import Students from '../../assets/Dashboard/Students.png';
 import Course from '../../assets/Dashboard/Course.png';
 import Barchart from '../../components/Dashboard/barchart';
-import { getActivitythunks, getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
+import {
+	getActivitythunks,
+	getDashboardthunks,
+} from '../../features/Dashboard/reducers/thunks';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectActivityData, selectDashboardData } from '../../features/Dashboard/reducers/selectors';
+import {
+	selectActivityData,
+	selectDashboardData,
+} from '../../features/Dashboard/reducers/selectors';
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
-import { RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
+import {
+	GetLocalStorage,
+	RemoveLocalStorage,
+	StoreLocalStorage,
+} from '../../utils/localStorage';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
 	const options = ['Trending', 'Price - Low to High', 'Price - High to Low'];
 	const [trendingOpen, setTrendingOpen] = useState(false);
 	const [selectedOption, setSelectedOption] = useState(options[0]);
+	const [selectedMonth, setSelectedMonth] = useState('July');
+	const [selectedYear, setSelectedYear] = useState('2025');
+	const dispatch = useDispatch<any>();
+	const DashboardData = useSelector(selectDashboardData);
+	const ActivityData = useSelector(selectActivityData);
+	const BranchData: any = useSelector(selectBranches);
+	const [selectedBranch, setSelectedBranch] = useState('');
+	const BranchOptions = BranchData?.map((branch: any) => {
+		return branch?.branch_identity;
+	});
+	const localBranch = GetLocalStorage('selectedBranchId');
+	const branchList = BranchOptions;
+	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
 		setTrendingOpen(false);
 	};
 
-	const [selectedMonth, setSelectedMonth] = useState('July');
-	const [selectedYear, setSelectedYear] = useState('2025');
-	const dispatch = useDispatch<any>()
-
-	const DashboardData = useSelector(selectDashboardData)
-	const ActivityData = useSelector(selectActivityData)
-	const BranchData = useSelector(selectBranches)
-
-	const BranchOptions = BranchData.map((branch:any)=>{
-		return branch?.branch_identity
-	})
-	
-	console.log(BranchData,"branch")
-	const branchList = BranchOptions;
-	const [selectedBranch, setSelectedBranch] = useState(BranchData[0]?.branch_identity);
-	console.log(selectedBranch,"selected branch")
-
-	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-	
 	const handleBranchChange = (branch: string) => {
-
-		BranchData.map((branchID:any)=>{
-			if(branchID?.branch_identity === branch){
-				RemoveLocalStorage("selectedBranchId")
-				StoreLocalStorage("selectedBranchId",branchID.uuid)
+		BranchData.map((branchID: any) => {
+			if (branchID?.branch_identity === branch) {
+				RemoveLocalStorage('selectedBranchId');
+				setSelectedBranch(branchID?.branch_identity);
+				StoreLocalStorage('selectedBranchId', branchID.uuid);
 			}
-		})
+		});
 
 		setSelectedBranch(branch);
 		setBranchMenuOpen(false);
 	};
 
 	const handleApply = () => {
-		console.log('Selected Month:', selectedMonth);
-		console.log('Selected Year:', selectedYear);
 		setPeriodOpen(false);
 	};
 
-
-
-
-
-
 	useEffect(() => {
-		const paramsData = { branch: BranchData[0]?.uuid }
+		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
-	}, [dispatch,selectedBranch]);
-	
-
-
-
+		(() => {
+			if (localBranch == null) {
+				return setSelectedBranch(BranchData?.[0]?.branch_identity);
+			}
+			const foundBranch = BranchData?.find(
+				(item: any) => item.uuid === localBranch
+			);
+			setSelectedBranch(foundBranch?.branch_identity);
+		})();
+	}, [BranchData, dispatch, localBranch]);
 
 	return (
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
@@ -85,44 +88,47 @@ export default function Component() {
 				{/* Header */}
 				<div className='flex justify-between items-center'>
 					<div className='relative'>
-			{/* Trigger Button */}
-			<button
-				onClick={() => setBranchMenuOpen(!branchMenuOpen)}
-				className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
-				style={{
-					background: 'white',
-					border: `2px solid ${COLORS.primary}`,
-					...FONTS.heading_07,
-					color: '#716F6F',
-				}}
-			>
-				<span>{BranchData[0]?.branch_identity}</span>
-				<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
-			</button>
+						{/* Trigger Button */}
+						<button
+							onClick={() => setBranchMenuOpen(!branchMenuOpen)}
+							className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
+							style={{
+								background: 'white',
+								border: `2px solid ${COLORS.primary}`,
+								...FONTS.heading_07,
+								color: '#716F6F',
+							}}
+						>
+							<span>{selectedBranch}</span>
+							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
+						</button>
 
-			{/* Dropdown Options */}
-			{branchMenuOpen && (
-				<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
-					<div className='space-y-2 p-2'>
-						{branchList.map((branch:any) => (
-							<button
-								key={branch}
-								onClick={() => handleBranchChange(branch)}
-								className='w-full text-left p-2 rounded-md'
-								style={{
-									...FONTS.heading_08,
-									backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
-									color: selectedBranch === branch ? '#fff' : '#716F6F',
-									border: '1px solid #ddd',
-								}}
-							>
-								{branch}
-							</button>
-						))}
+						{/* Dropdown Options */}
+						{branchMenuOpen && (
+							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
+								<div className='space-y-2 p-2'>
+									{branchList.map((branch: any) => (
+										<button
+											key={branch}
+											onClick={() => handleBranchChange(branch)}
+											className='w-full text-left p-2 rounded-md'
+											style={{
+												...FONTS.heading_08,
+												backgroundColor:
+													selectedBranch === branch
+														? COLORS.primary
+														: 'transparent',
+												color: selectedBranch === branch ? '#fff' : '#716F6F',
+												border: '1px solid #ddd',
+											}}
+										>
+											{branch}
+										</button>
+									))}
+								</div>
+							</div>
+						)}
 					</div>
-				</div>
-			)}
-		</div>
 					<div className='relative'>
 						<button
 							onClick={() => setPeriodOpen(!periodOpen)}
@@ -219,7 +225,11 @@ export default function Component() {
 							{/* Icon */}
 
 							<div className=' rounded-lg text-white'>
-								<img src={Earnings} alt='' className='lg:w-[70px] md:w-[50px]' />
+								<img
+									src={Earnings}
+									alt=''
+									className='lg:w-[70px] md:w-[50px]'
+								/>
 							</div>
 
 							{/* Text Info */}
@@ -392,8 +402,12 @@ export default function Component() {
 													className={`w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-left`}
 													style={{
 														...FONTS.heading_08,
-														background: selectedOption === option ? COLORS.primary : 'transparent',
-														color: selectedOption === option ? 'white' : '#716F6F',
+														background:
+															selectedOption === option
+																? COLORS.primary
+																: 'transparent',
+														color:
+															selectedOption === option ? 'white' : '#716F6F',
 													}}
 												>
 													{option}
@@ -410,52 +424,62 @@ export default function Component() {
 						<div className='mt-4 w-full py-4'>
 							{DashboardData?.popularCourses?.length > 0 ? (
 								<div className='flex gap-4 overflow-x-scroll scrollbar-hide'>
-									{DashboardData.popularCourses.map((item: any, index: number) => (
-										<section
-											key={index}
-											className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${index === 0
-													? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-													: 'bg-white'
+									{DashboardData.popularCourses.map(
+										(item: any, index: number) => (
+											<section
+												key={index}
+												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${
+													index === 0
+														? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+														: 'bg-white'
 												}`}
-										>
-											<img
-												src={GetImageUrl(item?.image) ?? undefined}
-												className='w-[70px] h-[70px] bg-white rounded-full object-cover'
-												alt='course img'
-											/>
-											<div className='flex-grow'>
-												<h2
-													className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'} mb-1`}
-													style={{ ...FONTS.bold_heading }}
-												>
-													{item?.course_name}
-												</h2>
-												<p
-													className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'} text-sm mb-4 leading-tight line-clamp-3`}
-													style={{ ...FONTS.description }}
-												>
-													{item?.description}
-												</p>
-												<p
-													className={`w-fit rounded-lg px-4 py-2 ${index === 0
-															? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
-															: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
+											>
+												<img
+													src={GetImageUrl(item?.image) ?? undefined}
+													className='w-[70px] h-[70px] bg-white rounded-full object-cover'
+													alt='course img'
+												/>
+												<div className='flex-grow'>
+													<h2
+														className={`${
+															index === 0 ? 'text-white' : 'text-[#716F6F]'
+														} mb-1`}
+														style={{ ...FONTS.bold_heading }}
+													>
+														{item?.course_name}
+													</h2>
+													<p
+														className={`${
+															index === 0 ? 'text-white' : 'text-[#716F6F]'
+														} text-sm mb-4 leading-tight line-clamp-3`}
+														style={{ ...FONTS.description }}
+													>
+														{item?.description}
+													</p>
+													<p
+														className={`w-fit rounded-lg px-4 py-2 ${
+															index === 0
+																? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
+																: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
 														}`}
-													style={{ ...FONTS.heading_08 }}
-												>
-													{item?.coursemodules.length} Modules
-												</p>
-											</div>
-										</section>
-									))}
+														style={{ ...FONTS.heading_08 }}
+													>
+														{item?.coursemodules.length} Modules
+													</p>
+												</div>
+											</section>
+										)
+									)}
 								</div>
 							) : (
-								<div className='text-center text-[#999] text-base' style={{ ...FONTS.heading_08 }}>
+								<div
+									className='text-center text-[#999] text-base'
+									style={{ ...FONTS.heading_08 }}
+								>
 									No Courses Found
 								</div>
 							)}
 						</div>
-
 					</div>
 				</section>
 			</div>
@@ -470,10 +494,11 @@ export default function Component() {
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${index === 0
-									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-									: 'bg-white'
-									}`}
+								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${
+									index === 0
+										? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+										: 'bg-white'
+								}`}
 							>
 								<img
 									src={item?.image ?? undefined}
@@ -488,7 +513,9 @@ export default function Component() {
 										{item?.title}
 									</h2>
 									<p
-										className={` ${index === 0 ? 'text-white' : ''}  leading-tight line-clamp-3`}
+										className={` ${
+											index === 0 ? 'text-white' : ''
+										}  leading-tight line-clamp-3`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}
@@ -496,8 +523,12 @@ export default function Component() {
 								</div>
 							</section>
 						))}
-					</div>) : (
-					<div className='text-center text-[#999] text-base' style={{ ...FONTS.heading_08 }}>
+					</div>
+				) : (
+					<div
+						className='text-center text-[#999] text-base'
+						style={{ ...FONTS.heading_08 }}
+					>
 						No Activities Found
 					</div>
 				)}
