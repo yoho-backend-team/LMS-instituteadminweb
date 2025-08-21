@@ -26,7 +26,7 @@ import {
 	updateStudyMaterialThunk,
 } from '../../features/StudyMaterials/thunk';
 import { updateStudyMaterialStatus } from '../../features/StudyMaterials/service';
-import SkeletonCard from '../../components/shared/SkeletonCard/SkeletonCard';
+// import SkeletonCard from '../../components/shared/SkeletonCard/SkeletonCard';
 import ContentLoader from 'react-content-loader';
 
 interface Note {
