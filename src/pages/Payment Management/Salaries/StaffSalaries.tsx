@@ -124,7 +124,7 @@ const StaffSalaries = () => {
 
 	return (
 		<div>
-			<p className="font-semibold text-2xl">Salaries</p>
+			<p className="font-semibold text-2xl">Salary</p>
 
 			<div className="w-full flex justify-between gap-4 items-center text-lg font-semibold py-3">
 				<div className="bg-[#1BBFCA] text-white p-1.5 rounded-xl flex gap-4 items-center">

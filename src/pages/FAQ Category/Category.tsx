@@ -61,7 +61,7 @@ function AddFAQCategoryDialog({
   }
 
   return (
-    <DrawerContent className="fixed top-0 right-0 h-full w-full sm:w-[600px] p-6 m-0 rounded-lg duration-0">
+    <DrawerContent className="fixed top-0 right-0 h-full  bg-white w-full sm:w-[600px] p-6 m-0 rounded-lg duration-0">
       <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
         <DrawerTitle className="text-xl font-semibold">Add FAQ Category</DrawerTitle>
         <DrawerClose onClick={onCancel}>

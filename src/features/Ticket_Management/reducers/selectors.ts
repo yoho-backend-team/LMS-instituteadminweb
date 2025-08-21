@@ -1,1 +1,1 @@
-export const GetStaffTicket=(state:any)=>state.StaffTicket.data;
+export const GetStaffTicket=(state:any)=>state.staffTickets.data;

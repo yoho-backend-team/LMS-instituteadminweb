@@ -29,6 +29,7 @@ import StaffSalary from "../features/Payment_Managemant/salary/reducers/moduleSl
 import PlacementReducer from '../features/placementManagement/Reducer/slice'
 import FaqsSlice from '../features/Faq/reducers/slice'
 import faqCategory from '../features/Faq_Category/slice'
+import staffTickets from "../features/Ticket_Management/reducers/moduleSlice"
 
 const store = configureStore({
 	reducer: {
@@ -62,6 +63,7 @@ const store = configureStore({
 		placements: PlacementReducer,
 		FaqsSlice: FaqsSlice,
 		faqCategory: faqCategory,
+		staffTickets:staffTickets
 	},
 })
 

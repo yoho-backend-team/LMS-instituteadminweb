@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { MoreVertical, Download, CheckCircle } from "lucide-react";
 import { FaEye, FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { GetAllSalaryThunks, UpdateAllSalaryThunks } from "../../../../features/Payment_Managemant/salary/reducers/thunks";
 import jsPDF from "jspdf";
 import { DeleteSalary } from "../../../../features/Payment_Managemant/salary/services";
@@ -65,14 +65,19 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 
 
     const handleEditClick = (card: any) => {
+         console.log("🔍 Card.branchId:", card.branchId);  
+    console.log("🔍 Branches:", branches); 
+    console.log("🔍 Branches:", card); 
         setSelectedCard(card);
         setFormData({
-            name: card.name,
+            staff: card.staff?.username || "",
             transactionId: card.transaction_id,
             salaryAmount: String(card.salary_amount),
             paymentDate: card.payment_date.split("T")[0],
-            branchId: card.branchId,
+            branchId: card.branchId || "", 
         });
+
+
         setShowEditPanel(true);
         setOpenCardId(null);
     };
@@ -87,7 +92,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
         setShowEditPanel(false);
         setSelectedCard(null);
         setFormData({
-            name: "",
+            staff: "",
             transactionId: "",
             salaryAmount: "",
             paymentDate: "",
@@ -109,6 +114,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
             salary_amount: parseFloat(formData.salaryAmount),
             payment_date: formData.paymentDate,
             branchId: formData.branchId,
+            staff:formData.staff
         };
 
         const result = await dispatch<any>(
@@ -211,11 +217,11 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
                                         <img src={row.image} alt={row.name} className="w-10 h-10 rounded-full object-cover" />
                                         <div className="flex flex-col">
                                             <span className="font-medium text-gray-800">{row.staff.username}</span>
-                                            <span className="text-sm text-gray-500">{row.staff.email ? row.staff.email : "Nil"}</span>
+                                            <span className="text-sm text-gray-500">{row.staff.email ? row.staff.email : "Email Nil"}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="py-3 px-4">${row.salary_amount}</td>
+                                <td className="py-3 px-4">{row.salary_amount}</td>
                                 <td className="py-3 px-4">
                                     {new Date(row.payment_date).toLocaleString("en-GB", {
                                         day: "2-digit",
@@ -359,7 +365,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
                         <form className="flex flex-col gap-4 mt-2" onSubmit={handleSubmitAndClose}>
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="branch">Select Branch</label>
-                                <select
+                                {/* <select
                                     id="branch"
                                     className="border p-2 rounded h-10"
                                     value={formData.branchId}
@@ -373,7 +379,22 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
                                             {branch.branch_identity}
                                         </option>
                                     ))}
+                                </select> */}
+
+                                <select
+                                    id="branch"
+                                    className="border p-2 rounded h-10"
+                                    value={formData.branchId}
+                                    onChange={(e) => setFormData({ ...formData, branchId: e.target.value })}
+                                >
+                                    <option value="">Select Branch</option>
+                                    {branches.map((branch) => (
+                                        <option key={branch._id} value={branch._id}>
+                                            {branch.branch_identity}
+                                        </option>
+                                    ))}
                                 </select>
+
 
                             </div>
                             <div className="flex flex-col">

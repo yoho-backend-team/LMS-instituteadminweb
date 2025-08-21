@@ -47,7 +47,7 @@ export const StudentsWithBatch = async (params: any) => {
 export const GetAllfees = async (params: any) => {
   try {
     const response = await Client.payment.student_fee.get(params);
-    console.log("Get All fees - Service Check:", response.data);
+    console.log("Get All fees - Service Check:", response);
     return response;
   } catch (error) {
     console.error("Error fetching fees data:", error);

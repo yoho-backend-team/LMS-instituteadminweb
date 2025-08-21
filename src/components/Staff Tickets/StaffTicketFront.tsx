@@ -44,6 +44,7 @@ const StaffTickets: React.FC = () => {
   );
   const error: any = useSelector((state: any) => state.staffTickets?.error);
 
+
   useEffect(() => {
     if (showOpenTickets) {
       const params: GetTicketsParams = {
