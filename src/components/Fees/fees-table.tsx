@@ -19,10 +19,12 @@ export const FeesTable: React.FC = () => {
 	const dispatch = useDispatch();
 	const [currentFeesData, setCurrentFeesData] = useState<any[]>([]);
 	const loading = useSelector(selectLoading);
+	
 
 	useEffect(() => {
 		const fetchFeesData = async () => {
 			const result = await dispatch(GetAllFeesThunks({}) as any);
+			console.log("result fees",result);
 			setCurrentFeesData(result);
 		};
 		fetchFeesData();

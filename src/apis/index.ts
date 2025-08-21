@@ -360,11 +360,11 @@ class Client {
 		getactivity: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
 		create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
-		update: (data: any) =>
-			HttpClient.update(HTTP_END_POINTS.staff.update, data),
+		update: (params: any,data: any) =>
+			HttpClient.update(HTTP_END_POINTS.staff.update+params.staffId, data),
 		delete: (query: any) =>
 			HttpClient.delete(
-				HTTP_END_POINTS.staff.delete.replace(':staffId', query?.staffId)
+				HTTP_END_POINTS.staff.delete+ query?.staffId
 			),
 		getall: (params: any) =>
 			HttpClient.get(

@@ -114,6 +114,8 @@ const Placements = () => {
       institute: instituteId,
     };
 
+    console.log("edit payloads", payload);
+
     try {
       await updatePlacement(payload);
       await dispatch(getAllPlacemetsThunk({}));
