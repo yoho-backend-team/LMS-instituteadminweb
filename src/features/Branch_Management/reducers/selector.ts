@@ -1,24 +1,23 @@
-// src/features/BranchManagement/reducers/selectors.ts
-import { RootState } from "../../store";
-
 // Define the shape of your branches state
 interface BranchesState {
-  data: any[]; // Replace 'any' with your Branch type if available
-  loading: boolean;
-  error: string | null;
+	data: any[]; // Replace 'any' with your Branch type if available
+	loading: boolean;
+	error: string | null;
 }
 
 // Selector to get all branches data
-export const selectBranches = (state: RootState): BranchesState['data'] => 
-  state.branches.data;
+export const selectBranches = (state: any): BranchesState['data'] =>
+	state.branches.data;
 
 // Selector to get loading status
-export const selectBranchesLoading = (state: RootState): BranchesState['loading'] => 
-  state.branches.loading;
+export const selectBranchesLoading = (state: any): BranchesState['loading'] =>
+	state.branches.loading;
 
 // Selector to get error message
-export const selectBranchesError = (state: RootState): BranchesState['error'] => 
-  state.branches.error;
+export const selectBranchesError = (state: any): BranchesState['error'] =>
+	state.branches.error;
+
+export const selectLoading = (state: any) => state.branches.loading;
 
 // Combined selector that matches your original GetBranches
 export const GetBranches = selectBranches;

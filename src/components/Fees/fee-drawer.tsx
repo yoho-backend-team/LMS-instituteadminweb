@@ -71,7 +71,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     }
     fetchBranches()
   }, [dispatch, isOpen])
-
+  
   useEffect(() => {
     const fetchCourses = async () => {
       const course = await dispatch(GetBranchCourseThunks(branch) as any)

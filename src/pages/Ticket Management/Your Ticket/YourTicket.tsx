@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../Ticket Management/Your Ticket/TicketsPage";
 import iconticket from '../../../assets/navbar/ticketicon.png';
@@ -79,6 +80,7 @@ const TicketsPage: React.FC = () => {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
+        console.log(formData, "formdatatatatatatatataat")
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
       }
@@ -117,9 +119,25 @@ const TicketsPage: React.FC = () => {
 
     socket.on("receiveMessage", handleMessage)
     return () => {
-      socket.off("receiveMessage", handleMessage)
-    }
-  })
+      socket.off("receiveMessage", handleMessage);
+    };
+  }, []);
+
+
+  const TicketSkeleton = () => (
+    <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
+      <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+      <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
+      <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
+      <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+      <div className="flex justify-between items-center mt-4">
+        <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+        <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+      </div>
+    </div>
+  );
+
 
   return (
     <div className="h-auto p-0">
@@ -157,6 +175,7 @@ const TicketsPage: React.FC = () => {
         )}
       </div>
 
+
       {showbuttonWindow && (
         <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
           <button
@@ -185,6 +204,7 @@ const TicketsPage: React.FC = () => {
           </button>
         </div>
       )}
+
 
       {activeTab === "open" && !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
@@ -215,7 +235,6 @@ const TicketsPage: React.FC = () => {
             ))}
         </div>
       )}
-
 
 
       {showChatWindow && (

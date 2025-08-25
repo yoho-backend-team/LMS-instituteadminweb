@@ -8,79 +8,123 @@ import Instructor from '../../assets/Dashboard/Instructor.png';
 import Students from '../../assets/Dashboard/Students.png';
 import Course from '../../assets/Dashboard/Course.png';
 import Barchart from '../../components/Dashboard/barchart';
-import { getActivitythunks, getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
+import {
+	getActivitythunks,
+	getDashboardthunks,
+} from '../../features/Dashboard/reducers/thunks';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectActivityData, selectDashboardData } from '../../features/Dashboard/reducers/selectors';
+import {
+	selectActivityData,
+	selectDashboardData,
+} from '../../features/Dashboard/reducers/selectors';
 import { GetImageUrl } from '../../utils/helper';
 import { selectBranches } from '../../features/Auth/reducer/selector';
-import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../utils/localStorage';
+import {
+	GetLocalStorage,
+	RemoveLocalStorage,
+	StoreLocalStorage,
+} from '../../utils/localStorage';
+import { getDashboard } from '../../features/Dashboard/services';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
 	const options = ['Trending', 'Price - Low to High', 'Price - High to Low'];
 	const [trendingOpen, setTrendingOpen] = useState(false);
 	const [selectedOption, setSelectedOption] = useState(options[0]);
+	const [selectedMonth, setSelectedMonth] = useState('July');
+	const [selectedYear, setSelectedYear] = useState('2025');
+	const dispatch = useDispatch<any>();
+	const DashboardData = useSelector(selectDashboardData);
+	const ActivityData = useSelector(selectActivityData);
+	const BranchData: any = useSelector(selectBranches);
+	const [selectedBranch, setSelectedBranch] = useState('');
+	const localBranch = GetLocalStorage('selectedBranchId');
+	const [selectedBranchID, setSelectedBranchID] = useState(localBranch);
+	const BranchOptions = BranchData?.map((branch: any) => {
+		return branch?.branch_identity;
+	});
+	const branchList = BranchOptions;
+	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
 		setTrendingOpen(false);
 	};
 
-	const [selectedMonth, setSelectedMonth] = useState('July');
-	const [selectedYear, setSelectedYear] = useState('2025');
-	const dispatch = useDispatch<any>()
-
-	const DashboardData = useSelector(selectDashboardData)
-	const ActivityData = useSelector(selectActivityData)
-	const BranchData: any = useSelector(selectBranches)
-	const [selectedBranch, setSelectedBranch] = useState('');
-
-	const BranchOptions = BranchData?.map((branch: any) => {
-		return branch?.branch_identity
-	})
-
-	const localBranch = GetLocalStorage('selectedBranchId')
-
-	const branchList = BranchOptions;
-
-	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-
 	const handleBranchChange = (branch: string) => {
-
 		BranchData.map((branchID: any) => {
 			if (branchID?.branch_identity === branch) {
-				RemoveLocalStorage("selectedBranchId")
-				setSelectedBranch(branchID?.branch_identity)
-				StoreLocalStorage("selectedBranchId", branchID.uuid)
+				RemoveLocalStorage('selectedBranchId');
+				setSelectedBranch(branchID?.branch_identity);
+				StoreLocalStorage('selectedBranchId', branchID.uuid);
+				setSelectedBranchID(branchID.uuid)
 			}
-		})
+		});
 
 		setSelectedBranch(branch);
 		setBranchMenuOpen(false);
 	};
 
-	const handleApply = () => {
-		console.log('Selected Month:', selectedMonth);
-		console.log('Selected Year:', selectedYear);
-		setPeriodOpen(false);
-	};
-
+	// const handleApply = () => {
+	// 	setPeriodOpen(false);
+	// };
 
 	useEffect(() => {
-		const paramsData = { branch: GetLocalStorage('selectedBranchId') }
+		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
 		(() => {
 			if (localBranch == null) {
-				return setSelectedBranch(BranchData?.[0]?.branch_identity)
+				return setSelectedBranch(BranchData?.[0]?.branch_identity);
 			}
-			const foundBranch = BranchData?.find((item: any) => item.uuid === localBranch);
-			setSelectedBranch(foundBranch?.branch_identity)
-		})()
+			const foundBranch = BranchData?.find(
+				(item: any) => item.uuid === localBranch
+			);
+			setSelectedBranch(foundBranch?.branch_identity);
+		})();
 	}, [BranchData, dispatch, localBranch]);
 
 
+const monthMap: { [key: string]: number } = {
+  January: 1,
+  February: 2,
+  March: 3,
+  April: 4,
+  May: 5,
+  June: 6,
+  July: 7,
+  August: 8,
+  September: 9,
+  October: 10,
+  November: 11,
+  December: 12,
+};
 
+
+
+
+
+
+
+
+	const handleApply = async () => {
+  try {
+    const monthNumber = monthMap[selectedMonth];
+
+    const params = {
+      branch: selectedBranchID, 
+      month: monthNumber,
+      year: selectedYear,
+    };
+
+    const data = await getDashboard(params);
+    console.log("API Response:", data);
+
+    setPeriodOpen(false);
+  } catch (error) {
+    console.error("Error fetching dashboard:", error);
+  }
+};
 
 
 	return (
@@ -116,7 +160,10 @@ export default function Component() {
 											className='w-full text-left p-2 rounded-md'
 											style={{
 												...FONTS.heading_08,
-												backgroundColor: selectedBranch === branch ? COLORS.primary : 'transparent',
+												backgroundColor:
+													selectedBranch === branch
+														? COLORS.primary
+														: 'transparent',
 												color: selectedBranch === branch ? '#fff' : '#716F6F',
 												border: '1px solid #ddd',
 											}}
@@ -199,7 +246,7 @@ export default function Component() {
 										</div>
 									</div>
 
-									{/* Apply Button */}
+								
 									<button
 										className='w-full py-2 px-4 text-white rounded-md border-0'
 										onClick={handleApply}
@@ -224,7 +271,11 @@ export default function Component() {
 							{/* Icon */}
 
 							<div className=' rounded-lg text-white'>
-								<img src={Earnings} alt='' className='lg:w-[70px] md:w-[50px]' />
+								<img
+									src={Earnings}
+									alt=''
+									className='lg:w-[70px] md:w-[50px]'
+								/>
 							</div>
 
 							{/* Text Info */}
@@ -397,8 +448,12 @@ export default function Component() {
 													className={`w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-left`}
 													style={{
 														...FONTS.heading_08,
-														background: selectedOption === option ? COLORS.primary : 'transparent',
-														color: selectedOption === option ? 'white' : '#716F6F',
+														background:
+															selectedOption === option
+																? COLORS.primary
+																: 'transparent',
+														color:
+															selectedOption === option ? 'white' : '#716F6F',
 													}}
 												>
 													{option}
@@ -415,52 +470,62 @@ export default function Component() {
 						<div className='mt-4 w-full py-4'>
 							{DashboardData?.popularCourses?.length > 0 ? (
 								<div className='flex gap-4 overflow-x-scroll scrollbar-hide'>
-									{DashboardData.popularCourses.map((item: any, index: number) => (
-										<section
-											key={index}
-											className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${index === 0
-												? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-												: 'bg-white'
+									{DashboardData.popularCourses.map(
+										(item: any, index: number) => (
+											<section
+												key={index}
+												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${
+													index === 0
+														? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+														: 'bg-white'
 												}`}
-										>
-											<img
-												src={GetImageUrl(item?.image) ?? undefined}
-												className='w-[70px] h-[70px] bg-white rounded-full object-cover'
-												alt='course img'
-											/>
-											<div className='flex-grow'>
-												<h2
-													className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'} mb-1`}
-													style={{ ...FONTS.bold_heading }}
-												>
-													{item?.course_name}
-												</h2>
-												<p
-													className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'} text-sm mb-4 leading-tight line-clamp-3`}
-													style={{ ...FONTS.description }}
-												>
-													{item?.description}
-												</p>
-												<p
-													className={`w-fit rounded-lg px-4 py-2 ${index === 0
-														? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
-														: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
+											>
+												<img
+													src={GetImageUrl(item?.image) ?? undefined}
+													className='w-[70px] h-[70px] bg-white rounded-full object-cover'
+													alt='course img'
+												/>
+												<div className='flex-grow'>
+													<h2
+														className={`${
+															index === 0 ? 'text-white' : 'text-[#716F6F]'
+														} mb-1`}
+														style={{ ...FONTS.bold_heading }}
+													>
+														{item?.course_name}
+													</h2>
+													<p
+														className={`${
+															index === 0 ? 'text-white' : 'text-[#716F6F]'
+														} text-sm mb-4 leading-tight line-clamp-3`}
+														style={{ ...FONTS.description }}
+													>
+														{item?.description}
+													</p>
+													<p
+														className={`w-fit rounded-lg px-4 py-2 ${
+															index === 0
+																? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
+																: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
 														}`}
-													style={{ ...FONTS.heading_08 }}
-												>
-													{item?.coursemodules.length} Modules
-												</p>
-											</div>
-										</section>
-									))}
+														style={{ ...FONTS.heading_08 }}
+													>
+														{item?.coursemodules.length} Modules
+													</p>
+												</div>
+											</section>
+										)
+									)}
 								</div>
 							) : (
-								<div className='text-center text-[#999] text-base' style={{ ...FONTS.heading_08 }}>
+								<div
+									className='text-center text-[#999] text-base'
+									style={{ ...FONTS.heading_08 }}
+								>
 									No Courses Found
 								</div>
 							)}
 						</div>
-
 					</div>
 				</section>
 			</div>
@@ -475,10 +540,11 @@ export default function Component() {
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${index === 0
-									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-									: 'bg-white'
-									}`}
+								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${
+									index === 0
+										? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+										: 'bg-white'
+								}`}
 							>
 								<img
 									src={item?.image ?? undefined}
@@ -493,7 +559,9 @@ export default function Component() {
 										{item?.title}
 									</h2>
 									<p
-										className={` ${index === 0 ? 'text-white' : ''}  leading-tight line-clamp-3`}
+										className={` ${
+											index === 0 ? 'text-white' : ''
+										}  leading-tight line-clamp-3`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}
@@ -501,8 +569,12 @@ export default function Component() {
 								</div>
 							</section>
 						))}
-					</div>) : (
-					<div className='text-center text-[#999] text-base' style={{ ...FONTS.heading_08 }}>
+					</div>
+				) : (
+					<div
+						className='text-center text-[#999] text-base'
+						style={{ ...FONTS.heading_08 }}
+					>
 						No Activities Found
 					</div>
 				)}
