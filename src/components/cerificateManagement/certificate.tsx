@@ -11,7 +11,6 @@ import {
 	selectCertificate,
 	selectLoading,
 } from '../../features/certificateManagement/reducers/selectors';
-import { GetImageUrl } from '../../utils/helper';
 import { deleteCertificate } from '../../features/certificateManagement/services';
 
 export interface Certificate {

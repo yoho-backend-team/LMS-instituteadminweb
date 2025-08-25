@@ -2,7 +2,6 @@ import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { MoreVertical, Eye, Edit, Trash2, Download, X } from 'lucide-react';
 import type { Fee } from '../../components/Fees/types';
-import { useDispatch } from 'react-redux';
 import { DeleteAll } from '../../features/Payment_Managemant/salary/fees/services';
 import jsPDF from 'jspdf';
 

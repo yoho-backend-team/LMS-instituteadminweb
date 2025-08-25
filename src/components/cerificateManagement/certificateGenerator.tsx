@@ -1,3 +1,5 @@
+
+
 export interface Certificate {
 	id: number;
 	title: string;
@@ -19,6 +21,7 @@ export const downloadCertificate = async (certificate: Certificate) => {
 		tempContainer.style.top = '-9999px';
 		tempContainer.style.width = '1200px';
 		tempContainer.style.height = '800px';
+
 
 		tempContainer.innerHTML = `
       <div style="min-height: 800px; background: rgb(251 207 232); padding: 32px; display: flex; align-items: center; justify-content: center;">

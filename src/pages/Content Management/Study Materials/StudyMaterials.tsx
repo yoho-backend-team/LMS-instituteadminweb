@@ -1,4 +1,4 @@
-import React from 'react';
+
 import NotesManagement from '../../../components/StudyMaterial/StudyMaterial';
 
 const StudyMaterials = () => {

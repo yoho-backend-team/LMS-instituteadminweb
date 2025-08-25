@@ -15,7 +15,7 @@ interface Props {
         _id?: string;
         uuid: string;
         title: string;
-        description: string;
+        description?: string;
         video: string;
         file?: File | null;
     };

@@ -16,7 +16,6 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { GetImageUrl } from "../../utils/helper";
 import { X } from "lucide-react";
 import {
   deletePlacement,

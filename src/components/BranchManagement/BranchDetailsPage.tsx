@@ -54,7 +54,7 @@ const statCards = [
 ];
 
 const CylinderBar = (props: any) => {
-  const { fill, x, y, width, height, value, data, dataKey } = props
+  const {  x, y, width, height, value, data, dataKey } = props
   const barX = Number.isNaN(x) ? 0 : x
   const barY = Number.isNaN(y) ? 0 : Math.max(0, y)
   const barWidth = Number.isNaN(width) ? 30 : Math.max(0, width)
@@ -216,12 +216,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
   className="bg-white rounded-xl p-6"
 >
       <div className="flex items-center justify-between mb-8">
-        <motion.div variants={itemVariants}>
+        <motion.div variants={itemVariants} >
           <Button 
             variant="ghost" 
             onClick={onBack} 
             className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/10 transition-colors duration-300"
-            whileHover={{ x: -5 }}
+            
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-lg font-medium">Back to Locations</span>
@@ -443,13 +443,13 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             />
             <Bar
               dataKey={activeTab}
-              shape={(props) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+              shape={(props : any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
               barSize={30}
             >
               <LabelList
                 dataKey={activeTab}
                 position="top"
-                formatter={(value: number) => `₹${value / 1000}K`}
+                format={(value: number | string) => `₹${Number(value) / 1000}K`}
                 fill="#716F6F"
                 offset={10}
               />
@@ -473,7 +473,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 max-h-[855px] overflow-y-auto pr-2">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item, index) => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(( index) => (
                       <motion.div
                         key={index}
                         className="group flex items-start gap-4 p-4 rounded-lg border bg-white border-gray-200"

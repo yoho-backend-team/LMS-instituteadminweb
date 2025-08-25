@@ -92,11 +92,11 @@ export function LocationCardsGrid() {
 
 		try {
 			if (editingBranch) {
-				// ✅ Use UUID, not numeric ID
+				
 				await dispatch(
 					EditBranchThunk({
 						instituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
-						branchUuid: branch._id,
+						branchUuid: branches._id,
 					})
 				).unwrap();
 			} else {
@@ -288,7 +288,7 @@ export function LocationCardsGrid() {
 	);
 }
 
-function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }) {
+function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }: any) {
 	return (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'>
 			<div
@@ -411,7 +411,7 @@ function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }) {
 }
 
 // Helper component for form fields
-function FormField({ label, name, value, onChange, required = false }) {
+function FormField({ label, name, value, onChange, required = false }:any) {
 	return (
 		<div className='flex flex-col gap-2'>
 			<label className='text-[#716F6F] font-poppins font-medium text-base capitalize'>

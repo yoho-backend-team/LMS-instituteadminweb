@@ -20,16 +20,19 @@ import ContentLoader from 'react-content-loader';
 
 interface ModuleCardProps {
     id: string;
+    uuid: string; 
     title: string;
     courseName?: string;
     description?: string;
     isActive: boolean;
     fileUrl?: string;
     fileName: string;
-    branch?: string;
+    branch?: string;    
     course?: {
         course_name: string;
     };
+     video: string; 
+    file?: File | null;
 }
 
 const Modules = () => {

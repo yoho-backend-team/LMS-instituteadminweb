@@ -13,6 +13,13 @@ import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourT
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 
+interface Message {
+  id: string;
+  text: string;
+  sender: string;
+  timestamp: string;
+}
+
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
   const [showChatWindow, setShowChatWindow] = useState(false);
@@ -23,10 +30,9 @@ const TicketsPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
-  const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
+  const [setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
-  const [messages, setMessages] = useState()
-
+  const [messages, setMessages] = useState<Message[]>([]);
   console.log("Selecteduser", selectedTicketUserDetails)
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
@@ -212,6 +218,7 @@ const TicketsPage: React.FC = () => {
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
+                name={ticket?.name}
                 category={ticket?.description}
                 query={ticket?.query}
                 message={messages}
@@ -260,7 +267,7 @@ const TicketsPage: React.FC = () => {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Query</label>
+                <label className=" block mb-2 text-[#716F6F]">Query</label>
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -271,7 +278,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Description</label>
+                <label className=" block mb-2 text-[#716F6F]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -282,7 +289,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Priority</label>
+                <label className=" block mb-2 text-[#716F6F]">Priority</label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as "High" | "Medium" | "Low")}
@@ -297,7 +304,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700 text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Upload</label>
+                <label className="block mb-1 text-sm font-medium  text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Upload</label>
                 <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
                   <input
                     type="file"

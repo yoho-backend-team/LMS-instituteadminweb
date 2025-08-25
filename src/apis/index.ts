@@ -48,8 +48,8 @@ class Client {
 			HttpClient.delete(HTTP_END_POINTS.user.delete + data?.userId),
 	};
 	branch = {
-		getdash: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.branch.getDash, params),
+		getdash: () =>
+			HttpClient.get(HTTP_END_POINTS.branch.getDash),
 		getAll: (params: string) =>
 			HttpClient.get(HTTP_END_POINTS.branch.getAll, params),
 		create: (params: string) =>

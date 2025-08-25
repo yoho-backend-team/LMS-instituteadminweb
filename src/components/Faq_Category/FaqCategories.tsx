@@ -28,31 +28,8 @@ type Category = {
   status?: "Active" | "Inactive";
 };
 
-const initialCategories: Category[] = [
-  {
-    id: 1,
-    title: "Certificate Issue",
-    createdBy: "Sara",
-    status: "Active",
-    uuid: "",
-    category_name: "",
-    description: "",
-    is_active: false,
-  },
-  {
-    id: 2,
-    title: "Login Issue",
-    createdBy: "Peater",
-    status: "Inactive",
-    uuid: "",
-    category_name: "",
-    description: "",
-    is_active: false,
-  },
-];
 
 const FaqCategory: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [openStatusIndex, setOpenStatusIndex] = useState<number | null>(null);
   const [openActionIndex, setOpenActionIndex] = useState<number | null>(null);
   const [search, setSearch] = useState("");

@@ -2,7 +2,7 @@ import { MoreVertical } from 'lucide-react';
 import humaning from '../../assets/humanimg.png';
 import clock from '../../assets/clock.png';
 import { Eye, Pencil, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import EditBatchModal from './editBatch';
 import { useNavigate } from 'react-router-dom';
 import wave from '../../assets/wave (2).png';

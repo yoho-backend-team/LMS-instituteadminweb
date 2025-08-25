@@ -843,7 +843,7 @@ const TeachingStaffs: React.FC = () => {
                         </span>
                         <Select
                           value={member?.is_active ? "Active" : "Inactive"}
-                          onValueChange={(value: "Active" | "Inactive") =>
+                          onValueChange={(_value: "Active" | "Inactive") =>
                             toggleStatus(member.id)
                           }
                         >

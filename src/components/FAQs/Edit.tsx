@@ -12,21 +12,20 @@ import {
 } from "../../components/ui/drawer";
 import { X } from "lucide-react";
 import type { FAQItem } from "../../types/faq";
-import { UpdateFaq } from"../../features/Faq/service"; // make sure this is correct path
+import { UpdateFaq } from"../../features/Faq/service";
 import { toast } from "react-toastify";
 
 interface EditFAQDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   faqToEdit: FAQItem | null;
-  onSuccess: () => void; // callback after successful update to refresh FAQ list
 }
+
 
 export function EditFAQDrawer({
   open,
   onOpenChange,
   faqToEdit,
-  onSuccess,
 }: EditFAQDrawerProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -52,7 +51,6 @@ export function EditFAQDrawer({
       await UpdateFaq(faqToEdit.uuid, updatedData);
       toast.success("FAQ updated successfully!");
       onOpenChange(false);
-      onSuccess();
     } catch (error) {
       toast.error("Failed to update FAQ.");
     } finally {

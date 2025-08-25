@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import {
@@ -28,6 +28,8 @@ export interface Certificate {
   uuid: string;
   batch_id: string;
   certificate_name:string
+   branch_id:String
+    institute_id:String
 }
 
 interface CertificateModalProps {

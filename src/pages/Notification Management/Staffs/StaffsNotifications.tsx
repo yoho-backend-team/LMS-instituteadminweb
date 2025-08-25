@@ -25,7 +25,7 @@ import instructorImg from '../../../assets/image 108.png';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	selectBranch,
+	// selectBranch,
 	selectStaff,
 } from '../../../features/staff/reducers/selector';
 import {
@@ -60,7 +60,7 @@ const StaffsNotification: React.FC = () => {
 	const dispatch = useDispatch<any>();
 	const classData = useSelector(selectStaff)?.data || [];
 	const loading = useSelector(selectLoading);
-	const branchData = useSelector(selectBranch);
+	// const branchData = useSelector(selectBranch);
 	const staffNotificationData = useSelector(selectStaffNotification);
 	const notifications = staffNotificationData?.data || [];
 

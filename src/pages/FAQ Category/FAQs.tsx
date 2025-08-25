@@ -70,7 +70,7 @@ export default function FAQPage() {
 
 	const dispatch = useDispatch<any>();
 	const faqselect = useSelector(selectFaq);
-	const [currentPage, setCurrentPage] = useState(1);
+	const [currentPage] = useState(1);
 	const loading = useSelector(selectLoading);
 
 	useEffect(() => {
@@ -86,16 +86,7 @@ export default function FAQPage() {
 
 	const toggleFilter = () => setShowFilter(!showFilter);
 
-	const handleAddFAQ = (newFAQData: any) => {
-		// Ideally dispatch a thunk to POST to backend
-		setIsAddFAQDrawerOpen(false);
-	};
-
-	const handleEditFAQ = (id: number, updatedData: any) => {
-		// Ideally dispatch a thunk to PUT to backend
-		setIsEditFAQDrawerOpen(false);
-		setCurrentFAQToEdit(null);
-	};
+	
 
 	const handleDeleteClick = (uuid: string) => {
 		setFaqToDeleteId(uuid);
@@ -127,7 +118,7 @@ export default function FAQPage() {
 			dispatch(getAllFaqsThunk(ParamsData));
 		} catch (error: any) {
 			console.error('Failed to delete FAQ:', error.message);
-			alert('Failed to delete FAQ: ' + error.message); // or show toast
+			alert('Failed to delete FAQ: ' + error.message); 
 		}
 	};
 
@@ -135,9 +126,7 @@ export default function FAQPage() {
 		setIsSuccessModalOpen(false);
 	};
 
-	const handleStatusChange = (id: number, newStatus: string) => {
-		// Ideally dispatch a thunk to update status
-	};
+	
 
 	return (
 		<div className='p-6'>
@@ -220,8 +209,7 @@ export default function FAQPage() {
 
 			<AddFAQDrawer
 				open={isAddFAQDrawerOpen}
-				onOpenChange={setIsAddFAQDrawerOpen}
-				onSave={handleAddFAQ}
+				onOpenChange={setIsAddFAQDrawerOpen}	
 			/>
 
 			{currentFAQToEdit && (
@@ -229,7 +217,6 @@ export default function FAQPage() {
 					open={isEditFAQDrawerOpen}
 					onOpenChange={setIsEditFAQDrawerOpen}
 					faqToEdit={currentFAQToEdit}
-					onSave={handleEditFAQ}
 				/>
 			)}
 

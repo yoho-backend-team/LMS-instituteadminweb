@@ -1,8 +1,7 @@
 "use client"
-import { forwardRef, useEffect } from "react"
+import { forwardRef, } from "react"
 import { Eye, Edit, Trash2, Download } from "lucide-react"
-import { useDispatch } from "react-redux";
-import { DeleteAllThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks";
+
 
 interface FeesActionDropdownProps {
   onAction: (action: string) => void

@@ -11,8 +11,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { GetStaffName_Branch } from '../../../features/Payment_Managemant/salary/services/index';
 import Viewsalary from '../../../components/paymentmanagement/salaries/ViewSalary/viewsalary';
-import { useSelector } from 'react-redux';
-import { selectLoading } from '../../../features/Payment_Managemant/salary/reducers/selectors';
+
 
 const StaffSalaries = () => {
 	const dispatch = useDispatch<any>();

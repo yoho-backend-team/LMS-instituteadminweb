@@ -21,6 +21,11 @@ interface Message {
 	text: string;
 	time: string;
 }
+interface AdminProfile {
+	_id: string;
+	full_name?: string;
+	[key: string]: any;
+}
 
 const TicketDetailsPage: React.FC = () => {
 	const { id } = useParams();
@@ -38,8 +43,8 @@ const TicketDetailsPage: React.FC = () => {
 	const ticketId = Number(id);
 	const ticket = tickets.find((t) => t.id === ticketId);
 	const status = ticket?.status ?? 'opened';
-	const [adminProfile, SetAdminProfile] = useState();
-
+	const [adminProfile, SetAdminProfile] = useState<AdminProfile | null>(null);
+	console.log(status)
 
 	const updateStatus = async (newStatus: string) => {
 		try {
@@ -49,7 +54,7 @@ const TicketDetailsPage: React.FC = () => {
 				user: ticketData?.user,
 			};
 			const response = await updateStudentTicketService(data);
-			console.log(data,"sdfghjklkjhfdsasdfghjklkjhfdsdfgk")
+			console.log(data, "sdfghjklkjhfdsasdfghjklkjhfdsdfgk")
 			if (response) {
 				fetchstudentTicketsById();
 				Object.assign(ticketData, { status: newStatus });
@@ -105,7 +110,7 @@ const TicketDetailsPage: React.FC = () => {
 			user: adminProfile?._id,
 		};
 		socket.emit('sendStudentTicketMessage', newMessage);
-		setMessages((prev) => [
+		setMessages((prev: any) => [
 			...prev,
 			{ sender: adminProfile?._id, content: inputValue, date: new Date() },
 		]);
