@@ -64,8 +64,8 @@ export const CreateBranch = async (data: CreateBranchParams) => {
 };
 
 // Update branch
-export const EditBranch = async (params: { id: string; data: any }) => {
-  const response = await Client.branch.edit(params.data, params.id);
+export const EditBranch = async (params: { branchuuid: string; data: any }) => {
+  const response = await Client.branch.edit(params.data, params.branchuuid);
   return response.data;
 };
 
@@ -78,7 +78,7 @@ export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
 
 export const DeleteBranch = async (params: DeleteBranchParams) => {
   const response = await Client.branch.delete(
-    params.institute_id, 
+    params.institute_id,
     params.uuid
   );
   return response.data;

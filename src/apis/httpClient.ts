@@ -33,7 +33,7 @@ Axios.interceptors.response.use(
 		} else if (
 			error?.response?.status === 403 &&
 			error?.response?.data?.message ===
-				'Subscription limit reached. Update your subscription plan.'
+			'Subscription limit reached. Update your subscription plan.'
 		) {
 			showUpgradeModal();
 		}
@@ -54,6 +54,11 @@ class HttpClient {
 
 	async update(url: string, data?: any) {
 		const response = await Axios.put(url, data);
+		return response.data;
+	}
+
+	async patch(url: string, data?: any) {
+		const response = await Axios.patch(url, data);
 		return response.data;
 	}
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Plus, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -15,10 +16,11 @@ import ContentLoader from 'react-content-loader';
 import { ConfirmationPopup } from '../BranchManagement/ConfirmationPopup';
 import { LocationCard } from '../BranchManagement/Location-card';
 import { selectLoading } from '../../features/Branch_Management/reducers/selector';
+import type { RootState } from '../../store/store';
 
 export function LocationCardsGrid() {
 	const dispatch = useDispatch<any>();
-	const { branches, error } = useSelector((state: any) => state.branches);
+	const { branches, error } = useSelector((state: RootState) => state.branches);
 	const loading = useSelector(selectLoading);
 
 	const [searchTerm, setSearchTerm] = useState('');
@@ -36,6 +38,7 @@ export function LocationCardsGrid() {
 		landMark: '',
 		city: '',
 		state: 'Tamil Nadu',
+		branchuuid: ""
 	});
 
 	useEffect(() => {
@@ -48,8 +51,8 @@ export function LocationCardsGrid() {
 
 	const filteredBranches = searchTerm
 		? branches.filter((branch: any) =>
-				branch.cityName.toLowerCase().includes(searchTerm.toLowerCase())
-		  )
+			branch.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+		)
 		: branches;
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +75,7 @@ export function LocationCardsGrid() {
 			landMark: branch.contact_info.landmark || '',
 			city: branch.branch_identity.split(',')[0],
 			state: 'Tamil Nadu',
+			branchuuid: branch?.uuid
 		});
 		setIsModalOpen(true);
 	};
@@ -92,12 +96,8 @@ export function LocationCardsGrid() {
 
 		try {
 			if (editingBranch) {
-				
 				await dispatch(
-					EditBranchThunk({
-						instituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
-						branchUuid: branches._id,
-					})
+					EditBranchThunk({ branchuuid: formData?.branchuuid, data: branchData })
 				).unwrap();
 			} else {
 				await dispatch(
@@ -142,6 +142,7 @@ export function LocationCardsGrid() {
 			landMark: '',
 			city: '',
 			state: 'Tamil Nadu',
+			branchuuid: ""
 		});
 		setEditingBranch(null);
 	};
@@ -231,31 +232,31 @@ export function LocationCardsGrid() {
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full'>
 				{!loading && filteredBranches.length > 0
 					? filteredBranches.map((branch: any) => (
-							<LocationCard
-								key={branch._id} // Changed from id to _id
-								id={branch._id} // Changed from id to _id
-								imageSrc={TrichyImg} // You might want to get this from API if available
-								cityName={branch.branch_identity} // Using branch_identity instead of cityName
-								address={branch.contact_info.address} // Updated path to address
-								status={branch.is_active ? 'Active' : 'Inactive'} // Convert boolean to status string
-								phoneNumber={branch.contact_info.phone_no} // Added phone number
-								onViewDetails={() => setViewingBranch(branch)}
-								onEdit={() => handleEditBranch(branch)}
-								onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
-								onStatusChange={(newStatus) =>
-									handleStatusChange(branch.id, newStatus)
-								}
-							/>
-					  ))
+						<LocationCard
+							key={branch._id} // Changed from id to _id
+							id={branch._id} // Changed from id to _id
+							imageSrc={TrichyImg} // You might want to get this from API if available
+							cityName={branch.branch_identity} // Using branch_identity instead of cityName
+							address={branch.contact_info.address} // Updated path to address
+							status={branch.is_active ? 'Active' : 'Inactive'} // Convert boolean to status string
+							phoneNumber={branch.contact_info.phone_no} // Added phone number
+							onViewDetails={() => setViewingBranch(branch)}
+							onEdit={() => handleEditBranch(branch)}
+							onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
+							onStatusChange={(newStatus) =>
+								handleStatusChange(branch.id, newStatus)
+							}
+						/>
+					))
 					: !loading && (
-							<div className='col-span-full text-center py-10'>
-								<p className='text-lg text-[#716F6F]'>
-									{searchTerm
-										? `No branches found matching "${searchTerm}"`
-										: 'No branches available'}
-								</p>
-							</div>
-					  )}
+						<div className='col-span-full text-center py-10'>
+							<p className='text-lg text-[#716F6F]'>
+								{searchTerm
+									? `No branches found matching "${searchTerm}"`
+									: 'No branches available'}
+							</p>
+						</div>
+					)}
 			</div>
 
 			{/* Modal */}
@@ -411,7 +412,7 @@ function BranchModal({ isEditing, formData, onChange, onCancel, onSubmit }: any)
 }
 
 // Helper component for form fields
-function FormField({ label, name, value, onChange, required = false }:any) {
+function FormField({ label, name, value, onChange, required = false }: any) {
 	return (
 		<div className='flex flex-col gap-2'>
 			<label className='text-[#716F6F] font-poppins font-medium text-base capitalize'>
