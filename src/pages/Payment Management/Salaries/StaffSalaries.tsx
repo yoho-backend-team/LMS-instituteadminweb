@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react';
 import { GoPlus } from 'react-icons/go';
 import { BsSliders } from 'react-icons/bs';
@@ -11,6 +12,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { GetStaffName_Branch } from '../../../features/Payment_Managemant/salary/services/index';
 import Viewsalary from '../../../components/paymentmanagement/salaries/ViewSalary/viewsalary';
+import { GetLocalStorage } from '../../../utils/localStorage';
 
 
 const StaffSalaries = () => {
@@ -107,7 +109,7 @@ const StaffSalaries = () => {
 		}
 
 		const payload = {
-			institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+			institute_id: GetLocalStorage("instituteId"),
 			branch_id: newSalary.branch_id,
 			staff_type: newSalary.staff_type,
 			staff: newSalary.staff,
@@ -352,8 +354,8 @@ const StaffSalaries = () => {
 				branch={filters.branch}
 				startDate={filters.startDate}
 				endDate={filters.endDate}
-				cardData={cardData}
-				setCardData={setCardData}
+				// cardData={cardData}
+				// setCardData={setCardData}
 				onView={handleViewSalary}
 				loading={loading}
 			/>

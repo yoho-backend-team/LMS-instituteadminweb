@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
 import { Plus, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,9 +42,7 @@ export function LocationCardsGrid() {
 
 	useEffect(() => {
 		dispatch(
-			GetAllBranchesThunk({
-				instituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
-			})
+			GetAllBranchesThunk({})
 		);
 	}, [dispatch]);
 
@@ -69,7 +66,7 @@ export function LocationCardsGrid() {
 		setFormData({
 			branchName: branch.branch_identity,
 			phoneNumber: branch.contact_info.phone_no,
-			alternateNumber: branch.contact_info.alternate_number || '',
+			alternateNumber: branch.contact_info.alternate_no || '',
 			address: branch.contact_info.address,
 			pinCode: branch.contact_info.pincode || '',
 			landMark: branch.contact_info.landmark || '',
@@ -84,14 +81,16 @@ export function LocationCardsGrid() {
 		e.preventDefault();
 
 		const branchData = {
-			imageSrc: TrichyImg,
-			cityName: formData.branchName,
-			address: formData.address,
-			status: 'Active',
-			phoneNumber: formData.phoneNumber,
-			alternateNumber: formData.alternateNumber,
-			pinCode: formData.pinCode,
-			landMark: formData.landMark,
+			branch_identity: formData.branchName,
+			contact_info: {
+				phone_no: formData.phoneNumber,
+				address: formData.address,
+				alternate_no: formData.alternateNumber,
+				pincode: formData.pinCode,
+				landmark: formData.landMark,
+				city: formData?.city,
+				state: formData?.state
+			}
 		};
 
 		try {

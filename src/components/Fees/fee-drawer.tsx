@@ -60,7 +60,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     if (isOpen && selectedFee) {
       fetchStudentUpdateData()
     }
-  }, [isOpen, selectedFee])
+  }, [dispatch, isOpen, selectedFee])
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -71,7 +71,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     }
     fetchBranches()
   }, [dispatch, isOpen])
-  
+
   useEffect(() => {
     const fetchCourses = async () => {
       const course = await dispatch(GetBranchCourseThunks(branch) as any)
@@ -85,7 +85,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   useEffect(() => {
     const fetchBatches = async () => {
       if (branch && course) {
-        const res = await dispatch(GetBatchThunks(course) as any)
+        const res = await dispatch(GetBatchThunks({ branch, course }) as any)
         if (res?.data) {
           setBatchOptions(res.data)
         }

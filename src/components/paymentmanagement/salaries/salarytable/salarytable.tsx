@@ -14,14 +14,15 @@ import toast from 'react-hot-toast';
 import { IoMdClose } from 'react-icons/io';
 import { GetBranchThunks } from '../../../../features/Payment_Managemant/salary/reducers/thunks';
 import ContentLoader from 'react-content-loader';
+import type { RootState } from '../../../../store/store';
 
 interface SalaryTableProps {
 	search: string;
 	branch: string;
 	startDate: string;
 	endDate: string;
-	cardData: any[];
-	setCardData: React.Dispatch<React.SetStateAction<any[]>>;
+	cardData?: any[];
+	setCardData?: React.Dispatch<React.SetStateAction<any[]>>;
 	onView: (salary: any) => void;
 	loading: boolean;
 }
@@ -31,10 +32,10 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 	branch,
 	startDate,
 	endDate,
-	cardData,
+	// cardData,
 	onView,
 	loading,
-	setCardData,
+	// setCardData,
 }) => {
 	const [openCardId, setOpenCardId] = useState<number | null>(null);
 	const [showEditPanel, setShowEditPanel] = useState(false);
@@ -44,6 +45,8 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 	const [showView, setShowView] = useState(false);
 	const [branches, setBranches] = useState<any[]>([]);
 	const dispatch = useDispatch<any>();
+	const AllSalary = useSelector((state: RootState) => state?.StaffSalary?.salary)
+	const [cardData, setCardData] = useState<any[]>([]);
 
 	const [formData, setFormData] = useState({
 		staff: '',
@@ -53,7 +56,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 		branchId: '',
 	});
 
-	const filteredData = cardData.filter((row) => {
+	const filteredData = AllSalary.filter((row: any) => {
 		const searchQuery = search.toLowerCase();
 		const matchesSearch =
 			row.staff.username?.toLowerCase().includes(searchQuery) ||
@@ -120,7 +123,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 			branchId: formData.branchId,
 		};
 
-		const result = await dispatch<any>(
+		const result = await dispatch(
 			UpdateAllSalaryThunks({ _id: selectedCard._id, ...updatedFields })
 		);
 
@@ -147,10 +150,9 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 			`Staff Name: ${card.staff?.username || 'N/A'}`,
 			`Email: ${card.email || 'N/A'}`,
 			`Branch: ${card.branchId === '1' ? 'Chennai' : 'Madurai'}`,
-			`Payment Date: ${
-				card.payment_date
-					? new Date(card.payment_date).toISOString().split('T')[0]
-					: 'N/A'
+			`Payment Date: ${card.payment_date
+				? new Date(card.payment_date).toISOString().split('T')[0]
+				: 'N/A'
 			}`,
 			`Salary Amount: $${card.salary_amount || 'N/A'}`,
 			`Status: ${card.is_active ? 'Active' : 'Inactive'}`,
@@ -162,9 +164,8 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 			y += 10;
 		});
 
-		const fileName = `SalaryReceipt_${
-			card.staff?.username?.replace(/\s+/g, '_') || 'Staff'
-		}_${card.transaction_id || 'TXN'}.pdf`;
+		const fileName = `SalaryReceipt_${card.staff?.username?.replace(/\s+/g, '_') || 'Staff'
+			}_${card.transaction_id || 'TXN'}.pdf`;
 		doc.save(fileName);
 	};
 
@@ -181,14 +182,14 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const result = await dispatch<any>(GetAllSalaryThunks({}));
+			const result = await dispatch(GetAllSalaryThunks({}));
 			if (result?.payload && Array.isArray(result.payload)) {
-				setCardData(result.payload);
+				setCardData(result.data);
 			}
 		};
 
 		const fetchBranches = async () => {
-			const branchRes = await dispatch<any>(GetBranchThunks({}));
+			const branchRes = await dispatch(GetBranchThunks({}));
 			if (branchRes?.payload && Array.isArray(branchRes.payload)) {
 				setBranches(branchRes.payload);
 			}
@@ -196,7 +197,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 
 		fetchData();
 		fetchBranches();
-	}, [setCardData]);
+	}, [dispatch, setCardData]);
 
 	return (
 		<>
@@ -489,8 +490,8 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 									value={
 										selectedCard.payment_date
 											? new Date(selectedCard.payment_date)
-													.toISOString()
-													.split('T')[0]
+												.toISOString()
+												.split('T')[0]
 											: ''
 									}
 									readOnly

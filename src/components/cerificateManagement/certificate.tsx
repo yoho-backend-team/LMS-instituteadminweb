@@ -12,6 +12,7 @@ import {
 	selectLoading,
 } from '../../features/certificateManagement/reducers/selectors';
 import { deleteCertificate } from '../../features/certificateManagement/services';
+import { GetLocalStorage } from '../../utils/localStorage';
 
 export interface Certificate {
 	id: number;
@@ -82,8 +83,8 @@ export const CertificateManager: React.FC = () => {
 	const fetchgetStudentCertificate = async () => {
 		try {
 			const params_data = {
-				branchid: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-				InstituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				branchid: GetLocalStorage("selectedBranchId"),
+				InstituteId: GetLocalStorage("instituteId"),
 				page: 1,
 			};
 			dispatch(getStudentCertificate(params_data));

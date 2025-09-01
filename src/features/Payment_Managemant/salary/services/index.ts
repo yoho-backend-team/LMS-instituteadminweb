@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../../apis/index";
 
 
@@ -23,13 +24,13 @@ export const AddSalary = async (data: any) => {
 };
 
 export const updateSalary = async (data: any) => {
-  const response = await Client.payment.staff_salary.update(data); 
+  const response = await Client.payment.staff_salary.update(data);
   console.log("Salary edit successfully", response.data);
   return response.data;
 };
 
 export const DeleteSalary = async (data: any) => {
-  const response = await Client.payment.staff_salary.delete(data); 
+  const response = await Client.payment.staff_salary.delete(data);
   console.log("Salary delete successfully", response.data);
   return response.data;
 };

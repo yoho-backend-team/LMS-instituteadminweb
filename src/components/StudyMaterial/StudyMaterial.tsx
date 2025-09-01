@@ -28,6 +28,8 @@ import {
 import { updateStudyMaterialStatus } from '../../features/StudyMaterials/service';
 // import SkeletonCard from '../../components/shared/SkeletonCard/SkeletonCard';
 import ContentLoader from 'react-content-loader';
+import { GetLocalStorage } from '../../utils/localStorage';
+import type { AppDispatch } from '../../store/store';
 
 interface Note {
 	id: number;
@@ -46,7 +48,7 @@ const NotesManagement = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [editingNote, setEditingNote] = useState<Note | null>(null);
 	const [selectedNote, setSelectedNote] = useState<null | Note>(null);
-	const dispatch = useDispatch<any>();
+	const dispatch = useDispatch<AppDispatch>();
 	const studyMaterials = useSelector(selectStudyMaterials);
 	const loading = useSelector(selectLoading);
 	const branches = useSelector(selectBranches);
@@ -54,7 +56,7 @@ const NotesManagement = () => {
 
 	useEffect(() => {
 		const params = {
-			branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+			branch: GetLocalStorage("selectedBranchId"),
 		};
 		dispatch(GetBranchThunks(params));
 		dispatch(GetCourseThunks(params));
@@ -288,43 +290,43 @@ const NotesManagement = () => {
 
 	const filteredNotes = Array.isArray(studyMaterials)
 		? studyMaterials.filter((note: any) => {
-				let statusMatch = true;
-				if (filterValues.status) {
-					if (note.status) {
-						statusMatch = note.status === filterValues.status;
-					} else if (typeof note.is_active === 'boolean') {
-						statusMatch =
-							filterValues.status === 'Active'
-								? note.is_active === true
-								: note.is_active === false;
-					} else if (typeof note.active === 'boolean') {
-						statusMatch =
-							filterValues.status === 'Active'
-								? note.active === true
-								: note.active === false;
-					} else if (note.status === 'active' || note.status === 'inactive') {
-						statusMatch =
-							(filterValues.status === 'Active' && note.status === 'active') ||
-							(filterValues.status === 'Completed' &&
-								note.status === 'inactive');
-					}
+			let statusMatch = true;
+			if (filterValues.status) {
+				if (note.status) {
+					statusMatch = note.status === filterValues.status;
+				} else if (typeof note.is_active === 'boolean') {
+					statusMatch =
+						filterValues.status === 'Active'
+							? note.is_active === true
+							: note.is_active === false;
+				} else if (typeof note.active === 'boolean') {
+					statusMatch =
+						filterValues.status === 'Active'
+							? note.active === true
+							: note.active === false;
+				} else if (note.status === 'active' || note.status === 'inactive') {
+					statusMatch =
+						(filterValues.status === 'Active' && note.status === 'active') ||
+						(filterValues.status === 'Completed' &&
+							note.status === 'inactive');
 				}
+			}
 
-				let courseMatch = true;
-				if (filterValues.course) {
-					if (note.course_name) {
-						courseMatch = note.course_name === filterValues.course;
-					} else if (note.course) {
-						const filterCourseId = courseNameToIdMap[filterValues.course];
-						courseMatch =
-							note.course === filterCourseId ||
-							note.course === filterValues.course;
-					} else if (note.courseName) {
-						courseMatch = note.courseName === filterValues.course;
-					}
+			let courseMatch = true;
+			if (filterValues.course) {
+				if (note.course_name) {
+					courseMatch = note.course_name === filterValues.course;
+				} else if (note.course) {
+					const filterCourseId = courseNameToIdMap[filterValues.course];
+					courseMatch =
+						note.course === filterCourseId ||
+						note.course === filterValues.course;
+				} else if (note.courseName) {
+					courseMatch = note.courseName === filterValues.course;
 				}
-				return statusMatch && courseMatch;
-		  })
+			}
+			return statusMatch && courseMatch;
+		})
 		: [];
 
 	return (

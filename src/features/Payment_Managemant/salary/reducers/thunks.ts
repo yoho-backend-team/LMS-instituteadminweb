@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	AddSalary,
 	DeleteSalary,
@@ -18,6 +19,7 @@ export const GetAllSalaryThunks = (params: any) => async (dispatch: any) => {
 		dispatch(setLoading(true));
 		const response = await GetAllSalary(params);
 		dispatch(getSalary(response.data));
+		return response
 	} catch (error) {
 		console.log('Error in GetAllSalaryThunks:', error);
 	} finally {

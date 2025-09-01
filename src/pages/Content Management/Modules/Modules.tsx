@@ -17,21 +17,22 @@ import {
     UpdateModuleStatusThunk,
 } from '../../../features/Content_Management/reducers/thunks';
 import ContentLoader from 'react-content-loader';
+import { GetLocalStorage } from '../../../utils/localStorage';
 
 interface ModuleCardProps {
     id: string;
-    uuid: string; 
+    uuid: string;
     title: string;
     courseName?: string;
     description?: string;
     isActive: boolean;
     fileUrl?: string;
     fileName: string;
-    branch?: string;    
+    branch?: string;
     course?: {
         course_name: string;
     };
-     video: string; 
+    video: string;
     file?: File | null;
 }
 
@@ -73,8 +74,8 @@ const Modules = () => {
 
     useEffect(() => {
         const paramsData = {
-            branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-            institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+            branch_id: GetLocalStorage("instituteId"),
+            institute_id: GetLocalStorage("selectedBranchId"),
             page: 1,
         };
         dispatch(GetallModuleThunks(paramsData));
@@ -307,15 +308,14 @@ const Modules = () => {
 
                             <div className='mt-4 flex justify-between items-center'>
                                 <div
-                                    className={`flex items-center gap-1 font-medium ${
-                                        toggleStatusMap[card.id] !== undefined
+                                    className={`flex items-center gap-1 font-medium ${toggleStatusMap[card.id] !== undefined
                                             ? toggleStatusMap[card.id]
                                                 ? 'text-green-500'
                                                 : 'text-red-500'
                                             : card.isActive
-                                            ? 'text-green-500'
-                                            : 'text-red-500'
-                                    }`}
+                                                ? 'text-green-500'
+                                                : 'text-red-500'
+                                        }`}
                                 >
                                     <span className='text-sm'>
                                         {toggleStatusMap[card.id] !== undefined
@@ -323,19 +323,18 @@ const Modules = () => {
                                                 ? 'Active'
                                                 : 'Inactive'
                                             : card.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
+                                                ? 'Active'
+                                                : 'Inactive'}
                                     </span>
                                     <span
-                                        className={`w-2 h-2 rounded-full ${
-                                            toggleStatusMap[card.id] !== undefined
+                                        className={`w-2 h-2 rounded-full ${toggleStatusMap[card.id] !== undefined
                                                 ? toggleStatusMap[card.id]
                                                     ? 'bg-green-500'
                                                     : 'bg-red-500'
                                                 : card.isActive
-                                                ? 'bg-green-500'
-                                                : 'bg-red-500'
-                                        }`}
+                                                    ? 'bg-green-500'
+                                                    : 'bg-red-500'
+                                            }`}
                                     />
                                 </div>
 
@@ -357,8 +356,8 @@ const Modules = () => {
                                                             ? 'active'
                                                             : 'inactive'
                                                         : card.isActive
-                                                        ? 'active'
-                                                        : 'inactive',
+                                                            ? 'active'
+                                                            : 'inactive',
                                             })
                                         }
                                     />

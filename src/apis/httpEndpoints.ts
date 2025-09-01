@@ -1,18 +1,14 @@
-import secureLocalStorage from 'react-secure-storage';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetLocalStorage } from '../utils/localStorage';
 
 export const getInstituteDetails = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
-		const institute = GetLocalStorage('instituteId');
-		return institute;
-	}
+	const institute: any = GetLocalStorage('instituteId');
+	return institute ?? undefined;
 };
 
 export const getSelectedBranchId = () => {
-	if (typeof secureLocalStorage !== 'undefined') {
-		const branch = GetLocalStorage('selectedBranchId');
-		return branch;
-	}
+	const branch: any = GetLocalStorage('selectedBranchId');
+	return branch ?? undefined;
 };
 
 const generateEndpoints = () => {
@@ -50,13 +46,13 @@ const generateEndpoints = () => {
 			getWithRoleName: '/api/institutes/attedance/user-list/',
 		},
 		branch: {
-			getDash: `/api/institutes/${instituteId}/branches/`,
-			getAll: `/api/institutes/${instituteId}/branches/`,
-			create: `/api/institutes/${instituteId}/branches/`,
-			getByBranchId: `/api/institutes/${instituteId}/branches/:branchuuid`,
-			edit: `/api/institutes/${instituteId}/branches/:branchuuid`,
-			delete: `/api/institutes/${instituteId}/branches/:branchuuid`,
-			updatestatus: `/api/institutes/${instituteId}/branches/:branchuuid`,
+			getDash: `/api/institutes/:instituteid/branches/`,
+			getAll: `/api/institutes/:instituteid/branches/`,
+			create: `/api/institutes/:instituteid/branches/`,
+			getByBranchId: `/api/institutes/:instituteid/branches/:branchuuid`,
+			edit: `/api/institutes/:instituteid/branches/:branchuuid`,
+			delete: `/api/institutes/:instituteid/branches/:branchuuid`,
+			updatestatus: `/api/institutes/:instituteid/branches/:branchuuid`,
 		},
 		faq: {
 			create: `/api/institutes/faq`,
@@ -98,14 +94,14 @@ const generateEndpoints = () => {
 			update_status: '/api/institutes/course/note/update/',
 		},
 		batch: {
-			create: `/api/institutes/${instituteId}/branches/`,
-			getAll: `/api/institutes/${instituteId}/branches/`,
-			// getWithId: `/api/institutes/${instituteId}/branches/${branchId}/batches/all`,
+			create: `/api/institutes/:instituteid/branches/`,
+			getAll: `/api/institutes/:instituteid/branches/`,
+			// getWithId: `/api/institutes/:instituteid/branches/${branchId}/batches/all`,
 			getWithId: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/batches/all`,
 			update: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/update/:batchId`,
-			// update: `/api/institutes/${instituteId}/branches/${branchId}/update/`,
-			delete: `/api/institutes/${instituteId}/branches/${branchId}/batches/:batchId`,
-			getBatchwithCourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/:courseId/batches`,
+			// update: `/api/institutes/:instituteid/branches/${branchId}/update/`,
+			delete: `/api/institutes/:instituteid/branches/${branchId}/batches/:batchId`,
+			getBatchwithCourse: `/api/institutes/:instituteid/branches/:branchid/courses/:courseId/batches`,
 		},
 		online_class: {
 			getAll: `/api/institutes/class/online/all`,
@@ -130,22 +126,22 @@ const generateEndpoints = () => {
 		},
 		student: {
 			// get: `/api/institutes/${instituteId}/branches/${branchId}/students`,
-			get: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/students`,
-			getWithId: `/api/institutes/auth/student/${instituteId}/students/`,
-			getall: `/api/institutes/${instituteId}/branches/${branchId}/:courseUUID/students`,
-			getWithBatch: `/api/institutes/${instituteId}/branches/`,
-			getWithCourse: `/api/institutes/${instituteId}/branches/`,
+			get: `/api/institutes/:instituteid/branches/:branchid/students`,
+			getWithId: `/api/institutes/auth/student/:instituteid/students/`,
+			getall: `/api/institutes/:instituteid/branches/:branchid/:courseUUID/students`,
+			getWithBatch: `/api/institutes/:instituteid/branches/`,
+			getWithCourse: `/api/institutes/:instituteid/branches/`,
 			update: `/api/institutes/:instituteId/students/update/`,
 			delete: `/api/institutes/student/student/`,
-			activity: `/api/institutes/${instituteId}/students/student/activity/`,
+			activity: `/api/institutes/:instituteid/students/student/activity/`,
 			liveClasses: `/api/institutes/class/online/all/`,
 			// classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8e e4/students/`,
-			classess: `/api/institutes/${instituteId}/branches/${branchId}/students`,
+			classess: `/api/institutes/:instituteid/branches/:branchid/students`,
 		},
 		payment: {
 			fee: {
 				create: '/api/institutes/payments/student-fee/create',
-				getAllSalary: `/api/institutes/payments/student-fee/all/?branch_id=${branchId}`,
+				getAllSalary: `/api/institutes/payments/student-fee/all/?branch_id=:branchid`,
 				delete: '/api/institutes/payments/student-fee/',
 				update: '/api/institutes/payments/student-fee/update',
 			},
@@ -161,7 +157,7 @@ const generateEndpoints = () => {
 				all: '/api/institute/student/id_cards/all',
 			},
 			staff: {
-				all: `/api/staffidcard/${instituteId}/${branchId}/`,
+				all: `/api/staffidcard/:instituteid/:branchid/`,
 			},
 		},
 		staff: {
@@ -184,7 +180,7 @@ const generateEndpoints = () => {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,
 		},
 		community: {
-			all: `/api/institutes/community/${instituteId}/branches/${branchId}`,
+			all: `/api/institutes/community/:instituteid/branches/:branchid`,
 			messages: `/api/institutes/community/messages/`,
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},
@@ -239,7 +235,7 @@ const generateEndpoints = () => {
 			get: '/api/institutes/user/activities/',
 		},
 		reports: {
-			get: `/api/institutes/${instituteId}/report/`,
+			get: `/api/institutes/:instituteid/report/`,
 		},
 		placements: {
 			create: `/api/placements/create`,
@@ -261,7 +257,7 @@ const generateEndpoints = () => {
 		},
 		certificate: {
 			// get :'/api/certificate/973195c0-66ed-47c2-b098-d8989d3e4529/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22',
-			get: `/api/certificate/${instituteId}/${branchId}/`,
+			get: `/api/certificate/:instituteid/:branchid/`,
 			put: '/api/certificate/update/:certificateid',
 			create: '/api/certificate/create',
 			delete: '/api/certificate/delete/:certificateid',

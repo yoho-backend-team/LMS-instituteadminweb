@@ -37,6 +37,7 @@ import { createstudentdata } from '../../../features/StudentManagement/services/
 import { toast } from 'react-toastify';
 import { uploadFile } from '../../../features/staff/services';
 import ContentLoader from 'react-content-loader';
+import { GetLocalStorage } from '../../../utils/localStorage';
 
 const Students = () => {
 	const [showFilters, setShowFilters] = useState(false);
@@ -209,7 +210,7 @@ const Students = () => {
 	const fetchStudentManagement = () => {
 		dispatch(
 			getStudentmanagement({
-				branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				branch_id: GetLocalStorage("selectedBranchId"),
 				page: 1,
 			})
 		);
@@ -229,9 +230,8 @@ const Students = () => {
 			lastName: student.last_name,
 			email: student.email,
 			location: student.contact_info
-				? `${student.contact_info.address1 || ''}, ${
-						student.contact_info.city || student.contact_info.state || ''
-				  }`.trim()
+				? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
+					}`.trim()
 				: 'Location not specified',
 			image: student.image,
 			phone: student.contact_info?.phone_number,
