@@ -67,7 +67,7 @@ export const CertificateManager: React.FC = () => {
 	const dispatch = useDispatch<any>();
 	const certificateData = useSelector(selectCertificate);
 
-	const [certificates, setCertificates] = useState(initialCertificates);
+	const [, setCertificates] = useState(initialCertificates);
 	const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 	const [showFilter, setShowFilter] = useState(false);
 	const [selectedCourse, setSelectedCourse] = useState('');
@@ -93,7 +93,18 @@ export const CertificateManager: React.FC = () => {
 		}
 	};
 	useEffect(() => {
-		fetchgetStudentCertificate();
+		(async () => {
+			try {
+				const params_data = {
+					branchid: GetLocalStorage("selectedBranchId"),
+					InstituteId: GetLocalStorage("instituteId"),
+					page: 1,
+				};
+				dispatch(getStudentCertificate(params_data));
+			} catch (error) {
+				console.log(error);
+			}
+		})()
 	}, [dispatch]);
 
 	const handleAdd = () => {
@@ -121,8 +132,8 @@ export const CertificateManager: React.FC = () => {
 		try {
 			const data = {
 				certificateid,
-				InstituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
-				branchid: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				// InstituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				// branchid: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
 			};
 			const result = await deleteCertificate(data);
 			if (result) {
@@ -148,20 +159,20 @@ export const CertificateManager: React.FC = () => {
 			const newCert: Certificate = {
 				id: Date.now(),
 				title: formData.title || '',
-				description:
-					(formData.title?.split(' ')[0] || '') +
+				description: (formData.title?.split(' ')[0] || '') +
 					' Stack is a collection of Technologies for building web application',
 				branch: formData.branch || '',
 				batch: formData.batch || '',
 				student: formData.student || '',
-				email:
-					formData.student?.toLowerCase().replace(' ', '') + '@example.com' ||
+				email: formData.student?.toLowerCase().replace(' ', '') + '@example.com' ||
 					'',
+				uuid: ''
 			};
 			setCertificates((prev) => [...prev, newCert]);
 		}
 		setIsModalOpen(false);
 	};
+
 	const filteredCertificates =
 		certificateData?.data?.flatMap((cert: any) => {
 			if (!cert.student || !Array.isArray(cert.student)) return [];

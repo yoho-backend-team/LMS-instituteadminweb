@@ -130,19 +130,19 @@ const TicketsPage: React.FC = () => {
   }, []);
 
 
-  const TicketSkeleton = () => (
-    <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
-      <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
-      <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
-      <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
-      <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
-      <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-      <div className="flex justify-between items-center mt-4">
-        <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-        <div className="h-3 bg-gray-300 rounded w-1/6"></div>
-      </div>
-    </div>
-  );
+  // const TicketSkeleton = () => (
+  //   <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
+  //     <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
+  //     <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+  //     <div className="flex justify-between items-center mt-4">
+  //       <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+  //       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+  //     </div>
+  //   </div>
+  // );
 
 
   return (

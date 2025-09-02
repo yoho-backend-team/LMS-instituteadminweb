@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import {
@@ -45,7 +46,6 @@ import {
 	createstudentnotificationdata,
 	resendstudentnotificationdata,
 } from '../../../features/StudentNotification/services/Notification';
-import { getBranchService } from '../../../features/batchManagement/services';
 import ContentLoader from 'react-content-loader';
 
 interface StudentNotificationData {
@@ -211,22 +211,22 @@ const StudentNotifications = () => {
 			console.log(error);
 		}
 	};
-	const [branches, setBranches] = useState<any[]>([]);
+	// const [branches, setBranches] = useState<any[]>([]);
 
-	const fetchAllBranches = async () => {
-		try {
-			const response = await getBranchService({});
-			if (response) {
-				setBranches(response?.data);
-			}
-		} catch (error) {
-			console.log('Error fetching branch data:', error);
-		}
-	};
+	// const fetchAllBranches = async () => {
+	// 	try {
+	// 		const response = await getBranchService({});
+	// 		if (response) {
+	// 			setBranches(response?.data);
+	// 		}
+	// 	} catch (error) {
+	// 		console.log('Error fetching branch data:', error);
+	// 	}
+	// };
 
-	useEffect(() => {
-		fetchAllBranches();
-	}, []);
+	// useEffect(() => {
+	// 	fetchAllBranches();
+	// }, []);
 
 	return (
 		<div className='p-6 min-h-screen'>

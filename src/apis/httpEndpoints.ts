@@ -73,12 +73,12 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		course: {
-			getall: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
-			get: `/api/institutes/ ${instituteId}/${branchId}/course/:courseId`,
-			update: `/api/institutes/${instituteId}/categories/`,
-			withBranch: `/api/institutes/${instituteId}/branches/`,
-			add: `/api/institutes/${instituteId}/categories/`,
-			template: `/api/institutes/${instituteId}/branches/${branchId}/course-template`,
+			getall: `/api/institutes/:instituteid/branches/:branchid/courses`,
+			get: `/api/institutes/:instituteid/:branchid/course/:courseId`,
+			update: `/api/institutes/:instituteid/categories/`,
+			withBranch: `/api/institutes/:instituteid/branches/`,
+			add: `/api/institutes/:instituteid/categories/`,
+			template: `/api/institutes/:instituteid/branches/:branchid/course-template`,
 		},
 		course_module: {
 			get: '/api/institutes/course-module/',
@@ -256,7 +256,6 @@ const generateEndpoints = () => {
 			post: '/notification/subscribe',
 		},
 		certificate: {
-			// get :'/api/certificate/973195c0-66ed-47c2-b098-d8989d3e4529/%2290c93163-01cf-4f80-b88b-4bc5a5dd8ee4%22',
 			get: `/api/certificate/:instituteid/:branchid/`,
 			put: '/api/certificate/update/:certificateid',
 			create: '/api/certificate/create',

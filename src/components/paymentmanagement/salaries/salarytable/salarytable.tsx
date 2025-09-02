@@ -24,7 +24,7 @@ interface SalaryTableProps {
 	cardData?: any[];
 	setCardData?: React.Dispatch<React.SetStateAction<any[]>>;
 	onView: (salary: any) => void;
-	loading: boolean;
+	loading?: boolean;
 }
 
 const SalaryTable: React.FC<SalaryTableProps> = ({
@@ -33,7 +33,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 	startDate,
 	endDate,
 	// cardData,
-	onView,
+	// onView,
 	loading,
 	// setCardData,
 }) => {
@@ -48,7 +48,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 	const AllSalary = useSelector((state: RootState) => state?.StaffSalary?.salary)
 	const [cardData, setCardData] = useState<any[]>([]);
 
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<any>({
 		staff: '',
 		transactionId: '',
 		salaryAmount: '',
@@ -310,7 +310,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 					) : filteredData.length > 0 ? (
 						// Data rows
 						<tbody>
-							{filteredData.map((row) => (
+							{filteredData.map((row: any) => (
 								<tr key={row.id} className='border-t text-sm font-semibold'>
 									<td className='py-3 px-4'>#{row.id}</td>
 									<td className='py-3 px-4'>{row.transaction_id}</td>

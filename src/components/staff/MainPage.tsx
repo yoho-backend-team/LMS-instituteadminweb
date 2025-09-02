@@ -44,7 +44,7 @@ const MainPage: React.FC = () => {
         <div className="flex items-
         center gap-4">
           <Avatar className='!w-[70px] !h-[70px]'>
-            <AvatarImage src={GetImageUrl(staffMember?.image)} alt={staffMember?.full_name} />
+            <AvatarImage src={GetImageUrl(staffMember?.image) ?? undefined} alt={staffMember?.full_name} />
           </Avatar>
           <h3 style={{ ...FONTS.heading_02, color: COLORS.gray_dark_02 }}>{staffMember?.full_name}</h3>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from 'react';
 import { useEffect, useState, useRef } from 'react';
 import {
@@ -38,6 +39,15 @@ import { toast } from 'react-toastify';
 import { uploadFile } from '../../../features/staff/services';
 import ContentLoader from 'react-content-loader';
 import { GetLocalStorage } from '../../../utils/localStorage';
+import {
+	GetBranchCourseThunks,
+	GetBranchThunks,
+} from "../../../features/Content_Management/reducers/thunks";
+import {
+	Branch,
+	BranchCourse,
+} from "../../../features/Content_Management/reducers/selectors";
+
 
 const Students = () => {
 	const [showFilters, setShowFilters] = useState(false);
@@ -49,8 +59,11 @@ const Students = () => {
 	const navigate = useNavigate();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const loading = useSelector(selectLoading);
+	const [branch, setBranch] = useState<string | undefined>(undefined);
+	const branches = useSelector(Branch);
+	const courses = useSelector(BranchCourse);
 
-	// State for the new student form
+
 	const [newStudentForm, setNewStudentForm] = useState({
 		first_name: '',
 		last_name: '',
@@ -115,7 +128,7 @@ const Students = () => {
 	const toggleFilters = () => setShowFilters(!showFilters);
 	const toggleAddStudent = () => setShowAddStudent(!showAddStudent);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { id, value } = e.target;
 		setNewStudentForm((prev) => ({ ...prev, [id]: value }));
 	};
@@ -195,7 +208,14 @@ const Students = () => {
 			setShowAddStudent(false);
 			toast.success('Student added successfully');
 
-			fetchStudentManagement();
+			(() => {
+				dispatch(
+					getStudentmanagement({
+						branch_id: GetLocalStorage("selectedBranchId"),
+						page: 1,
+					})
+				);
+			})()
 		} catch (error) {
 			console.error('Error adding student:', error);
 			toast.error('Failed to add student');
@@ -207,18 +227,26 @@ const Students = () => {
 	const studentData = useSelector(selectStudent);
 	const dispatch = useDispatch<any>();
 
-	const fetchStudentManagement = () => {
-		dispatch(
-			getStudentmanagement({
-				branch_id: GetLocalStorage("selectedBranchId"),
-				page: 1,
-			})
-		);
-	};
 
 	useEffect(() => {
-		fetchStudentManagement();
-	}, []);
+		(() => {
+			dispatch(
+				getStudentmanagement({
+					branch_id: GetLocalStorage("selectedBranchId"),
+					page: 1,
+				})
+			);
+		})()
+	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(GetBranchThunks([]));
+	}, [dispatch]);
+
+
+	useEffect(() => {
+		dispatch(GetBranchCourseThunks(branch || ""));
+	}, [branch, dispatch]);
 
 	const formatStudentData = (data: any) => {
 		if (!data || !data.data) return [];
@@ -451,28 +479,44 @@ const Students = () => {
 								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
 							/>
 						</div>
-						<div className='space-y-2'>
-							<label htmlFor='branch' className='text-[16px] font-medium'>
-								Select Branch
-							</label>
-							<Input
-								id='branch'
+
+						<div className="flex flex-col gap-2">
+							<label htmlFor="branch">Branch</label>
+							<select
+								id="branch"
+								className="border p-2 rounded h-10"
 								value={newStudentForm.branch}
-								onChange={handleInputChange}
-								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
-							/>
+								onChange={(e) => { handleInputChange(e); setBranch(e.target.value) }}
+							>
+								<option value="">Select Branch</option>
+								{Array.isArray(branches) &&
+									branches.map((b: any) => (
+										<option key={b.id} value={b.uuid}>
+											{b.branch_identity}
+										</option>
+									))}
+							</select>
 						</div>
-						<div className='space-y-2'>
-							<label htmlFor='course' className='text-[16px] font-medium'>
-								Select Course
-							</label>
-							<Input
-								id='course'
+
+						<div className="flex flex-col gap-2">
+							<label htmlFor="course">Select Course</label>
+							<select
+								id="course"
+								className="border p-2 rounded h-10"
 								value={newStudentForm.course}
 								onChange={handleInputChange}
-								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
-							/>
+								disabled={!branch}
+							>
+								<option value="">Select Course</option>
+								{Array.isArray(courses) &&
+									courses.map((c: any) => (
+										<option key={c.uuid} value={c.uuid}>
+											{c.course_name}
+										</option>
+									))}
+							</select>
 						</div>
+
 					</CardContent>
 				</Card>
 

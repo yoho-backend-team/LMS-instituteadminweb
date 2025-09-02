@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import icon1 from '../../assets/navbar/Icon1.png';
@@ -40,27 +41,27 @@ const AccountProfile: React.FC = () => {
 
 
 
-	type TimelineItem = {
-		title: string;
-		description: string;
-		date: string;
-		status: string;
-	};
+	// type TimelineItem = {
+	// 	title: string;
+	// 	description: string;
+	// 	date: string;
+	// 	status: string;
+	// };
 
-	const timelineData: TimelineItem[] = [
-		{
-			title: 'Note',
-			description: 'JhgfdsA - Notes Created',
-			date: 'July 17, 2025 At 06:13:23 Pm',
-			status: 'Notes Created',
-		},
-		{
-			title: 'Note',
-			description: 'JhgfdsA - Notes Created',
-			date: 'July 17, 2025 At 06:13:23 Pm',
-			status: 'Notes Created',
-		},
-	];
+	// const timelineData: TimelineItem[] = [
+	// 	{
+	// 		title: 'Note',
+	// 		description: 'JhgfdsA - Notes Created',
+	// 		date: 'July 17, 2025 At 06:13:23 Pm',
+	// 		status: 'Notes Created',
+	// 	},
+	// 	{
+	// 		title: 'Note',
+	// 		description: 'JhgfdsA - Notes Created',
+	// 		date: 'July 17, 2025 At 06:13:23 Pm',
+	// 		status: 'Notes Created',
+	// 	},
+	// ];
 
 	const dispatch = useDispatch<any>();
 	const timeline = useSelector(selectTimeline);
@@ -116,11 +117,10 @@ const AccountProfile: React.FC = () => {
 				<div className='w-68 bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 ml-3 mt-5 '>
 					<ul className='space-y-3'>
 						<button
-							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-								activePanel === 'first'
-									? 'bg-cyan-500 text-white'
-									: 'bg-white text-[#716F6F]'
-							} `}
+							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'first'
+								? 'bg-cyan-500 text-white'
+								: 'bg-white text-[#716F6F]'
+								} `}
 							onClick={() => {
 								setActivePanel('first');
 								setActiveIndex(0);
@@ -130,11 +130,10 @@ const AccountProfile: React.FC = () => {
 							<span style={{ ...FONTS.heading_06_bold }}>Account</span>
 						</button>
 						<button
-							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-								activePanel === 'second'
-									? 'bg-cyan-500 text-white'
-									: 'bg-white text-[#716F6F]'
-							}`}
+							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'second'
+								? 'bg-cyan-500 text-white'
+								: 'bg-white text-[#716F6F]'
+								}`}
 							onClick={() => {
 								setActivePanel('second');
 								setActiveIndex(1);
@@ -148,11 +147,10 @@ const AccountProfile: React.FC = () => {
 							<span style={{ ...FONTS.heading_06_bold }}>Security</span>
 						</button>
 						<button
-							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-								activePanel === 'third'
-									? 'bg-cyan-500 text-white'
-									: 'bg-white text-[#716F6F]'
-							}`}
+							className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === 'third'
+								? 'bg-cyan-500 text-white'
+								: 'bg-white text-[#716F6F]'
+								}`}
 							onClick={() => {
 								setActivePanel('third');
 								setActiveIndex(2);
@@ -189,7 +187,7 @@ const AccountProfile: React.FC = () => {
 										style={{ objectFit: 'cover' }} // Optional styling
 									/>
 									<h3 className="mb-1 mt-1 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_05_bold }}>Albert Elnstein</h3>
-									<p className="text-gray-500 mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
+									<p className="mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p>
 									<button className="bg-green-500 h-[38px] w-[107px] text-white  rounded-2xl hover:bg-green-600" style={{ ...FONTS.heading_06 }}>
 										Active
 									</button>
@@ -419,7 +417,7 @@ const AccountProfile: React.FC = () => {
 										<div className=' border-l-4 border-green-500 h-35 w-0 ml-17 mb-20'></div>
 									</div>
 									<br></br>
-									<div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg shadow-md px-4 py-4 w-[500px]" >
+									<div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]" >
 										<h3 className="text-md font-semibold" style={{ ...FONTS.heading_05_bold }}>{item.title}</h3>
 										<p className="text-sm text-gray-600 ">
 											<span className='block mb-3' style={{ ...FONTS.heading_06_light }}>{item.action}</span>

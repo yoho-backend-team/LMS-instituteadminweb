@@ -10,19 +10,19 @@ type props = {
     uuid: string
 }
 
-const CardOptions:React.FC<props> = ({uuid}) => {
+const CardOptions: React.FC<props> = ({ uuid }) => {
     const [alertModal, setAlertModal] = useState<boolean>(false)
     const navigate = useNavigate();
     const handleView = () => {
         navigate(`/users/details/${uuid}`);
     }
 
-    const handleDelete = async() => {
+    const handleDelete = async () => {
         try {
-            const response = await deleteUsers(uuid);
+            await deleteUsers(uuid);
             setAlertModal(false)
         } catch (error) {
-            
+            console.log(error)
         }
     }
     return (
@@ -42,7 +42,7 @@ const CardOptions:React.FC<props> = ({uuid}) => {
             </button>
 
             <button
-                onClick={()=> setAlertModal(true)}
+                onClick={() => setAlertModal(true)}
                 className={`flex items-center px-3 py-2 gap-2 w-full rounded-lg border bg-gray-100 hover:bg-[${COLORS.primary}] transition`}
             >
                 <img

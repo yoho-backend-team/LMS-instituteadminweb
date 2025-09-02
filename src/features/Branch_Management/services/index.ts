@@ -2,10 +2,10 @@
 import Client from "../../../apis/index";
 
 // Type definitions
-interface GetAllBranchesParams {
-  institute_id: string;
-  page?: number;
-}
+// interface GetAllBranchesParams {
+//   institute_id: string;
+//   page?: number;
+// }
 
 interface GetBranchByIdParams {
   uuid: string;
@@ -28,10 +28,10 @@ interface CreateBranchParams {
   institute_id: string;
 }
 
-interface UpdateBranchParams {
-  uuid: string;
-  data: Partial<CreateBranchParams>;
-}
+// interface UpdateBranchParams {
+//   uuid: string;
+//   data: Partial<CreateBranchParams>;
+// }
 
 interface UpdateStatusParams {
   uuid: string;
@@ -41,8 +41,8 @@ interface UpdateStatusParams {
 
 
 // Get all branches
-export const GetAllBranches = async (params: GetAllBranchesParams) => {
-  const response = await Client.branch.getAll(params);
+export const GetAllBranches = async () => {
+  const response = await Client.branch.getAll("");
   return response;
 };
 
@@ -78,8 +78,8 @@ export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
 
 export const DeleteBranch = async (params: DeleteBranchParams) => {
   const response = await Client.branch.delete(
-    params.institute_id,
-    params.uuid
+    params.uuid,
+    params.institute_id
   );
   return response.data;
 };

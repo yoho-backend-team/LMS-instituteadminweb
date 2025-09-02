@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { StoreLocalStorage } from '../../../utils/localStorage';
+import { GetLocalStorage, StoreLocalStorage } from '../../../utils/localStorage';
 import { getAllBranches } from '../../Class Management/Live Class/services';
 import { GetProfileDetail } from '../service';
 import { setAllBranch, setAuthData, setUSerDetails } from './slice';
@@ -22,13 +22,15 @@ export const GetProfileThunk = () => async (dispatch: any) => {
 	}
 };
 
-export const GetBranchThunks =
-	(institute: { uuid: string }) => async (dispatch: any) => {
-		try {
-			const response = await getAllBranches('');
+export const GetBranchThunks = () => async (dispatch: any) => {
+	try {
+		const response = await getAllBranches();
+		const branch = GetLocalStorage("selectedBranchId")
+		if (!branch) {
 			StoreLocalStorage('selectedBranchId', response?.data?.[0]?.uuid);
-			dispatch(setAllBranch(response?.data));
-		} catch (error) {
-			console.log(error);
 		}
-	};
+		dispatch(setAllBranch(response?.data));
+	} catch (error) {
+		console.log(error);
+	}
+};

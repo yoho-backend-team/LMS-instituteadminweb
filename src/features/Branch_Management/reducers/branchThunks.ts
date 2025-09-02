@@ -16,26 +16,26 @@ import {
 	updateBranchStatus,
 } from './branchSlice';
 
-interface BranchParams {
-	institute_id: string;
-	page?: number;
-}
+// interface BranchParams {
+// 	institute_id: string;
+// 	page?: number;
+// }
 
-interface DeleteBranchParams {
-	id: string;
-	uuid: string;
-}
+// interface DeleteBranchParams {
+// 	id: string;
+// 	uuid: string;
+// }
 
-interface StatusUpdateParams {
-	branch_id: string;
-	status: 'active' | 'inactive';
-	uuid: string;
-}
+// interface StatusUpdateParams {
+// 	branch_id: string;
+// 	status?: 'active' | 'inactive';
+// 	uuid: string;
+// }
 
-export const GetAllBranchesThunk = (params: any) => async (dispatch: any) => {
+export const GetAllBranchesThunk = () => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
-		const response = await GetAllBranches(params);
+		const response = await GetAllBranches();
 		dispatch(getBranches(response.data));
 		dispatch(setLoading(false));
 		return response.data;
@@ -76,12 +76,12 @@ export const EditBranchThunk =
 		};
 
 export const UpdateBranchStatusThunk =
-	(data: StatusUpdateParams) => async (dispatch: any) => {
+	(data: any) => async (dispatch: any) => {
 		try {
 			await ToggleBranchStatus(data);
 			dispatch(
 				updateBranchStatus({
-					branch_id: data.branch_id,
+					id: data.branch_id,
 					status: data.status,
 				})
 			);

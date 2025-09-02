@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { MoreVertical, Eye, Edit, Trash2, Download, X } from 'lucide-react';
@@ -8,7 +9,7 @@ import jsPDF from 'jspdf';
 interface FeesTableRowProps {
 	fee: any;
 	onView: (fee: Fee) => void;
-	onEdit: (fee: Fee) => boolean;
+	onEdit?: (fee: Fee) => void;
 	onDelete: (fee: Fee) => void;
 	onDownload: (fee: Fee) => void;
 }
@@ -62,12 +63,11 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
 			`Student ID: ${fee.student?.id || 'N/A'}`,
 			`Roll No: ${fee.student?.roll_no || 'N/A'}`,
 			`Paid Amount: ${fee.paid_amount || 'N/A'}`,
-			`Payment Date: ${
-				fee.payment_history?.[0]?.payment_date
-					? new Date(fee.payment_history[0].payment_date)
-							.toISOString()
-							.split('T')[0]
-					: 'N/A'
+			`Payment Date: ${fee.payment_history?.[0]?.payment_date
+				? new Date(fee.payment_history[0].payment_date)
+					.toISOString()
+					.split('T')[0]
+				: 'N/A'
 			}`,
 			`Created At: ${fee.createdAt || 'N/A'}`,
 			`Status: ${fee.is_active ? 'Active' : 'Inactive'}`,
@@ -79,9 +79,8 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
 			y += 10;
 		});
 
-		const fileName = `Fee_${
-			fee.student.full_name?.replace(/\s+/g, '_') || 'student'
-		}_${fee.id}.pdf`;
+		const fileName = `Fee_${fee.student.full_name?.replace(/\s+/g, '_') || 'student'
+			}_${fee.id}.pdf`;
 		doc.save(fileName);
 
 		setShowDropdown(false);
@@ -142,7 +141,7 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
 								</button>
 								<button
 									className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2'
-									onClick={() => onEdit(fee)}
+									onClick={() => onEdit?.(fee)}
 								>
 									<Edit className='w-4 h-4' />
 									Edit
@@ -270,8 +269,8 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
 										value={
 											fee?.payment_history?.[0]?.payment_date
 												? new Date(fee?.payment_history[0].payment_date)
-														.toISOString()
-														.split('T')[0]
+													.toISOString()
+													.split('T')[0]
 												: ''
 										}
 										readOnly

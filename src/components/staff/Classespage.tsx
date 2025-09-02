@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
@@ -21,34 +22,15 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
 
   const dispatch = useDispatch<any>()
 
-  const fetchClassData = async () => {
-    dispatch(getClassesData({
-      id: classId,
-      staff: classId,
-    }))
-  }
 
   useEffect(() => {
-    fetchClassData();
-  }, [])
-
-  const courses = [
-    {
-      title: "To Path Of MERN Stack",
-      studentCount: 2,
-      timeRange: "4:00 AM to 12:30 PM"
-    },
-    {
-      title: "Where Begins Web History",
-      studentCount: 2,
-      timeRange: "4:00 AM to 12:30 PM"
-    },
-    {
-      title: "MERN",
-      studentCount: 2,
-      timeRange: "4:00 AM to 12:30 PM"
-    }
-  ];
+    (async () => {
+      dispatch(getClassesData({
+        id: classId,
+        staff: classId,
+      }))
+    })()
+  }, [classId, dispatch])
 
   const handleViewMore = (index: number) => {
     setSelectedCourse(index);
@@ -140,7 +122,7 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {classesData?.map((course, index) => (
+          {classesData?.map((course: any, index: number) => (
             <Card
               key={index}
               className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "

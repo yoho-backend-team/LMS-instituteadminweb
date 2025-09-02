@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetAllCategories } from "../service";
 import { setCategories } from "./slice";
 

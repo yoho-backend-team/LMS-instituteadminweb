@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { MdCancel } from "react-icons/md";
 import Profile from "../../../assets/profileicon.png"
 
@@ -19,15 +19,15 @@ export default function AddUser({ onClose }: { onClose: () => void }) {
             <MdCancel />
           </button>
         </div>
-                <div> <div className='flex justify-center'><img src={Profile} alt="" /></div> 
-                <p className='text-green-500 flex justify-center'>upload</p></div>
+        <div> <div className='flex justify-center'><img src={Profile} alt="" /></div>
+          <p className='text-green-500 flex justify-center'>upload</p></div>
         <form className="flex flex-col gap-4">
           <div>
             <label className="block text-md text-[#716F6F] mb-1">Branch</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-              
+
             />
           </div>
 
@@ -36,7 +36,7 @@ export default function AddUser({ onClose }: { onClose: () => void }) {
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
 
@@ -45,7 +45,7 @@ export default function AddUser({ onClose }: { onClose: () => void }) {
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
 
@@ -54,55 +54,55 @@ export default function AddUser({ onClose }: { onClose: () => void }) {
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
-           <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">Contact</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-           
+
             />
           </div>
-             <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">Designation</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
-           <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">Select Role</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
-           <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">User Name</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-            
+
             />
           </div>
-           <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">Password</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-             
+
             />
           </div>
-           <div>
+          <div>
             <label className="block text-md text-[#716F6F] mb-1">Confirm Password</label>
             <input
               type="text"
               className="w-full border border-[#716F6F] px-3 py-2 rounded"
-              
+
             />
           </div>
 

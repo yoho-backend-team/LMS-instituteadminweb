@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { HeaderActions } from './HeaderAction';
 import { FilterSection } from './FilterSection';
 
 import { NoteModal } from './StudyModal';
-import { IoMdAdd } from 'react-icons/io';
 
 import fileIcon from '../../assets/icons/FileIcon.svg';
 import titleIcon from '../../assets/icons/Mask group (2).svg';
@@ -47,7 +47,7 @@ const NotesManagement = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [editingNote, setEditingNote] = useState<Note | null>(null);
-	const [selectedNote, setSelectedNote] = useState<null | Note>(null);
+	const [, setSelectedNote] = useState<null | Note>(null);
 	const dispatch = useDispatch<AppDispatch>();
 	const studyMaterials = useSelector(selectStudyMaterials);
 	const loading = useSelector(selectLoading);

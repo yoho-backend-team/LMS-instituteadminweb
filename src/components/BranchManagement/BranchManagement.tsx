@@ -42,7 +42,7 @@ export function LocationCardsGrid() {
 
 	useEffect(() => {
 		dispatch(
-			GetAllBranchesThunk({})
+			GetAllBranchesThunk()
 		);
 	}, [dispatch]);
 
@@ -238,7 +238,7 @@ export function LocationCardsGrid() {
 							cityName={branch.branch_identity} // Using branch_identity instead of cityName
 							address={branch.contact_info.address} // Updated path to address
 							status={branch.is_active ? 'Active' : 'Inactive'} // Convert boolean to status string
-							phoneNumber={branch.contact_info.phone_no} // Added phone number
+							// phoneNumber={branch.contact_info.phone_no} 
 							onViewDetails={() => setViewingBranch(branch)}
 							onEdit={() => handleEditBranch(branch)}
 							onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id

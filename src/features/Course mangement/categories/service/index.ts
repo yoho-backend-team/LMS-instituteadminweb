@@ -3,7 +3,7 @@ import Client from "../../../../apis/index.ts";
 
 export const GetAllCategories = async (params: { branch_id: string; page: number }) => {
   try {
-    const response = await Client.category.get({ params });
+    const response = await Client.category.get(params);
     return response.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -37,7 +37,7 @@ export const UpdateCategoriesStatus = async (params: any) => {
     throw err;
   }
 };
-export const deleteCategories = async (instituteId: string, uuid: string) => {
+export const deleteCategories = async (instituteId: any, uuid: string) => {
   try {
     const response = await Client.category.delete({ instituteId, uuid });
     return response;

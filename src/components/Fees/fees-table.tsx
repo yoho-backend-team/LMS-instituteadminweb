@@ -19,12 +19,12 @@ export const FeesTable: React.FC = () => {
 	const dispatch = useDispatch();
 	const [currentFeesData, setCurrentFeesData] = useState<any[]>([]);
 	const loading = useSelector(selectLoading);
-	
+
 
 	useEffect(() => {
 		const fetchFeesData = async () => {
 			const result = await dispatch(GetAllFeesThunks({}) as any);
-			console.log("result fees",result);
+			console.log("result fees", result);
 			setCurrentFeesData(result);
 		};
 		fetchFeesData();
@@ -35,7 +35,7 @@ export const FeesTable: React.FC = () => {
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 	const [showSuccessModal, setShowSuccessModal] = useState(false);
 	const [selectedFees, setSelectedFees] = useState<any | null>(null);
-	const [actionToPerform, setActionToPerform] = useState<null>(null);
+	const [actionToPerform, setActionToPerform] = useState<string | null>(null);
 
 	const handleAddFee = (newFee: Fee) => {
 		setCurrentFeesData((prevData) => [...prevData, newFee]);
@@ -93,13 +93,11 @@ export const FeesTable: React.FC = () => {
 			case 'edit':
 				return `Are you sure you want to edit fee ID ${selectedFees.id}?`;
 			case 'delete':
-				return `Are you sure you want to delete fee ID ${
-					selectedFees.id.split('-')[0]
-				}? This action cannot be undone.`;
+				return `Are you sure you want to delete fee ID ${selectedFees.id.split('-')[0]
+					}? This action cannot be undone.`;
 			case 'download':
-				return `Are you sure you want to download details for fee ID ${
-					selectedFees.id.split('-')[0]
-				}?`;
+				return `Are you sure you want to download details for fee ID ${selectedFees.id.split('-')[0]
+					}?`;
 			default:
 				return 'Are you sure you want to proceed with this action?';
 		}

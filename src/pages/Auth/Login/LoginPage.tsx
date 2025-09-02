@@ -2,7 +2,7 @@
 import { EyeIcon, EyeOff } from 'lucide-react';
 import image from '../../../assets/Login/image.png';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
-import { data, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
 import { useRef, useState } from 'react';
 import { AuthLogin } from '../../../features/Auth/service';
@@ -26,7 +26,7 @@ const LoginPage = () => {
 		const email = Inputemail?.current?.value;
 		const password = Inputpassword?.current?.value;
 		const response = await AuthLogin({ email, password });
-		console.log(response,"response");
+		console.log(response, "response");
 		if (response) {
 			if (response?.data?.otpVerify) {
 				toast.success(response?.message);

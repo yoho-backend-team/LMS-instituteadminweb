@@ -1,20 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { FONTS } from '../../constants/uiConstants';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '../../components/ui/table';
 import { useNavigate } from 'react-router-dom';
 
 export const Subscriptions = () => {
-	const subscriptions = useSelector(
-		(state: any) => state.subscription?.insitituteSubscription
-	);
+	// const subscriptions = useSelector(
+	// 	(state: any) => state.subscription?.insitituteSubscription
+	// );
 
 	const navigate = useNavigate();
 

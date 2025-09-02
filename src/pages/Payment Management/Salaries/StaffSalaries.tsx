@@ -6,7 +6,6 @@ import SalaryTable from '../../../components/paymentmanagement/salaries/salaryta
 import Filtersalary from '../../../components/paymentmanagement/salaries/filtersalary/filtersalary';
 import {
 	AddSalaryThunks,
-	GetAllSalaryThunks,
 	GetBranchThunks,
 } from '../../../features/Payment_Managemant/salary/reducers/thunks';
 import { useDispatch } from 'react-redux';
@@ -21,11 +20,11 @@ const StaffSalaries = () => {
 	const [showPanel, setShowPanel] = useState(false);
 	const [showFilter, setShowFilter] = useState(false);
 	const [showAddsalary, setAddsalary] = useState(false);
-	const [cardData, setCardData] = useState<any[]>([]);
+	// const [cardData, setCardData] = useState<any[]>([]);
 	const [branches, setBranches] = useState<any[]>([]);
 	const [staffList, setStaffList] = useState<any[]>([]);
 	const [selectedSalary, setSelectedSalary] = useState<any | null>(null);
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 	const [filters, setFilters] = useState({
 		search: '',
 		branch: '',
@@ -44,20 +43,20 @@ const StaffSalaries = () => {
 		balance: '',
 	});
 
-	const fetchData = async () => {
-		try {
-			setLoading(true);
-			const result = await dispatch(GetAllSalaryThunks({}));
-			if (result?.payload && Array.isArray(result.payload)) {
-				setCardData(result.payload);
-			}
-			setLoading(false);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setLoading(false);
-		}
-	};
+	// const fetchData = async () => {
+	// 	try {
+	// 		setLoading(true);
+	// 		const result = await dispatch(GetAllSalaryThunks({}));
+	// 		if (result?.payload && Array.isArray(result.payload)) {
+	// 			setCardData(result.payload);
+	// 		}
+	// 		setLoading(false);
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	} finally {
+	// 		setLoading(false);
+	// 	}
+	// };
 
 	const fetchBranches = async () => {
 		const branchRes = await dispatch(GetBranchThunks({}));
@@ -67,7 +66,7 @@ const StaffSalaries = () => {
 	};
 
 	useEffect(() => {
-		fetchData();
+		// fetchData();
 		fetchBranches();
 	}, [dispatch]);
 
@@ -122,7 +121,7 @@ const StaffSalaries = () => {
 		const result = await dispatch(AddSalaryThunks(payload));
 
 		if (result?.payload) {
-			setCardData((prev) => [...prev, result.payload]);
+			// setCardData((prev) => [...prev, result.payload]);
 			alert('Salary added successfully!');
 			handleCancel();
 		} else {
@@ -357,7 +356,7 @@ const StaffSalaries = () => {
 				// cardData={cardData}
 				// setCardData={setCardData}
 				onView={handleViewSalary}
-				loading={loading}
+			// loading={loading}
 			/>
 		</div>
 	);
