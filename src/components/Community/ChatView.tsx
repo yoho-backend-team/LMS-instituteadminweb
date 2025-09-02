@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import ChatBg from '../../assets/navbar/chatbg.png';
 import emojiIcon from '../../assets/navbar/emojiIcon.png';
 import attachIcon from '../../assets/navbar/attachIcon.png';
-import cancel from '../../assets/navbar/cancel.png';
+import Cancel from '../../assets/navbar/cancel.png';
 import image from '../../assets/navbar/image.png';
 import Button from '../../assets/navbar/Button.png';
 import circle from '../../assets/navbar/circle.png';
@@ -207,7 +207,7 @@ const ChatView: React.FC<Props> = ({
 					<div className='p-4 border-b flex flex-col items-center shrink-0'>
 						<div className='w-full flex justify-end mb-2'>
 							<button onClick={() => setShowProfile(false)}>
-								<img src={cancel} alt='cancel' className='w-5 h-5' />
+								<img src={Cancel} alt='cancel' className='w-5 h-5' />
 							</button>
 						</div>
 						<img
