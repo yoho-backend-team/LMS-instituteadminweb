@@ -1,102 +1,107 @@
-// components/ChatWindow.tsx
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
-import MessageBubble from "./MessageBubble";
-import chatimg from '../../assets/navbar/chatbackgroundimg.png';
-import sendicon from '../../assets/navbar/sendicon.png';
-import paperclip from '../../assets/navbar/Paperclip.png';
-import ciricon from '../../assets/navbar/circle.png';
-import smiley from '../../assets/navbar/Smiley.png';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import { LuSend } from "react-icons/lu";
 
-const ChatWindow: React.FC = () => {
-    const [messages, setMessages] = useState([
-        { text: "Hi there, how are you?", time: "2:24 PM", fromUser: false },
-        { text: "Waiting for your reply...", time: "2:25 PM", fromUser: false },
-        { text: "Hi, I am coming there in few minutes...", time: "2:26 PM", fromUser: true },
-        { text: "Thank you very much!", time: "2:27 PM", fromUser: false },
-    ]);
+import { FiPlus } from "react-icons/fi";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import chatimg from '../../assets/navbar/chatbackgroundimg.png'
+import { GetProfileDetail } from "../../features/Auth/service";
+import socket from "../../utils/socket";
+import dayjs from "dayjs";
+import { FONTS } from "../../constants/uiConstants";
 
-    const [input, setInput] = useState("");
+interface ChatWindowProps {
+  user: {
+    user: any;
+    first_name: string;
+    is_active: boolean;
+    image: string;
+    uuid: string;
+    messages: any
+  };
+}
 
-    const handleSend = () => {
-        if (input.trim() === "") return;
+const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
+  const [inputValue, setInputValue] = useState<any>();
+  const [adminProfile, setAdminProfile] = useState<any>();
+  const [messages, setMessages] = useState<any>();
 
-        const now = new Date();
-        const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const getProfile = async () => {
+    const response = await GetProfileDetail();
+    setAdminProfile(response?.data)
+  }
 
-        const newMessage = {
-            text: input,
-            time,
-            fromUser: true,
-        };
+  useEffect(() => {
+    getProfile();
+  }, [])
 
-        setMessages((prev) => [...prev, newMessage]);
-        setInput("");
-    };
+  const handleSend = () => {
+    const newMessage = {
+      ticket_id: user?.uuid,
+      text: inputValue,
+      senderType: "InstituteAdmin",
+      user: adminProfile?._id
+    }
+    socket.emit("sendTicketMessage", newMessage)
+    setMessages((prev: any) => [...prev, { content: inputValue, sender: adminProfile?._id }])
+    setInputValue("");
+  }
 
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({
-                behavior: "smooth",
-                block: "end",         // Scrolls just enough to bring it into view
-                inline: "nearest",    // Optional
-            });
-        }
-    }, [messages]);
+  useEffect(() => {
+    if (user?.messages) {
+      setMessages(user.messages)
+    }
+  }, [user])
 
-    return (
-        <div className="flex flex-col h-auto w-4/5 w-full">
-            <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl mr-5 items-center gap-4">
-                {/* Circular Image */}
-                <img src={ciricon} alt="User" className="w-10 h-10 rounded-full object-cover" />
-
-                {/* Text Column */}
-                <div>
-                    <div className="font-semibold">Oliver Smith</div>
-                    <div className="text-green-500 text-sm">Active Now</div>
-                </div>
-            </div>
-
-            {/* Chat Body */}
-            <div className="flex-1 p-1  overflow-y-auto rounded-t-2xl mt-4 mr-5"
-                style={{ backgroundImage: `url(${chatimg})` }}>
-                {messages.map((msg, index) => (
-                    <MessageBubble key={index} {...msg} />
-                ))}
-                <div ref={messagesEndRef} />
-            </div>
-
-            {/* Message Input */}
-            <div className="p-1 bg-white  flex items-center space-x-2 rounded-b-2xl mr-5" style={{
-                backgroundImage: `url(${chatimg})`,
-            }}>
-                <div className="relative flex-1">
-                    {/* Left Icon (Smile) */}
-                    <span className="absolute left-2 top-8 -translate-y-1/2 text-gray-400 cursor-pointer"><img src={smiley} /></span>
-
-                    {/* Input */}
-                    <input
-                        type="text"
-                        placeholder="Type a message"
-                        className="w-full p-2 pl-8 pr-8 bg-white rounded-lg text-sm focus:outline-none border shadow-[0_4px_10px_3px_rgba(0,1,1,0.10)]"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    />
-
-                    {/* Right Icon (Attachment) */}
-                    <span className="absolute right-2 top-8 -translate-y-1/2 text-gray-400 cursor-pointer"><img src={paperclip} /></span>
-                </div>
-
-                <button className='mt-2'
-                    onClick={handleSend}
-                >
-                    <img className='h-[60px] w-[60px]' src={sendicon} />
-                </button>
-            </div>
+  return (
+    <div className="flex flex-col justify-between w-[70%] border border-[#E2E8F0] rounded-xl bg-white ">
+      {/* Top Bar */}
+      <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl m-2 items-center gap-4">
+        <img
+          src={user.image}
+          alt={""}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div>
+          <div className="font-semibold">{user?.user?.first_name + " " + user?.user?.last_name}</div>
+          <div className={`text-sm ${user.is_active ? 'text-green-500' : 'text-red-500'}`}>
+            {user.is_active ? 'Active Now' : 'Inactive'}
+          </div>
         </div>
-    );
+      </div>
+
+      {/* Messages Section */}
+      <div className="flex-1 p-4 overflow-y-auto"
+        style={{ backgroundImage: `url(${chatimg})` }}>
+        {/* Example message bubble */}
+        {messages?.map((msg: any, index: any) => (<div key={index} className="mb-2 flex flex-col items-end">
+          <div className={`bg-gray-200 text-black p-2 rounded-xl max-w-[70%] ${msg?.sender === adminProfile?._id ? 'bg-[#14b8c6] text-white' : 'bg-white text-gray-800'}`}>
+            <p style={{ ...FONTS.heading_07 }}>{msg.content}</p>
+            <p className="" style={{ ...FONTS.description }}>{dayjs(msg.date).format("HH:MM A")}</p>
+          </div>
+        </div>))}
+      </div>
+
+      {/* Input Bar */}
+      <div className="flex items-center border-t px-4 py-3 gap-3">
+        <FiPlus className="text-gray-500 text-xl cursor-pointer" />
+        <MdOutlineEmojiEmotions className="text-gray-500 text-xl cursor-pointer" />
+        <input
+          value={inputValue}
+          onChange={(e: any) => setInputValue(e.target.value)}
+          type="text"
+          placeholder="Type your message..."
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        />
+        <button
+          onClick={handleSend}
+          className="ml-2 bg-[#1E40AF] hover:bg-blue-800 text-white p-2 rounded-full">
+          <LuSend />
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ChatWindow;

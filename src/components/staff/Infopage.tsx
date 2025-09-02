@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -11,9 +12,11 @@ import { useDispatch, useSelector } from "react-redux"
 import { getStaffDetailsDataId } from "../../features/staff/reducers/thunks"
 import { selectStaffId } from "../../features/staff/reducers/selector"
 import { GetImageUrl } from "../../utils/helper"
-import { updateStaff } from "../../features/staff/services"
+import { deleteStaff, updateStaff } from "../../features/staff/services"
 
 interface Staff {
+  _id: any
+  uuid: any
   id: number
   full_name: string
   email: string
@@ -44,13 +47,10 @@ interface InfopageProps {
 const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) => {
   const staffId = useSelector(selectStaffId)
   const staffIdData = staffId?.data?.staff
-  console.log("stafId Data:", staffId?.data?.staff)
-
   const course = staffIdData?.userDetail?.course;
-  console.log(course,"course")
-  const filcategory = course?.map(item => item?.category?.category_name)
-  const fildescription = course?.map(item => item?.overview)
-  const filthumbnail = course?.map(item => item?.thumbnail) 
+  const filcategory = course?.map((item: any) => item?.category?.category_name)
+  const fildescription = course?.map((item: any) => item?.overview)
+  const filthumbnail = course?.map((item: any) => item?.thumbnail)
 
   const [formData, setFormData] = useState({
     fullName: staffIdData?.full_name || "",
@@ -104,43 +104,47 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       price: "$",
       courseDescription: fildescription || "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
     })
+
   }
 
-  const handleSubmit = async() => {
+  const id = staff?.uuid
+
+  const handleSubmit = async () => {
     setIsEditing(false)
-    
+
     const payload = {
-    contact_info: {
-      state: formData.state,
-      city: formData.city,
-      pincode: formData.pinCode,
-      address1: formData.address1,
-      address2: formData.address2,
-      phone_number: formData.primaryNumber,
-      alternate_phone_number: formData.altNumber
-    },
-    course: ['67f3b7fcb8d2634300cc87b6'], // Get course IDs array
-    designation: formData.designation,
-    dob: formData.dob,
-    email: formData.email,
-    full_name: formData.fullName,
-    gender: formData.gender,
-    id: staffIdData?._id, // Keep existing ID
-    image: staffIdData?.image || "staticfiles/lms/default-image.png", // Keep existing image or default
-    qualification: formData.qualification,
-    user_details: "InstituteTeachingStaff", // Hardcoded as per requirement
-    username: staffIdData?.userDetail?.username || formData.fullName.replace(/\s+/g, '').toLowerCase() // Generate username if not available
-  };
+      contact_info: {
+        state: formData.state,
+        city: formData.city,
+        pincode: formData.pinCode,
+        address1: formData.address1,
+        address2: formData.address2,
+        phone_number: formData.primaryNumber,
+        alternate_phone_number: formData.altNumber
+      },
+      course: ['67f3b7fcb8d2634300cc87b6'],
+      designation: formData.designation,
+      dob: formData.dob,
+      email: formData.email,
+      full_name: formData.fullName,
+      gender: formData.gender,
+      id: staffIdData?._id, // Keep existing ID
+      image: staffIdData?.image || "staticfiles/lms/default-image.png", // Keep existing image or default
+      qualification: formData.qualification,
+      user_details: "InstituteTeachingStaff", // Hardcoded as per requirement
+      username: staffIdData?.userDetail?.username || formData.fullName.replace(/\s+/g, '').toLowerCase() // Generate username if not available
 
-try{
-  console.log("Payload to be sent:", payload);
-
-    const response = await updateStaff(payload)
-
-}
-  catch(error){
-    console.log(error);
-  }
+    };
+    const staffId = {
+      staffId: id
+    }
+    console.log("payload", payload)
+    try {
+      await updateStaff(staffId, payload)
+    }
+    catch (error) {
+      console.log(error);
+    }
 
   }
 
@@ -149,8 +153,21 @@ try{
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const id = staff.uuid
-  console.log("id", id)
+
+
+
+  const handleDelete = async () => {
+    try {
+      await deleteStaff({
+        staffId: id
+      });
+
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  }
+
+
   const dispatch = useDispatch<any>()
   const fetchClassDataId = () => {
     dispatch(
@@ -163,6 +180,9 @@ try{
   useEffect(() => {
     fetchClassDataId()
   }, [])
+
+
+
 
   // Update formData when staffIdData changes
   useEffect(() => {
@@ -188,7 +208,7 @@ try{
         thumbnail: filthumbnail,
         module: "number of modules",
         price: "$",
-        courseDescription: fildescription  ||
+        courseDescription: fildescription ||
           "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
       })
     }
@@ -478,7 +498,7 @@ try{
             </div>
           </div>
           <div className="flex justify-end gap-4 mb-8">
-            <Button variant="destructive" className="text-[#1bbfca] border border-[#1bbfca] bg-[#1bbfca]/20">
+            <Button onClick={handleDelete} variant="destructive" className="text-[#1bbfca] border border-[#1bbfca] bg-[#1bbfca]/20">
               Delete
             </Button>
             <Button className="bg-[#1bbfca] text-white" onClick={handleEditClick}>
@@ -488,7 +508,7 @@ try{
           <hr className="mb-4" />
           <Card className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
             <div style={{ backgroundImage: `url(${GetImageUrl(filthumbnail)})` }} className="relative h-64 rounded-md bg-contain bg-no-repeat bg-center">
-              
+
               <span className="bg-[#3abe65] absolute top-5 right-5 text-white text-xs font-medium px-3 py-1 rounded">
                 Online
               </span>

@@ -1,11 +1,7 @@
-
-import StaffTicketFront from '../../../components/Staff Tickets/StaffTicketFront'
+import StaffTicketFront from '../../../components/Staff Tickets/StaffTicketFront';
 
 const StaffTickets = () => {
-	return <div>
-		<StaffTicketFront/>
-
-	</div>;
+	return <StaffTicketFront />;
 };
 
 export default StaffTickets;

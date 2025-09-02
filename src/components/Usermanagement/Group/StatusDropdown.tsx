@@ -3,13 +3,13 @@ import { ChevronDown } from "lucide-react";
 import { UpdateStatusCard } from "../../../features/Users_Management/Group/reducers/service.ts";
 
 type StatusDropdownProps = {
-  idx: number;
+  idx?: number;
   initialStatus: string;
   options: string[];
   itemId: string;
 };
 export function StatusDropdown({
-  idx,
+  // idx,
   initialStatus,
   options,
   itemId,
@@ -22,7 +22,6 @@ export function StatusDropdown({
   const toggle = () => setOpen((o) => !o);
 
   const handleSelect = async (option: string) => {
-    console.log("clicked", option)
     setOpen(false);
     if (option === currentStatus) return;
     const previous = currentStatus;
@@ -31,12 +30,11 @@ export function StatusDropdown({
 
     try {
       setIsSaving(true);
-     await UpdateStatusCard({
-  id: itemId,
-  is_active: option === "Active", // Active => true, Inactive => false
-});
+      await UpdateStatusCard({
+        id: itemId,
+        is_active: option === "Active",
+      });
 
-      console.log("Status updated to", option);
     } catch (e: any) {
       console.error("Failed to update status", e);
       setCurrentStatus(previous); // rollback
@@ -49,8 +47,8 @@ export function StatusDropdown({
   };
 
   useEffect(() => {
-  setCurrentStatus(initialStatus);
-}, [initialStatus]);
+    setCurrentStatus(initialStatus);
+  }, [initialStatus]);
 
   return (
     <div className="flex flex-col items-end">
@@ -65,9 +63,8 @@ export function StatusDropdown({
             {isSaving ? "Saving..." : currentStatus}
           </span>
           <ChevronDown
-            className={`w-4 h-4 text-white transition-transform duration-200 ${
-              open ? "rotate-180" : ""
-            }`}
+            className={`w-4 h-4 text-white transition-transform duration-200 ${open ? "rotate-180" : ""
+              }`}
           />
         </button>
 

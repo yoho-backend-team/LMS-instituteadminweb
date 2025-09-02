@@ -1,169 +1,199 @@
-import { useState } from "react";
-import RefundAdd from "../../../components/RefundManagement/RefundAdd";
-import RefundTable from "../../../components/RefundManagement/RefundTable";
-import { BsPlusLg } from "react-icons/bs";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BsPlusLg } from 'react-icons/bs';
+
+import RefundAdd from '../../../components/RefundManagement/RefundAdd';
+import RefundTable from '../../../components/RefundManagement/RefundTable';
+
+import {
+	GetAllRefundsThunk,
+	DeleteRefundThunk,
+} from '../../../features/Refund_management/Reducer/refundThunks';
+import {
+	selectRefundData,
+	selectRefundLoading,
+} from '../../../features/Refund_management/Reducer/Selector';
+import toast from 'react-hot-toast';
 
 export interface RefundData {
-  refundId: string;
-  studentId: string;
-  studentInfo: string;
-  paid: string;
-  payment: string;
-  status: string;
-  branch: string;
+	uuid?: string;
+	refundId: string;
+	studentId: string;
+	studentInfo: string;
+	studentEmail?: string;
+	paid: string;
+	payment: string;
+	status: string;
+	branch: string;
+	courseId?: string;
+	batchId?: string;
+	feeId?: string;
 }
-const initialRefunds: RefundData[] = [
-  {
-    refundId: "RF0001",
-    studentId: "ST0001",
-    studentInfo: "Full Stack",
-    paid: "Paid",
-    payment: "80,000",
-    status: "Pending",
-    branch: "Hyderabad",
-  },
-  {
-    refundId: "RF0002",
-    studentId: "ST0002",
-    studentInfo: "Frontend Angular",
-    paid: "Unpaid",
-    payment: "75,000",
-    status: "Completed",
-    branch: "Bangalore",
-  },
-  {
-    refundId: "RF0003",
-    studentId: "ST0003",
-    studentInfo: "UI Design",
-    paid: "Paid",
-    payment: "60,000",
-    status: "Pending",
-    branch: "Chennai",
-  },
-  {
-    refundId: "RF0004",
-    studentId: "ST0004",
-    studentInfo: "Backend NodeJS",
-    paid: "Unpaid",
-    payment: "65,000",
-    status: "Pending",
-    branch: "Pune",
-  },
-  {
-    refundId: "RF0005",
-    studentId: "ST0005",
-    studentInfo: "MongoDB + Express",
-    paid: "Paid",
-    payment: "70,000",
-    status: "Completed",
-    branch: "Hyderabad",
-  },
-  {
-    refundId: "RF0006",
-    studentId: "ST0006",
-    studentInfo: "Full Stack",
-    paid: "Paid",
-    payment: "90,000",
-    status: "Pending",
-    branch: "Bangalore",
-  },
-  {
-    refundId: "RF0007",
-    studentId: "ST0007",
-    studentInfo: "UI Design",
-    paid: "Unpaid",
-    payment: "55,000",
-    status: "Completed",
-    branch: "Chennai",
-  },
-];
+
 const RefundFees = () => {
-  const [showPanel, setShowPanel] = useState(false);
-  const [refunds, setRefunds] = useState<RefundData[]>(initialRefunds);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [editData, setEditData] = useState<RefundData | null>(null);
+	const dispatch = useDispatch<any>();
 
-  const handleAddOrUpdateRefund = (data: RefundData) => {
-    if (editData) {
-      setRefunds((prev) =>
-        prev.map((item) => (item.refundId === data.refundId ? data : item))
-      );
-    } else {
-      setRefunds((prev) => [...prev, data]);
-    }
-    setEditData(null);
-    setShowPanel(false);
-  };
+	const refunds = useSelector(selectRefundData);
+	const [showPanel, setShowPanel] = useState(false);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [editData, setEditData] = useState<RefundData | null>(null);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+	const loading = useSelector(selectRefundLoading);
 
-  const handleDelete = (refundId: string) => {
-    setRefunds((prev) => prev.filter((item) => item.refundId !== refundId));
-  };
+	useEffect(() => {
+		dispatch(GetAllRefundsThunk());
+	}, [dispatch]);
 
-  const handleEdit = (data: RefundData) => {
-    setEditData(data);
-    setShowPanel(true);
-  };
+	const mappedRefunds: RefundData[] = refunds?.map((item: any) => ({
+		uuid: item._id || '',
+		refundId: item._id || '',
+		studentId: item.student?.id || item.student?.uuid || '',
+		studentInfo: `${item.student?.first_name || ''} ${
+			item.student?.last_name || ''
+		}`.trim(),
+		studentEmail: item.student?.email || '',
+		paid: item.studentfees?.paid_amount
+			? item.studentfees.paid_amount.toString()
+			: '0',
+		payment: item.payment_date ? new Date(item.payment_date).toISOString() : '',
+		status: item.is_active ? 'Active' : 'Inactive',
+		branch: item.branch_name?.uuid || '',
+		courseId: item.course?.uuid || '',
+		batchId: item.batch?.uuid || '',
+		feeId: item.studentfees || '',
+	}));
 
-  const filteredRefunds = refunds.filter((item) =>
-    item.studentId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+	const filteredRefunds = mappedRefunds.filter((item) =>
+		item.studentInfo.toLowerCase().includes(searchTerm.toLowerCase())
+	);
 
-  return (
-    <div className="relative flex flex-col gap-6">
-      {showPanel && (
-        <div
-          className="fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm"
-          onClick={() => {
-            setShowPanel(false);
-            setEditData(null);
-          }}
-        >
-          <div
-            className="bg-white rounded-xl shadow-xl w-[500px] max-w-full "
-            onClick={(e) => e.stopPropagation()}
-          >
-            <RefundAdd
-              onClose={() => {
-                setShowPanel(false);
-                setEditData(null);
-              }}
-              onSubmit={handleAddOrUpdateRefund}
-              editData={editData}
-            />
-          </div>
-        </div>
-      )}
+	const handleEdit = (data: RefundData) => {
+		setEditData(data);
+		setShowPanel(true);
+	};
 
-      <div className="flex justify-between items-center">
-        <input
-          type="search"
-          placeholder="Student ID"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-80"
-        />
+	const handleDelete = (id: string) => {
+		setDeleteItemId(id);
+		setShowDeleteConfirm(true);
+	};
 
-        <div
-          className="bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer"
-          onClick={() => {
-            setEditData(null);
-            setShowPanel(true);
-          }}
-        >
-          <BsPlusLg size={20} />
-          <span>Add Refund</span>
-        </div>
-      </div>
+	const confirmDelete = async () => {
+		if (deleteItemId) {
+			try {
+				await dispatch(DeleteRefundThunk(deleteItemId));
+				dispatch(GetAllRefundsThunk());
+				setShowDeleteConfirm(false);
+				setDeleteItemId(null);
+			} catch (error) {
+				console.error('Failed to delete refund:', error);
+			}
+		}
+	};
 
-      <div className="flex-1 overflow-auto h-[60vh] border rounded-xl shadow-lg">
-        <RefundTable
-          data={filteredRefunds}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-        />
-      </div>
-    </div>
-  );
+	const cancelDelete = () => {
+		setShowDeleteConfirm(false);
+		setDeleteItemId(null);
+	};
+
+	const handleClosePanel = () => {
+		setShowPanel(false);
+		setEditData(null);
+	};
+
+	const handleSubmitRefund = async () => {
+		try {
+			await dispatch(GetAllRefundsThunk());
+			handleClosePanel();
+			toast.success('Refund saved successfully!');
+		} catch (error) {
+			console.error('Failed to submit refund:', error);
+			toast.error('Failed to save refund. Please try again.');
+		}
+	};
+
+	return (
+		<div className='relative flex flex-col gap-6'>
+			{/* Delete Confirmation Modal */}
+			{showDeleteConfirm && (
+				<div className='fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-30'>
+					<div className='bg-white rounded-xl shadow-xl p-6 w-96 max-w-full mx-4'>
+						<h3 className='text-lg font-semibold mb-4 text-gray-800'>
+							Confirm Delete
+						</h3>
+						<p className='text-gray-600 mb-6'>
+							Are you sure you want to delete this refund? This action cannot be
+							undone.
+						</p>
+						<div className='flex justify-end gap-3'>
+							<button
+								onClick={cancelDelete}
+								className='px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors'
+							>
+								Cancel
+							</button>
+							<button
+								onClick={confirmDelete}
+								className='px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors'
+							>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Add/Edit Panel */}
+			{showPanel && (
+				<div
+					className='fixed inset-0 z-50 flex justify-end items-center backdrop-blur-sm'
+					onClick={handleClosePanel}
+				>
+					<div
+						className='bg-white rounded-xl shadow-xl w-[500px] max-w-full'
+						onClick={(e) => e.stopPropagation()}
+					>
+						<RefundAdd
+							onClose={handleClosePanel}
+							onSubmit={handleSubmitRefund}
+							editData={editData}
+						/>
+					</div>
+				</div>
+			)}
+
+			{/* Top Bar */}
+			<div className='flex justify-between items-center'>
+				<input
+					type='search'
+					placeholder='Search by Student Name'
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+					className='h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-80'
+				/>
+				<div
+					className='bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer hover:bg-[#1AACB7] transition-colors'
+					onClick={() => {
+						setEditData(null);
+						setShowPanel(true);
+					}}
+				>
+					<BsPlusLg size={20} />
+					<span>Add Refund</span>
+				</div>
+			</div>
+
+			{/* Table */}
+			<div className='flex-1 overflow-auto h-[60vh] border rounded-xl shadow-lg'>
+				<RefundTable
+					data={filteredRefunds}
+					onEdit={handleEdit}
+					onDelete={handleDelete}
+					loading={loading}
+				/>
+			</div>
+		</div>
+	);
 };
 
 export default RefundFees;

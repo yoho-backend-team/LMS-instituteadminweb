@@ -5,7 +5,7 @@ interface Note {
   title: string;
   course: string;
   description: string;
-  status: "Active" | "Completed";
+  status: "Active" | "Inactive";
   file?: File;
   fileName?: string;
 }

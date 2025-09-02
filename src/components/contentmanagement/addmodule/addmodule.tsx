@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
 import { IoMdClose } from "react-icons/io";
 // import { BiSolidCloudUpload } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,7 @@ interface Props {
 		course: string;
 		description: string;
 		title: string;
-		video:string;
+		video: string;
 	}) => void;
 }
 
@@ -35,7 +35,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 
 	const branches = useSelector(Branch);
 	const courses = useSelector(BranchCourse);
-	 const [video, setVideo] = useState("");
+	const [video, setVideo] = useState("");
 
 
 	useEffect(() => {
@@ -48,17 +48,6 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 			dispatch(GetBranchCourseThunks(branch) as any);
 		}
 	}, [branch]);
-
-	// const handleUploadClick = () => {
-	// 	fileInputRef.current?.click();
-	// };
-
-	// const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const uploadedFile = e.target.files?.[0];
-	// 	if (uploadedFile) {
-	// 		setFile(uploadedFile);
-	// 	}
-	// };
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -99,24 +88,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 				onSubmit={handleSubmit}
 			>
 
-				{/* <div
-					onClick={handleUploadClick}
-					className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
-				>
-					<BiSolidCloudUpload size={40} className="text-[#1BBFCA]" />
-					<span className="text-gray-600">
-						{file ? file.name : "Drop File Here Or Click To Upload"}
-					</span>
-					<input
-						type="file"
-						ref={fileInputRef}
-						className="hidden"
-						onChange={handleFileChange}
-					/>
-				</div> */}
-
-				{/* Branch Dropdown */}
-				<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-2">
 					<label htmlFor="branch">Branch</label>
 					<select
 						id="branch"

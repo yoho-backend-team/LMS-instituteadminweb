@@ -1,4 +1,4 @@
-import React from 'react';
+
 import StudTickets from '../../../components/StudentTickets/StudTickets'
 
 const StudentTickets = () => {

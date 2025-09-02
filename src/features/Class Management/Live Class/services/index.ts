@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../../apis/index';
 
 export const getAllLiveClassService = async (params: any) => {
@@ -36,9 +37,9 @@ export const getAllBatches = async (params: any) => {
 	}
 };
 
-export const getAllBranches = async (params: any) => {
+export const getAllBranches = async () => {
 	try {
-		const response = await Client.branch.getAll(params);
+		const response = await Client.branch.getdash();
 		if (response) {
 			return response;
 		}

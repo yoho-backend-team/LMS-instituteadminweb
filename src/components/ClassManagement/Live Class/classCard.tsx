@@ -9,7 +9,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-
 import { Card, CardContent } from '../../ui/card';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import DeleteConfirmationModal from '../../BatchManagement/deleteModal';
@@ -56,7 +55,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 			console.error('Error deleting live class:', error);
 		} finally {
 			closeDeleteModal();
-			if(fetchAllLiveClasses) {
+			if (fetchAllLiveClasses) {
 				fetchAllLiveClasses();
 			}
 		}
@@ -79,13 +78,13 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-2/5 bg-white'>
 			<CardContent className='p-4 pb-2 relative'>
 				<div className='flex justify-between items-start border-b border-gray-200 pb-2'>
-					<div className='flex justify-between gap-35'>
+					<div className='flex justify-between w-full px-4'>
 						<div className='flex flex-col items-center gap-2'>
 							<p style={{ ...FONTS.heading_09 }}>
 								{data?.batch?.student?.length}{' '}
 								{data?.batch?.student?.length === 1 ? 'student' : 'students'}
 							</p>
-							<div className='flex'>
+							<div className='flex gap-1'>
 								{data?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
 									<img
 										key={studentImg?._id}
@@ -102,7 +101,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 								{data?.instructors?.length}{' '}
 								{data?.instructors?.length === 1 ? 'instructor' : 'instructors'}
 							</p>
-							<div className='flex'>
+							<div className='flex gap-1'>
 								{data?.instructors?.slice(0, 3)?.map((studentImg: any) => (
 									<img
 										key={studentImg?._id}
@@ -182,7 +181,7 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 							className=' mt-4'
 							style={{ ...FONTS.heading_05_bold, color: COLORS.gray_dark_02 }}
 						>
-							{`${title.substring(0, 25)}${title.length > 25 ? '...' : ''}`}
+							{`${title.substring(0, 35)}${title.length > 35 ? '...' : ''}`}
 						</p>
 					</div>
 
@@ -191,7 +190,9 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 							className=''
 							style={{ ...FONTS.heading_07_bold, color: COLORS.gray_dark_01 }}
 						>
-							{`${data?.batch?.student?.length} students on this Class`}
+							{`${data?.batch?.student?.length} ${
+								data?.batch?.student?.length === 1 ? 'student' : 'students'
+							} on this Class`}
 						</p>
 					</div>
 
@@ -214,8 +215,8 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 							className='cursor-pointer underline'
 							target='_blank'
 						>
-							{`${data?.video_url.substring(0, 30)} ${
-								data?.video_url?.length > 30 ? '...' : ''
+							{`${data?.video_url.substring(0, 35)} ${
+								data?.video_url?.length > 35 ? '...' : ''
 							}`}
 						</a>
 					</div>

@@ -6,4 +6,5 @@ export interface Fee {
   amount: string
   date: string
   status: string
+  
 }

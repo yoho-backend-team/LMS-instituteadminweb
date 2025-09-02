@@ -1,5 +1,5 @@
-import type React from "react"
-import cancel from '../../assets/icons/Cancel.png'
+import type React from "react";
+import cancel from "../../assets/icons/Cancel.png";
 
 interface FormFieldOption {
   label: string;
@@ -14,16 +14,16 @@ interface FormField {
 }
 
 interface NoteModalProps {
-  isOpen: boolean
-  isEditing: boolean
-  formData: Record<string, string>
-  uploadedFile: File | null
-  uploadIcon: string
-  onClose: () => void
-  onSubmit: () => void
-  onFormChange: (key: string, value: string) => void
-  onFileChange: (file: File | null) => void
-  fields: FormField[]
+  isOpen: boolean;
+  isEditing: boolean;
+  formData: Record<string, string>;
+  uploadedFile: File | null;
+  uploadIcon: string;
+  onClose: () => void;
+  onSubmit: () => void;
+  onFormChange: (key: string, value: string) => void;
+  onFileChange: (file: File | null) => void;
+  fields: FormField[];
 }
 
 export const NoteModal: React.FC<NoteModalProps> = ({
@@ -38,16 +38,21 @@ export const NoteModal: React.FC<NoteModalProps> = ({
   onFileChange,
   fields,
 }) => {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const filteredFields = isEditing
-    ? fields.filter((field) => field.key === "title" || field.key === "description")
-    : fields
+    ? fields.filter(
+        (field) => field.key === "title" || field.key === "description"
+      )
+    : fields;
 
   return (
     <div className="fixed inset-0 z-50 flex text-[#716F6F] items-center justify-end bg-black/30 backdrop-blur-md">
       <div className="bg-white rounded-xl h-[90vh] w-full max-w-md p-6 shadow-lg relative overflow-y-auto">
-        <button className="absolute top-3 right-3 text-white rounded-full p-1" onClick={onClose}>
+        <button
+          className="absolute top-3 right-3 text-white rounded-full p-1"
+          onClick={onClose}
+        >
           <img src={cancel} alt="close" />
         </button>
 
@@ -55,28 +60,64 @@ export const NoteModal: React.FC<NoteModalProps> = ({
           {isEditing ? "Edit Study Material" : "Add Study Material"}
         </h2>
 
-        <div
-          className="border border-dashed border-gray-300 rounded-md text-center py-6 mb-4 cursor-pointer"
-          onClick={() => document.getElementById("fileInput")?.click()}
-        >
-          <input
-            id="fileInput"
-            type="file"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              onFileChange(file || null)
-            }}
-          />
-          <p className="text-sm text-gray-500">
-            <img src={uploadIcon || "/placeholder.svg"} alt="upload" className="mx-auto mb-2" />
-            {uploadedFile ? uploadedFile.name : "Drop Files Here Or Click To Upload"}
-          </p>
+        <div className="mb-4">
+          {!uploadedFile ? (
+            <div
+              className="border border-dashed border-gray-300 rounded-md text-center py-6 cursor-pointer"
+              onClick={() => document.getElementById("fileInput")?.click()}
+            >
+              <input
+                id="fileInput"
+                type="file"
+                className="hidden"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  onFileChange(file || null);
+                }}
+              />
+              <img
+                src={uploadIcon || "/placeholder.svg"}
+                alt="upload"
+                className="mx-auto mb-2"
+              />
+              <p className="text-sm text-gray-500">
+                Drop Files Here Or Click To Upload
+              </p>
+            </div>
+          ) : (
+            <div className="relative border p-3 rounded-md">
+              <button
+                type="button"
+                onClick={() => onFileChange(null)}
+                className="absolute top-2 right-2 text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
+              >
+                <img src={cancel} alt="remove file" className="w-3 h-3" />
+              </button>
+
+              {uploadedFile.type === "application/pdf" ? (
+                <iframe
+                  src={URL.createObjectURL(uploadedFile)}
+                  className="w-full h-64 border rounded-md"
+                  title="PDF Preview"
+                />
+              ) : uploadedFile?.type?.includes("word") ? (
+                <div className="text-sm text-blue-600">
+                  DOC/DOCX file selected. Preview not supported.
+                </div>
+              ) : (
+                <div className="text-sm">Unknown file type.</div>
+              )}
+              <p className="mt-2 text-sm text-green-600">{uploadedFile.name}</p>
+            </div>
+          )}
         </div>
 
         {filteredFields.map((field) => (
           <div key={field.key} className="mb-4">
-            <label className="block mb-1 text-sm text-gray-600">{field.label}</label>
+            <label className="block mb-1 text-sm text-gray-600">
+              {field.label}
+            </label>
             {field.type === "select" ? (
               <div className="relative">
                 <select
@@ -84,13 +125,12 @@ export const NoteModal: React.FC<NoteModalProps> = ({
                   value={formData[field.key] || ""}
                   onChange={(e) => onFormChange(field.key, e.target.value)}
                 >
-                   <option value="">Select {field.label}</option>
-               {field.options?.map((option: any) => (
-  <option key={option.value} value={option.value}>
-  
-    {option.label}
-  </option>
-))}
+                  <option value="">Select {field.label}</option>
+                  {field.options?.map((option: any) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
                   <svg
@@ -99,7 +139,12 @@ export const NoteModal: React.FC<NoteModalProps> = ({
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -130,5 +175,5 @@ export const NoteModal: React.FC<NoteModalProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

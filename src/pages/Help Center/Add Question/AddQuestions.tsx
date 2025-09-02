@@ -1,4 +1,4 @@
-import React from 'react';
+
 import AddQuestion from '../../../components/FQAAddQuestion/AddQuestion';
 
 const AddQuestions = () => {

@@ -1,269 +1,279 @@
-import { useState } from "react";
-import { FaPlus, FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { Table, TableHead, TableRow, TableHeader, TableBody, TableCell } from "../../components/ui/table";
+import { useEffect, useState } from "react";
+import { FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
+import { Button } from "../../components/ui/button";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from "../../components/ui/table";
 import PlacementForm from "./PlacementForm";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createPlacementThunk,
+  getAllPlacemetsThunk,
+} from "../../features/placementManagement/Reducer/thunk";
+import { GetLocalStorage } from "../../utils/localStorage";
+import { X } from "lucide-react";
+import {
+  deletePlacement,
+  updatePlacement,
+} from "../../features/placementManagement/Services/Placement";
 
-interface Placement {
-  id: number;
-  studentName: string;
-  email: string;
-  companyName: string;
-  companyAddress: string;
-  contactEmail: string;
-  contactNumber: string;
-  interviewDate: string;
-  jobName: string;
-  jobDescription: string;
-  skills: string[];
-  venue: string;
-  address: string;
-  courseName: string;
-  education: string;
-}
+// Skeleton Loader Row
+const SkeletonRow = () => (
+  <TableRow>
+    {[...Array(5)].map((_, i) => (
+      <TableCell key={i} className="px-6 py-4">
+        <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+      </TableCell>
+    ))}
+  </TableRow>
+);
 
-const initialPlacements: Placement[] = [
-  {
-    id: 1,
-    studentName: "John Carter",
-    email: "john@example.com",
-    companyName: "TechCorp",
-    companyAddress: "Bangalore, India",
-    contactEmail: "hr@techcorp.com",
-    contactNumber: "+91 9876543210",
-    interviewDate: "2023-05-15",
-    jobName: "Software Engineer",
-    jobDescription: "Develop and maintain web applications",
-    skills: ["JavaScript", "React", "Node.js"],
-    venue: "TechHub Innovation Center",
-    address: "123 Tech Street, San Francisco, CA 94107",
-    courseName: "Computer Science",
-    education: "Bachelor's"
-  },
-  {
-    id: 2,
-    studentName: "Emily Davis",
-    email: "emily@example.com",
-    companyName: "DataSystems",
-    companyAddress: "Chennai, India",
-    contactEmail: "careers@datasystems.com",
-    contactNumber: "+91 8765432109",
-    interviewDate: "2023-06-20",
-    jobName: "Data Analyst",
-    jobDescription: "Analyze and interpret complex data",
-    skills: ["Python", "SQL", "Tableau"],
-    venue: "Downtown Business Plaza",
-    address: "500 Business Ave, New York, NY 10001",
-    courseName: "Data Science",
-    education: "Master's"
-  },
-  {
-    id: 3,
-    studentName: "Michael Brown",
-    email: "michael@example.com",
-    companyName: "HealthPlus",
-    companyAddress: "Mumbai, India",
-    contactEmail: "recruitment@healthplus.com",
-    contactNumber: "+91 7654321098",
-    interviewDate: "2023-07-10",
-    jobName: "UX Designer",
-    jobDescription: "Design user interfaces for healthcare applications",
-    skills: ["Figma", "UI/UX", "Adobe XD"],
-    venue: "Digital Design Studio",
-    address: "789 Creative Lane, Austin, TX 73301",
-    courseName: "Design",
-    education: "Bachelor's"
-  },
-  {
-    id: 4,
-    studentName: "Sarah Wilson",
-    email: "sarah@example.com",
-    companyName: "CloudNine",
-    companyAddress: "Hyderabad, India",
-    contactEmail: "hiring@cloudnine.com",
-    contactNumber: "+91 6543210987",
-    interviewDate: "2023-08-05",
-    jobName: "DevOps Engineer",
-    jobDescription: "Implement and maintain CI/CD pipelines",
-    skills: ["AWS", "Docker", "Kubernetes"],
-    venue: "Cloud Computing Center",
-    address: "456 Cloud Boulevard, Seattle, WA 98101",
-    courseName: "Information Technology",
-    education: "Master's"
-  },
-  {
-    id: 5,
-    studentName: "David Taylor",
-    email: "david@example.com",
-    companyName: "FinEdge",
-    companyAddress: "Delhi, India",
-    contactEmail: "jobs@finedge.com",
-    contactNumber: "+91 9432109876",
-    interviewDate: "2023-09-12",
-    jobName: "Financial Analyst",
-    jobDescription: "Analyze financial data and prepare reports",
-    skills: ["Excel", "Financial Modeling", "Statistics"],
-    venue: "Financial District Tower",
-    address: "321 Finance Street, Chicago, IL 60601",
-    courseName: "Business Administration",
-    education: "MBA"
-  }
-];
 const Placements = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [placements, setPlacements] = useState<Placement[]>(initialPlacements);
-  const [editingPlacement, setEditingPlacement] = useState<Placement | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 loading state
 
-  const handleAddPlacement = (formData: any) => {
-    const newPlacement = {
-      id: editingPlacement ? editingPlacement.id : placements.length + 1,
-      studentName: formData.selectedStudents?.[0]?.label.split(' (')[0] ||
-        (editingPlacement ? editingPlacement.studentName : 'New Student'),
-      email: formData.selectedStudents?.[0]?.label.match(/\(([^)]+)\)/)?.[1] ||
-        (editingPlacement ? editingPlacement.email : 'student@example.com'),
-      companyName: formData.companyName,
-      companyAddress: formData.companyAddress,
-      contactEmail: formData.contactEmail,
-      contactNumber: formData.contactNumber,
-      interviewDate: formData.interviewDate,
-      jobName: formData.jobName,
-      jobDescription: formData.jobDescription,
-      skills: formData.skills || [],
-      venue: formData.venue,
-      address: formData.address,
-      courseName: formData.courseName,
-      education: formData.education
+  const placements = useSelector((state: any) => state.placements.placements);
+  const dispatch = useDispatch<any>();
+  const instituteId = GetLocalStorage("instituteId");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await dispatch(getAllPlacemetsThunk({}));
+      setLoading(false);
+    };
+    fetchData();
+  }, [dispatch]);
+
+  const transformPlacementToFormData = (placement: any) => ({
+    companyName: placement?.company?.name || "",
+    companyAddress: placement?.company?.address || "",
+    contactEmail: placement?.company?.email || "",
+    contactNumber: String(placement?.company?.phone || ""),
+    jobName: placement?.job?.name || "",
+    jobDescription: placement?.job?.description || "",
+    skills: placement?.job?.skils?.join(", ") || "",
+    selectedStudents:
+      placement?.student?.map((s: any) => ({
+        value: s._id,
+        label: s.full_name,
+      })) || [],
+    interviewDate: placement?.schedule?.interviewDate?.split("T")[0] || "",
+    venue: placement?.schedule?.venue || "",
+    address: placement?.schedule?.address || "",
+    courseName: placement?.eligible?.courseName || "",
+    education: placement?.eligible?.education?.join(", ") || "",
+  });
+
+  const handleAddPlacement = async (data: any) => {
+    const payload = {
+      company: {
+        name: data.companyName,
+        address: data.companyAddress,
+        email: data.contactEmail,
+        phone: data.contactNumber,
+      },
+      job: {
+        name: data.jobName,
+        description: data.jobDescription,
+        skils: data.skills.split(",").map((s: any) => s.trim()),
+      },
+      student: data.selectedStudents.map((s: any) => s.value),
+      schedule: {
+        interviewDate: data.interviewDate,
+        venue: data.venue,
+        address: data.address,
+      },
+      eligible: {
+        courseName: data.courseName,
+        education: data.education.split(",").map((e: any) => e.trim()),
+      },
+      institute: instituteId,
     };
 
-    setPlacements(prevPlacements =>
-      editingPlacement
-        ? prevPlacements.map(p => p.id === editingPlacement.id ? newPlacement : p)
-        : [...prevPlacements, newPlacement]
-    );
-
-    setEditingPlacement(null);
-    setShowForm(false);
+    try {
+      await dispatch(createPlacementThunk(payload));
+      await dispatch(getAllPlacemetsThunk({}));
+      setIsFormOpen(false);
+    } catch (err) {
+      console.error("Failed to add placement", err);
+    }
   };
 
-  const handleEdit = (placement: Placement) => {
-    setEditingPlacement(placement);
-    setShowForm(true);
+  const handleUpdatePlacement = async (data: any) => {
+    const payload = {
+      uuid: editingPlacement?.uuid,
+      student: data.selectedStudents.map((s: any) => s.value),
+      institute: instituteId,
+    };
+
+    console.log("edit payloads", payload);
+
+    try {
+      await updatePlacement(payload);
+      await dispatch(getAllPlacemetsThunk({}));
+      setIsFormOpen(false);
+      setEditingPlacement(null);
+    } catch (error) {
+      console.error("Failed to update placement", error);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    setPlacements(prevPlacements => prevPlacements.filter(placement => placement.id !== id));
+  const handleDelete = async (uuid: string) => {
+    try {
+      await deletePlacement(uuid);
+      await dispatch(getAllPlacemetsThunk({}));
+    } catch (error) {
+      console.error("Failed to delete placement", error);
+    }
   };
 
   return (
     <div className="space-y-4 p-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Placements</h2>
-        <Button
+        <button
           onClick={() => {
+            setIsFormOpen(true);
             setEditingPlacement(null);
-            setShowForm(true);
           }}
-          className="flex items-center gap-2 bg-[#1BBFCA] text-white hover:bg-[#17a8b6]"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          <FaPlus className="text-sm" />
           Add Placement
-        </Button>
+        </button>
       </div>
 
-      {showForm && (
-        <PlacementForm
-          mode={editingPlacement ? "edit" : "add"}
-          onClose={() => {
-            setEditingPlacement(null);
-            setShowForm(false);
-          }}
-          onSubmit={handleAddPlacement}
-          initialData={editingPlacement ? {
-            companyName: editingPlacement.companyName,
-            companyAddress: editingPlacement.companyAddress,
-            contactEmail: editingPlacement.contactEmail,
-            contactNumber: editingPlacement.contactNumber,
-            interviewDate: editingPlacement.interviewDate,
-            jobName: editingPlacement.jobName,
-            jobDescription: editingPlacement.jobDescription,
-            skills: editingPlacement.skills,
-            venue: editingPlacement.venue,
-            address: editingPlacement.address,
-            courseName: editingPlacement.courseName,
-            education: editingPlacement.education,
-            selectedStudents: [{
-              value: editingPlacement.id,
-              label: `${editingPlacement.studentName} (${editingPlacement.email})`
-            }]
-          } : undefined}
-        />
+      {isFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-5xl max-h-[90vh] overflow-y-auto relative">
+            <Button
+              type="button"
+              onClick={() => {
+                setIsFormOpen(false);
+                setEditingPlacement(null);
+              }}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 absolute top-10 right-12 text-gray-600 hover:text-gray-900 text-xl font-bold"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+
+            <PlacementForm
+              mode={editingPlacement ? "edit" : "add"}
+              onClose={() => {
+                setIsFormOpen(false);
+                setEditingPlacement(null);
+              }}
+              onSubmit={
+                editingPlacement ? handleUpdatePlacement : handleAddPlacement
+              }
+              initialData={
+                editingPlacement
+                  ? transformPlacementToFormData(editingPlacement)
+                  : undefined
+              }
+            />
+          </div>
+        </div>
       )}
 
       <div className="border border-gray-400 shadow-2xl rounded-2xl p-2">
-        <Table className=" overflow-auto">
+        <Table className="overflow-auto">
           <TableHeader className="bg-gray-200">
             <TableRow>
-              <TableHead className="px-6 py-3 font-medium">Student</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Email</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Company</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Interview Date</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Job</TableHead>
-              <TableHead className="px-6 py-3 font-medium text-right">Actions</TableHead>
+              <TableHead className="px-6 py-3 font-medium">
+                Company Name
+              </TableHead>
+              <TableHead className="px-6 py-3 font-medium">
+                Interview Date
+              </TableHead>
+              <TableHead className="px-6 py-3 font-medium">Role</TableHead>
+              <TableHead className="px-6 py-3 font-medium">Venue</TableHead>
+              <TableHead className="px-6 py-3 font-medium text-right">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {placements.map((placement) => (
-              <TableRow key={placement.id} className="hover:bg-gray-50">
-                <TableCell className="px-6 py-4">{placement.studentName}</TableCell>
-                <TableCell className="px-6 py-4">{placement.email}</TableCell>
-                <TableCell className="px-6 py-4">{placement.companyName}</TableCell>
-                <TableCell className="px-6 py-4">
-                  {new Date(placement.interviewDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="px-6 py-4">{placement.jobName}</TableCell>
-                <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
-                    title="Actions"
-                    aria-label="Actions menu"
+            {loading
+              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) // 👈 show 5 skeleton rows
+              : placements.map((placement: any) => (
+                  <TableRow
+                    key={placement?._id}
+                    className="hover:bg-gray-50"
                   >
-                    <FaEllipsisV className="h-4 w-4" />
-                  </Button>
+                    <TableCell className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span>{placement?.company?.name ?? "N/A"}</span>
+                        <span>{placement?.company?.email ?? "N/A"}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.schedule?.interviewDate
+                        ? new Date(
+                            placement.schedule.interviewDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.job?.name ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.schedule?.venue ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                        title="Actions"
+                        aria-label="Actions menu"
+                      >
+                        <FaEllipsisV className="h-4 w-4" />
+                      </Button>
 
-                  <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
-                    <Button
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(placement);
-                      }}
-                      className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                      aria-label="Edit"
-                    >
-                      <FaEdit className="mr-2 h-4 w-4" />
-                      <span>Edit</span>
-                    </Button>
+                      <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
+                        <Button
+                          variant="ghost"
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            setEditingPlacement(placement);
+                            setIsFormOpen(true);
+                          }}
+                          className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                          aria-label="Edit"
+                        >
+                          <FaEdit className="mr-2 h-4 w-4" />
+                          <span>Edit</span>
+                        </Button>
 
-                    <Button
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(placement.id);
-                      }}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
-                      aria-label="Delete"
-                    >
-                      <FaTrash className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                        <Button
+                          variant="ghost"
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            handleDelete(placement.uuid);
+                          }}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
+                          aria-label="Delete"
+                        >
+                          <FaTrash className="mr-2 h-4 w-4" />
+                          <span>Delete</span>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
-        </Table></div>
+        </Table>
+      </div>
     </div>
   );
 };

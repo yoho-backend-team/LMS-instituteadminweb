@@ -1,14 +1,16 @@
-import { getCertificate } from "../services";
-import { setCertificateClass } from "./slice";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getCertificate } from '../services';
+import { setCertificateClass, setLoading } from './slice';
 
-export const  getStudentCertificate = (params:any)=> async (dispatch:any)=>{
-    try{
-        const response = await getCertificate(params)
-        dispatch (setCertificateClass(response))
-        console.log(response, ' certificate response');
-    }
-    catch (error){
-        console.log(error)
-    }
-}
-
+export const getStudentCertificate = (params: any) => async (dispatch: any) => {
+	try {
+		dispatch(setLoading(true));
+		const response = await getCertificate(params);
+		dispatch(setCertificateClass(response));
+		dispatch(setLoading(false));
+	} catch (error) {
+		console.log(error);
+	} finally {
+		dispatch(setLoading(false));
+	}
+};
