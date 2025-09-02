@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import chatBg from '../../assets/navbar/chatbg.png';
+import ChatBg from '../../assets/navbar/chatbg.png';
 import emojiIcon from '../../assets/navbar/emojiIcon.png';
 import attachIcon from '../../assets/navbar/attachIcon.png';
 import cancel from '../../assets/navbar/cancel.png';
@@ -90,7 +90,7 @@ const ChatView: React.FC<Props> = ({
 				<div
 					className='flex-1 overflow-y-auto p-4 h-fit'
 					style={{
-						backgroundImage: `url(${chatBg})`,
+						backgroundImage: `url(${ChatBg})`,
 						backgroundAttachment: 'fixed',
 						backgroundSize: 'cover',
 						backgroundRepeat: 'no-repeat',
