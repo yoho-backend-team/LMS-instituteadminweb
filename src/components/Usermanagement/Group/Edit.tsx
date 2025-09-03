@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { GetViewCard, UpdateGroup } from "../../../features/Users_Management/Group/reducers/service";
@@ -13,7 +14,7 @@ function Edit() {
   const location = useLocation()
   const { grpName } = location.state
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [groupName, setGroupName] = useState("");
   const [groupView, setGroupView] = useState<any[]>([]);
   const [state, setState] = useState<Record<string, Record<Permission, boolean>>>({});
@@ -22,7 +23,7 @@ function Edit() {
   const fetchGroup = async () => {
     if (!id) return;
     try {
-      setLoading(true);
+      // setLoading(true);
       const res = await GetViewCard({ role: id });
       const data = res?.data || [];
 
@@ -45,7 +46,7 @@ function Edit() {
     } catch (err) {
       console.error("Error fetching group:", err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

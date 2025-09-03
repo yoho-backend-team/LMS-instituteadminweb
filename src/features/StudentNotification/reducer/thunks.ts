@@ -1,23 +1,32 @@
-import { getcoursedata, getstudentnotificationdata } from "../services/Notification";
-import { getcoursedetails, getstudentnotificationdetails } from "./NotificationSlice";
+import {
+	getcoursedata,
+	getstudentnotificationdata,
+} from '../services/Notification';
+import {
+	getcoursedetails,
+	getstudentnotificationdetails,
+	setLoading,
+} from './NotificationSlice';
 
 export const getStudentnotification =
-    (params: any) => async (dispatch: any) => {
-        try {
-            const response = await getstudentnotificationdata(params);
-            dispatch(getstudentnotificationdetails(response));
-        } catch (error) {
-            console.log(error);
-        }
-    };
+	(params: any) => async (dispatch: any) => {
+		try {
+			dispatch(setLoading(true));
+			const response = await getstudentnotificationdata(params);
+			dispatch(getstudentnotificationdetails(response));
+			dispatch(setLoading(false));
+		} catch (error) {
+			console.log(error);
+		} finally {
+			dispatch(setLoading(false));
+		}
+	};
 
-    export const getcourse =
-  (data: any) => async (dispatch: any) => {
-    try {
-      const response = await getcoursedata(data);
-      console.log("Thunk response:", response); // ✅ already confirmed
-      dispatch(getcoursedetails(response)); // <--- CHECK THIS
-    } catch (error) {
-      console.log(error);
-    }
-  };
+export const getcourse = (data: any) => async (dispatch: any) => {
+	try {
+		const response = await getcoursedata(data);
+		dispatch(getcoursedetails(response));
+	} catch (error) {
+		console.log(error);
+	}
+};

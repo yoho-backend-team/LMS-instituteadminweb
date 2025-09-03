@@ -1,16 +1,19 @@
+import { getStaffNotifications } from '../services';
+import { selectStaffNotification, setLoading } from './slices';
 
-import { getStaffNotifications } from "../services";
-import { selectStaffNotification } from "./slices";
-
-export const getAllStaffNotifications = (query:any) => async(dispatch:any)  =>
-    {
-        try {
-            const response = await getStaffNotifications(query);
-            if (response) {
-                dispatch(selectStaffNotification(response));
-            }    
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-}
+export const getAllStaffNotifications =
+	(query: any) => async (dispatch: any) => {
+		try {
+			dispatch(setLoading(true));
+			const response = await getStaffNotifications(query);
+			if (response) {
+				dispatch(selectStaffNotification(response));
+				dispatch(setLoading(false));
+			}
+		} catch (error) {
+			console.log(error);
+			return null;
+		} finally {
+			dispatch(setLoading(false));
+		}
+	};

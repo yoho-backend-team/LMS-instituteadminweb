@@ -1,33 +1,36 @@
+
+
 export interface Certificate {
-	id: number;
-	title: string;
-	description: string;
-	branch: string;
-	batch: string;
-	student: string;
-	email: string;
+  id: number;
+  title: string;
+  description: string;
+  branch: string;
+  batch: string;
+  student: string;
+  email: string;
 }
 
 export const downloadCertificate = async (certificate: Certificate) => {
-	try {
-		const html2canvas = (await import('html2canvas')).default;
-		const jsPDF = (await import('jspdf')).default;
+  try {
+    const html2canvas = (await import('html2canvas')).default;
+    const jsPDF = (await import('jspdf')).default;
 
-		const tempContainer = document.createElement('div');
-		tempContainer.style.position = 'absolute';
-		tempContainer.style.left = '-9999px';
-		tempContainer.style.top = '-9999px';
-		tempContainer.style.width = '1200px';
-		tempContainer.style.height = '800px';
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '-9999px';
+    tempContainer.style.width = '1200px';
+    tempContainer.style.height = '800px';
 
-		tempContainer.innerHTML = `
+
+    tempContainer.innerHTML = `
       <div style="min-height: 800px; background: rgb(251 207 232); padding: 32px; display: flex; align-items: center; justify-content: center;">
         <div style="width: 100%; max-width: 1000px; background: white; border: 8px solid rgb(250 204 21); padding: 48px; position: relative;">
           <div style="text-align: center; margin-bottom: 32px;">
             <h1 style="font-size: 2.5rem; font-weight: bold; color: rgb(202 138 4); margin-bottom: 8px;">
               Certificate of ${certificate.title
-								.split(' ')[0]
-								.toUpperCase()} 2024
+        .split(' ')[0]
+        .toUpperCase()} 2024
             </h1>
             <p style="font-size: 1.125rem; color: rgb(55 65 81); font-style: italic;">This is proudly presented to</p>
           </div>
@@ -40,9 +43,8 @@ export const downloadCertificate = async (certificate: Certificate) => {
 
           <div style="text-align: center; margin-bottom: 48px;">
             <p style="font-size: 1.125rem; color: rgb(55 65 81); margin-bottom: 16px;">For successfully completing the</p>
-            <p style="font-size: 1.25rem; font-weight: 600; color: rgb(31 41 55); margin-bottom: 16px;">${
-							certificate.batch
-						} - ${certificate.branch} Branch</p>
+            <p style="font-size: 1.25rem; font-weight: 600; color: rgb(31 41 55); margin-bottom: 16px;">${certificate.batch
+      } - ${certificate.branch} Branch</p>
             <div style="max-width: 600px; margin: 0 auto; font-size: 0.875rem; color: rgb(75 85 99); line-height: 1.625; margin-bottom: 16px;">
               <p>${certificate.description}</p>
             </div>
@@ -81,30 +83,30 @@ export const downloadCertificate = async (certificate: Certificate) => {
       </div>
     `;
 
-		document.body.appendChild(tempContainer);
+    document.body.appendChild(tempContainer);
 
-		const canvas = await html2canvas(tempContainer, {
-			width: 1200,
-			height: 800,
-			scale: 2,
-			useCORS: true,
-			allowTaint: true,
-		});
+    const canvas = await html2canvas(tempContainer, {
+      width: 1200,
+      height: 800,
+      // scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    });
 
-		document.body.removeChild(tempContainer);
+    document.body.removeChild(tempContainer);
 
-		const pdf = new jsPDF({
-			orientation: 'landscape',
-			unit: 'px',
-			format: [1200, 800],
-		});
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [1200, 800],
+    });
 
-		const imgData = canvas.toDataURL('image/png');
-		pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
 
-		pdf.save(`${certificate.student}_${certificate.title}_Certificate.pdf`);
-	} catch (error) {
-		console.error('Error generating certificate:', error);
-		alert('Error generating certificate. Please try again.');
-	}
+    pdf.save(`${certificate.student}_${certificate.title}_Certificate.pdf`);
+  } catch (error) {
+    console.error('Error generating certificate:', error);
+    alert('Error generating certificate. Please try again.');
+  }
 };

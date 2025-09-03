@@ -13,7 +13,7 @@ interface UserInfo {
 }
 
 const EditUserInfo: React.FC = () => {
-    const [successMessage, setSuccessMessage] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleUploadClick = () => {
@@ -32,7 +32,7 @@ const EditUserInfo: React.FC = () => {
         navigate('/profile'); // Replace with your desired route
     };
     const handleSubmits = () => {
-        setSuccessMessage('Record submitted successfully!');// Replace with your desired route
+        // setSuccessMessage('Record submitted successfully!');// Replace with your desired route
     };
     const [userInfo, setUserInfo] = useState<UserInfo>({
         fullName: '',
@@ -82,7 +82,7 @@ const EditUserInfo: React.FC = () => {
                         name="fullName"
                         value={userInfo.fullName}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -93,7 +93,7 @@ const EditUserInfo: React.FC = () => {
                         name="userName"
                         value={userInfo.userName}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -104,7 +104,7 @@ const EditUserInfo: React.FC = () => {
                         name="email"
                         value={userInfo.email}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -115,7 +115,7 @@ const EditUserInfo: React.FC = () => {
                         name="contact"
                         value={userInfo.contact}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 

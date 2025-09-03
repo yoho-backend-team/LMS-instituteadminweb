@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { X } from "lucide-react";
-import { CreateFaq } from "../../features/Faq/service"; // Adjust path as needed
+import { CreateFaq } from "../../features/Faq/service"; 
 
 export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [title, setTitle] = useState("");

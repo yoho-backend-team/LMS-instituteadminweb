@@ -7,15 +7,15 @@ export const selectError = (state: RootState) => state.branches.error;
 export const selectSearchTerm = (state: RootState) => state.branches.searchTerm;
 
 export const selectFilteredBranches = (state: RootState) => {
-  const branches = selectBranches(state);
-  const searchTerm = selectSearchTerm(state).toLowerCase();
+	const branches = selectBranches(state);
+	const searchTerm = selectSearchTerm(state).toLowerCase();
 
-  return searchTerm
-    ? branches.filter(branch =>
-      branch.cityName.toLowerCase().includes(searchTerm)
-    )
-    : branches;
+	return searchTerm
+		? branches.filter((branch: any) =>
+				branch.cityName.toLowerCase().includes(searchTerm)
+		  )
+		: branches;
 };
 
 export const selectBranchById = (id: string) => (state: RootState) =>
-  state.branches.branches.find(branch => branch.id === id);
+	state.branches.branches.find((branch) => branch.id === id);

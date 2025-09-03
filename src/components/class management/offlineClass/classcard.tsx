@@ -33,7 +33,6 @@ interface BatchCardProps {
 
 const offlineClassCard: React.FC<BatchCardProps> = ({
 	title,
-	students,
 	startDate,
 	endTime,
 	startTime,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addMonths, format, getDaysInMonth, getDay, subMonths, isSameMonth, isToday } from "date-fns";
+import { addMonths, format, getDaysInMonth, getDay, subMonths } from "date-fns";
 
 const Attendancepage = () => {
     // const [openModal, setopenModal] = useState(false);
@@ -10,12 +10,12 @@ const Attendancepage = () => {
     const daysInMonth = getDaysInMonth(currentMonth);
     const monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     const startDay = getDay(monthStart);
-    
+
     // Get days from previous month
     const prevMonthDays = [];
     const prevMonth = subMonths(currentMonth, 1);
     const daysInPrevMonth = getDaysInMonth(prevMonth);
-    
+
     for (let i = startDay - 1; i >= 0; i--) {
         prevMonthDays.push(daysInPrevMonth - i);
     }
@@ -30,7 +30,7 @@ const Attendancepage = () => {
     const nextMonthDays = [];
     const totalDays = prevMonthDays.length + currentMonthDays.length;
     const remainingCells = 35 - totalDays > 0 ? 35 - totalDays : 42 - totalDays;
-    
+
     for (let i = 1; i <= remainingCells; i++) {
         nextMonthDays.push(i);
     }
@@ -81,7 +81,7 @@ const Attendancepage = () => {
 
             <div className="grid grid-cols-7 h-[47px] w-full gap-5 mt-5">
                 {days.map((day, index) => (
-                    <div 
+                    <div
                         key={index}
                         className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]"
                     >
@@ -92,7 +92,7 @@ const Attendancepage = () => {
 
             <div className="grid grid-cols-7 w-full gap-5 mt-5 **:w-full **:h-[80px]">
                 {allDays.map((day, index) => (
-                    <div 
+                    <div
                         key={index}
                         className={`border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg 
                             ${isCurrentDay(day) ? 'bg-[#1BBFCA] text-white' : ''}

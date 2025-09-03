@@ -1,6 +1,5 @@
-"use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "../../components/ui/button"
 import { Plus, SlidersHorizontal } from "lucide-react"
 import type { ReactNode } from "react"
 

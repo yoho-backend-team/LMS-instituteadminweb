@@ -1,8 +1,8 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FiX, FiSend, FiArrowLeft } from 'react-icons/fi';
 import chatbg from '../../../assets/navbar/chatbg.png';
-import circleblue from '../../../assets/navbar/circleblue.png';
 import userblue from '../../../assets/navbar/userblue.png';
 import { useTicketContext } from '../../../components/StudentTickets/TicketContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,29 +21,44 @@ interface Message {
 	text: string;
 	time: string;
 }
+interface AdminProfile {
+	_id: string;
+	full_name?: string;
+	[key: string]: any;
+}
 
 const TicketDetailsPage: React.FC = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const { tickets } = useTicketContext();
 	const dispatch = useDispatch<any>();
-	const ticketData = useSelector(selectStudentTicketById);
+
+	const ticketDataFromRedux = useSelector(selectStudentTicketById);
+	const ticketFromState = location.state?.ticket;
+
+
+	const ticketData = ticketFromState || ticketDataFromRedux;
+
 	const ticketId = Number(id);
 	const ticket = tickets.find((t) => t.id === ticketId);
 	const status = ticket?.status ?? 'opened';
-	const [adminProfile, SetAdminProfile] = useState();
+	const [adminProfile, SetAdminProfile] = useState<AdminProfile | null>(null);
+	console.log(status)
 
-	const updateStatus = async () => {
+	const updateStatus = async (newStatus: string) => {
 		try {
 			const data = {
 				uuid: ticketData?.uuid,
-				status: 'closed',
+				status: newStatus,
 				user: ticketData?.user,
 			};
 			const response = await updateStudentTicketService(data);
+			console.log(data, "sdfghjklkjhfdsasdfghjklkjhfdsdfgk")
 			if (response) {
 				fetchstudentTicketsById();
-				toast.success('Ticket status updated successfully!');
+				Object.assign(ticketData, { status: newStatus });
+				toast.success(`Ticket marked as ${newStatus}!`);
 			} else {
 				toast.error('Failed to update ticket status.');
 			}
@@ -52,11 +67,13 @@ const TicketDetailsPage: React.FC = () => {
 		}
 	};
 
+
+
 	const fetchstudentTicketsById = async () => {
 		try {
 			dispatch(StudentTicketByID({ uuid: id }));
 		} catch (error) {
-			console.log('Error fetching in tickts:', error);
+			console.log('Error fetching in tickets:', error);
 		}
 	};
 
@@ -70,51 +87,52 @@ const TicketDetailsPage: React.FC = () => {
 
 	const getProfile = async () => {
 		const response = await GetProfileDetail();
-		console.log("STDTicket", response)
-		SetAdminProfile(response?.data)
-	}
+		SetAdminProfile(response?.data);
+	};
 
 	useEffect(() => {
 		if (ticketData?.messages) {
-			setMessages(ticketData.messages)
+			setMessages(ticketData.messages);
 		}
-	}, [ticketData])
+	}, [ticketData]);
 
 	useEffect(() => {
 		getProfile();
-	}, [])
+	}, []);
 
 	const handleSend = () => {
-		if (inputValue.trim() === "") return;
+		if (inputValue.trim() === '') return;
 
-		const newMessage: Message = {
+		const newMessage: any = {
 			ticket_id: id,
 			text: inputValue,
-			senderType: "InstituteAdmin",
-			user: adminProfile?._id
+			senderType: 'InstituteAdmin',
+			user: adminProfile?._id,
 		};
-		socket.emit("sendStudentTicketMessage", newMessage)
-		setMessages((prev)=> [...prev, {sender: adminProfile?._id, content: inputValue, date: new Date()}])
-		setInputValue("");
+		socket.emit('sendStudentTicketMessage', newMessage);
+		setMessages((prev: any) => [
+			...prev,
+			{ sender: adminProfile?._id, content: inputValue, date: new Date() },
+		]);
+		setInputValue('');
 	};
 
-
 	useEffect(() => {
-		socket.connect()
-		socket.on("connect", () => {
-			socket.emit("joinTicket", id)
+		socket.connect();
+		socket.on('connect', () => {
+			socket.emit('joinTicket', id);
 		});
 
 		const handleMessage = (message: Message) => {
-			console.log("message", message)
-			setMessages((prev) => [message, ...prev])
-		}
+			setMessages((prev) => [message, ...prev]);
+		};
 
-		socket.on("receiveStudentTicketMessage", handleMessage)
+		socket.on('receiveStudentTicketMessage', handleMessage);
 		return () => {
-			socket.off("receiveStudentTicketMessage", handleMessage)
-		}
-	})
+			socket.off('receiveStudentTicketMessage', handleMessage);
+		};
+	});
+
 	useEffect(() => {
 		if (chatRef.current) {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -149,7 +167,6 @@ const TicketDetailsPage: React.FC = () => {
 					>
 						RAISED DATE & TIME :{' '}
 						<span className='font-medium'>
-							{' '}
 							{ticketData?.date
 								? new Date(ticketData?.date).toLocaleDateString()
 								: 'N/A'}{' '}
@@ -165,7 +182,7 @@ const TicketDetailsPage: React.FC = () => {
 				</div>
 				{ticketData?.status !== 'closed' && (
 					<button
-						onClick={updateStatus}
+						onClick={() => navigate(-1)}
 						className='flex items-center ml-4 justify-center w-42 gap-2 px-2 py-3 bg-[#14b8c6] text-white rounded-md'
 					>
 						<FiX className='text-xl' />
@@ -187,7 +204,9 @@ const TicketDetailsPage: React.FC = () => {
 								<h2 className='font-semibold text-gray-800 text-base'>
 									{ticketData?.user?.full_name}
 								</h2>
-								<p className='text-green-600 text-sm'>{socket ? "Active": "offline"}</p>
+								<p className='text-green-600 text-sm'>
+									{socket ? 'Active' : 'offline'}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -221,7 +240,9 @@ const TicketDetailsPage: React.FC = () => {
 									>
 										{msg.content}
 										<div
-											className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id ? 'text-white' : 'text-gray-500'
+											className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
+												? 'text-white'
+												: 'text-gray-500'
 												}`}
 										>
 											{msg?.date
@@ -245,11 +266,12 @@ const TicketDetailsPage: React.FC = () => {
 							{ticketData?.status !== 'closed' && (
 								<div className='flex gap-2 px-4 py-2 border-t'>
 									<button
-										onClick={updateStatus}
+										onClick={() => updateStatus('closed')}
 										className='border border-[#1BBFCA] text-[#1BBFCA] text-sm font-medium px-4 py-2 rounded'
 									>
 										Solved
 									</button>
+
 									<button className='bg-[#1BBFCA] text-white text-sm font-medium px-4 py-2 rounded'>
 										Not Related
 									</button>

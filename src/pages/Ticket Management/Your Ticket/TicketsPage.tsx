@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import mask from '../../../assets/navbar/Mask-1.png';
 import prfimg from '../../../assets/navbar/image.png';
 import { FONTS } from '../../../constants/uiConstants';
-import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
+import { FiCalendar, FiClock,} from "react-icons/fi";
+
 interface Message {
-  sender: "user" | "admin";
+  id: string;
   text: string;
-  time: string;
+  sender: string;
+  timestamp: string;
 }
 
 type TicketCardProps = {
@@ -18,6 +20,7 @@ type TicketCardProps = {
     priority: "High" | "Medium" | "Low";
     avatarUrl?: string;
     onView: () => void;
+    message?: Message[];
 };
 
 const TicketCard: React.FC<TicketCardProps> = ({
@@ -27,14 +30,13 @@ const TicketCard: React.FC<TicketCardProps> = ({
     date,
     time,
     priority,
-    avatarUrl,
-    
     onView,
+      
 }) => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const popupRef = useRef<HTMLDivElement>(null);
 
-    console.log("name",name)
+   
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {

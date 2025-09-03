@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { LuSend } from "react-icons/lu";
 
@@ -11,16 +12,19 @@ import { FONTS } from "../../constants/uiConstants";
 
 interface ChatWindowProps {
   user: {
+    user: any;
     first_name: string;
     is_active: boolean;
     image: string;
+    uuid: string;
+    messages: any
   };
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
-  const [inputValue, setInputValue] = useState();
-  const [adminProfile, setAdminProfile] = useState();
-  const [messages,setMessages] = useState();
+  const [inputValue, setInputValue] = useState<any>();
+  const [adminProfile, setAdminProfile] = useState<any>();
+  const [messages, setMessages] = useState<any>();
 
   const getProfile = async () => {
     const response = await GetProfileDetail();
@@ -39,15 +43,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
       user: adminProfile?._id
     }
     socket.emit("sendTicketMessage", newMessage)
-    setMessages((prev)=> [...prev, {content: inputValue, sender: adminProfile?._id}])
+    setMessages((prev: any) => [...prev, { content: inputValue, sender: adminProfile?._id }])
     setInputValue("");
   }
 
-  useEffect(()=>{
-    if(user?.messages){
-        setMessages(user.messages)
+  useEffect(() => {
+    if (user?.messages) {
+      setMessages(user.messages)
     }
-  },[user])
+  }, [user])
 
   return (
     <div className="flex flex-col justify-between w-[70%] border border-[#E2E8F0] rounded-xl bg-white ">
@@ -70,10 +74,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
       <div className="flex-1 p-4 overflow-y-auto"
         style={{ backgroundImage: `url(${chatimg})` }}>
         {/* Example message bubble */}
-        {messages?.map((msg:any, index:any) => (<div key={index} className="mb-2 flex flex-col items-end">
-          <div className={`bg-gray-200 text-black p-2 rounded-xl max-w-[70%] ${msg?.sender === adminProfile?._id ? 'bg-[#14b8c6] text-white': 'bg-white text-gray-800'}`}>
-            <p style={{...FONTS.heading_07}}>{msg.content}</p>
-            <p className="" style={{...FONTS.description}}>{dayjs(msg.date).format("HH:MM A")}</p>
+        {messages?.map((msg: any, index: any) => (<div key={index} className="mb-2 flex flex-col items-end">
+          <div className={`bg-gray-200 text-black p-2 rounded-xl max-w-[70%] ${msg?.sender === adminProfile?._id ? 'bg-[#14b8c6] text-white' : 'bg-white text-gray-800'}`}>
+            <p style={{ ...FONTS.heading_07 }}>{msg.content}</p>
+            <p className="" style={{ ...FONTS.description }}>{dayjs(msg.date).format("HH:MM A")}</p>
           </div>
         </div>))}
       </div>
@@ -88,7 +92,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
           type="text"
           placeholder="Type your message..."
           className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-          onKeyDown={(e)=> e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
         <button
           onClick={handleSend}

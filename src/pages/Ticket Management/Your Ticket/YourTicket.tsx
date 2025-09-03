@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../Ticket Management/Your Ticket/TicketsPage";
 import iconticket from '../../../assets/navbar/ticketicon.png';
@@ -12,6 +13,13 @@ import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourT
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 
+interface Message {
+  id: string;
+  text: string;
+  sender: string;
+  timestamp: string;
+}
+
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
   const [showChatWindow, setShowChatWindow] = useState(false);
@@ -22,10 +30,9 @@ const TicketsPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
-  const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
+  const [setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
-  const [messages, setMessages] = useState()
-
+  const [messages, setMessages] = useState<Message[]>([]);
   console.log("Selecteduser", selectedTicketUserDetails)
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
@@ -79,6 +86,7 @@ const TicketsPage: React.FC = () => {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
+        console.log(formData, "formdatatatatatatatataat")
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
       }
@@ -117,9 +125,25 @@ const TicketsPage: React.FC = () => {
 
     socket.on("receiveMessage", handleMessage)
     return () => {
-      socket.off("receiveMessage", handleMessage)
-    }
-  })
+      socket.off("receiveMessage", handleMessage);
+    };
+  }, []);
+
+
+  // const TicketSkeleton = () => (
+  //   <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
+  //     <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
+  //     <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+  //     <div className="flex justify-between items-center mt-4">
+  //       <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+  //       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+  //     </div>
+  //   </div>
+  // );
+
 
   return (
     <div className="h-auto p-0">
@@ -157,6 +181,7 @@ const TicketsPage: React.FC = () => {
         )}
       </div>
 
+
       {showbuttonWindow && (
         <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
           <button
@@ -186,12 +211,14 @@ const TicketsPage: React.FC = () => {
         </div>
       )}
 
+
       {activeTab === "open" && !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
           {Array.isArray(adminTickets) &&
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
+                name={ticket?.name}
                 category={ticket?.description}
                 query={ticket?.query}
                 message={messages}
@@ -217,7 +244,6 @@ const TicketsPage: React.FC = () => {
       )}
 
 
-
       {showChatWindow && (
 
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
@@ -241,7 +267,7 @@ const TicketsPage: React.FC = () => {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Query</label>
+                <label className=" block mb-2 text-[#716F6F]">Query</label>
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -252,7 +278,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Description</label>
+                <label className=" block mb-2 text-[#716F6F]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -263,7 +289,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Priority</label>
+                <label className=" block mb-2 text-[#716F6F]">Priority</label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as "High" | "Medium" | "Low")}
@@ -278,7 +304,7 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700 text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Upload</label>
+                <label className="block mb-1 text-sm font-medium  text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Upload</label>
                 <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
                   <input
                     type="file"
