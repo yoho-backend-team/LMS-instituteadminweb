@@ -148,8 +148,8 @@ const Students = () => {
 	const fetchStudentManagement = () => {
 		dispatch(
 			getStudentmanagement({
-				branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-				page: 1,
+branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+page: 1,
 			})
 		);
 	};
