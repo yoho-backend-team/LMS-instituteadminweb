@@ -1,13 +1,15 @@
-import { GetAllFaqs } from "../service";
-import { getFaqs } from "./slice";
+import { GetAllFaqs } from '../service';
+import { getFaqs, setLoading } from './slice';
 
-// ✅ Use a clear, meaningful name for the thunk
 export const getAllFaqsThunk = (params: any) => async (dispatch: any) => {
-  try {
-    const response = await GetAllFaqs(params); // Service/API call
-    dispatch(getFaqs(response.data ?? response)); // Dispatch to store
-    console.log(response, " Fetched FAQs response");
-  } catch (error) {
-    console.error("Failed to fetch FAQs:", error);
-  }
+	try {
+		dispatch(setLoading(true));
+		const response = await GetAllFaqs(params);
+		dispatch(getFaqs(response.data ?? response));
+		dispatch(setLoading(false));
+	} catch (error) {
+		console.error('Failed to fetch FAQs:', error);
+	} finally {
+		dispatch(setLoading(false));
+	}
 };

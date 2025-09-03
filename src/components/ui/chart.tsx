@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { createContext, useContext } from 'react';
 import {
   Chart as ChartJS,
@@ -13,16 +14,15 @@ import {
   Filler,
   RadialLinearScale,
 } from 'chart.js';
-import { 
-  Chart as ReactChart,
-  Line, 
-  Bar, 
-  Pie, 
-  Doughnut, 
-  PolarArea, 
-  Radar, 
+import {
+  Line,
+  Bar,
+  Pie,
+  Doughnut,
+  PolarArea,
+  Radar,
   Bubble,
-  Scatter 
+  Scatter
 } from 'react-chartjs-2';
 
 // Register ChartJS components
@@ -47,6 +47,7 @@ interface ChartContextType {
 
 const ChartContext = createContext<ChartContextType>({ tooltipData: null });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useChartContext() {
   return useContext(ChartContext);
 }
@@ -73,9 +74,9 @@ interface ChartTooltipProps {
 
 export function ChartTooltip({ children }: ChartTooltipProps) {
   const { tooltipData } = useChartContext();
-  
+
   if (!tooltipData) return null;
-  
+
   return (
     <div className="absolute bg-background border rounded-md shadow-lg p-3 pointer-events-none">
       {children(tooltipData)}
@@ -98,19 +99,19 @@ export function ChartTooltipContent({ children, className = '' }: ChartTooltipCo
 }
 
 // Main Chart component
-type ChartType = 
-  | 'line' 
-  | 'bar' 
-  | 'pie' 
-  | 'doughnut' 
-  | 'polarArea' 
-  | 'radar' 
-  | 'bubble' 
+type ChartType =
+  | 'line'
+  | 'bar'
+  | 'pie'
+  | 'doughnut'
+  | 'polarArea'
+  | 'radar'
+  | 'bubble'
   | 'scatter';
 
 interface ChartDataset {
   label: string;
-  data: number[] | {x: number, y: number}[];
+  data: number[] | { x: number, y: number }[];
   backgroundColor?: string | string[];
   borderColor?: string | string[];
   borderWidth?: number;
@@ -176,7 +177,7 @@ export function Chart({
       },
       tooltip: {
         enabled: false,
-        external: (context) => {
+        external: () => {
           // This will be handled by our custom tooltip
         },
       },
@@ -187,8 +188,8 @@ export function Chart({
   className,
   style,
 }: ChartProps) {
-  const [tooltipData, setTooltipData] = React.useState(null);
-  
+  const [tooltipData, setTooltipData] = React.useState<any | null>(null);
+
   const customOptions = {
     ...options,
     plugins: {
@@ -202,14 +203,14 @@ export function Chart({
             setTooltipData(null);
             return;
           }
-          
+
           const data = {
             labels: tooltip.dataPoints.map((dp: any) => dp.dataset.label || ''),
             values: tooltip.dataPoints.map((dp: any) => dp.raw),
             label: tooltip.title[0],
             colors: tooltip.dataPoints.map((dp: any) => dp.dataset.backgroundColor),
           };
-          
+
           setTooltipData(data);
         },
       },
@@ -226,9 +227,9 @@ export function Chart({
   return (
     <ChartContext.Provider value={{ tooltipData }}>
       <ChartContainer className={className} style={style}>
-        <ChartComponent 
-          data={data} 
-          options={customOptions} 
+        <ChartComponent
+          data={data}
+          options={customOptions}
           width={width}
           height={height}
         />
@@ -238,8 +239,8 @@ export function Chart({
               <div className="font-medium">{data.label}</div>
               {data.labels.map((label: string, i: number) => (
                 <div key={i} className="flex items-center">
-                  <div 
-                    className="w-3 h-3 rounded-full mr-2" 
+                  <div
+                    className="w-3 h-3 rounded-full mr-2"
                     style={{ backgroundColor: data.colors[i] }}
                   />
                   <span className="mr-2">{label}:</span>

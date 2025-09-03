@@ -25,22 +25,22 @@ export const createStaff = async (data: any) => {
 	if (response) return response;
 };
 
-export const updateStaff = async (data: any) => {
-	const response = await Client.staff.update(data);
+export const updateStaff = async (params: any,data: any) => {
+	const response = await Client.staff.update(params,data);
 	if (response) return response;
 };
 
 export const deleteStaff = async (query: any) => {
 	const response = await Client.staff.delete(query);
 	if (response) return response;
-}
+};
 
 export const uploadFile = async (data: any) => {
-	const response = await Client.file.upload(data)
+	const response = await Client.file.upload(data);
 	if (response) return response;
-}
+};
 
 export const getBranchData = async (data: any) => {
-	const response = await Client.staff.getWithBranch(data)
+	const response = await Client.staff.getWithBranch(data);
 	if (response) return response;
-}
+};

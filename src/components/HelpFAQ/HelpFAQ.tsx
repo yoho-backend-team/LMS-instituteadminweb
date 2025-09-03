@@ -1,7 +1,6 @@
-import React, { use } from "react";
+import React from "react";
 import { IoMdCall } from "react-icons/io";
 import { IoMdMail } from "react-icons/io";
-import TrackOrder from "./TrackOrder";
 import { useNavigate } from "react-router";
 
 const HelpFAQ = () => {
@@ -35,7 +34,7 @@ const HelpFAQ = () => {
           <option value="/secure-delivery">Secure Delivery</option>
         </select>
 
-        <div className="flex grid grid-cols-3 mt-10">
+        <div className="grid grid-cols-3 mt-10">
           <div className="flex flex-col text-[#716F6F] gap-4">
             <span className="text-lg text-[#1BBFCA] font-semibold">
               For assistance related to your orders

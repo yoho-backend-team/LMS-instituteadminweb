@@ -2,7 +2,7 @@
 import { EyeIcon, EyeOff } from 'lucide-react';
 import image from '../../../assets/Login/image.png';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
-import { data, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsInfoCircle } from 'react-icons/bs';
 import { useRef, useState } from 'react';
 import { AuthLogin } from '../../../features/Auth/service';
@@ -25,10 +25,9 @@ const LoginPage = () => {
 		e.preventDefault();
 		const email = Inputemail?.current?.value;
 		const password = Inputpassword?.current?.value;
-
 		const response = await AuthLogin({ email, password });
-
-		if (response?.status == 'success' || response?.status == 'sucess') {
+		console.log(response, "response");
+		if (response) {
 			if (response?.data?.otpVerify) {
 				toast.success(response?.message);
 				navigate('/otp-verify');
@@ -36,7 +35,8 @@ const LoginPage = () => {
 				StoreLocalStorage('otp', response?.data?.otp);
 				StoreLocalStorage('email', response?.data?.email);
 			} else {
-				dispatch(AuthThunks(data));
+				dispatch(AuthThunks(response?.data));
+				StoreLocalStorage('instituteId', response?.data?.institute?.uuid)
 				login(response?.data?.token);
 				toast.success(response?.message);
 			}

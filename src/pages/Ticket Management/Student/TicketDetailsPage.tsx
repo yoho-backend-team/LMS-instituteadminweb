@@ -1,8 +1,8 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FiX, FiSend, FiArrowLeft } from 'react-icons/fi';
 import chatbg from '../../../assets/navbar/chatbg.png';
-import circleblue from '../../../assets/navbar/circleblue.png';
 import userblue from '../../../assets/navbar/userblue.png';
 import { useTicketContext } from '../../../components/StudentTickets/TicketContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,34 +12,53 @@ import { GetImageUrl } from '../../../utils/helper';
 import { updateStudentTicketService } from '../../../features/StudentTicket/Services';
 import toast from 'react-hot-toast';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
+import socket from '../../../utils/socket';
+import { GetProfileDetail } from '../../../features/Auth/service';
 
 interface Message {
+	ticket_id: 'string';
 	sender: 'user' | 'admin';
 	text: string;
 	time: string;
+}
+interface AdminProfile {
+	_id: string;
+	full_name?: string;
+	[key: string]: any;
 }
 
 const TicketDetailsPage: React.FC = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const { tickets } = useTicketContext();
 	const dispatch = useDispatch<any>();
-	const ticketData = useSelector(selectStudentTicketById);
+
+	const ticketDataFromRedux = useSelector(selectStudentTicketById);
+	const ticketFromState = location.state?.ticket;
+
+
+	const ticketData = ticketFromState || ticketDataFromRedux;
+
 	const ticketId = Number(id);
 	const ticket = tickets.find((t) => t.id === ticketId);
 	const status = ticket?.status ?? 'opened';
+	const [adminProfile, SetAdminProfile] = useState<AdminProfile | null>(null);
+	console.log(status)
 
-	const updateStatus = async () => {
+	const updateStatus = async (newStatus: string) => {
 		try {
 			const data = {
 				uuid: ticketData?.uuid,
-				status: 'closed',
+				status: newStatus,
 				user: ticketData?.user,
 			};
 			const response = await updateStudentTicketService(data);
+			console.log(data, "sdfghjklkjhfdsasdfghjklkjhfdsdfgk")
 			if (response) {
 				fetchstudentTicketsById();
-				toast.success('Ticket status updated successfully!');
+				Object.assign(ticketData, { status: newStatus });
+				toast.success(`Ticket marked as ${newStatus}!`);
 			} else {
 				toast.error('Failed to update ticket status.');
 			}
@@ -48,11 +67,13 @@ const TicketDetailsPage: React.FC = () => {
 		}
 	};
 
+
+
 	const fetchstudentTicketsById = async () => {
 		try {
 			dispatch(StudentTicketByID({ uuid: id }));
 		} catch (error) {
-			console.log('Error fetching in tickts:', error);
+			console.log('Error fetching in tickets:', error);
 		}
 	};
 
@@ -64,21 +85,53 @@ const TicketDetailsPage: React.FC = () => {
 	const [inputValue, setInputValue] = useState('');
 	const chatRef = useRef<HTMLDivElement>(null);
 
+	const getProfile = async () => {
+		const response = await GetProfileDetail();
+		SetAdminProfile(response?.data);
+	};
+
+	useEffect(() => {
+		if (ticketData?.messages) {
+			setMessages(ticketData.messages);
+		}
+	}, [ticketData]);
+
+	useEffect(() => {
+		getProfile();
+	}, []);
+
 	const handleSend = () => {
 		if (inputValue.trim() === '') return;
 
-		const newMessage: Message = {
-			sender: 'admin',
+		const newMessage: any = {
+			ticket_id: id,
 			text: inputValue,
-			time: new Date().toLocaleTimeString([], {
-				hour: '2-digit',
-				minute: '2-digit',
-			}),
+			senderType: 'InstituteAdmin',
+			user: adminProfile?._id,
 		};
-
-		setMessages((prev) => [...prev, newMessage]);
+		socket.emit('sendStudentTicketMessage', newMessage);
+		setMessages((prev: any) => [
+			...prev,
+			{ sender: adminProfile?._id, content: inputValue, date: new Date() },
+		]);
 		setInputValue('');
 	};
+
+	useEffect(() => {
+		socket.connect();
+		socket.on('connect', () => {
+			socket.emit('joinTicket', id);
+		});
+
+		const handleMessage = (message: Message) => {
+			setMessages((prev) => [message, ...prev]);
+		};
+
+		socket.on('receiveStudentTicketMessage', handleMessage);
+		return () => {
+			socket.off('receiveStudentTicketMessage', handleMessage);
+		};
+	});
 
 	useEffect(() => {
 		if (chatRef.current) {
@@ -114,7 +167,6 @@ const TicketDetailsPage: React.FC = () => {
 					>
 						RAISED DATE & TIME :{' '}
 						<span className='font-medium'>
-							{' '}
 							{ticketData?.date
 								? new Date(ticketData?.date).toLocaleDateString()
 								: 'N/A'}{' '}
@@ -130,7 +182,7 @@ const TicketDetailsPage: React.FC = () => {
 				</div>
 				{ticketData?.status !== 'closed' && (
 					<button
-						onClick={updateStatus}
+						onClick={() => navigate(-1)}
 						className='flex items-center ml-4 justify-center w-42 gap-2 px-2 py-3 bg-[#14b8c6] text-white rounded-md'
 					>
 						<FiX className='text-xl' />
@@ -144,15 +196,17 @@ const TicketDetailsPage: React.FC = () => {
 					<div className='bg-white rounded-md border-t-2 shadow p-4'>
 						<div className='flex items-center gap-3'>
 							<img
-								src={circleblue}
+								src={GetImageUrl(ticketData?.user?.image) ?? undefined}
 								alt='User Avatar'
 								className='w-12 h-12 rounded-full object-cover'
 							/>
 							<div>
 								<h2 className='font-semibold text-gray-800 text-base'>
-									Oliver Smith
+									{ticketData?.user?.full_name}
 								</h2>
-								<p className='text-green-600 text-sm'>Active Now</p>
+								<p className='text-green-600 text-sm'>
+									{socket ? 'Active' : 'offline'}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -165,10 +219,10 @@ const TicketDetailsPage: React.FC = () => {
 							ref={chatRef}
 							className='h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center'
 						>
-							{ticketData?.messages?.map((msg: any, idx: any) => (
+							{messages?.map((msg: any, idx: any) => (
 								<div
 									key={idx}
-									className={`flex items-start gap-2 ${msg.sender === 'admin' ? 'justify-end' : ''
+									className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? 'justify-end' : ''
 										}`}
 								>
 									{msg?.sender === 'user' && (
@@ -179,14 +233,16 @@ const TicketDetailsPage: React.FC = () => {
 										/>
 									)}
 									<div
-										className={`p-2 rounded shadow text-sm max-w-[75%] ${msg?.sender === 'admin'
-												? 'bg-[#14b8c6] text-white'
-												: 'bg-white text-gray-800'
+										className={`p-2 rounded shadow text-sm max-w-[75%] ${msg?.sender === adminProfile?._id
+											? 'bg-[#14b8c6] text-white'
+											: 'bg-white text-gray-800'
 											}`}
 									>
 										{msg.content}
 										<div
-											className={`text-[10px] text-right mt-1 ${msg.sender === 'admin' ? 'text-white' : 'text-gray-500'
+											className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
+												? 'text-white'
+												: 'text-gray-500'
 												}`}
 										>
 											{msg?.date
@@ -197,7 +253,7 @@ const TicketDetailsPage: React.FC = () => {
 												: 'N/A'}
 										</div>
 									</div>
-									{msg.sender === 'admin' && (
+									{msg.sender === adminProfile?._id && (
 										<img
 											src={userblue}
 											alt='Admin'
@@ -210,11 +266,12 @@ const TicketDetailsPage: React.FC = () => {
 							{ticketData?.status !== 'closed' && (
 								<div className='flex gap-2 px-4 py-2 border-t'>
 									<button
-										onClick={updateStatus}
+										onClick={() => updateStatus('closed')}
 										className='border border-[#1BBFCA] text-[#1BBFCA] text-sm font-medium px-4 py-2 rounded'
 									>
 										Solved
 									</button>
+
 									<button className='bg-[#1BBFCA] text-white text-sm font-medium px-4 py-2 rounded'>
 										Not Related
 									</button>
@@ -271,8 +328,8 @@ const TicketDetailsPage: React.FC = () => {
 						<p className='font-semibold text-gray-800 mb-1'>Status:</p>
 						<span
 							className={`inline-block px-3 py-2 rounded text-sm ${ticketData?.status === 'opened'
-									? 'text-white bg-[#1BBFCA]'
-									: 'text-white bg-[#be3a3a]'
+								? 'text-white bg-[#1BBFCA]'
+								: 'text-white bg-[#be3a3a]'
 								}`}
 						>
 							{ticketData?.status}

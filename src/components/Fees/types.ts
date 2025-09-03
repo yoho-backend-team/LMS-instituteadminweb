@@ -1,5 +1,4 @@
 export interface Fee {
-  [x: string]: any
   id: string
   transactionId: string
   name: string

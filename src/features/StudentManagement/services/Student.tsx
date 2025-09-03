@@ -1,4 +1,4 @@
-import { User } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../apis/index.js';
 
 export const getstudentdata = async (data: any) => {
@@ -27,6 +27,20 @@ export const deletestudentdata = async (data: any) => {
 };
 export const createstudentdata = async (data: any) => {
 	const response = await Client.users.studentRegister(data)
+	if (response) {
+		return response;
+	}
+};
+
+export const getLiveClassData = async (query: any) => {
+	const response = await Client.student.getLiveClass(query)
+	if (response) {
+		return response;
+	}
+};
+
+export const getActivityStudentdata = async (data: any) => {
+	const response = await Client.student.activity(data)
 	if (response) {
 		return response;
 	}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { UpdateStatusFaq } from "../../features/Faq/service";
@@ -10,7 +11,6 @@ type StatusDropdownProps = {
 };
 
 export function StatusDropdown({
-  idx,
   initialStatus,
   options,
   itemId,
@@ -23,7 +23,7 @@ export function StatusDropdown({
   const toggle = () => setOpen((prev) => !prev);
 
   const handleSelect = async (option: string) => {
-    console.log("Clicked:", option);
+
     setOpen(false);
 
     if (option === currentStatus) return;
@@ -34,11 +34,10 @@ export function StatusDropdown({
 
     try {
       setIsSaving(true);
- await UpdateStatusFaq({
-  id: itemId,
-  is_active: option === "Active" ? true : false,
-});
-  console.log("Status updated to", option);
+      await UpdateStatusFaq({
+        id: itemId,
+        is_active: option === "Active" ? true : false,
+      });
     } catch (e: any) {
       console.error("Failed to update status", e);
       setCurrentStatus(previousStatus); // rollback
@@ -67,9 +66,8 @@ export function StatusDropdown({
             {isSaving ? "Saving..." : currentStatus}
           </span>
           <ChevronDown
-            className={`w-4 h-4 text-white transition-transform duration-200 ${
-              open ? "rotate-180" : ""
-            }`}
+            className={`w-4 h-4 text-white transition-transform duration-200 ${open ? "rotate-180" : ""
+              }`}
           />
         </button>
 

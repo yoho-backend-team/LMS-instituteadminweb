@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react"
 import { useState, useEffect, useRef } from "react" // Import useRef
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
 import { ArrowLeft, ChevronDown, X } from "lucide-react"
-import { Button } from "@/components/ui/button" // Keep Button for the back button, but custom for dropdown trigger
+import { Button } from "../../../components/ui/button" // Keep Button for the back button, but custom for dropdown trigger
 
 // Assuming these are available in your project
 import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service"
@@ -102,7 +103,8 @@ function AddNewGroup({
 
   // State and ref for custom dropdowns
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null)
-  const dropdownRefs = useRef<(HTMLDivElement | null)[]>([])
+  const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
+
 
   useEffect(() => {
     setPermissions((prev) =>
@@ -197,10 +199,8 @@ function AddNewGroup({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const payload = buildPayload()
-    console.log("Payload being sent:", JSON.stringify(payload, null, 2))
     try {
-      const response = await CreateGroup(payload)
-      console.log("group created", response)
+      await CreateGroup(payload)
       toast.success("Group created successfully")
       dispatch(GetGroupCardthunks({}))
       navigate("/group")
@@ -295,7 +295,7 @@ function AddNewGroup({
               <label className="text-base font-semibold text-[#7D7D7D] mb-2">{item.identity}</label>
 
               {/* Custom Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current[moduleIndex] = el)}>
+              <div className="relative" ref={(el: any) => (dropdownRefs.current[moduleIndex] = el)}>
                 <button
                   type="button"
                   onClick={() => setOpenDropdownIndex(isOpen ? null : moduleIndex)}

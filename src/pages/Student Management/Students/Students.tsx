@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
 	Card,
 	CardContent,
@@ -27,10 +28,26 @@ import { RiUploadCloudFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStudentmanagement } from '../../../features/StudentManagement/reducer/thunks';
-import { selectStudent } from '../../../features/StudentManagement/reducer/selector';
+import {
+	selectLoading,
+	selectStudent,
+} from '../../../features/StudentManagement/reducer/selector';
 import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
 import { GetImageUrl } from '../../../utils/helper';
 import { createstudentdata } from '../../../features/StudentManagement/services/Student';
+import { toast } from 'react-toastify';
+import { uploadFile } from '../../../features/staff/services';
+import ContentLoader from 'react-content-loader';
+import { GetLocalStorage } from '../../../utils/localStorage';
+import {
+	GetBranchCourseThunks,
+	GetBranchThunks,
+} from "../../../features/Content_Management/reducers/thunks";
+import {
+	Branch,
+	BranchCourse,
+} from "../../../features/Content_Management/reducers/selectors";
+
 
 const Students = () => {
 	const [showFilters, setShowFilters] = useState(false);
@@ -40,8 +57,13 @@ const Students = () => {
 	const [statusFilter, setStatusFilter] = useState('');
 	const [searchInput, setSearchInput] = useState('');
 	const navigate = useNavigate();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const loading = useSelector(selectLoading);
+	const [branch, setBranch] = useState<string | undefined>(undefined);
+	const branches = useSelector(Branch);
+	const courses = useSelector(BranchCourse);
 
-	// State for the new student form
+
 	const [newStudentForm, setNewStudentForm] = useState({
 		first_name: '',
 		last_name: '',
@@ -61,102 +83,170 @@ const Students = () => {
 		image: null as File | string | null,
 	});
 
-	const handleFileUpload = (file: File) => {
+	const [isUploading, setIsUploading] = useState(false);
+
+	const handleFileUpload = async (file: File) => {
 		// Check file type
 		if (!['image/jpeg', 'image/png'].includes(file.type)) {
-			alert('Only JPEG and PNG files are allowed');
+			toast.error('Only JPEG and PNG files are allowed');
 			return;
 		}
 
 		// Check file size (2MB max)
 		if (file.size > 2 * 1024 * 1024) {
-			alert('File size must be less than 2MB');
+			toast.error('File size must be less than 2MB');
 			return;
 		}
 
-		setNewStudentForm((prev) => ({ ...prev, image: file }));
+		try {
+			setIsUploading(true);
+
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const response = await uploadFile(formData);
+			const uploadedPath = response?.data?.file;
+
+			if (!uploadedPath) {
+				throw new Error('Upload failed: No file path returned');
+			}
+
+			setNewStudentForm((prev) => ({
+				...prev,
+				image: file, // Keep the file for preview, we'll use the uploadedPath in the payload
+			}));
+
+			toast.success('Profile picture uploaded successfully');
+		} catch (error) {
+			console.error('Error uploading file:', error);
+			toast.error('Failed to upload profile picture');
+		} finally {
+			setIsUploading(false);
+		}
 	};
 
 	const toggleFilters = () => setShowFilters(!showFilters);
 	const toggleAddStudent = () => setShowAddStudent(!showAddStudent);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { id, value } = e.target;
 		setNewStudentForm((prev) => ({ ...prev, [id]: value }));
 	};
 
-	const handleAddNewStudent = () => {
-		const payload = {
-			first_name: newStudentForm.first_name,
-			last_name: newStudentForm.last_name,
-			email: newStudentForm.email,
-			dob: newStudentForm.dob,
-			gender: newStudentForm.gender,
-			qualification: newStudentForm.qualification,
-			course: '1958e331-84ce-464b-8865-eb06c6189414',
-			contact_info: {
-				address1: newStudentForm.address1,
-				address2: newStudentForm.address2,
-				city: newStudentForm.city,
-				state: newStudentForm.state,
-				pincode: newStudentForm.pincode,
-				phone_number: newStudentForm.phone_number,
-				alternate_phone_number: newStudentForm.alternate_phone_number,
-			},
+	const handleAddNewStudent = async () => {
+		if (
+			!newStudentForm.first_name ||
+			!newStudentForm.last_name ||
+			!newStudentForm.email
+		) {
+			toast.error('First name, last name and email are required');
+			return;
+		}
 
-			branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-			institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
-			type: 'payment',
-		};
+		try {
+			// First upload the image if it's a file (not already a URL)
+			let imageUrl =
+				typeof newStudentForm.image === 'string' ? newStudentForm.image : null;
 
-		console.log('Submitting payload:', payload);
+			if (newStudentForm.image instanceof File) {
+				setIsUploading(true);
+				const formData = new FormData();
+				formData.append('file', newStudentForm.image);
+				const response = await uploadFile(formData);
+				imageUrl = response?.data?.file;
+				if (!imageUrl) {
+					throw new Error('Image upload failed');
+				}
+			}
 
-		dispatch(createstudentdata(payload))
-			.unwrap()
-			.then(() => {
-				// Reset form and close modal on success
-				setNewStudentForm({
-					first_name: '',
-					last_name: '',
-					email: '',
-					dob: '',
-					gender: '',
-					qualification: '',
-					branch: '',
-					course: '',
-					address1: '',
-					address2: '',
-					city: '',
-					state: '',
-					pincode: '',
-					phone_number: '',
-					alternate_phone_number: '',
-					image: null as File | string | null,
-				});
-				setShowAddStudent(false);
-				// Refresh student list
-				fetchStudentManagement();
-			})
-			.catch((error: any) => {
-				console.error('Error adding student:', error);
+			const payload = {
+				first_name: newStudentForm.first_name,
+				last_name: newStudentForm.last_name,
+				email: newStudentForm.email,
+				dob: newStudentForm.dob,
+				gender: newStudentForm.gender,
+				qualification: newStudentForm.qualification,
+				course: '1958e331-84ce-464b-8865-eb06c6189414',
+				contact_info: {
+					address1: newStudentForm.address1,
+					address2: newStudentForm.address2,
+					city: newStudentForm.city,
+					state: newStudentForm.state,
+					pincode: newStudentForm.pincode,
+					phone_number: newStudentForm.phone_number,
+					alternate_phone_number: newStudentForm.alternate_phone_number,
+				},
+				image: imageUrl,
+				branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				type: 'payment',
+			};
+
+			console.log('Submitting payload:', payload);
+
+			await dispatch(createstudentdata(payload)).unwrap();
+
+			// Reset form and close modal on success
+			setNewStudentForm({
+				first_name: '',
+				last_name: '',
+				email: '',
+				dob: '',
+				gender: '',
+				qualification: '',
+				branch: '',
+				course: '',
+				address1: '',
+				address2: '',
+				city: '',
+				state: '',
+				pincode: '',
+				phone_number: '',
+				alternate_phone_number: '',
+				image: null,
 			});
+			setShowAddStudent(false);
+			toast.success('Student added successfully');
+
+			(() => {
+				dispatch(
+					getStudentmanagement({
+						branch_id: GetLocalStorage("selectedBranchId"),
+						page: 1,
+					})
+				);
+			})()
+		} catch (error) {
+			console.error('Error adding student:', error);
+			toast.error('Failed to add student');
+		} finally {
+			setIsUploading(false);
+		}
 	};
 
 	const studentData = useSelector(selectStudent);
 	const dispatch = useDispatch<any>();
 
-	const fetchStudentManagement = () => {
-		dispatch(
-			getStudentmanagement({
-branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-page: 1,
-			})
-		);
-	};
 
 	useEffect(() => {
-		fetchStudentManagement();
-	}, []);
+		(() => {
+			dispatch(
+				getStudentmanagement({
+					branch_id: GetLocalStorage("selectedBranchId"),
+					page: 1,
+				})
+			);
+		})()
+	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(GetBranchThunks([]));
+	}, [dispatch]);
+
+
+	useEffect(() => {
+		dispatch(GetBranchCourseThunks(branch || ""));
+	}, [branch, dispatch]);
 
 	const formatStudentData = (data: any) => {
 		if (!data || !data.data) return [];
@@ -168,9 +258,8 @@ page: 1,
 			lastName: student.last_name,
 			email: student.email,
 			location: student.contact_info
-				? `${student.contact_info.address1 || ''}, ${
-						student.contact_info.city || student.contact_info.state || ''
-				  }`.trim()
+				? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
+					}`.trim()
 				: 'Location not specified',
 			image: student.image,
 			phone: student.contact_info?.phone_number,
@@ -218,7 +307,7 @@ page: 1,
 					</CardHeader>
 					<CardContent>
 						<div
-							className='border-2  border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative'
+							className='border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative'
 							onDragOver={(e) => {
 								e.preventDefault();
 								e.currentTarget.classList.add(
@@ -250,6 +339,7 @@ page: 1,
 								type='file'
 								accept='image/png, image/jpeg'
 								className='hidden'
+								ref={fileInputRef}
 								onChange={(e) => {
 									if (e.target.files && e.target.files.length > 0) {
 										handleFileUpload(e.target.files[0]);
@@ -289,12 +379,18 @@ page: 1,
 									<p className='text-[14px] text-gray-500'>
 										Drop files here or click to upload
 									</p>
+									{isUploading && (
+										<p className='text-[14px] text-gray-500 mt-2'>
+											Uploading...
+										</p>
+									)}
 								</>
 							)}
 						</div>
 					</CardContent>
 				</Card>
 
+				{/* Rest of your form remains exactly the same */}
 				<Card className='mb-6 shadow-md'>
 					<CardHeader>
 						<CardTitle className='text-[20px] font-semibold'>
@@ -383,28 +479,44 @@ page: 1,
 								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
 							/>
 						</div>
-						<div className='space-y-2'>
-							<label htmlFor='branch' className='text-[16px] font-medium'>
-								Select Branch
-							</label>
-							<Input
-								id='branch'
+
+						<div className="flex flex-col gap-2">
+							<label htmlFor="branch">Branch</label>
+							<select
+								id="branch"
+								className="border p-2 rounded h-10"
 								value={newStudentForm.branch}
-								onChange={handleInputChange}
-								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
-							/>
+								onChange={(e) => { handleInputChange(e); setBranch(e.target.value) }}
+							>
+								<option value="">Select Branch</option>
+								{Array.isArray(branches) &&
+									branches.map((b: any) => (
+										<option key={b.id} value={b.uuid}>
+											{b.branch_identity}
+										</option>
+									))}
+							</select>
 						</div>
-						<div className='space-y-2'>
-							<label htmlFor='course' className='text-[16px] font-medium'>
-								Select Course
-							</label>
-							<Input
-								id='course'
+
+						<div className="flex flex-col gap-2">
+							<label htmlFor="course">Select Course</label>
+							<select
+								id="course"
+								className="border p-2 rounded h-10"
 								value={newStudentForm.course}
 								onChange={handleInputChange}
-								className='w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]'
-							/>
+								disabled={!branch}
+							>
+								<option value="">Select Course</option>
+								{Array.isArray(courses) &&
+									courses.map((c: any) => (
+										<option key={c.uuid} value={c.uuid}>
+											{c.course_name}
+										</option>
+									))}
+							</select>
 						</div>
+
 					</CardContent>
 				</Card>
 
@@ -500,14 +612,16 @@ page: 1,
 						<Button
 							onClick={toggleAddStudent}
 							className='bg-[#1BBFCA]/10 text-[#1BBFCA] hover:bg-[#1BBFCA]/10 pr-16px pl-16px'
+							disabled={isUploading}
 						>
 							Cancel
 						</Button>
 						<Button
 							onClick={handleAddNewStudent}
 							className='bg-[#1BBFCA] text-white hover:bg-[#1BBFCA]/90 pr-16px pl-16px'
+							disabled={isUploading}
 						>
-							Add Student
+							{isUploading ? 'Saving...' : 'Add Student'}
 						</Button>
 					</CardFooter>
 				</Card>
@@ -606,45 +720,81 @@ page: 1,
 				</div>
 			)}
 
-			<div className='grid grid-cols-3 justify-around overflow-x-auto gap-5 pb-4'>
-				{formattedStudents.map((student, index) => (
-					<Card
-						key={index}
-						className='min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow'
-						onClick={() => handleStudentClick(student)}
-					>
-						<CardContent className='p-4'>
-							<div className='flex justify-center mb-4'>
-								<Avatar className='h-20 w-20 rounded-lg'>
-									<AvatarImage
-										src={GetImageUrl(student?.image) ?? undefined}
-										alt={student?.name || 'Student'}
-										className='rounded-lg object-cover'
-									/>
-								</Avatar>
-							</div>
+			<div className='grid grid-cols-3 justify-around gap-5 pb-4'>
+				{loading ? (
+					<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3'>
+						{[...Array(6)].map((_, index) => (
+							<ContentLoader
+								speed={1}
+								width='100%'
+								height='100%'
+								backgroundColor='#f3f3f3'
+								foregroundColor='#ecebeb'
+								className='w-full h-[310px] p-4 rounded-2xl border shadow-md'
+								key={index}
+							>
+								<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
+								<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
 
-							<h5 className='text-[20px] font-semibold text-center'>
-								{student.name}
-							</h5>
-							<p className='text-[16px] text-gray-500 text-center'>
-								{student.email}
-							</p>
+								<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
 
-							<div className='flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]'>
-								<img className='w-5 h-5' src={location} alt='Location' />
-								<span>{student.location}</span>
-							</div>
-						</CardContent>
+								<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
 
-						<CardFooter className='flex justify-center gap-[30px] items-center px-4 pb-4'>
-							<img className='w-8 h-8' src={call} alt='Call' />
-							<img className='w-8 h-8' src={msg} alt='Message' />
-							<img className='w-8 h-8' src={person} alt='Profile' />
-							<img className='w-8 h-8' src={send} alt='Send' />
-						</CardFooter>
+								<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
+								<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
+
+								<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
+
+								<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
+							</ContentLoader>
+						))}
+					</div>
+				) : formattedStudents.length ? (
+					formattedStudents?.map((student: any, index: any) => (
+						<Card
+							key={index}
+							className='min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow'
+							onClick={() => handleStudentClick(student)}
+						>
+							<CardContent className='p-4'>
+								<div className='flex justify-center mb-4'>
+									<Avatar className='h-20 w-20 rounded-lg'>
+										<AvatarImage
+											src={GetImageUrl(student?.image) ?? undefined}
+											alt={student?.name || 'Student'}
+											className='rounded-lg object-cover'
+										/>
+									</Avatar>
+								</div>
+
+								<h5 className='text-[20px] font-semibold text-center'>
+									{student.name}
+								</h5>
+								<p className='text-[16px] text-gray-500 text-center'>
+									{student.email}
+								</p>
+
+								<div className='flex items-center mt-2 justify-center text-[16px] text-gray-700 gap-[8px]'>
+									<img className='w-5 h-5' src={location} alt='Location' />
+									<span>{student.location}</span>
+								</div>
+							</CardContent>
+
+							<CardFooter className='flex justify-center gap-[30px] items-center px-4 pb-4'>
+								<img className='w-8 h-8' src={call} alt='Call' />
+								<img className='w-8 h-8' src={msg} alt='Message' />
+								<img className='w-8 h-8' src={person} alt='Profile' />
+								<img className='w-8 h-8' src={send} alt='Send' />
+							</CardFooter>
+						</Card>
+					))
+				) : (
+					<Card className='flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow col-span-3 mt-12'>
+						<p className='text-[20px] font-lg text-center'>
+							No Students available
+						</p>
 					</Card>
-				))}
+				)}
 			</div>
 		</div>
 	);

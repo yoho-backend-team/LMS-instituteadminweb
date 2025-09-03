@@ -13,7 +13,7 @@ interface UserInfo {
 }
 
 const EditUserInfo: React.FC = () => {
-    const [successMessage, setSuccessMessage] = useState('');
+    // const [successMessage, setSuccessMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleUploadClick = () => {
@@ -23,7 +23,6 @@ const EditUserInfo: React.FC = () => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            console.log('Selected file:', file);
             e.target.value = '';
         }
     };
@@ -33,7 +32,7 @@ const EditUserInfo: React.FC = () => {
         navigate('/profile'); // Replace with your desired route
     };
     const handleSubmits = () => {
-        setSuccessMessage('Record submitted successfully!');// Replace with your desired route
+        // setSuccessMessage('Record submitted successfully!');// Replace with your desired route
     };
     const [userInfo, setUserInfo] = useState<UserInfo>({
         fullName: '',
@@ -50,7 +49,6 @@ const EditUserInfo: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(userInfo);
     };
 
     return (
@@ -67,13 +65,13 @@ const EditUserInfo: React.FC = () => {
                 {/* <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>*/}
 
                 <span onClick={handleUploadClick} className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer">Upload</span>
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        className="hidden"
-                                        accept="image/*"
-                                        />
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*"
+                />
             </div>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 px-4">
@@ -84,7 +82,7 @@ const EditUserInfo: React.FC = () => {
                         name="fullName"
                         value={userInfo.fullName}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -95,7 +93,7 @@ const EditUserInfo: React.FC = () => {
                         name="userName"
                         value={userInfo.userName}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -106,7 +104,7 @@ const EditUserInfo: React.FC = () => {
                         name="email"
                         value={userInfo.email}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
@@ -117,7 +115,7 @@ const EditUserInfo: React.FC = () => {
                         name="contact"
                         value={userInfo.contact}
                         onChange={handleChange}
-                        className="mt-1 w-full border rounded-md p-2 border-t border border-[#A9A7A7]"
+                        className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
