@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../../apis/index"
 
-export const getAllUsers = async(data:any) => {
-    try {
-        const response = await Client.user.getAll(data)
-        return response
-    } catch (error) {
-        console.log(error)
-    }
+export const getAllUsers = async (data: any) => {
+  try {
+    const response = await Client.user.getAll(data)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-export const addUser = async (data:any) => {
+export const addUser = async (data: any) => {
   try {
-    const response = await Client.user.add(data);
+    await Client.user.add(data);
     return { success: true, message: 'User created successfully' };
   } catch (error) {
     console.error('Error in addUser:', error);
@@ -19,7 +20,7 @@ export const addUser = async (data:any) => {
   }
 };
 
-export const getUserById = async (data:any) => {
+export const getUserById = async (data: any) => {
   try {
     const response = await Client.user.getWithId(data);
     return { success: true, data: response.data };
@@ -29,9 +30,9 @@ export const getUserById = async (data:any) => {
   }
 };
 
-export const updateUserStatus = async (data:any) => {
+export const updateUserStatus = async (data: any) => {
   try {
-    const response = Client.user.update(data);
+    Client.user.update(data);
     return { success: true, message: 'User status updated successfully' };
   } catch (error) {
     console.error('Error in addUser:', error);
@@ -39,9 +40,9 @@ export const updateUserStatus = async (data:any) => {
   }
 };
 
-export const updateUser = async (data:any) => {
+export const updateUser = async (data: any) => {
   try {
-    const response = await Client.user.update(data);
+    await Client.user.update(data);
     return { success: true, message: 'User updated successfully' };
   } catch (error) {
     console.error('Error in editUser:', error);
@@ -49,9 +50,9 @@ export const updateUser = async (data:any) => {
   }
 };
 
-export const deleteUsers = async (userId:string) => {
+export const deleteUsers = async (userId: string) => {
   try {
-    const response = await Client?.user?.delete({ userId: userId });
+    await Client?.user?.delete({ userId: userId });
     return { success: true, message: 'User deleted successfully' };
   } catch (error) {
     console.error('Error in deleteUser:', error);

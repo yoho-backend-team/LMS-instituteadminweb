@@ -1,6 +1,6 @@
 // CourseCard.tsx
 import React, { useState } from "react";
-import card1 from "../../assets/navbar/card1.png";
+
 import arr from "../../assets/navbar/arrow.png";
 import dots from "../../assets/navbar/dots.png";
 import { updateCourse } from "../../features/CourseManagement/Course/service";
@@ -30,9 +30,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
 }) => {
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const baseUrl = import.meta.env.VITE_PUBLIC_API_URL;
-  const imageUrl = image?.startsWith('http') ? image : `${baseUrl}${image}`;
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 

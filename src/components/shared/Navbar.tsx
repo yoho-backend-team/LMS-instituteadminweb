@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiBell } from "react-icons/fi";
 import titleIcon from "../../assets/navbar/titleIcon.png";
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -39,7 +40,7 @@ const Navbar = () => {
     logout();
     toast.success("Logout successful");
     navigate("/login", { replace: true });
-  }, [logout, dispatch, navigate]);
+  }, [logout, navigate]);
 
 
   const nowDate = new Date().getHours()
@@ -95,8 +96,8 @@ const Navbar = () => {
     }
 
     (async () => {
-      const institute = await dispatch(GetProfileThunk())
-      await dispatch(GetBranchThunks(institute))
+      await dispatch(GetProfileThunk())
+      await dispatch(GetBranchThunks())
     })()
 
     document.addEventListener("mousedown", handleClickOutside);

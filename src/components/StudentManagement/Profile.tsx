@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
@@ -6,7 +7,6 @@ import { Badge } from "../../components/ui/badge"
 import { Textarea } from "../../components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import man from "../../assets/studentmanagement/man.png"
 import { useNavigate, useLocation } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
@@ -33,34 +33,34 @@ export const Profile = () => {
   const studentDataFromLocation = location.state?.studentData || {}
 
   const instituteId = getInstituteDetails();
-    const branchId = getSelectedBranchId();
+  const branchId = getSelectedBranchId();
 
-    const studentActivityData = useSelector(selectStudentActivityData)?.data;
-    console.log("student activity data :", studentActivityData);
+  const studentActivityData = useSelector(selectStudentActivityData)?.data;
+  console.log("student activity data :", studentActivityData);
 
 
-  const fetchLiveData = async() => {
+  const fetchLiveData = async () => {
     try {
-       await dispatch(getLiveClassDataSet({
+      await dispatch(getLiveClassDataSet({
         type: "live",
         branch: branchId,
         course_name: studentDataFromLocation?._id,
         insitute: instituteId,
         uuid: studentDataFromLocation?.uuid,
-       }))
+      }))
     } catch (error) {
       console.log(error)
     }
   }
 
 
-  const fetchActivityData = async() => {
+  const fetchActivityData = async () => {
     try {
-       await dispatch(getStudentActivityData({
+      await dispatch(getStudentActivityData({
         id: studentDataFromLocation?.uuid,
-        
-       }))
-       console.log("activity id:",studData?.data?.uuid);
+
+      }))
+      console.log("activity id:", studData?.data?.uuid);
     } catch (error) {
       console.log(error)
     }
@@ -69,7 +69,7 @@ export const Profile = () => {
   useEffect(() => {
     fetchLiveData();
     fetchActivityData();
-  },[])
+  }, [])
 
   const fetchData = async () => {
     try {
@@ -804,78 +804,78 @@ export const Profile = () => {
             </TabsContent>
 
             <TabsContent className="grid grid-cols-3" value="classes">
-            
+
               <Card
-             
-              className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "
-            >
-              <CardContent className="p-6 flex flex-col h-full">
-                <div className="flex-grow space-y-2">
-                  <h3 className='whitespace-nowrap' style={{...FONTS.heading_06,color:COLORS.gray_dark_02}}>
-                    
-                  </h3>
-                  <p style={{...FONTS.heading_07,color:COLORS.gray_dark_02}}>
-                     Students on this Class
-                  </p>
-                  <p style={{...FONTS.heading_08,color:COLORS.gray_dark_02}}>
-                   
-                  </p>
-                </div>
-                <div className="flex justify-end mt-4">
-                  <Button 
-  className="bg-green-500 hover:bg-green-600 text-white"
-  onClick={() => navigate("/students/Profile/view")} 
->
-  View 
-</Button>
-                </div>
-              </CardContent>
-            </Card>
+
+                className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "
+              >
+                <CardContent className="p-6 flex flex-col h-full">
+                  <div className="flex-grow space-y-2">
+                    <h3 className='whitespace-nowrap' style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
+
+                    </h3>
+                    <p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                      Students on this Class
+                    </p>
+                    <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+
+                    </p>
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <Button
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                      onClick={() => navigate("/students/Profile/view")}
+                    >
+                      View
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
-           <TabsContent value="activity">
-  <div className="bg-white p-6 min-h-screen">
-    <h1
-      style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }}
-      className="mb-6"
-    >
-      User Activity Timeline
-    </h1>
+            <TabsContent value="activity">
+              <div className="bg-white p-6 min-h-screen">
+                <h1
+                  style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }}
+                  className="mb-6"
+                >
+                  User Activity Timeline
+                </h1>
 
-    <div className="relative">
-      {/* Timeline item */}
-      {studentActivityData?.map((item) => (
-      <div key={item.id} className="flex items-start relative">
-        <div className="flex flex-col items-center mr-6">
-          {/* Label */}
-          <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-            Notes Created
-          </span>
+                <div className="relative">
+                  {/* Timeline item */}
+                  {studentActivityData?.map((item: any) => (
+                    <div key={item.id} className="flex items-start relative">
+                      <div className="flex flex-col items-center mr-6">
+                        {/* Label */}
+                        <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                          Notes Created
+                        </span>
 
-          {/* Dot */}
-          <span className="w-2 h-2 bg-[#1BBFCA] rounded-full mt-1"></span>
+                        {/* Dot */}
+                        <span className="w-2 h-2 bg-[#1BBFCA] rounded-full mt-1"></span>
 
-          {/* Visible teal line */}
-          <div className="w-px h-30 bg-[#1BBFCA]"></div>
-        </div>
+                        {/* Visible teal line */}
+                        <div className="w-px h-30 bg-[#1BBFCA]"></div>
+                      </div>
 
-        {/* Card */}
-        <div  className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
-          <h3 className="text-gray-800 font-semibold text-sm mb-1">{item?.titlte}</h3>
-          <p className="text-xs text-gray-600">Create</p>
-          <p className="text-xs text-gray-600">{item?.description}</p>
-          <p className="text-[10px] text-gray-400 mt-2">
-            July 17, 2025 at 06:13:23 PM
-          </p>
-        </div>
-        
-      </div>
-        ))}
-      
-    </div>
-  </div>
-</TabsContent>
-         </Tabs>
+                      {/* Card */}
+                      <div className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
+                        <h3 className="text-gray-800 font-semibold text-sm mb-1">{item?.titlte}</h3>
+                        <p className="text-xs text-gray-600">Create</p>
+                        <p className="text-xs text-gray-600">{item?.description}</p>
+                        <p className="text-[10px] text-gray-400 mt-2">
+                          July 17, 2025 at 06:13:23 PM
+                        </p>
+                      </div>
+
+                    </div>
+                  ))}
+
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

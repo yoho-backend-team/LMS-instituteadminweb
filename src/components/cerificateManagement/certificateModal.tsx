@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from 'react';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { COLORS, FONTS } from '../../constants/uiConstants';
 import {
@@ -27,14 +28,16 @@ export interface Certificate {
   certificateid: string;
   uuid: string;
   batch_id: string;
-  certificate_name:string
+  certificate_name: string
+  branch_id: String
+  institute_id: String
 }
 
 interface CertificateModalProps {
   isOpen: boolean;
   isEditing: boolean;
-  fetchgetStudentCertificate:()=>void;
-  editingCertificate: Certificate | null;
+  fetchgetStudentCertificate: () => void;
+  editingCertificate: Certificate | any;
   onClose: () => void;
   onSave: (formData: Partial<Certificate>) => void;
 }
@@ -99,7 +102,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         let payload;
         if (isEditing) {
           payload = {
-           certificate_name: values.title,
+            certificate_name: values.title,
             id: editingCertificate?.id,
             certificateid: editingCertificate?.uuid,
             description: editingCertificate?.description

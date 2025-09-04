@@ -1,4 +1,4 @@
-import { User } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../apis/index.js';
 
 export const getstudentdata = async (data: any) => {

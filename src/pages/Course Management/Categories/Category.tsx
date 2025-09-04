@@ -7,6 +7,7 @@ import { getAllCategoriesThunk } from '../../../features/Course mangement/catego
 import { selectCategories } from '../../../features/Course mangement/categories/reducers/slice';
 import { GetImageUrl } from '../../../utils/helper';
 import { CreateCategories, deleteCategories, UpdateCategories } from '../../../features/Course mangement/categories/service';
+import { GetLocalStorage } from '../../../utils/localStorage';
 
 type CardProps = {
   category_name: string;
@@ -110,8 +111,8 @@ export const DashboardCards: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const dispatch = useDispatch();
-  const instituteId = "973195c0-66ed-47c2-b098-d8989d3e4529";
-  const branchId = "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4";
+  const instituteId = GetLocalStorage("instituteId");
+  const branchId = GetLocalStorage("selectedBranchId");
   const page = 1;
 
   const categoriess = useSelector(selectCategories);
@@ -488,7 +489,7 @@ export const DashboardCards: React.FC = () => {
 
       {/* Header section */}
       <div className="flex flex-col mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Admin User</h2>
+        <h2 className="text-2xl font-semibold mb-4">Course Category</h2>
         <div className="flex justify-between items-center">
           <button
             className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA]"

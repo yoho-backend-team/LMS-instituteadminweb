@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, JSX } from "react";
 
 
 interface Branch {
@@ -9,7 +9,7 @@ interface Branch {
 
 
 type FilterProps = {
-      branches: Branch[];
+  branches: Branch[];
   onFilterChange: (filters: {
     search: string;
     branch: string;
@@ -20,9 +20,9 @@ type FilterProps = {
 
 function Filtersalary(props: FilterProps): JSX.Element {
   const [search, setSearch] = useState("");
-  const [branch, setBranch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [branch,] = useState("");
+  const [startDate,] = useState("");
+  const [endDate,] = useState("");
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -40,7 +40,6 @@ function Filtersalary(props: FilterProps): JSX.Element {
 
   return (
     <div className="p-4 space-y-4 shadow-2xl">
-  
       <div>
         <input
           type="text"

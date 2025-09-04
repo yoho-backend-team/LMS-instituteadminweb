@@ -69,15 +69,15 @@ export default function View() {
     return false;
   });
 
-  const toggleCheckbox = (moduleKey: string, perm: Permission) => {
-    setState((prev) => ({
-      ...prev,
-      [moduleKey]: {
-        ...prev[moduleKey],
-        [perm]: !prev[moduleKey][perm],
-      },
-    }));
-  };
+  // const toggleCheckbox = (moduleKey: string, perm: Permission) => {
+  //   setState((prev) => ({
+  //     ...prev,
+  //     [moduleKey]: {
+  //       ...prev[moduleKey],
+  //       [perm]: !prev[moduleKey][perm],
+  //     },
+  //   }));
+  // };
 
   if (!groupView) {
     return (
@@ -137,10 +137,9 @@ export default function View() {
                 });
               }}
               className={`px-6 py-2 rounded-md font-medium transition-colors flex items-center gap-1 border border-[#1BBFCA]
-                ${
-                  isActive
-                    ? "bg-[#1BBFCA] text-white"
-                    : anyActive
+                ${isActive
+                  ? "bg-[#1BBFCA] text-white"
+                  : anyActive
                     ? "bg-white text-[#1BBFCA]"
                     : "bg-white text-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white"
                 }`}

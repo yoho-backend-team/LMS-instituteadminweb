@@ -37,7 +37,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   const [course, setCourse] = useState("")
   const [batch, setBatch] = useState("")
   const [studentName, setStudentName] = useState("")
-  const [studentEmail, setStudentEmail] = useState("")
+  const [, setStudentEmail] = useState("")
   const [studentId, setStudentId] = useState("")
   const [paymentDate, setPaymentDate] = useState("")
   const [transactionId, setTransactionId] = useState("")
@@ -48,7 +48,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   const [courseOptions, setCourseOptions] = useState([])
   const [batchOptions, setBatchOptions] = useState([])
   const [students, setStudents] = useState([])
-  const [UpdateStudentfees, setUpdateStudentFees] = useState<any[]>([])
+  const [, setUpdateStudentFees] = useState<any[]>([])
 
   useEffect(() => {
     const fetchStudentUpdateData = async () => {
@@ -60,7 +60,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     if (isOpen && selectedFee) {
       fetchStudentUpdateData()
     }
-  }, [isOpen, selectedFee])
+  }, [dispatch, isOpen, selectedFee])
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -85,7 +85,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   useEffect(() => {
     const fetchBatches = async () => {
       if (branch && course) {
-        const res = await dispatch(GetBatchThunks(course) as any)
+        const res = await dispatch(GetBatchThunks({ branch, course }) as any)
         if (res?.data) {
           setBatchOptions(res.data)
         }

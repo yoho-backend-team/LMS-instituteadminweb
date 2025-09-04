@@ -19,12 +19,17 @@ interface Message {
   text: string;
   time: string;
 }
+interface AdminProfile {
+  _id: string;
+  full_name?: string;
+  [key: string]: any;
+}
 
 const StaffTicketDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { updateTicketStatus, tickets } = useTicketContext();
-  const [adminProfile, SetAdminProfile] = useState();
+  const { tickets } = useTicketContext();
+  const [adminProfile, SetAdminProfile] = useState<AdminProfile | null>(null);
   const [messages, setMessages] = useState<Message[]>()
 
   const ticketId: any = id;
@@ -75,9 +80,9 @@ const StaffTicketDetail: React.FC = () => {
       text: inputValue,
       senderType: "InstituteAdmin",
       user: adminProfile?._id
-    };
+    } as any;
     socket.emit("sendTeacherTicketMessage", newMessage)
-    setMessages((prev) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
+    setMessages((prev:any) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
     setInputValue("");
   };
 
@@ -95,7 +100,7 @@ const StaffTicketDetail: React.FC = () => {
 
     const handleMessage = (message: Message) => {
       console.log(" Staff Mess", message)
-      setMessages((prev) => [message, ...prev])
+      setMessages((prev:any) => [message, ...prev])
     }
 
     socket.on("receiveTeacherTicketMessage", handleMessage)
@@ -179,15 +184,15 @@ const StaffTicketDetail: React.FC = () => {
                   )}
                   <div
                     className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === adminProfile?._id
-                        ? "bg-[#14b8c6] text-white"
-                        : "bg-white text-gray-800"
+                      ? "bg-[#14b8c6] text-white"
+                      : "bg-white text-gray-800"
                       }`}
                   >
                     {msg.content}
                     <div
                       className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
-                          ? "text-white"
-                          : "text-gray-500"
+                        ? "text-white"
+                        : "text-gray-500"
                         }`}
                     >
                       {dayjs(msg.date).format("HH:MM A")}
@@ -265,8 +270,8 @@ const StaffTicketDetail: React.FC = () => {
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
               className={`inline-block px-3 py-2 rounded text-sm ${status === "opened"
-                  ? "text-white bg-[#1BBFCA]"
-                  : "text-white bg-[#3ABE65]"
+                ? "text-white bg-[#1BBFCA]"
+                : "text-white bg-[#3ABE65]"
                 }`}
             >
               {status}

@@ -109,7 +109,7 @@ export const CreateLiveClassModal = ({
 
 	const fetchAllBranches = useCallback(async () => {
 		try {
-			const response = await getAllBranches({});
+			const response = await getAllBranches();
 			if (response?.data) {
 				setAllBranches(response.data);
 			}
@@ -120,7 +120,7 @@ export const CreateLiveClassModal = ({
 	}, []);
 
 	const fetchAvailableInstructors = useCallback(
-		async (courseId: string, date: string) => {
+		async (courseId: string, ) => {
 			try {
 				const response = await getStaffService({ uuid: courseId });
 				if (response) {
@@ -207,7 +207,7 @@ export const CreateLiveClassModal = ({
 			fetchAllBranches();
 			fetchAllCourses();
 			fetchAllBatches();
-			fetchAvailableInstructors(courseId, 'date');
+			fetchAvailableInstructors(courseId);
 		}
 	}, [isOpen]);
 
@@ -235,7 +235,7 @@ export const CreateLiveClassModal = ({
 	// Fetch instructors when course and date are selected
 	useEffect(() => {
 		if (formik.values.course && formik.values.classDate) {
-			fetchAvailableInstructors(formik.values.course, formik.values.classDate);
+			fetchAvailableInstructors(formik.values.course);
 			formik.setFieldValue('instructors', []);
 		}
 	}, [

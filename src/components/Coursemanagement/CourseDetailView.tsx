@@ -23,9 +23,9 @@ actual_price: number;
   mainImage: string;
 }
 
-interface CategoryData{
-  uuid: string;
-}
+// interface CategoryData{
+//   uuid: string;
+// }
 
 
 interface CourseDetailViewProps {
@@ -35,7 +35,7 @@ interface CourseDetailViewProps {
   onBack: () => void;
 }
 
-const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, courses, categories }) => {
+const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack,  categories }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [courseData, setCourseData] = useState(course);
   const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
@@ -90,10 +90,11 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course, onBack, cou
     }
   };
 
-  const handleUploadClick = (ref: React.RefObject<HTMLInputElement>) => {
-    ref.current?.click();
-  };
-
+ const handleUploadClick = (ref: React.RefObject<HTMLInputElement | null>) => {
+  if (ref.current) {
+    ref.current.click();
+  }
+};
   console.log('category in detail',categories)
 
 const handleDelete = async () => {
@@ -167,7 +168,7 @@ const handleSubmit = async () => {
         </button>
         <button
           onClick={() => setIsEditMode(!isEditMode)}
-          className="bg-[#1BBFCA] text-white px-4 py-1 rounded text-sm inline-block hover:bg-[#17a5b0] flex items-center gap-2"
+          className="bg-[#1BBFCA] text-white px-4 py-1 rounded text-sm inline-block hover:bg-[#17a5b0] items-center gap-2"
         >
           <img src={editicon1} alt="Edit" className="w-4 h-4" />
           {isEditMode ? "Cancel" : "Edit"}

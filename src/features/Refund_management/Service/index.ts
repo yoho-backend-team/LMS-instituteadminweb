@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../apis/index";
 
 export const createRefund = async (data: any) => {
@@ -12,12 +13,8 @@ export const createRefund = async (data: any) => {
 
 
 export const getAllRefunds = async (params: any) => {
-  try {
-    const response = await Client.refund.getAll(params)
-    return await response
-  } catch (error) {
-    throw error;
-  }
+  const response = await Client.refund.getAll(params)
+  return response
 };
 
 
@@ -37,33 +34,23 @@ export const updateRefund = async (data: any) => {
 
 
 export const deleteRefund = async (refundId: string) => {
-  try {
-    const res = await Client.refund.delete({ _id: refundId });
-    console.log("delete", res);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.refund.delete({ _id: refundId });
+  return res;
 };
 
 
 
 export const getRefundByID = async (data: any) => {
-  try {
-    const res = await Client.refund.getByID(data);
-    console.log("BYID", res)
-    return res
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.refund.getByID(data);
+  console.log("BYID", res)
+  return res
 };
 
 
 
 export const GetBranchCourse = async (data: any) => {
   try {
-    const response = await Client.course.get(data.branchId);
-    console.log(" Branch course data getting in services", response);
+    const response = await Client.course.get_course_data(data.branchId);
     return response;
   } catch (error: any) {
     console.error("Error in GetBranchCourse:", error.response?.data || error.message);
@@ -92,13 +79,9 @@ export const StudentsWithBatch = async (params: any) => {
 };
 
 export const StudentWithFee = async (id: string) => {
-  try {
-    const res = await Client.payment.student_fee.get({ id });
-    console.log("Refund fee", res);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.payment.student_fee.get({ id });
+  console.log("Refund fee", res);
+  return res;
 };
 
 

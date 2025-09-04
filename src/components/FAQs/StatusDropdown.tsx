@@ -11,7 +11,6 @@ type StatusDropdownProps = {
 };
 
 export function StatusDropdown({
-  idx,
   initialStatus,
   options,
   itemId,

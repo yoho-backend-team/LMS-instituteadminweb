@@ -16,23 +16,39 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { GetImageUrl } from "../../utils/helper";
 import { X } from "lucide-react";
 import {
   deletePlacement,
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
 
+// Skeleton Loader Row
+const SkeletonRow = () => (
+  <TableRow>
+    {[...Array(5)].map((_, i) => (
+      <TableCell key={i} className="px-6 py-4">
+        <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
+      </TableCell>
+    ))}
+  </TableRow>
+);
+
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 loading state
 
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
 
   useEffect(() => {
-    dispatch(getAllPlacemetsThunk({}));
+    const fetchData = async () => {
+      setLoading(true);
+      await dispatch(getAllPlacemetsThunk({}));
+      setLoading(false);
+    };
+    fetchData();
   }, [dispatch]);
 
   const transformPlacementToFormData = (placement: any) => ({
@@ -66,9 +82,9 @@ const Placements = () => {
       job: {
         name: data.jobName,
         description: data.jobDescription,
-        skils: data.skills.split(",").map((s:any) => s.trim()),
+        skils: data.skills.split(",").map((s: any) => s.trim()),
       },
-      student: data.selectedStudents.map((s:any) => s.value),
+      student: data.selectedStudents.map((s: any) => s.value),
       schedule: {
         interviewDate: data.interviewDate,
         venue: data.venue,
@@ -76,7 +92,7 @@ const Placements = () => {
       },
       eligible: {
         courseName: data.courseName,
-        education: data.education.split(",").map((e:any) => e.trim()),
+        education: data.education.split(",").map((e: any) => e.trim()),
       },
       institute: instituteId,
     };
@@ -93,9 +109,11 @@ const Placements = () => {
   const handleUpdatePlacement = async (data: any) => {
     const payload = {
       uuid: editingPlacement?.uuid,
-      student: data.selectedStudents.map((s:any) => s.value),
+      student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
     };
+
+    console.log("edit payloads", payload);
 
     try {
       await updatePlacement(payload);
@@ -158,7 +176,9 @@ const Placements = () => {
                 editingPlacement ? handleUpdatePlacement : handleAddPlacement
               }
               initialData={
-                editingPlacement ? transformPlacementToFormData(editingPlacement) : undefined
+                editingPlacement
+                  ? transformPlacementToFormData(editingPlacement)
+                  : undefined
               }
             />
           </div>
@@ -169,79 +189,88 @@ const Placements = () => {
         <Table className="overflow-auto">
           <TableHeader className="bg-gray-200">
             <TableRow>
-              {/* <TableHead className="px-6 py-3 font-medium">Student</TableHead> */}
-              <TableHead className="px-6 py-3 font-medium">Company Name</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Interview Date</TableHead>
+              <TableHead className="px-6 py-3 font-medium">
+                Company Name
+              </TableHead>
+              <TableHead className="px-6 py-3 font-medium">
+                Interview Date
+              </TableHead>
               <TableHead className="px-6 py-3 font-medium">Role</TableHead>
               <TableHead className="px-6 py-3 font-medium">Venue</TableHead>
-              <TableHead className="px-6 py-3 font-medium text-right">Actions</TableHead>
+              <TableHead className="px-6 py-3 font-medium text-right">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {placements.map((placement: any) => (
-              <TableRow key={placement?._id} className="hover:bg-gray-50">
-                {/* <TableCell className="px-6 py-4">
-                  <img
-                    src={GetImageUrl(placement?.student?.[0]?.image) ?? undefined}
-                    alt="Profile"
-                    className="h-[50px] w-[50px] rounded-full"
-                  />
-                </TableCell> */}
-                <TableCell className="px-6 py-4">
-                  <div className="flex flex-col">
-                    <span>{placement?.company?.name ?? "N/A"}</span>
-                    <span>{placement?.company?.email ?? "N/A"}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="px-6 py-4">
-                  {placement?.schedule?.interviewDate
-                    ? new Date(placement.schedule.interviewDate).toLocaleDateString()
-                    : "N/A"}
-                </TableCell>
-                <TableCell className="px-6 py-4">{placement?.job?.name ?? "N/A"}</TableCell>
-                <TableCell className="px-6 py-4">{placement?.schedule?.venue ?? "N/A"}</TableCell>
-                <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
-                    title="Actions"
-                    aria-label="Actions menu"
+            {loading
+              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) // 👈 show 5 skeleton rows
+              : placements.map((placement: any) => (
+                  <TableRow
+                    key={placement?._id}
+                    className="hover:bg-gray-50"
                   >
-                    <FaEllipsisV className="h-4 w-4" />
-                  </Button>
+                    <TableCell className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span>{placement?.company?.name ?? "N/A"}</span>
+                        <span>{placement?.company?.email ?? "N/A"}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.schedule?.interviewDate
+                        ? new Date(
+                            placement.schedule.interviewDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.job?.name ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      {placement?.schedule?.venue ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                        title="Actions"
+                        aria-label="Actions menu"
+                      >
+                        <FaEllipsisV className="h-4 w-4" />
+                      </Button>
 
-                  <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
-                    <Button
-                      variant="ghost"
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        setEditingPlacement(placement);
-                        setIsFormOpen(true);
-                      }}
-                      className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                      aria-label="Edit"
-                    >
-                      <FaEdit className="mr-2 h-4 w-4" />
-                      <span>Edit</span>
-                    </Button>
+                      <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
+                        <Button
+                          variant="ghost"
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            setEditingPlacement(placement);
+                            setIsFormOpen(true);
+                          }}
+                          className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                          aria-label="Edit"
+                        >
+                          <FaEdit className="mr-2 h-4 w-4" />
+                          <span>Edit</span>
+                        </Button>
 
-                    <Button
-                      variant="ghost"
-                      onClick={(e: any) => {
-                        e.stopPropagation();
-                        handleDelete(placement.uuid);
-                      }}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
-                      aria-label="Delete"
-                    >
-                      <FaTrash className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                        <Button
+                          variant="ghost"
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            handleDelete(placement.uuid);
+                          }}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
+                          aria-label="Delete"
+                        >
+                          <FaTrash className="mr-2 h-4 w-4" />
+                          <span>Delete</span>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </div>

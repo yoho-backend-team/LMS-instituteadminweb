@@ -119,7 +119,7 @@ export const CreateOfflineClassModal = ({
 
 	const fetchAllBranches = useCallback(async () => {
 		try {
-			const response = await getAllBranches({});
+			const response = await getAllBranches();
 			if (response?.data) {
 				setAllBranches(response.data);
 			}
@@ -130,7 +130,7 @@ export const CreateOfflineClassModal = ({
 	}, []);
 
 	const fetchAvailableInstructors = useCallback(
-		async (courseId: string, date: string) => {
+		async (courseId: string, ) => {
 			try {
 				const response = await getStaffService({ uuid: courseId });
 				if (response) {
@@ -217,7 +217,7 @@ export const CreateOfflineClassModal = ({
 			fetchAllCourses();
 			fetchAllBatches();
 			if (courseId) {
-				fetchAvailableInstructors(courseId, formik.values.classDate || '');
+				fetchAvailableInstructors(courseId);
 			}
 		}
 	}, [isOpen, courseId, formik.values.classDate]);
@@ -247,7 +247,7 @@ export const CreateOfflineClassModal = ({
 	// Fetch instructors when course and date are selected
 	useEffect(() => {
 		if (formik.values.course && formik.values.classDate) {
-			fetchAvailableInstructors(formik.values.course, formik.values.classDate);
+			fetchAvailableInstructors(formik.values.course);
 			formik.setFieldValue('instructors', []);
 		}
 	}, [
