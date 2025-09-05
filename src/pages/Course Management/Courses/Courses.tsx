@@ -99,6 +99,7 @@ const Courses: React.FC = () => {
 	};
 
 	if (addingCourse)
+		
 		return (
 			<AddNewCourseForm
 				onBack={handleBack}
