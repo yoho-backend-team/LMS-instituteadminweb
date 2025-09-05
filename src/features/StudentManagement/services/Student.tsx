@@ -3,6 +3,7 @@ import Client from '../../../apis/index.js';
 
 export const getstudentdata = async (data: any) => {
 	const response = await Client.student.class(data)
+	console.log("SRVICE",response)
 	if (response) {
 		return response;
 	}
