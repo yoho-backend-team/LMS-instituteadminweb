@@ -27,7 +27,7 @@ export const getAllCourses = async (params: any) => {
 
 export const getAllBatches = async (params: any) => {
 	try {
-		const response = await Client.batch.getWithId(params);
+		const response = await Client.batch.getWithCourseId(params);
 		if (response) {
 			return response;
 		}

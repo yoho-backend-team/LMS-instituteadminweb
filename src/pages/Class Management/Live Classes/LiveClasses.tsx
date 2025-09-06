@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from 'react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../../components/ui/button';
@@ -150,7 +151,7 @@ const LiveClasses = () => {
 		fetchAllLiveClasses();
 		fetchAllCourses();
 		fetchAllBatches();
-	}, [dispatch]);
+	}, [dispatch, fetchAllBatches, fetchAllCourses, fetchAllLiveClasses]);
 
 	return (
 		<>

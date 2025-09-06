@@ -56,21 +56,21 @@ class Client {
 			HttpClient.post(HTTP_END_POINTS.branch.create.replace(":instituteid", getInstituteDetails()), params),
 		edit: (data: any, params: string) =>
 			HttpClient.patch(
-				HTTP_END_POINTS.branch.edit.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', params),
+				HTTP_END_POINTS.branch.edit.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
 				data
 			),
 		delete: (params: string, uuid: string) =>
 			HttpClient.delete(
-				HTTP_END_POINTS.branch.delete.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', params), uuid
+				HTTP_END_POINTS.branch.delete.replace(":instituteid", getInstituteDetails()).replace(':branchid', params), uuid
 			),
 		updatestatus: (params: string, data?: any) =>
 			HttpClient.update(
-				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', params),
+				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
 				data
 			),
 		getByid: (params: string) =>
 			HttpClient.get(
-				HTTP_END_POINTS.branch.getByBranchId.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', params)
+				HTTP_END_POINTS.branch.getByBranchId.replace(":instituteid", getInstituteDetails()).replace(':branchid', params)
 			),
 	};
 	file = {
@@ -171,29 +171,29 @@ class Client {
 	course = {
 		create: (data: any, options: any) => {
 			return HttpClient.post(
-				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()) + `${data.category}/courses/`,
+				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) + `${data.category}/courses/`,
 				data,
 				options
 			);
 		},
 		getAll: async (data: any) => {
-			return await HttpClient.get(HTTP_END_POINTS.course.getall.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()), data);
+			return await HttpClient.get(HTTP_END_POINTS.course.getall.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), data);
 		},
 		getWithBranch: (data: any) =>
-			HttpClient.get(HTTP_END_POINTS.course.withBranch.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()) + data + '/courses'),
+			HttpClient.get(HTTP_END_POINTS.course.withBranch.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) + data?.branch_id + '/courses'),
 		update: (data: any) =>
 			HttpClient.update(
-				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()) + `${data.category}/courses/${data.course}`,
+				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) + `${data.category}/courses/${data.course}`,
 				data
 			),
 		delete: (data: any) =>
 			HttpClient.delete(
-				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()) + `${data.category}/courses/${data.id}`
+				HTTP_END_POINTS.course.add.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) + `${data.category}/courses/${data.id}`
 			),
 		add_template: (data: any) =>
-			HttpClient.post(HTTP_END_POINTS.course.template.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()), data),
+			HttpClient.post(HTTP_END_POINTS.course.template.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), data),
 		get_course_data: (data: any) =>
-			HttpClient.get(HTTP_END_POINTS.course.get.replace(":instituteid", getInstituteDetails()).replace(':branchuuid', getSelectedBranchId()), data),
+			HttpClient.get(HTTP_END_POINTS.course.get.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), data),
 	};
 	batch = {
 		// create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
@@ -340,7 +340,7 @@ class Client {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
 		getWithCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(":branchid", params)),
 		getWithId: (params: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
@@ -370,7 +370,7 @@ class Client {
 		getall: (params: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithBranch.replace(
-					':courseUUID',
+					':branchid',
 					params?.uuid
 				),
 				{}
