@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import LeftSide from './LeftSide';
 import ChatView from './ChatView';
@@ -40,9 +41,8 @@ const Communitys: React.FC = () => {
 			if (res?.data) {
 				setUserId(res.data._id);
 
-				const fullName = `${res.data.first_name || ''} ${
-					res.data.last_name || ''
-				}`.trim();
+				const fullName = `${res.data.first_name || ''} ${res.data.last_name || ''
+					}`.trim();
 				setUserName(fullName);
 			}
 		} catch (error) {
@@ -184,7 +184,7 @@ const Communitys: React.FC = () => {
 						availability: 'Mon-Fri 10AM - 8PM',
 						phone: '+91 98765 43265',
 					}}
-					setProfileData={() => {}}
+					setProfileData={() => { }}
 					isEditing={isEditing}
 					setIsEditing={setIsEditing}
 				/>
