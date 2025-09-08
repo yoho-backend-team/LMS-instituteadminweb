@@ -22,11 +22,13 @@ const AccountProfile: React.FC = () => {
 		'first'
 	);
 	const navigate = useNavigate();
+	const profile = useSelector((state: any) => state.authuser?.user);
 	const handleEdit = () => {
-		navigate('/Editprof');
+		navigate('/Editprof', {
+			state: profile
+		});
 	};
 	const [activeIndex, setActiveIndex] = useState<number | null>(0);
-	const profile = useSelector((state: any) => state.authuser?.user);
 	const [currentPassword, setCurrentPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');

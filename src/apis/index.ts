@@ -16,6 +16,7 @@ class Client {
 			HttpClient.post(HTTP_END_POINTS.admin.reset_password, data),
 		login: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.login, data),
 		logout: (data: any) => HttpClient.post(HTTP_END_POINTS.admin.logout, data),
+		update: (params: string, data: any) => HttpClient.update(HTTP_END_POINTS.admin.update.replace(":userId", params), data)
 	};
 	permission = {
 		getAll: () => HttpClient.get(HTTP_END_POINTS.permission.getAll),

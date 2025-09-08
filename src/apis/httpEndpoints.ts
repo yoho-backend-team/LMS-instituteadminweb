@@ -25,6 +25,7 @@ const generateEndpoints = () => {
 			reset_password: `/api/institutes/auth/admin/update-password`,
 			login: '/api/institutes/auth/admin/login/',
 			logout: '/api/institutes/admin/institute-user/logout',
+			update: '/api/institutes/auth/admin/user/update/:userId'
 		},
 		permission: {
 			getAll: `/api/admin/institutes/permissions/all`,

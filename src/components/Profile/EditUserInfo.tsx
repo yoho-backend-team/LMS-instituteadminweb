@@ -1,20 +1,23 @@
 // EditUserInfo.tsx
 import React, { useState, useRef, type ChangeEvent } from 'react';
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import profileimg from '../../assets/navbar/Editprofile.png';
 import { FONTS } from '../../../src/constants/uiConstants';
+import { useDispatch } from 'react-redux';
+import { UpdateProfileThunks } from '../../features/Auth/reducer/thunks';
+import type { AppDispatch } from '../../store/store';
 
 interface UserInfo {
-    fullName: string;
-    userName: string;
+    first_name: string;
+    last_name: string;
     email: string;
-    contact: string;
-    designation: string;
+    phone_number: string;
 }
 
 const EditUserInfo: React.FC = () => {
-    // const [successMessage, setSuccessMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const profile = useLocation()?.state
+    const dispatch = useDispatch<AppDispatch>()
 
     const handleUploadClick = () => {
         fileInputRef.current?.click();
@@ -29,17 +32,14 @@ const EditUserInfo: React.FC = () => {
 
     const navigate = useNavigate();
     const handleBack = () => {
-        navigate('/profile'); // Replace with your desired route
+        navigate('/profile');
     };
-    const handleSubmits = () => {
-        // setSuccessMessage('Record submitted successfully!');// Replace with your desired route
-    };
+
     const [userInfo, setUserInfo] = useState<UserInfo>({
-        fullName: '',
-        userName: '',
-        email: '',
-        contact: '',
-        designation: '',
+        first_name: profile?.first_name,
+        last_name: profile?.last_name,
+        email: profile?.email,
+        phone_number: profile?.phone_number,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -49,6 +49,8 @@ const EditUserInfo: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(userInfo, "profile data")
+        dispatch(UpdateProfileThunks(profile?.uuid, userInfo))
     };
 
     return (
@@ -62,8 +64,6 @@ const EditUserInfo: React.FC = () => {
                     alt="Profile"
                     className="rounded-full w-24 h-24 object-cover"
                 />
-                {/* <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>*/}
-
                 <span onClick={handleUploadClick} className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer">Upload</span>
                 <input
                     type="file"
@@ -79,8 +79,8 @@ const EditUserInfo: React.FC = () => {
                     <label className="block font-medium text-[#716F6F]" style={{ ...FONTS.heading_07 }}>Full Name</label>
                     <input
                         type="text"
-                        name="fullName"
-                        value={userInfo.fullName}
+                        name="first_name"
+                        value={userInfo.first_name}
                         onChange={handleChange}
                         className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
@@ -90,8 +90,8 @@ const EditUserInfo: React.FC = () => {
                     <label className="block font-medium text-[#716F6F]" style={{ ...FONTS.heading_07 }}>User Name</label>
                     <input
                         type="text"
-                        name="userName"
-                        value={userInfo.userName}
+                        name="last_name"
+                        value={userInfo.last_name}
                         onChange={handleChange}
                         className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
@@ -112,14 +112,14 @@ const EditUserInfo: React.FC = () => {
                     <label className="block font-medium text-[#716F6F]" style={{ ...FONTS.heading_07 }}>Contact</label>
                     <input
                         type="text"
-                        name="contact"
-                        value={userInfo.contact}
+                        name="phone_number"
+                        value={userInfo.phone_number}
                         onChange={handleChange}
                         className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
                     />
                 </div>
 
-                <div>
+                {/* <div>
                     <label className="block text-[#716F6F]" style={{ ...FONTS.heading_07 }}>Designation</label>
                     <select
                         name="designation"
@@ -132,24 +132,24 @@ const EditUserInfo: React.FC = () => {
                         <option className='font-medium text-[#716F6F]' value="Developer">Developer</option>
                         <option className='font-medium text-[#716F6F] ' value="Designer">Designer</option>
                     </select>
+                </div> */}
+
+                <div className="flex justify-end gap-4 mt-6 px-4 pb-4">
+                    <button onClick={handleBack}
+                        type="button"
+                        className="px-4 py-2 bg-white border border-cyan-500 text-cyan-500 rounded-md hover:bg-cyan-50 " style={{ ...FONTS.heading_07 }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600" style={{ ...FONTS.heading_07 }}
+                    >
+                        Submit
+                    </button>
                 </div>
             </form>
-
-            <div className="flex justify-end gap-4 mt-6 px-4 pb-4">
-                <button onClick={handleBack}
-                    type="button"
-                    className="px-4 py-2 bg-white border border-cyan-500 text-cyan-500 rounded-md hover:bg-cyan-50 " style={{ ...FONTS.heading_07 }}
-                >
-                    Cancel
-                </button>
-                <button
-                    type="submit"
-                    onClick={handleSubmits}
-                    className="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600" style={{ ...FONTS.heading_07 }}
-                >
-                    Submit
-                </button>
-            </div>
         </div>
     );
 };
