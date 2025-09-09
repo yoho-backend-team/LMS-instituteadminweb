@@ -66,7 +66,7 @@ export const CertificateManager: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<any>();
 	const certificateData = useSelector(selectCertificate);
-	const [certificates, setCertificates] = useState(initialCertificates);
+	const [, setCertificates] = useState(initialCertificates);
 	const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 	const [showFilter, setShowFilter] = useState(false);
 	const [selectedCourse, setSelectedCourse] = useState('');

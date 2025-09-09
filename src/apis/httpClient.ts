@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 import { showSessionExpiredModal } from '../components/Session/sessionexpiremodel';
 // import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
-import { useUpgradeWindow, showUpgradeWindow } from '../components/shared/upgradeWindow'
+import { showUpgradeWindow } from '../components/shared/upgradeWindow'
 
 const Axios = axios.create({
 	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
