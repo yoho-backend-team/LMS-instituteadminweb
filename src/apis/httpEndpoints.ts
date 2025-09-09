@@ -68,8 +68,8 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		category: {
-			getAll: `/api/institutes/${instituteId}/categories/`,
-			create: `/api/institutes/${instituteId}/categories`,
+			getAll: `/api/institutes/:instituteid/categories/`,
+			create: `/api/institutes/:instituteid/categories`,
 			update: `/api/institutes/faq/category/update/:uuid`,
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},

@@ -117,9 +117,9 @@ class Client {
 	};
 
 	category = {
-		get: (data: any) => HttpClient.get(HTTP_END_POINTS.category.getAll, data),
+		get: (data: any) => HttpClient.get(HTTP_END_POINTS.category.getAll.replace(":instituteid", getInstituteDetails()), data),
 		create: (data: any) =>
-			HttpClient.post(HTTP_END_POINTS.category.create, data),
+			HttpClient.post(HTTP_END_POINTS.category.create.replace(":instituteid", getInstituteDetails()), data),
 		update: (data: any) =>
 			HttpClient.update(HTTP_END_POINTS.category.create + `/${data.id}`, data),
 		delete: (data: any) =>
