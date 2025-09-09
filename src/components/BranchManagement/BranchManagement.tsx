@@ -97,11 +97,11 @@ export function LocationCardsGrid() {
 			if (editingBranch) {
 				await dispatch(
 					EditBranchThunk({ branchuuid: formData?.branchuuid, data: branchData })
-				).unwrap();
+				);
 			} else {
 				await dispatch(
 					AddBranchThunk({ instituteId: 'YOUR_INSTITUTE_ID', data: branchData })
-				).unwrap();
+				);
 			}
 
 			setShowSuccessPopup(true);

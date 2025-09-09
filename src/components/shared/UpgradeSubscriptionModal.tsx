@@ -10,7 +10,7 @@ interface UpgradeModalProps {
 	onUpgrade: () => void;
 }
 
-const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
+export const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose, onUpgrade }) => {
 	return (
 		<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50'>
 			<div className='bg-black text-white p-6 rounded-lg flex flex-col md:flex-row gap-6 w-full max-w-3xl shadow-lg'>
