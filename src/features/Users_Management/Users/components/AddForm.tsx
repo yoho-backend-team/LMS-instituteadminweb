@@ -14,7 +14,10 @@ import * as Yup from "yup";
 import { ChevronDownIcon } from "lucide-react";
 import { addUser } from "../service";
 import Client from "../../../../apis/index";
-import { getInstituteDetails, getSelectedBranchId } from "../../../../apis/httpEndpoints";
+import {
+  getInstituteDetails,
+  getSelectedBranchId,
+} from "../../../../apis/httpEndpoints";
 import { GetImageUrl } from "../../../../utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -47,12 +50,11 @@ type Props = {
   userDetail?: UserDetail | undefined;
 };
 
-
 const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
-
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -117,7 +119,7 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
       formData.append("institute_id", institute_id);
 
       if (values.file) {
-        formData.append("image", '');
+        formData.append("image", "");
       }
 
       try {
@@ -167,12 +169,15 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
     try {
       const instituteId = getInstituteDetails();
       const branchId = getSelectedBranchId();
-      const response = await GetAllGroupCard({ branch_id: branchId, institute_id: instituteId });
+      const response = await GetAllGroupCard({
+        branch_id: branchId,
+        institute_id: instituteId,
+      });
       setGroups(response?.data || []);
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
-  }
+  };
   useEffect(() => {
     fetchGroups();
   }, []);
@@ -194,23 +199,57 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
         </button>
       </div>
       <form onSubmit={formik.handleSubmit} className="grid gap-4">
-        <div className=" p-1  grid justify-center ml-15">
-          {formik.values.file && typeof formik.values.file !== "string" && (
-            <img
-              className={`w-[100px] h-[100px] ml-8`}
-              src={GetImageUrl(imgSrc) ?? undefined}
-              alt="Preview"
-            ></img>
-          )}
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            onBlur={formik.handleBlur}
-            className="border-none text-left"
-          />
+        {/* Image Upload */}
+        <div className="flex justify-center mb-4">
+          <div className="relative">
+            <label
+              htmlFor="file-upload"
+              className="cursor-pointer w-24 h-24 rounded-full border-2 border-[#1BBFCA] flex items-center justify-center overflow-hidden hover:bg-[#1BBFCA1A] transition"
+            >
+              {formik.values.file ? (
+                <img
+                  onClick={() => setPreviewOpen(true)}
+                  src={GetImageUrl(imgSrc) ?? undefined}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <span className="text-[#716F6F] font-semibold">Upload</span>
+              )}
+            </label>
+            <input
+              id="file-upload"
+              name="file"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
         </div>
+
+        {/* Image Preview Modal */}
+        {previewOpen && formik.values.file && (
+          <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setPreviewOpen(false)}
+          >
+            <div className="relative bg-white p-4 rounded-lg max-w-[90%] max-h-[90%]">
+              <button
+                onClick={() => setPreviewOpen(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-red-500 font-bold text-lg"
+              >
+                ✕
+              </button>
+              <img
+                src={GetImageUrl(imgSrc) ?? undefined}
+                alt="Full Preview"
+                className="w-full h-full object-contain rounded-lg"
+              />
+            </div>
+          </div>
+        )}
 
         <div className="grid gap-1">
           <label
@@ -514,7 +553,15 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
             Cancel
           </button>
           <button
-            type="submit" onClick={() => console.log("Formik errors:", formik.errors, "values:", formik.values)}
+            type="submit"
+            onClick={() =>
+              console.log(
+                "Formik errors:",
+                formik.errors,
+                "values:",
+                formik.values
+              )
+            }
             style={{ ...FONTS.heading_08_bold }}
             className="bg-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]"
           >

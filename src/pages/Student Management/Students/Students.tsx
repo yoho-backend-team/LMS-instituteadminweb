@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -47,6 +46,7 @@ import {
   Branch,
   BranchCourse,
 } from "../../../features/Content_Management/reducers/selectors";
+import { IoArrowBack } from "react-icons/io5";
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -291,6 +291,13 @@ const Students = () => {
   if (showAddStudent) {
     return (
       <div className="p-6">
+        <div
+          className="mb-4 flex items-center cursor-pointer"
+          onClick={toggleAddStudent}
+        >
+          <IoArrowBack className="text-[#1BBFCA] text-2xl mr-2" />
+          <span className="text-[18px] font-semibold text-[#1BBFCA]">Back</span>
+        </div>
         <Card className="mb-6 shadow-md">
           <CardHeader>
             <h1 className="text-[20px] text-[#1BBFCA] font-bold">
@@ -721,45 +728,43 @@ const Students = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-3 justify-around gap-5 pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-4">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3">
-            {[...Array(6)].map((_, index) => (
-              <ContentLoader
-                speed={1}
-                width="100%"
-                height="100%"
-                backgroundColor="#f3f3f3"
-                foregroundColor="#ecebeb"
-                className="w-full h-[310px] p-4 rounded-2xl border shadow-md"
-                key={index}
-              >
-                <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
-                <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
+          [...Array(6)].map((_, index) => (
+            <ContentLoader
+              key={index}
+              speed={1}
+              width="100%"
+              height="100%"
+              backgroundColor="#f3f3f3"
+              foregroundColor="#ecebeb"
+              className="w-full h-[310px] p-4 rounded-2xl border shadow-md"
+            >
+              <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
+              <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
 
-                <rect x="0" y="36" rx="10" ry="10" width="100%" height="120" />
+              <rect x="0" y="36" rx="10" ry="10" width="100%" height="120" />
 
-                <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
+              <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
 
-                <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
-                <rect x="280" y="200" rx="4" ry="4" width="60" height="20" />
+              <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
+              <rect x="280" y="200" rx="4" ry="4" width="60" height="20" />
 
-                <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
+              <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
 
-                <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
-              </ContentLoader>
-            ))}
-          </div>
+              <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
+            </ContentLoader>
+          ))
         ) : formattedStudents.length ? (
-          formattedStudents?.map((student: any, index: any) => (
+          formattedStudents.map((student: any, index: number) => (
             <Card
               key={index}
-              className="min-w-[380px] max-w-[300px] flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+              className="w-full shadow-md cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() => handleStudentClick(student)}
             >
-              <CardContent className="p-4">
-                <div className="flex justify-center mb-4">
-                  <Avatar className="h-20 w-20 rounded-lg">
+              <CardContent className="p-5">
+                <div className="flex justify-center mb-10">
+                  <Avatar className="h-25 w-25 rounded-lg">
                     <AvatarImage
                       src={GetImageUrl(student?.image) ?? undefined}
                       alt={student?.name || "Student"}
@@ -790,8 +795,8 @@ const Students = () => {
             </Card>
           ))
         ) : (
-          <Card className="flex-shrink-0 shadow-md cursor-pointer hover:shadow-lg transition-shadow col-span-3 mt-12">
-            <p className="text-[20px] font-lg text-center">
+          <Card className="col-span-full shadow-md cursor-pointer hover:shadow-lg transition-shadow mt-12">
+            <p className="text-[20px] font-medium text-center">
               No Students available
             </p>
           </Card>

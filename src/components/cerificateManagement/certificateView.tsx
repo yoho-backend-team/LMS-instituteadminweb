@@ -1,181 +1,181 @@
-import { HiMiniXMark } from 'react-icons/hi2';
-import { useLocation, useNavigate } from 'react-router-dom';
-import patternImg from '../../assets/certificate/pattern.png';
-import arrowLeftImg from '../../assets/certificate/arrow left.png';
-import arrowRightImg from '../../assets/certificate/arrow right.png';
-import bgImg from '../../assets/certificate/cerificate-bg.png';
-import courseBgImg from '../../assets/certificate/course button.png';
-import certifiedImg from '../../assets/certificate/certified.png';
+import { HiMiniXMark } from "react-icons/hi2";
+import { useLocation, useNavigate } from "react-router-dom";
+import patternImg from "../../assets/certificate/pattern.png";
+import arrowLeftImg from "../../assets/certificate/arrow left.png";
+import arrowRightImg from "../../assets/certificate/arrow right.png";
+import bgImg from "../../assets/certificate/cerificate-bg.png";
+import courseBgImg from "../../assets/certificate/course button.png";
+import certifiedImg from "../../assets/certificate/certified.png";
 
 interface Certificate {
-	id: number;
-	title: string;
-	description: string;
-	branch: string;
-	batch: string;
-	student: string;
-	email: string;
+  id: number;
+  title: string;
+  description: string;
+  branch: string;
+  batch: string;
+  student: string;
+  email: string;
 }
 
 export default function CertificateView() {
-	const navigate = useNavigate();
-	const location = useLocation();
-	const certificate = location.state?.certificate as Certificate | undefined;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const certificate = location.state?.certificate as Certificate | undefined;
 
-	if (!certificate) {
-		return (
-			<div className='flex items-center justify-center h-screen'>
-				<div className='text-center'>
-					<h1 className='text-2xl font-bold mb-4'>Certificate Not Found</h1>
-					<button
-						onClick={() => navigate(-1)}
-						className='bg-blue-500 text-white px-4 py-2 rounded'
-					>
-						Go Back
-					</button>
-				</div>
-			</div>
-		);
-	}
+  if (!certificate) {
+    return (
+      <div className="flex items-center justify-center h-screen ">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Certificate Not Found</h1>
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-	return (
-		<div className='min-h-screen flex flex-col bg-gray-100 p-4'>
-			<div className='mb-4'></div>
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100 p-4 ">
+      <div className="mb-4"></div>
 
-			<div className='flex items-center justify-center'>
-				<div className='w-full max-w-5xl'>
-					<div className='bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center mb-6'>
-						<h2 className='text-white text-lg font-semibold'>
-							{certificate.student}'s Certificate
-						</h2>
-						<button
-							onClick={() => navigate(-1)}
-							className='bg-white ml-auto px-4 py-2 rounded-lg flex items-center'
-						>
-							<HiMiniXMark className='h-6 w-6 bg-gray-500 rounded-full text-white' />
-						</button>
-					</div>
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-5xl">
+          <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center mb-6">
+            <h2 className="text-white text-lg font-semibold">
+              {certificate.student}'s Certificate
+            </h2>
+            <button
+              onClick={() => navigate(-1)}
+              className="bg-white ml-auto px-4 py-2 rounded-lg flex items-center"
+            >
+              <HiMiniXMark className="h-6 w-6 bg-gray-500 rounded-full text-white" />
+            </button>
+          </div>
 
-					<div className='relative overflow-hidden bg-white'>
-						<div className='certificate-content'>
-							<img
-								src={bgImg}
-								className='absolute -z-100 left-36 opacity-50 top-42 object-cover'
-							/>
-							<img
-								src={patternImg}
-								alt='pattern top'
-								className='absolute -rotate-41 -top-70 -left-10'
-							/>
-							<img
-								src={patternImg}
-								alt='pattern bottom'
-								className='absolute rotate-139 -bottom-70 -right-10'
-							/>
-							<img
-								src={patternImg}
-								alt='pattern left'
-								className='absolute rotate-49 -top-0 -left-75 opacity-10'
-							/>
-							<img
-								src={patternImg}
-								alt='pattern right'
-								className='absolute -rotate-131 -bottom-0 -right-75 opacity-10'
-							/>
-							<img
-								src={patternImg}
-								alt='top right 1'
-								className='absolute -top-40 -right-50 rotate-90'
-							/>
-							<img
-								src={patternImg}
-								alt='top right 2'
-								className='absolute -top-30 -right-90 rotate-90'
-							/>
-							<img
-								src={patternImg}
-								alt='top right 3'
-								className='absolute -top-25 -right-120 rotate-90 '
-							/>
-							<img
-								src={patternImg}
-								alt='bottom left 1'
-								className='absolute -bottom-40 -left-50 rotate-0'
-							/>
-							<img
-								src={patternImg}
-								alt='bottom left 2'
-								className='absolute -bottom-30 -left-90 rotate-0'
-							/>
-							<img
-								src={patternImg}
-								alt='bottom left 3'
-								className='absolute -bottom-25 -left-120 rotate-0 '
-							/>
-							<h1 className='certificate-title'>Certificate</h1>
+          <div className="relative overflow-hidden bg-white">
+            <div className="certificate-content">
+              <img
+                src={bgImg}
+                className="absolute -z-100 left-36 opacity-50 top-42 object-cover"
+              />
+              <img
+                src={patternImg}
+                alt="pattern top"
+                className="absolute -rotate-41 -top-70 -left-10"
+              />
+              <img
+                src={patternImg}
+                alt="pattern bottom"
+                className="absolute rotate-139 -bottom-70 -right-10"
+              />
+              <img
+                src={patternImg}
+                alt="pattern left"
+                className="absolute rotate-49 -top-0 -left-75 opacity-10"
+              />
+              <img
+                src={patternImg}
+                alt="pattern right"
+                className="absolute -rotate-131 -bottom-0 -right-75 opacity-10"
+              />
+              <img
+                src={patternImg}
+                alt="top right 1"
+                className="absolute -top-40 -right-50 rotate-90"
+              />
+              <img
+                src={patternImg}
+                alt="top right 2"
+                className="absolute -top-30 -right-90 rotate-90"
+              />
+              <img
+                src={patternImg}
+                alt="top right 3"
+                className="absolute -top-25 -right-120 rotate-90 "
+              />
+              <img
+                src={patternImg}
+                alt="bottom left 1"
+                className="absolute -bottom-40 -left-50 rotate-0"
+              />
+              <img
+                src={patternImg}
+                alt="bottom left 2"
+                className="absolute -bottom-30 -left-90 rotate-0"
+              />
+              <img
+                src={patternImg}
+                alt="bottom left 3"
+                className="absolute -bottom-25 -left-120 rotate-0 "
+              />
+              <h1 className="certificate-title">Certificate</h1>
 
-							<div className='completion-subtitle'>
-								<img src={arrowRightImg} className='w-11' />
-								<span className='completion-text'>OF COMPLETION</span>
-								<img src={arrowLeftImg} className='w-11' />
-							</div>
+              <div className="completion-subtitle">
+                <img src={arrowRightImg} className="w-11" />
+                <span className="completion-text">OF COMPLETION</span>
+                <img src={arrowLeftImg} className="w-11" />
+              </div>
 
-							<p className='certify-text'>This is to Certify that</p>
+              <p className="certify-text">This is to Certify that</p>
 
-							<div className='recipient-name'>{certificate.student}</div>
+              <div className="recipient-name">{certificate.student}</div>
 
-							<div className='completion-details'>
-								<p className='completion-text-main'>
-									has Successfully Completed that
-								</p>
-								<span className='completion-text-main'>Course</span>
-								<span className='relative'>
-									<img
-										src={courseBgImg}
-										alt='course'
-										className='course-badge'
-									/>
-									<span className='course-title'>
-										{certificate.title.substring(0, 15)}
-									</span>
-								</span>
+              <div className="completion-details">
+                <p className="completion-text-main">
+                  has Successfully Completed that
+                </p>
+                <span className="completion-text-main">Course</span>
+                <span className="relative">
+                  <img
+                    src={courseBgImg}
+                    alt="course"
+                    className="course-badge"
+                  />
+                  <span className="course-title">
+                    {certificate.title.substring(0, 15)}
+                  </span>
+                </span>
 
-								<p className='duration-text'>
-									during the period of{' '}
-									<span className='duration-text1'>
-										July 2025 - December 2025
-									</span>
-								</p>
-							</div>
+                <p className="duration-text">
+                  during the period of{" "}
+                  <span className="duration-text1">
+                    July 2025 - December 2025
+                  </span>
+                </p>
+              </div>
 
-							<div className='signature-section'>
-								<div className='signature-left'>
-									<div className='signature-name'>Abdul Kalam</div>
-									<div className='signature-line'></div>
-									<div className='signature-title'>Authorised Signatory</div>
-								</div>
+              <div className="signature-section">
+                <div className="signature-left">
+                  <div className="signature-name">Abdul Kalam</div>
+                  <div className="signature-line"></div>
+                  <div className="signature-title">Authorised Signatory</div>
+                </div>
 
-								<div className='verification-badge'>
-									<img
-										src={certifiedImg}
-										alt='certified'
-										className='w-22 h-22'
-									/>
-								</div>
+                <div className="verification-badge">
+                  <img
+                    src={certifiedImg}
+                    alt="certified"
+                    className="w-22 h-22"
+                  />
+                </div>
 
-								<div className='signature-right'>
-									<div className='signature-name'>Albert Einstein</div>
-									<div className='signature-line'></div>
-									<div className='instructor-title'>Course Instructor</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+                <div className="signature-right">
+                  <div className="signature-name">Albert Einstein</div>
+                  <div className="signature-line"></div>
+                  <div className="instructor-title">Course Instructor</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<style>
-				{`
+      <style>
+        {`
           @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
           @import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
           @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Pirata+One&display=swap');
@@ -402,7 +402,7 @@ export default function CertificateView() {
             }
           }
         `}
-			</style>
-		</div>
-	);
+      </style>
+    </div>
+  );
 }

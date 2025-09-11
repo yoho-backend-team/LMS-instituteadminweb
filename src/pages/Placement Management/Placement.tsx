@@ -16,7 +16,7 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import {
   deletePlacement,
   updatePlacement,
@@ -36,7 +36,7 @@ const SkeletonRow = () => (
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true); // 👈 loading state
+  const [loading, setLoading] = useState(true); 
 
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
@@ -143,8 +143,9 @@ const Placements = () => {
             setIsFormOpen(true);
             setEditingPlacement(null);
           }}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 text-white px-4 py-2 rounded flex flex-row gap-3"
         >
+          <Plus/>
           Add Placement
         </button>
       </div>
@@ -204,12 +205,9 @@ const Placements = () => {
           </TableHeader>
           <TableBody>
             {loading
-              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) // 👈 show 5 skeleton rows
+              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) 
               : placements.map((placement: any) => (
-                  <TableRow
-                    key={placement?._id}
-                    className="hover:bg-gray-50"
-                  >
+                  <TableRow key={placement?._id} className="hover:bg-gray-50">
                     <TableCell className="px-6 py-4">
                       <div className="flex flex-col">
                         <span>{placement?.company?.name ?? "N/A"}</span>

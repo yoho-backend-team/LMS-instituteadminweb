@@ -19,9 +19,15 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { X } from "lucide-react";
-import { CreateFaq } from "../../features/Faq/service"; 
+import { CreateFaq } from "../../features/Faq/service";
 
-export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function AddFAQDrawer({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category1, setCategory1] = useState("");
@@ -42,8 +48,8 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
     const payload = {
       title,
       description,
-      category_id: "6825d76c8245c52fee70cc27", // category1 is used for category_id
-      accessby: ["Teaching Staff"], // hardcoded access
+      category_id: "6825d76c8245c52fee70cc27", 
+      accessby: ["Teaching Staff"], 
     };
 
     try {
@@ -63,7 +69,7 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l h-[90%] mt-10 rounded-xl ">
         <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
           <DrawerTitle className="text-lg font-semibold">Add FAQ</DrawerTitle>
           <DrawerClose>
@@ -73,7 +79,12 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
         <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <Label htmlFor="faq-title">Title</Label>
-            <Input id="faq-title" className="mt-1" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input
+              id="faq-title"
+              className="mt-1"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="flex flex-col">
             <Label htmlFor="faq-description">Description</Label>
@@ -106,7 +117,11 @@ export function AddFAQDrawer({ open, onOpenChange }: { open: boolean; onOpenChan
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="bg-cyan-500 hover:bg-cyan-600 text-white">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-cyan-500 hover:bg-cyan-600 text-white"
+            >
               {loading ? "Submitting..." : "Submit"}
             </Button>
           </div>

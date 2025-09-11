@@ -1,5 +1,3 @@
-
-
 export interface Certificate {
   id: number;
   title: string;
@@ -11,16 +9,16 @@ export interface Certificate {
 }
 export const downloadCertificate = async (certificate: Certificate) => {
   try {
-    const html2canvas = (await import('html2canvas')).default;
-    const jsPDF = (await import('jspdf')).default;
+    const html2canvas = (await import("html2canvas")).default;
+    const jsPDF = (await import("jspdf")).default;
 
-    const tempContainer = document.createElement('div');
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.left = '-9999px';
-    tempContainer.style.top = '-9999px';
-    tempContainer.style.width = '1200px';
-    tempContainer.style.height = '800px';
-    tempContainer.style.fontFamily = 'Montserrat, sans-serif';
+    const tempContainer = document.createElement("div");
+    tempContainer.style.position = "absolute";
+    tempContainer.style.left = "-9999px";
+    tempContainer.style.top = "-9999px";
+    tempContainer.style.width = "1200px";
+    tempContainer.style.height = "800px";
+    tempContainer.style.fontFamily = "Montserrat, sans-serif";
 
     tempContainer.innerHTML = `
       <style>
@@ -319,25 +317,25 @@ export const downloadCertificate = async (certificate: Certificate) => {
     document.body.removeChild(tempContainer);
 
     const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'px',
+      orientation: "landscape",
+      unit: "px",
       format: [1200, 800],
     });
 
-    const imgData = canvas.toDataURL('image/png');
-    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
+    const imgData = canvas.toDataURL("image/png");
+    pdf.addImage(imgData, "PNG", 0, 0, 1200, 800);
 
     pdf.save(`${certificate.student}_${certificate.title}_Certificate.pdf`);
   } catch (error) {
-    console.error('Error generating certificate:', error);
-    alert('Error generating certificate. Please try again.');
+    console.error("Error generating certificate:", error);
+    alert("Error generating certificate. Please try again.");
   }
 };
 
 // You'll need to import these images or provide their data URLs
 // For production, you might want to convert these to data URLs
-const patternImg = 'path/to/pattern.png';
-const arrowRightImg = 'path/to/arrow-right.png';
-const arrowLeftImg = 'path/to/arrow-left.png';
-const courseBgImg = 'path/to/course-button.png';
-const certifiedImg = 'path/to/certified.png';
+const patternImg = "path/to/pattern.png";
+const arrowRightImg = "path/to/arrow-right.png";
+const arrowLeftImg = "path/to/arrow-left.png";
+const courseBgImg = "path/to/course-button.png";
+const certifiedImg = "path/to/certified.png";
