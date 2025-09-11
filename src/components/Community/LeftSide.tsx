@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react';
 import circle from '../../assets/navbar/circle.png';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,9 +58,8 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
 						<div
 							key={index}
 							onClick={() => onSelectBatch(batch)}
-							className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
-								selectedBatch?._id === batch._id ? 'ring-2 ring-cyan-600' : ''
-							}`}
+							className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? 'ring-2 ring-cyan-600' : ''
+								}`}
 						>
 							<img
 								src={GetImageUrl(batch?.groupimage) ?? circle}

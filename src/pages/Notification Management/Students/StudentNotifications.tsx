@@ -103,9 +103,9 @@ const StudentNotifications = () => {
 	const loading = useSelector(selectLoading);
 
 	const instituteId =
-		getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
+		getInstituteDetails();
 	const branchId =
-		getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
+		getSelectedBranchId();
 
 	const reponse: ApiResponse | undefined = useSelector(
 		selectStudentNotification
@@ -113,7 +113,10 @@ const StudentNotifications = () => {
 
 	const dispatch = useDispatch<any>();
 
-	const fetchStudentNotification = () => {
+	const coursedata = useSelector(selectCoursedata)?.data;
+
+	useEffect(() => {
+		dispatch(getcourse({}));
 		dispatch(
 			getStudentnotification({
 				branch: branchId,
@@ -121,18 +124,7 @@ const StudentNotifications = () => {
 				page: 1,
 			})
 		);
-	};
-
-	const coursedata = useSelector(selectCoursedata)?.data;
-
-	const fetchCourse = () => {
-		dispatch(getcourse({}));
-	};
-
-	useEffect(() => {
-		fetchStudentNotification();
-		fetchCourse();
-	}, [dispatch]);
+	}, [branchId, dispatch, instituteId]);
 
 	useEffect(() => {
 		if (reponse && reponse.data) {
@@ -448,9 +440,9 @@ const StudentNotifications = () => {
 												/>
 												<AvatarFallback>
 													{notification?.user?.name
-														.split(' ')
-														.map((n: string) => n[0])
-														.join('')}
+														?.split(' ')
+														?.map((n: string) => n[0])
+														?.join('')}
 												</AvatarFallback>
 											</Avatar>
 											<div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import LeftSide from './LeftSide';
 import ChatView from './ChatView';
@@ -40,9 +41,8 @@ const Communitys: React.FC = () => {
 			if (res?.data) {
 				setUserId(res.data._id);
 
-				const fullName = `${res.data.first_name || ''} ${
-					res.data.last_name || ''
-				}`.trim();
+				const fullName = `${res.data.first_name || ''} ${res.data.last_name || ''
+					}`.trim();
 				setUserName(fullName);
 			}
 		} catch (error) {
@@ -64,19 +64,19 @@ const Communitys: React.FC = () => {
 
 	const instituteId = getInstituteDetails();
 
-	const transformMessages = (apiMessages: any[]) => {
-		return apiMessages
-			.map((msg) => ({
-				sender: msg.sender,
-				sender_name: msg.sender_name,
-				text: msg.message,
-				time: formatTime(msg.timestamp),
-				timestamp: msg.timestamp,
-			}))
-			.reverse();
-	};
 
 	useEffect(() => {
+		const transformMessages = (apiMessages: any[]) => {
+			return apiMessages
+				.map((msg) => ({
+					sender: msg.sender,
+					sender_name: msg.sender_name,
+					text: msg.message,
+					time: formatTime(msg.timestamp),
+					timestamp: msg.timestamp,
+				}))
+				.reverse();
+		};
 		if (communityMessages?.data) {
 			const transformedMessages = transformMessages(communityMessages.data);
 			setMessages(transformedMessages);
@@ -106,18 +106,18 @@ const Communitys: React.FC = () => {
 	}, []);
 
 	const handleSendMessage = () => {
-		if (!message.trim() || !selectedBatch || !userId) return;
+		// if (!message.trim() || !selectedBatch || !userId) return;
 
 		const msgData = {
 			content: message.trim(),
-			groupId: selectedBatch._id,
+			groupId: selectedBatch?._id,
 			senderId: userId,
 			name: userName,
 			time: new Date().toISOString(),
 		};
 
 		socket.emit('sendMessage', msgData);
-		setMessages((prev) => [
+		setMessages((prev: any) => [
 			...prev,
 			{
 				sender: userId,
@@ -135,21 +135,20 @@ const Communitys: React.FC = () => {
 		setMessages((prev) => prev.filter((_, i) => i !== index));
 	};
 
-	const fetchMessages = () => {
-		if (selectedBatch) {
-			dispatch(
-				fetchCommunityById({
-					communityId: selectedBatch._id,
-				})
-			);
-
-			socket.emit('joinRoom', { roomId: selectedBatch._id, userId });
-		}
-	};
 
 	useEffect(() => {
-		fetchMessages();
-	}, [selectedBatch]);
+		(() => {
+			if (selectedBatch) {
+				dispatch(
+					fetchCommunityById({
+						communityId: selectedBatch._id,
+					})
+				);
+
+				socket.emit('joinRoom', { roomId: selectedBatch._id, userId });
+			}
+		})()
+	}, [dispatch, selectedBatch, userId]);
 
 	return (
 		<div className='flex justify-between w-full gap-6 bg-white font-poppins'>
@@ -184,7 +183,7 @@ const Communitys: React.FC = () => {
 						availability: 'Mon-Fri 10AM - 8PM',
 						phone: '+91 98765 43265',
 					}}
-					setProfileData={() => {}}
+					setProfileData={() => { }}
 					isEditing={isEditing}
 					setIsEditing={setIsEditing}
 				/>

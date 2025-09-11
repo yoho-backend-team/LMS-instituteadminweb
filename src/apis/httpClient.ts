@@ -2,7 +2,8 @@
 import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 import { showSessionExpiredModal } from '../components/Session/sessionexpiremodel';
-import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
+// import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
+import { showUpgradeWindow } from '../components/shared/upgradeWindow'
 
 const Axios = axios.create({
 	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -30,12 +31,15 @@ Axios.interceptors.response.use(
 		) {
 			ClearLocalStorage();
 			showSessionExpiredModal();
-		} else if (
+		}
+		if (
 			error?.response?.status === 403 &&
 			error?.response?.data?.message ===
 			'Subscription limit reached. Update your subscription plan.'
 		) {
-			showUpgradeModal();
+			console.log("expire")
+			// showUpgradeModal();
+			showUpgradeWindow()
 		}
 		return Promise.reject(error);
 	}

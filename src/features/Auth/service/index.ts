@@ -48,3 +48,11 @@ export const ForgetPassword = async (data: any) => {
         console.log(error)
     }
 }
+
+export const UserProfileUpdate = async (params: string, data: any) => {
+    try {
+        await Client.admin.update(params, data)
+    } catch (error) {
+        console.log(error)
+    }
+}

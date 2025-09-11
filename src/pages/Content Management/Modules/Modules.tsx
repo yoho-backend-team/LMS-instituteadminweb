@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GoPlus } from 'react-icons/go';
 import { BsSliders } from 'react-icons/bs';
 import { useEffect, useRef, useState } from 'react';
@@ -74,8 +75,8 @@ const Modules = () => {
 
     useEffect(() => {
         const paramsData = {
-            branch_id: GetLocalStorage("instituteId"),
-            institute_id: GetLocalStorage("selectedBranchId"),
+            branch_id: GetLocalStorage("selectedBranchId"),
+            institute_id: GetLocalStorage("instituteId"),
             page: 1,
         };
         dispatch(GetallModuleThunks(paramsData));
@@ -309,12 +310,12 @@ const Modules = () => {
                             <div className='mt-4 flex justify-between items-center'>
                                 <div
                                     className={`flex items-center gap-1 font-medium ${toggleStatusMap[card.id] !== undefined
-                                            ? toggleStatusMap[card.id]
-                                                ? 'text-green-500'
-                                                : 'text-red-500'
-                                            : card.isActive
-                                                ? 'text-green-500'
-                                                : 'text-red-500'
+                                        ? toggleStatusMap[card.id]
+                                            ? 'text-green-500'
+                                            : 'text-red-500'
+                                        : card.isActive
+                                            ? 'text-green-500'
+                                            : 'text-red-500'
                                         }`}
                                 >
                                     <span className='text-sm'>
@@ -328,12 +329,12 @@ const Modules = () => {
                                     </span>
                                     <span
                                         className={`w-2 h-2 rounded-full ${toggleStatusMap[card.id] !== undefined
-                                                ? toggleStatusMap[card.id]
-                                                    ? 'bg-green-500'
-                                                    : 'bg-red-500'
-                                                : card.isActive
-                                                    ? 'bg-green-500'
-                                                    : 'bg-red-500'
+                                            ? toggleStatusMap[card.id]
+                                                ? 'bg-green-500'
+                                                : 'bg-red-500'
+                                            : card.isActive
+                                                ? 'bg-green-500'
+                                                : 'bg-red-500'
                                             }`}
                                     />
                                 </div>

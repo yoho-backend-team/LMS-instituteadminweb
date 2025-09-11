@@ -19,10 +19,13 @@ const AdminSlice = createSlice({
         },
         setAllBranch: (state, action) => {
             state.branches = action.payload
+        },
+        setUpdateData: (state, action) => {
+            state.user = { ...state.user, ...action.payload }
         }
     }
 })
 
-export const { setAuthData, setUSerDetails, setAllBranch } = AdminSlice.actions
+export const { setAuthData, setUSerDetails, setAllBranch, setUpdateData } = AdminSlice.actions
 
 export default AdminSlice.reducer

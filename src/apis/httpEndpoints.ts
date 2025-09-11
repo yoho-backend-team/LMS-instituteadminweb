@@ -25,6 +25,7 @@ const generateEndpoints = () => {
 			reset_password: `/api/institutes/auth/admin/update-password`,
 			login: '/api/institutes/auth/admin/login/',
 			logout: '/api/institutes/admin/institute-user/logout',
+			update: '/api/institutes/auth/admin/user/update/:userId'
 		},
 		permission: {
 			getAll: `/api/admin/institutes/permissions/all`,
@@ -49,10 +50,10 @@ const generateEndpoints = () => {
 			getDash: `/api/institutes/:instituteid/branches/`,
 			getAll: `/api/institutes/:instituteid/branches/`,
 			create: `/api/institutes/:instituteid/branches/`,
-			getByBranchId: `/api/institutes/:instituteid/branches/:branchuuid`,
-			edit: `/api/institutes/:instituteid/branches/:branchuuid`,
-			delete: `/api/institutes/:instituteid/branches/:branchuuid`,
-			updatestatus: `/api/institutes/:instituteid/branches/:branchuuid`,
+			getByBranchId: `/api/institutes/:instituteid/branches/:branchid`,
+			edit: `/api/institutes/:instituteid/branches/:branchid`,
+			delete: `/api/institutes/:instituteid/branches/:branchid`,
+			updatestatus: `/api/institutes/:instituteid/branches/:branchid`,
 		},
 		faq: {
 			create: `/api/institutes/faq`,
@@ -67,8 +68,8 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		category: {
-			getAll: `/api/institutes/${instituteId}/categories/`,
-			create: `/api/institutes/${instituteId}/categories`,
+			getAll: `/api/institutes/:instituteid/categories/`,
+			create: `/api/institutes/:instituteid/categories`,
 			update: `/api/institutes/faq/category/update/:uuid`,
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
@@ -164,8 +165,8 @@ const generateEndpoints = () => {
 			get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
 			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
 			getWithId: `/api/institutes/${instituteId}/staff/`,
-			getWithcourse: `/api/institutes/${instituteId}/branches/${branchId}/courses/`,
-			getWithBranch: `/api/institutes/${instituteId}/branches/`,
+			getWithcourse: `/api/institutes/${instituteId}/branches/:branchid/courses/`,
+			getWithBranch: `/api/institutes/${instituteId}/branches/:branchid/teaching-staff`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
 			getActivtiy:
 				'/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec',

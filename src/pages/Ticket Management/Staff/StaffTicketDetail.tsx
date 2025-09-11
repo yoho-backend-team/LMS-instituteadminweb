@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiX, FiSend, FiArrowLeft } from "react-icons/fi";
@@ -44,7 +45,7 @@ const StaffTicketDetail: React.FC = () => {
 
     dispatch(GetIndividualStaffTicketThunks(ticketId))
 
-  }, [])
+  }, [dispatch, ticketId])
 
 
   const handleCloseTicket = async (ticketId: any) => {
@@ -82,7 +83,7 @@ const StaffTicketDetail: React.FC = () => {
       user: adminProfile?._id
     } as any;
     socket.emit("sendTeacherTicketMessage", newMessage)
-    setMessages((prev:any) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
+    setMessages((prev: any) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
     setInputValue("");
   };
 
@@ -100,7 +101,7 @@ const StaffTicketDetail: React.FC = () => {
 
     const handleMessage = (message: Message) => {
       console.log(" Staff Mess", message)
-      setMessages((prev:any) => [message, ...prev])
+      setMessages((prev: any) => [message, ...prev])
     }
 
     socket.on("receiveTeacherTicketMessage", handleMessage)
