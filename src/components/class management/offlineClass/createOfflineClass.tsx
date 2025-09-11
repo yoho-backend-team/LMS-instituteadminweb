@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	useEffect,
 	useState,
@@ -9,7 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Button } from '../../ui/button';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { getStaffService } from '../../../features/batchManagement/services';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -42,13 +43,12 @@ export const CreateOfflineClassModal = ({
 	setIsOpen,
 	fetchAllOfflineClasses,
 }: CreateBatchModalProps) => {
-	const dispatch = useDispatch<any>();
+	// const dispatch = useDispatch<any>();
 	const [allCourses, setAllCourses] = useState<any[]>([]);
 	const [allBatches, setAllBatches] = useState<any[]>([]);
 	const [allBranches, setAllBranches] = useState<any[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
-	const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
 	const [courseId, setCourseId] = useState<string>('');
 
 	// Initial form values
@@ -92,31 +92,6 @@ export const CreateOfflineClassModal = ({
 			.required('Instructor selection is required'),
 	});
 
-	// Memoized fetch functions
-	const fetchAllCourses = useCallback(async () => {
-		try {
-			const response = await getAllCourses({});
-			if (response?.data) {
-				setAllCourses(response.data);
-			}
-		} catch (error) {
-			console.error('Error fetching courses:', error);
-			toast.error('Failed to load courses');
-		}
-	}, []);
-
-	const fetchAllBatches = useCallback(async () => {
-		try {
-			const response = await getAllBatches({});
-			if (response?.data) {
-				setAllBatches(response.data);
-			}
-		} catch (error) {
-			console.error('Error fetching batches:', error);
-			toast.error('Failed to load batches');
-		}
-	}, []);
-
 	const fetchAllBranches = useCallback(async () => {
 		try {
 			const response = await getAllBranches();
@@ -128,21 +103,6 @@ export const CreateOfflineClassModal = ({
 			toast.error('Failed to load branches');
 		}
 	}, []);
-
-	const fetchAvailableInstructors = useCallback(
-		async (courseId: string, ) => {
-			try {
-				const response = await getStaffService({ uuid: courseId });
-				if (response) {
-					setAvailableInstructors(response.data);
-				}
-			} catch (error) {
-				console.error('Error fetching instructors:', error);
-				toast.error('Failed to load available instructors');
-			}
-		},
-		[]
-	);
 
 	// Formik initialization
 	const formik = useFormik<FormValues>({
@@ -189,7 +149,7 @@ export const CreateOfflineClassModal = ({
 					setIsSubmitting(false);
 				}
 			},
-			[dispatch, setIsOpen, fetchAllOfflineClasses]
+			[setIsOpen, fetchAllOfflineClasses]
 		),
 	});
 
@@ -201,7 +161,7 @@ export const CreateOfflineClassModal = ({
 				formik.values.instructors.filter((id) => id !== instructorId)
 			);
 		},
-		[formik.values.instructors, formik.setFieldValue]
+		[formik]
 	);
 
 	// Memoized handler for closing modal
@@ -214,48 +174,42 @@ export const CreateOfflineClassModal = ({
 	useEffect(() => {
 		if (isOpen) {
 			fetchAllBranches();
-			fetchAllCourses();
-			fetchAllBatches();
-			if (courseId) {
-				fetchAvailableInstructors(courseId);
+		}
+	}, [isOpen, courseId, formik.values.classDate, fetchAllBranches]);
+
+
+	useEffect(() => {
+		(async () => {
+			try {
+
+				const response = await getAllCourses(formik?.values?.branch);
+				if (response?.data) {
+					setAllCourses(response.data);
+				}
+				const responses = await getStaffService({ uuid: formik?.values?.branch });
+				if (responses) {
+					setAvailableInstructors(responses.data);
+				}
+			} catch (error) {
+				console.error('Error fetching courses:', error);
+				toast.error('Failed to load courses');
 			}
-		}
-	}, [isOpen, courseId, formik.values.classDate]);
+		})()
+	}, [formik?.values?.branch]);
 
-	// Filter courses based on selected branch
 	useEffect(() => {
-		if (formik.values.branch) {
-			const branchCourses = allCourses.filter(
-				(course) => course.branch_id === formik.values.branch
-			);
-			setFilteredCourses(branchCourses);
-			formik.setFieldValue('course', '');
-		} else {
-			setFilteredCourses([]);
-			formik.setFieldValue('course', '');
-		}
-	}, [formik.values.branch, allCourses, formik.setFieldValue]);
-
-	// Reset dependent fields when course changes
-	useEffect(() => {
-		if (formik.values.course) {
-			formik.setFieldValue('batch', '');
-			setCourseId(formik.values.course);
-		}
-	}, [formik.values.course, formik.setFieldValue]);
-
-	// Fetch instructors when course and date are selected
-	useEffect(() => {
-		if (formik.values.course && formik.values.classDate) {
-			fetchAvailableInstructors(formik.values.course);
-			formik.setFieldValue('instructors', []);
-		}
-	}, [
-		formik.values.course,
-		formik.values.classDate,
-		fetchAvailableInstructors,
-		formik.setFieldValue,
-	]);
+		(async () => {
+			try {
+				const response = await getAllBatches({ branch: formik?.values?.branch, course: formik?.values?.course });
+				if (response?.data) {
+					setAllBatches(response.data);
+				}
+			} catch (error) {
+				console.error('Error fetching batches:', error);
+				toast.error('Failed to load batches');
+			}
+		})()
+	}, [formik?.values?.branch, formik?.values?.course]);
 
 	if (!isOpen) return null;
 
@@ -322,7 +276,7 @@ export const CreateOfflineClassModal = ({
 									>
 										<option value=''>Select Branch</option>
 										{allBranches.map((branch) => (
-											<option key={branch._id} value={branch._id}>
+											<option key={branch._id} value={branch.uuid}>
 												{branch.branch_identity}
 											</option>
 										))}
@@ -353,8 +307,8 @@ export const CreateOfflineClassModal = ({
 										disabled={!formik.values.branch}
 									>
 										<option value=''>Select Course</option>
-										{filteredCourses.map((course) => (
-											<option key={course._id} value={course._id}>
+										{allCourses.map((course) => (
+											<option key={course._id} value={course.uuid}>
 												{course.course_name}
 											</option>
 										))}
@@ -533,7 +487,7 @@ export const CreateOfflineClassModal = ({
 										<option value='' disabled>
 											Select Instructors
 										</option>
-										{availableInstructors.map((instructor) => (
+										{availableInstructors?.map((instructor) => (
 											<option key={instructor._id} value={instructor._id}>
 												{instructor.full_name}
 											</option>
