@@ -3,6 +3,7 @@ import React, { useState, useRef, type ChangeEvent } from 'react';
 import { useNavigate } from "react-router-dom"
 import profileimg from '../../assets/navbar/Editprofile.png';
 import { FONTS } from '../../../src/constants/uiConstants';
+import { ArrowLeft } from 'lucide-react';
 
 interface UserInfo {
     fullName: string;
@@ -53,6 +54,11 @@ const EditUserInfo: React.FC = () => {
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+            <div
+                onClick={() => navigate(-1)}
+                className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
+                <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+            </div>
             <div className="bg-cyan-500 text-white text-center py-3 rounded-lg" style={{ ...FONTS.heading_04 }}>
                 Edit User Informations
             </div>

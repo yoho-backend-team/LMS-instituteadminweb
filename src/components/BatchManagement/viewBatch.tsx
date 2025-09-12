@@ -17,14 +17,13 @@ export default function StudentDashboardMain() {
 
   return (
     <div className="p-6  min-h-screen">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-[#1BBFCA] hover:text-[#1BBFCA] transition-all mb-4"
-      >
-        <ArrowLeft className="w-5 h-5" />
-      </button>
+       <div 
+       onClick={() => navigate(-1)}
+      className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+				<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+			</div>
 
-      <h2 className="mb-4" style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>MERN 2025</h2>
+      <h2 className="mb-4 mt-4" style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>MERN 2025</h2>
       <Card className="p-6 bg-white shadow-lg rounded-xl mb-8 space-y-4">
 
         <Card className="p-4 bg-white shadow-sm rounded-xl">

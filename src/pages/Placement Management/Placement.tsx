@@ -16,12 +16,12 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { GetImageUrl } from "../../utils/helper";
 import { X } from "lucide-react";
 import {
   deletePlacement,
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Row
 const SkeletonRow = () => (
@@ -38,10 +38,11 @@ const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
   const [loading, setLoading] = useState(true); // 👈 loading state
-
+ const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
+  console.log(placements,"placements")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -208,6 +209,7 @@ const Placements = () => {
                   <TableRow
                     key={placement?._id}
                     className="hover:bg-gray-50"
+                    onClick={() => navigate("/placementview",{ state: { placement } })} 
                   >
                     <TableCell className="px-6 py-4">
                       <div className="flex flex-col">

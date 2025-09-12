@@ -4,8 +4,9 @@ import StaffAddBar from "../../../components/teachingstaffAttendance/StaffAddBar
 import StaffFormModal from "../../../components/teachingstaffAttendance/StaffFormModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { StaffsAttendanceType } from "./StaffsAttendance";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GetAttendanceByIdThunk, GetStaffAttendanceRerender } from "../../../features/teachingstaffAttendance/thunk";
+import { ArrowLeft } from "lucide-react";
 
 const months = [
     "January", "February", "March", "April", "May", "June",
@@ -82,9 +83,14 @@ const AddAttendance = () => {
     const [openModal, setopenModal] = useState(false);
 
     const days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
+    const navigate = useNavigate()
     return (
         <div className='w-full'>
+            <div
+                onClick={() => navigate(-1)}
+                className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
+                <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+            </div>
             <StaffAddBar data={staff} setOpen={setopenModal} setMonth={setCurrentMonth} setYear={setCurrentYear} />
             <StaffFormModal data={staff} setOpen={setopenModal} isOpen={openModal} />
 

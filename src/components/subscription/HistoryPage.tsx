@@ -10,6 +10,8 @@ import {
     TableRow,
 } from "../../components/ui/table";
 import { useSelector } from 'react-redux';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HistoryPage: React.FC = () => {
 
@@ -17,10 +19,14 @@ const HistoryPage: React.FC = () => {
         (state: any) => state.subscription?.insitituteSubscription
     );
 
-
+ const navigate = useNavigate()
     return (
         <div className="bg-white h-full flex flex-col rounded-xl border-2 border-gray-100 shadow-md p-6 mb-8 ">
-
+            <div
+                onClick={() => navigate(-1)}
+                className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
+                <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+            </div>
             <div>
                 <h1 style={FONTS.heading_04} className="text-center mb-4 text-gray-700">
                     Subscription History

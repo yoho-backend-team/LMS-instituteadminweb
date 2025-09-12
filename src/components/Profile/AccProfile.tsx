@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectTimeline } from '../../features/Profile_Security/reducer/selector';
 import { fetchTimeline } from '../../features/Profile_Security/reducer/thunks';
 import { getsecurity } from '../../features/Profile_Security/services';
+import { ArrowLeft } from 'lucide-react';
 
 
 const AccountProfile: React.FC = () => {
@@ -47,21 +48,6 @@ const AccountProfile: React.FC = () => {
 		status: string;
 	};
 
-	const timelineData: TimelineItem[] = [
-		{
-			title: 'Note',
-			description: 'JhgfdsA - Notes Created',
-			date: 'July 17, 2025 At 06:13:23 Pm',
-			status: 'Notes Created',
-		},
-		{
-			title: 'Note',
-			description: 'JhgfdsA - Notes Created',
-			date: 'July 17, 2025 At 06:13:23 Pm',
-			status: 'Notes Created',
-		},
-	];
-
 	const dispatch = useDispatch<any>();
 	const timeline = useSelector(selectTimeline);
 
@@ -85,6 +71,11 @@ const AccountProfile: React.FC = () => {
 	}
 	return (
 		<div>
+			 <div
+                onClick={() => navigate(-1)}
+                className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
+                <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+            </div>
 			{/* <span className="text-[18px] font-semibold mb-6 ml-5 text-[#3B3939]" style={{ ...FONTS.heading_06_bold }}>Account</span> */}
 			<div>
 				{activeIndex === 0 && (

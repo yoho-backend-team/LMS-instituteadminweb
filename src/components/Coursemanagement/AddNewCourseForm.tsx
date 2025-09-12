@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import cloud from "../../assets/cloud.png";
+import { ArrowLeft } from "lucide-react";
 
 interface AddNewCourseFormProps {
   onBack: () => void;
@@ -70,7 +71,12 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
 
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-[#1BBFCA] text-lg font-semibold mb-6">
+      <div 
+      onClick={onBack}
+      className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+				<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+			</div>
+      <h2 className="text-[#1BBFCA] text-lg font-semibold mb-6 mt-4">
         Add New Course
       </h2>
 

@@ -10,8 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetStaffTicketServicesThunks } from "../../features/Ticket_Management/reducers/thunks";
 import ticket1 from "../../assets/ticket1.png";
 import { GetStaffTicket, selectLoading } from "../../features/Ticket_Management/reducers/selectors";
-import { GetImageUrl } from "../../utils/helper";
-
+import { GetImageUrl } from "../../utils/helper";   
+import { GetLocalStorage } from "../../utils/localStorage";
 interface Ticket {
   uuid: string;
   name: string;
@@ -24,8 +24,8 @@ interface Ticket {
 }
 
 interface GetTicketsParams {
-  branch_id: string;
-  institute_id: string;
+  branch_id: any;
+  institute_id: any;
   page: number;
   status: 'opened' | 'closed';
 }
@@ -44,11 +44,18 @@ const StaffTickets: React.FC = () => {
   );
   const error: any = useSelector((state: any) => state.staffTickets?.error);
 
+  console.log(staffTickets,"stafftickets")
+ const overall_branch_id=GetLocalStorage("selectedBranchId")
+  const overall_istitute_id=GetLocalStorage("instituteId")
+ console.log(overall_branch_id,"branch id ")
+ console.log(overall_istitute_id,"institute id")
 
   useEffect(() => {
     const params: GetTicketsParams = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      // branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      // institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+       branch_id: overall_branch_id,
+      institute_id: overall_istitute_id,
       page: 1,
       status: showOpenTickets ? "opened" : "closed",
     };

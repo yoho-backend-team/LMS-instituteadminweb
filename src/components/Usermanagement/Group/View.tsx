@@ -4,6 +4,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { selectView } from "../../../features/Users_Management/Group/reducers/selectors";
 import { GetViewGroupthunks } from "../../../features/Users_Management/Group/reducers/thunks";
+import { ArrowLeft } from "lucide-react";
 
 export default function View() {
   const permissions = ["Read", "Create", "Update", "Delete"] as const;
@@ -115,9 +116,9 @@ export default function View() {
     <div className="min-h-screen bg-white p-6">
       <div
         onClick={() => navigate("/group")}
-        className="mb-4 cursor-pointer text-xl text-[#7D7D7D] hover:text-gray-500 w-fit"
+        className="mb-4 cursor-pointer text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit"
       >
-        <IoMdArrowRoundBack />
+         <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
       </div>
 
       <div className="flex gap-3 mb-8">

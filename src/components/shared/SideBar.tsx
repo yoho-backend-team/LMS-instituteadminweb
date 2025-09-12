@@ -9,9 +9,16 @@ import {
 	Briefcase,
 	Building2,
 	LayoutDashboard,
+	User,
+	GraduationCap,
+	Files,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-
+import dashboard from "../../assets/Dashboard/Mask group (3).png"
+import courses from "../../assets/Dashboard/Mask group (4).png"
+import teachingstaff from "../../assets/Dashboard/Mask group (5).png"
+import studentmanagement from "../../assets/Dashboard/Mask group (6).png"
+import attendencemanagement from "../../assets/Dashboard/Mask group (7).png"
 const SideBar = ({
 	isOpen,
 	setIsOpen,
@@ -35,11 +42,10 @@ const SideBar = ({
 	return (
 		<div
 			className={`h-screen z-40 scrollbar-hide flex flex-col p-1 origin-left  
-              ${
-								isOpen
-									? 'w-64 scale-100 opacity-100 pb-6 '
-									: 'w-22 pb-6 scale-y-100 opacity-80'
-							}`}
+              ${isOpen
+					? 'w-64 scale-100 opacity-100 pb-6 '
+					: 'w-22 pb-6 scale-y-100 opacity-80'
+				}`}
 		>
 			<div className='flex items-center justify-between px-2 h-16 py-5'>
 				<div className='relative group flex items-center overflow-visible px-0.5'>
@@ -88,7 +94,7 @@ const SideBar = ({
 					/>
 				</SidebarDropdown>
 				<SidebarDropdown
-					icon={<UserSearch />}
+					icon={<User />}
 					label='User Management'
 					isOpen={isOpen}
 					childRoutes={['/group']}
@@ -105,13 +111,13 @@ const SideBar = ({
 				</SidebarDropdown>
 				<SidebarLink
 					to='/users'
-					icon={<Briefcase />}
+					icon={<UserSearch />}
 					label='Users'
 					isOpen={isOpen}
 					onClick={handleLinkClick}
 				/>
 				<SidebarDropdown
-					icon={<UserSearch />}
+					icon={<GraduationCap />}
 					label='Course Management'
 					isOpen={isOpen}
 					childRoutes={['/categories']}
@@ -128,14 +134,14 @@ const SideBar = ({
 				</SidebarDropdown>
 				<SidebarLink
 					to='/courses'
-					icon={<Briefcase />}
+					icon={<img src={courses} alt="Courses" className="w-7 h-7" />}
 					label='Courses'
 					isOpen={isOpen}
 					onClick={handleLinkClick}
 				/>
+
 				<SidebarDropdown
-					icon={<UserSearch />}
-					label='Content Management'
+					icon={<img src={dashboard} alt="Dashboard" className="w-7 h-7" />} label='Content Management'
 					isOpen={isOpen}
 					childRoutes={['/study-materials']}
 					activeDropdown={activeDropdown}
@@ -186,27 +192,27 @@ const SideBar = ({
 
 				<SidebarLink
 					to='/staffs'
-					icon={<Briefcase />}
+					icon={<img src={teachingstaff} alt="Teaching Staff" className="w-7 h-7" />}
 					label='Teaching Staff'
 					isOpen={isOpen}
 					onClick={handleLinkClick}
 				/>
 				<SidebarLink
 					to='/students'
-					icon={<Briefcase />}
-					label='Student management'
+					icon={<img src={studentmanagement} alt="Student Management" className="w-7 h-7" />}
+					label='Student Management'
 					isOpen={isOpen}
 					onClick={handleLinkClick}
 				/>
 				<SidebarLink
 					to='/batch'
-					icon={<Briefcase />}
+					icon={<Files />}
 					label='Batch management'
 					isOpen={isOpen}
 					onClick={handleLinkClick}
 				/>
 				<SidebarDropdown
-					icon={<UserSearch />}
+					 icon={<img src={attendencemanagement} alt="Attendance Management" className="w-7 h-7" />}
 					label='Attendence Management'
 					isOpen={isOpen}
 					childRoutes={['/students-attendance', '/staffs-attendance']}
@@ -438,13 +444,12 @@ const SidebarLink1 = ({
 			onClick={onClick}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
-			className={`group flex items-center py-3 rounded-full ${
-				isActive
-					? 'bg-[#1BBFCA] text-white'
-					: isHovered
+			className={`group flex items-center py-3 rounded-full ${isActive
+				? 'bg-[#1BBFCA] text-white'
+				: isHovered
 					? 'bg-[rgba(202,64,111,0.1)]'
 					: 'hover:bg-white/10'
-			} ${isOpen ? 'justify-start gap-3 px-2' : 'justify-center'}`}
+				} ${isOpen ? 'justify-start gap-3 px-2' : 'justify-center'}`}
 		>
 			<div className='relative group flex items-center overflow-visible'>
 				<div
@@ -462,9 +467,8 @@ const SidebarLink1 = ({
 			</div>
 			{isOpen && (
 				<span
-					className={`font-medium text-sm ${
-						isActive ? 'text-white' : 'text-black'
-					}`}
+					className={`font-medium text-sm ${isActive ? 'text-white' : 'text-black'
+						}`}
 				>
 					{label}
 				</span>
@@ -497,13 +501,12 @@ const SidebarLink = ({
 			onClick={onClick}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
-			className={`group flex items-center py-3 rounded-full ${
-				isActive
-					? 'bg-white text-[#1BBFCA]'
-					: isHovered
+			className={`group flex items-center py-3 rounded-full ${isActive
+				? 'bg-white text-[#1BBFCA]'
+				: isHovered
 					? 'bg-[rgba(212,231,232,0.67)]'
 					: 'hover:bg-white/10'
-			} ${isOpen ? 'justify-start gap-3 px-2' : 'justify-center px-5'}`}
+				} ${isOpen ? 'justify-start gap-3 px-2' : 'justify-center px-5'}`}
 		>
 			<div className='relative group flex items-center overflow-visible'>
 				<div
@@ -521,9 +524,8 @@ const SidebarLink = ({
 			</div>
 			{isOpen && (
 				<span
-					className={`font-medium text-sm ${
-						isActive ? 'text-[#1BBFCA]' : 'text-black'
-					}`}
+					className={`font-medium text-sm ${isActive ? 'text-[#1BBFCA]' : 'text-black'
+						}`}
 				>
 					{label}
 				</span>
@@ -564,11 +566,10 @@ const SidebarDropdown = ({
 
 	return (
 		<div
-			className={`w-full relative ${
-				isChildActive && !isOpen
-					? 'bg-[#1BBFCA] text-white rounded-4xl'
-					: 'hover:backdrop-blur-md rounded-xl'
-			}`}
+			className={`w-full relative ${isChildActive && !isOpen
+				? 'bg-[#1BBFCA] text-white rounded-4xl'
+				: 'hover:backdrop-blur-md rounded-xl'
+				}`}
 		>
 			<button
 				onClick={() => {
@@ -580,23 +581,21 @@ const SidebarDropdown = ({
 					}
 				}}
 				title={!isOpen ? label : ''}
-				className={`group flex items-center w-full py-2 transition-all ${
-					isOpen
-						? 'justify-start gap-3 px-2 rounded-md'
-						: 'justify-center rounded-md px-5'
-				}`}
+				className={`group flex items-center w-full py-2 transition-all ${isOpen
+					? 'justify-start gap-3 px-2 rounded-md'
+					: 'justify-center rounded-md px-5'
+					}`}
 			>
 				<div className='relative group flex items-center overflow-visible'>
 					<div
 						className={`text-lg flex-shrink-0 transform scale-100 transition-colors duration-200
                             group-hover:animate-[grow-from-dot-on-hover_1.5s_ease-out]
-                            ${
-															isChildActive || expanded
-																? isOpen
-																	? 'text-[#ffffff]'
-																	: 'text-white'
-																: 'text-[#ffffff]'
-														}`}
+                            ${isChildActive || expanded
+								? isOpen
+									? 'text-[#ffffff]'
+									: 'text-white'
+								: 'text-[#ffffff]'
+							}`}
 					>
 						{icon}
 					</div>
@@ -609,20 +608,18 @@ const SidebarDropdown = ({
 				{isOpen && (
 					<>
 						<span
-							className={`font-medium text-sm flex-1 text-left transition-colors ${
-								isChildActive
-									? 'text-black'
-									: expanded
+							className={`font-medium text-sm flex-1 text-left transition-colors ${isChildActive
+								? 'text-black'
+								: expanded
 									? 'text-black/50'
 									: 'text-black'
-							}`}
+								}`}
 						>
 							{label}
 						</span>
 						<span
-							className={`transition-transform duration-200 ${
-								expanded ? 'rotate-180' : ''
-							} ${isChildActive ? 'text-black' : 'text-black'}`}
+							className={`transition-transform duration-200 ${expanded ? 'rotate-180' : ''
+								} ${isChildActive ? 'text-black' : 'text-black'}`}
 						>
 							<ChevronDown />
 						</span>

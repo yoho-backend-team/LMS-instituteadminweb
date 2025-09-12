@@ -63,6 +63,7 @@ import UsersDetails from '../features/Users_Management/Users/components/UsersDet
 import HistoryPage from '../components/subscription/HistoryPage';
 import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 import ClassView from '../components/StudentManagement/ClassView';
+import Placementview from '../pages/Placement Management/Placementview';
 const AppRoutes = () => {
 	const { isAuthenticated, isLoading } = useAuth();
 
@@ -164,6 +165,7 @@ const AppRoutes = () => {
 
 				{/* Placement Management */}
 				<Route path='placement' element={<Placement />} />
+				<Route path='placementview' element={<Placementview/>} />
 
 				{/* ID Card Management */}
 				<Route path='students-id_card' element={<StudentIDCard />} />

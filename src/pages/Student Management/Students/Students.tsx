@@ -37,6 +37,7 @@ import { createstudentdata } from '../../../features/StudentManagement/services/
 import { toast } from 'react-toastify';
 import { uploadFile } from '../../../features/staff/services';
 import ContentLoader from 'react-content-loader';
+import { ArrowLeft } from 'lucide-react';
 
 const Students = () => {
 	const [showFilters, setShowFilters] = useState(false);
@@ -229,9 +230,8 @@ const Students = () => {
 			lastName: student.last_name,
 			email: student.email,
 			location: student.contact_info
-				? `${student.contact_info.address1 || ''}, ${
-						student.contact_info.city || student.contact_info.state || ''
-				  }`.trim()
+				? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
+					}`.trim()
 				: 'Location not specified',
 			image: student.image,
 			phone: student.contact_info?.phone_number,
@@ -264,7 +264,12 @@ const Students = () => {
 	if (showAddStudent) {
 		return (
 			<div className='p-6'>
-				<Card className='mb-6 shadow-md'>
+				<div
+					onClick={toggleAddStudent}
+					className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+					<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+				</div>
+				<Card className='mb-6 shadow-md mt-4'>
 					<CardHeader>
 						<h1 className='text-[20px] text-[#1BBFCA] font-bold'>
 							Add New Student

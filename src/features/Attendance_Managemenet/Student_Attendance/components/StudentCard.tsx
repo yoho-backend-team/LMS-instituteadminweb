@@ -44,7 +44,7 @@ type props = {
 
 const StudentCard: React.FC<props> = ({ studentAttendances }) => {
     const navigate = useNavigate();
-
+    
     const handleStudentAttendanceDetails = (studentId: string) => {
         try {
             navigate(`/students-attendance/details/${studentId}`)

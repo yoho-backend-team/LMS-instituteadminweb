@@ -12,6 +12,7 @@ import { selectAdminTickets } from "../../../features/TicketManagement/YourTicke
 import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourTicket/thunks";
 import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
@@ -35,12 +36,16 @@ const TicketsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
 
+   const overall_branch_id=GetLocalStorage("selectedBranchId")
+      const overall_istitute_id=GetLocalStorage("instituteId")
+     console.log(overall_branch_id,"branch id ")
+     console.log(overall_istitute_id,"institute id")
+
   useEffect(() => {
     const params = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      branch_id: overall_branch_id,
       status: activeTab === "open" ? "opened" : "closed",
-      page: 1,
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,overall_istitute_id,
     };
     dispatch(fetchAdminTicketsThunk(params));
   }, [activeTab, dispatch]);
@@ -52,8 +57,8 @@ const TicketsPage: React.FC = () => {
       query,
       description,
       priority,
-      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branch: overall_branch_id,
+      institute: overall_istitute_id,
       status: activeTab === "open" ? "opened" : "closed",
     };
 
