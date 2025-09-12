@@ -74,12 +74,12 @@ const generateEndpoints = () => {
 			delete: `/api/institutes/faq/category/delete/:uuid`,
 		},
 		course: {
-			getall: `/api/institutes/:instituteid/branches/:branchid/courses`,
-			get: `/api/institutes/:instituteid/:branchid/course/:courseId`,
-			update: `/api/institutes/:instituteid/categories/`,
-			withBranch: `/api/institutes/:instituteid/branches/`,
-			add: `/api/institutes/:instituteid/categories/`,
-			template: `/api/institutes/:instituteid/branches/:branchid/course-template`,
+			getall: `/api/institutes/${instituteId}/branches/${branchId}/courses`,
+			get: `/api/institutes/${instituteId}/branches/${branchId}/course/`,
+			update: `/api/institutes/${instituteId}/categories/`,
+			withBranch: `/api/institutes/${instituteId}/branches/`,
+			add: `/api/institutes/${instituteId}/categories/`,
+			template: `/api/institutes/${instituteId}/branches/${branchId}/course-template`,
 		},
 		course_module: {
 			get: '/api/institutes/course-module/',

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HiCheckCircle } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 
@@ -23,51 +22,65 @@ type PlansProps = {
 
 export const Plans = ({ plan, onClose, show }: PlansProps) => {
   return (
-    <div>
-      <div className="bg-[#1BBFCA] text-white p-2 pl-4 rounded-xl flex justify-between">
+    <div className="space-y-6">
+      {/* Header with close button */}
+      <div className="bg-[#1BBFCA] text-white p-4 rounded-xl flex justify-between items-start">
         <div>
           <h2 className="font-bold text-2xl">{plan.identity}</h2>
           <p className="text-sm mt-2">{plan.description}</p>
         </div>
-        <div className="m-4 border bg-white rounded">
-          <button
-            onClick={onClose}
-          >
-            <IoClose size={20} className="bg-gray-700 rounded-full" />
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="p-1 rounded-full hover:bg-white/20 transition"
+        >
+          <IoClose size={22} />
+        </button>
       </div>
 
-      <div className="flex flex-wrap justify-between my-8">
-        <div className="border-2 border-gray-100 shadow-xl rounded-xl p-4 w-full max-w-3xl h-28 flex-1 mb-0">
-          <h4 className="text-lg font-semibold mb-4 text-gray-700">FEATURES</h4>
-          <ul className="flex flex-wrap gap-8">
-            {plan.features.map((feature: any, index: number) => (
-              <li key={feature._id || index} className="flex items-center text-gray-600">
-                <HiCheckCircle className="text-gray-600 mr-2 text-lg" />
-                <span>{feature.feature?.identity || "Unnamed Feature"}</span>
-              </li>
-            ))}
+      {/* Content Area */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Features Box */}
+        <div className="border-2 border-gray-100 shadow-xl rounded-xl p-4 flex-1">
+          <h4 className="text-lg font-semibold mb-4 text-gray-700">
+            FEATURES
+          </h4>
+          <ul className="flex flex-wrap gap-4">
+            {plan.features.length > 0 ? (
+              plan.features.map((feature, index) => (
+                <li
+                  key={feature._id || index}
+                  className="flex items-center text-gray-600 w-full sm:w-auto"
+                >
+                  <HiCheckCircle className="text-[#1BBFCA] mr-2 text-lg" />
+                  <span>{feature.feature?.identity || "Unnamed Feature"}</span>
+                </li>
+              ))
+            ) : (
+              <li className="text-gray-400 text-sm">No features available</li>
+            )}
           </ul>
-
         </div>
 
-        <div className="bg-white border-2 border-gray-100 shadow-xl rounded-md p-4 w-full max-w-md flex-1">
+        {/* Plan Details Box */}
+        <div className="bg-white border-2 border-gray-100 shadow-xl rounded-xl p-4 w-full max-w-md">
           <div className="w-full h-32 bg-gray-200 rounded mb-4" />
           <p className="text-sm text-gray-600 mb-1">
             <span className="font-semibold">Course Type:</span> {plan.identity}
           </p>
           <p className="text-sm text-gray-600 mb-1">
-            <span className="font-semibold">About Course:</span> {plan.description}
+            <span className="font-semibold">About Course:</span>{" "}
+            {plan.description}
           </p>
           <p className="text-sm text-gray-600 mb-4">
             <span className="font-semibold">Course Price:</span> ${plan.price}
           </p>
 
           <div className="flex gap-4">
-            <button className="px-4 py-2 border border-[#1BBFCA] bg-cyan-100 text-[#1BBFCA] rounded-md">Cancel</button>
-            <button className="px-4 py-2 bg-[#1BBFCA] text-white rounded-md">
-              {show ? 'Renew' : 'Upgrade Plan'}
+            <button className="px-4 py-2 border border-[#1BBFCA] bg-cyan-100 text-[#1BBFCA] rounded-md hover:bg-cyan-200 transition">
+              Cancel
+            </button>
+            <button className="px-4 py-2 bg-[#1BBFCA] text-white rounded-md hover:bg-[#18aab5] transition">
+              {show ? "Renew" : "Upgrade Plan"}
             </button>
           </div>
         </div>

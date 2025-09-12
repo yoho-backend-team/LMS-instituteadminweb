@@ -11,7 +11,7 @@ const StudTickets: React.FC = () => {
   const dispatch = useDispatch<any>();
   const studentTicketData = useSelector(selectStudentTicket);
 
-  console.log(studentTicketData,"data for student")
+  console.log(studentTicketData, "data for student");
 
   const fetchstudentTickets = async () => {
     try {
@@ -58,10 +58,8 @@ const StudTickets: React.FC = () => {
         ))}
       </div>
 
-  
       <div className="grid md:grid-cols-3 gap-6">
         {loading ? (
-      
           Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}

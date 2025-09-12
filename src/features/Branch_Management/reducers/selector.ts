@@ -22,9 +22,9 @@ export const selectLoading = (state: any) => state.branches.loading;
 // Combined selector that matches your original GetBranches
 export const GetBranches = selectBranches;
 
-// Memoized selector example using createSelector
+// Example of a memoized selector for only active branches
 // import { createSelector } from '@reduxjs/toolkit';
 // export const selectActiveBranches = createSelector(
 //   [selectBranches],
-//   (branches) => branches.filter(branch => branch.status === 'active')
+//   (branches) => branches.filter(branch => branch.status?.toLowerCase() === 'active')
 // );

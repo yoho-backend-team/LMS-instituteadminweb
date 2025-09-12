@@ -25,6 +25,7 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
 		const response = await GetAllModule(params);
+		console.log("THUnk module",response)
 		dispatch(getModule(response.data.data));
 		dispatch(setLoading(false));
 	} catch (error) {
@@ -99,9 +100,9 @@ export const GetBranchThunks = (params: any) => async (dispatch: any) => {
 };
 
 export const GetBranchCourseThunks =
-	(branchname: string) => async (dispatch: any) => {
+	(branchid: string) => async (dispatch: any) => {
 		try {
-			const response = await GetBranchCourse(branchname);
+			const response = await GetBranchCourse(branchid);
 			dispatch(getBranchCourse(response.data));
 		} catch (error) {
 			console.error('Error fetching branch courses in thunk', error);

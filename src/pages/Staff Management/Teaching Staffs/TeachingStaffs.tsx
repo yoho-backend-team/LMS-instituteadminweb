@@ -23,6 +23,7 @@ import { getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { GetImageUrl } from "../../../utils/helper";
 import { createStaff } from "../../../features/staff/services";
 import ContentLoader from "react-content-loader";
+import { IoIosArrowDown } from "react-icons/io";
 
 const theme = {
   primary: {
@@ -218,7 +219,7 @@ const TeachingStaffs: React.FC = () => {
 
   const dispatch = useDispatch<any>();
   const classData = useSelector(selectStaff)?.data || [];
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const loading = useSelector(selectLoading);
 
   const fetchClassData = (page: number = 1) => {
@@ -233,9 +234,16 @@ const TeachingStaffs: React.FC = () => {
     fetchClassData();
   }, []);
 
-  const handleFileChange = () => {};
+  // const handleUploadClick = () => {};
 
-  const handleUploadClick = () => {};
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
+  };
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
@@ -252,7 +260,26 @@ const TeachingStaffs: React.FC = () => {
                 accept=".pdf,.jpg,.jpeg,.png"
                 ref={fileInputRef}
                 onChange={handleFileChange}
+                className="hidden"
               />
+
+              <div
+                className="w-20 h-20 rounded-full overflow-hidden border border-gray-300 cursor-pointer"
+                onClick={() => profileImage && setPreviewOpen(true)}
+              >
+                {profileImage ? (
+                  <img
+                    src={URL.createObjectURL(profileImage)}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                    Upload
+                  </div>
+                )}
+              </div>
+
               <div>
                 <p
                   style={{
@@ -267,12 +294,28 @@ const TeachingStaffs: React.FC = () => {
                 </p>
               </div>
             </div>
+
             <Button
-              onClick={handleUploadClick}
+              onClick={() => fileInputRef.current?.click()}
               className="bg-green-500 hover:bg-green-600 text-white"
             >
-              Upload Profile Picture
+              Choose File
             </Button>
+
+            {previewOpen && profileImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                onClick={() => setPreviewOpen(false)}
+              >
+                <div className="bg-white rounded-xl overflow-hidden p-4">
+                  <img
+                    src={URL.createObjectURL(profileImage)}
+                    alt="Preview"
+                    className="max-w-[500px] max-h-[500px] object-contain"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="space-y-8">
@@ -848,11 +891,14 @@ const TeachingStaffs: React.FC = () => {
                           }
                         >
                           <SelectTrigger
-                            className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(
+                            className={`gap-2 w-[120px] ${getStatusButtonStyle(
                               member.status
-                            )}`}
+                            )} bg-[${
+                              COLORS.primary
+                            }] text-white flex justify-between items-center`}
                           >
                             <SelectValue placeholder={member?.is_active} />
+                            <IoIosArrowDown className="w-4 h-4 text-white" />
                           </SelectTrigger>
                           <SelectContent className="bg-[#1BBFCA]">
                             <SelectItem

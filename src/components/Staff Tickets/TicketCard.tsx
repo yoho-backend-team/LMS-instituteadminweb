@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
+import {
+  FiCalendar,
+  FiClock,
+  FiMoreVertical,
+  FiCheckCircle,
+} from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import avatarimg from '../../assets/navbar/avatarimg.png'
+import avatarimg from "../../assets/navbar/avatarimg.png";
 
 interface TicketProps {
   id: number;
@@ -37,7 +42,8 @@ const TicketCard: React.FC<TicketProps> = ({
           <img
             src={avatarimg}
             alt="Avatar"
-            className="w-10 h-10 rounded-full" />
+            className="w-10 h-10 rounded-full"
+          />
           <div>
             <h2 className="text-gray-800 font-semibold">{name}</h2>
             <p className="text-gray-500 text-sm">{email}</p>
@@ -53,7 +59,8 @@ const TicketCard: React.FC<TicketProps> = ({
             <div className="absolute right-0 mt-2 z-10 w-25">
               <button
                 className="w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
-                onClick={handleResolve} >
+                onClick={handleResolve}
+              >
                 <FiCheckCircle /> Resolve
               </button>
             </div>
@@ -77,7 +84,8 @@ const TicketCard: React.FC<TicketProps> = ({
       <button
         className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
           priority === "High" ? "bg-[#14b8c6]" : "bg-[#14b8c6]"
-        }`} >
+        }`}
+      >
         <FiCalendar />
         Priority: {priority}
       </button>

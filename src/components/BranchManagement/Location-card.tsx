@@ -13,6 +13,7 @@ interface LocationCardProps {
   imageSrc?: string;
   cityName: string;
   address: string;
+  phoneNumber?: string;
   status: BranchStatus;
   onViewDetails: () => void;
   onEdit: () => void;
