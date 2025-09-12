@@ -1,36 +1,58 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type React from "react"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Badge } from "../../components/ui/badge"
-import { Textarea } from "../../components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import { useNavigate, useLocation } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
-import { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { getcoursesdata, getLiveClassDataSet, getStudentActivityData } from "../../features/StudentManagement/reducer/thunks"
-import { selectCoursedata, selectStudentActivityData } from "../../features/StudentManagement/reducer/selector"
-import { deletestudentdata, updatestudentdata } from "../../features/StudentManagement/services/Student"
-import { GetImageUrl } from "../../utils/helper"
-import toast from "react-hot-toast"
-import { getInstituteDetails, getSelectedBranchId } from "../../apis/httpEndpoints"
-import { Card, CardContent } from "../ui/card"
-import { COLORS, FONTS } from "../../constants/uiConstants"
+import type React from "react";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Badge } from "../../components/ui/badge";
+import { Textarea } from "../../components/ui/textarea";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Info, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getcoursesdata,
+  getLiveClassDataSet,
+  getStudentActivityData,
+} from "../../features/StudentManagement/reducer/thunks";
+import {
+  selectCoursedata,
+  selectStudentActivityData,
+} from "../../features/StudentManagement/reducer/selector";
+import {
+  deletestudentdata,
+  updatestudentdata,
+} from "../../features/StudentManagement/services/Student";
+import { GetImageUrl } from "../../utils/helper";
+import toast from "react-hot-toast";
+import {
+  getInstituteDetails,
+  getSelectedBranchId,
+} from "../../apis/httpEndpoints";
+import { Card, CardContent } from "../ui/card";
+import { COLORS, FONTS } from "../../constants/uiConstants";
+import { RiPresentationFill } from "react-icons/ri";
 
 export const Profile = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [isEditing, setIsEditing] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const dispatch = useDispatch<any>()
-  const studData = useSelector(selectCoursedata)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<any>();
+  const studData = useSelector(selectCoursedata);
 
   // Get student data from navigation state
-  const studentDataFromLocation = location.state?.studentData || {}
+  const studentDataFromLocation = location.state?.studentData || {};
 
   const instituteId = getInstituteDetails();
   const branchId = getSelectedBranchId();
@@ -38,54 +60,54 @@ export const Profile = () => {
   const studentActivityData = useSelector(selectStudentActivityData)?.data;
   console.log("student activity data :", studentActivityData);
 
-
   const fetchLiveData = async () => {
     try {
-      await dispatch(getLiveClassDataSet({
-        type: "live",
-        branch: branchId,
-        course_name: studentDataFromLocation?._id,
-        insitute: instituteId,
-        uuid: studentDataFromLocation?.uuid,
-      }))
+      await dispatch(
+        getLiveClassDataSet({
+          type: "live",
+          branch: branchId,
+          course_name: studentDataFromLocation?._id,
+          insitute: instituteId,
+          uuid: studentDataFromLocation?.uuid,
+        })
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
+  };
 
   const fetchActivityData = async () => {
     try {
-      await dispatch(getStudentActivityData({
-        id: studentDataFromLocation?.uuid,
-
-      }))
+      await dispatch(
+        getStudentActivityData({
+          id: studentDataFromLocation?.uuid,
+        })
+      );
       console.log("activity id:", studData?.data?.uuid);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchLiveData();
     fetchActivityData();
-  }, [])
+  }, []);
 
   const fetchData = async () => {
     try {
       if (studentDataFromLocation?.uuid) {
-        dispatch(getcoursesdata({ uuid: studentDataFromLocation.uuid }))
+        dispatch(getcoursesdata({ uuid: studentDataFromLocation.uuid }));
       }
     } catch (error) {
-      console.log(error)
-      setError("Failed to fetch student data")
+      console.log(error);
+      setError("Failed to fetch student data");
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [dispatch, studentDataFromLocation.uuid])
-
+    fetchData();
+  }, [dispatch, studentDataFromLocation.uuid]);
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -111,8 +133,8 @@ export const Profile = () => {
     coursePrice: "",
     learningFormat: "",
     address: "",
-    image: ""
-  })
+    image: "",
+  });
 
   // Update form data when studData changes
   useEffect(() => {
@@ -132,29 +154,36 @@ export const Profile = () => {
         addressLine1: studData.data.contact_info?.address1 || "",
         addressLine2: studData.data.contact_info?.address2 || "",
         phoneNumber: studData.data.contact_info?.phone_number || "",
-        altPhoneNumber: studData.data.contact_info?.alternate_phone_number || "",
+        altPhoneNumber:
+          studData.data.contact_info?.alternate_phone_number || "",
         userName: studData.data.full_name || "",
         status: studData.data.is_active ? "Active" : "Inactive",
         courseId: studData.data.id || "",
         courseName: studData.data.userDetail?.course?.course_name || "",
         courseDuration: studData.data.userDetail?.course?.duration || "",
-        coursePrice: studData.data.userDetail?.course?.current_price?.toString() || "",
-        learningFormat: studData.data.userDetail?.course?.class_type?.join(", ") || "",
-        address: `${studData.data.contact_info?.address1 || ""} ${studData.data.contact_info?.address2 || ""} ${studData.data.contact_info?.city || ""} ${studData.data.contact_info?.state || ""} ${studData.data.contact_info?.pincode || ""}`.trim()
-      })
+        coursePrice:
+          studData.data.userDetail?.course?.current_price?.toString() || "",
+        learningFormat:
+          studData.data.userDetail?.course?.class_type?.join(", ") || "",
+        address: `${studData.data.contact_info?.address1 || ""} ${
+          studData.data.contact_info?.address2 || ""
+        } ${studData.data.contact_info?.city || ""} ${
+          studData.data.contact_info?.state || ""
+        } ${studData.data.contact_info?.pincode || ""}`.trim(),
+      });
     }
-  }, [studData])
+  }, [studData]);
 
   const handleBack = () => {
-    navigate("/students")
-  }
+    navigate("/students");
+  };
 
   const handleEdit = () => {
-    setIsEditing(true)
-  }
+    setIsEditing(true);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
+    setIsEditing(false);
     // Reset form to original data
     if (studData?.data) {
       setFormData({
@@ -171,23 +200,30 @@ export const Profile = () => {
         addressLine1: studData.data.contact_info?.address1 || "",
         addressLine2: studData.data.contact_info?.address2 || "",
         phoneNumber: studData.data.contact_info?.phone_number || "",
-        altPhoneNumber: studData.data.contact_info?.alternate_phone_number || "",
+        altPhoneNumber:
+          studData.data.contact_info?.alternate_phone_number || "",
         userName: studData.data.full_name || "",
         status: studData.data.is_active ? "Active" : "Inactive",
         courseId: studData.data.id || "",
         image: studData?.data?.image,
         courseName: studData.data.userDetail?.course?.course_name || "",
         courseDuration: studData.data.userDetail?.course?.duration || "",
-        coursePrice: studData.data.userDetail?.course?.current_price?.toString() || "",
-        learningFormat: studData.data.userDetail?.course?.class_type?.join(", ") || "",
-        address: `${studData.data.contact_info?.address1 || ""} ${studData.data.contact_info?.address2 || ""} ${studData.data.contact_info?.city || ""} ${studData.data.contact_info?.state || ""} ${studData.data.contact_info?.pincode || ""}`.trim()
-      })
+        coursePrice:
+          studData.data.userDetail?.course?.current_price?.toString() || "",
+        learningFormat:
+          studData.data.userDetail?.course?.class_type?.join(", ") || "",
+        address: `${studData.data.contact_info?.address1 || ""} ${
+          studData.data.contact_info?.address2 || ""
+        } ${studData.data.contact_info?.city || ""} ${
+          studData.data.contact_info?.state || ""
+        } ${studData.data.contact_info?.pincode || ""}`.trim(),
+      });
     }
-  }
+  };
 
   const handleSubmit = async () => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
       // Prepare the data to send to the API
@@ -208,64 +244,63 @@ export const Profile = () => {
           address2: formData.addressLine2,
           city: formData.city,
           state: formData.state,
-          pincode: formData.pinCode
+          pincode: formData.pinCode,
         },
-        is_active: formData.status === "Active"
-      }
+        is_active: formData.status === "Active",
+      };
 
       // Call the update service
-      const response = await updatestudentdata(updateData)
+      const response = await updatestudentdata(updateData);
 
       if (response) {
         // Refresh the data after successful update
-        await fetchData()
-        setIsEditing(false)
+        await fetchData();
+        setIsEditing(false);
       }
     } catch (err) {
-      console.error("Update failed:", err)
-      setError("Failed to update student data. Please try again.")
+      console.error("Update failed:", err);
+      setError("Failed to update student data. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleDelete = async () => {
     try {
-      const response = await deletestudentdata({ uuid: studData?.data?.uuid })
+      const response = await deletestudentdata({ uuid: studData?.data?.uuid });
       if (response) {
-        toast.success('profile deleted successfully!')
+        toast.success("profile deleted successfully!");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target
-    setFormData(prev => ({ ...prev, [id]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
+    if (!dateString) return "";
+    const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join("")
       .toUpperCase()
-      .slice(0, 2)
-  }
-
-
-
+      .slice(0, 2);
+  };
 
   // Edit Mode
   if (isEditing) {
@@ -274,7 +309,9 @@ export const Profile = () => {
         <div className="mx-auto">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-gray-800 mb-1">Student Information</h1>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+              Student Information
+            </h1>
 
             {error && <div className="text-red-500 mb-2">{error}</div>}
           </div>
@@ -298,7 +335,9 @@ export const Profile = () => {
                     <h3 className="text-lg font-semibold text-gray-800">
                       {studData?.data?.full_name || "Student Name"}
                     </h3>
-                    <p className="text-sm text-gray-500">Trainee ID: {studData?.data?.id || "N/A"}</p>
+                    <p className="text-sm text-gray-500">
+                      Trainee ID: {studData?.data?.id || "N/A"}
+                    </p>
                     <Button className="mt-2 bg-[#3AB635] hover:bg-[#3AB635]/90 text-white text-xs px-4 py-1 h-8">
                       Upload Your Logo
                     </Button>
@@ -318,7 +357,10 @@ export const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Full Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="fullName"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Full Name
                   </Label>
                   <Input
@@ -331,7 +373,10 @@ export const Profile = () => {
 
                 {/* Last Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="lastName"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Last Name
                   </Label>
                   <Input
@@ -344,7 +389,10 @@ export const Profile = () => {
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Email
                   </Label>
                   <Input
@@ -358,7 +406,10 @@ export const Profile = () => {
 
                 {/* Date Of Birth */}
                 <div className="space-y-2">
-                  <Label htmlFor="dateOfBirth" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="dateOfBirth"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Date Of Birth
                   </Label>
                   <Input
@@ -372,7 +423,10 @@ export const Profile = () => {
 
                 {/* Gender */}
                 <div className="space-y-2">
-                  <Label htmlFor="gender" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="gender"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Gender
                   </Label>
                   <Input
@@ -385,7 +439,10 @@ export const Profile = () => {
 
                 {/* Courses */}
                 <div className="space-y-2">
-                  <Label htmlFor="courses" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="courses"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Courses
                   </Label>
                   <Input
@@ -398,7 +455,10 @@ export const Profile = () => {
 
                 {/* Qualification */}
                 <div className="space-y-2">
-                  <Label htmlFor="qualification" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="qualification"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Qualification
                   </Label>
                   <Input
@@ -411,7 +471,10 @@ export const Profile = () => {
 
                 {/* State */}
                 <div className="space-y-2">
-                  <Label htmlFor="state" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="state"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     State
                   </Label>
                   <Input
@@ -424,7 +487,10 @@ export const Profile = () => {
 
                 {/* City */}
                 <div className="space-y-2">
-                  <Label htmlFor="city" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="city"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     City
                   </Label>
                   <Input
@@ -437,7 +503,10 @@ export const Profile = () => {
 
                 {/* Pin Code */}
                 <div className="space-y-2">
-                  <Label htmlFor="pinCode" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="pinCode"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Pin Code
                   </Label>
                   <Input
@@ -450,7 +519,10 @@ export const Profile = () => {
 
                 {/* Address Line 1 */}
                 <div className="space-y-2">
-                  <Label htmlFor="addressLine1" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="addressLine1"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Address Line 1
                   </Label>
                   <Input
@@ -463,7 +535,10 @@ export const Profile = () => {
 
                 {/* Address Line 2 */}
                 <div className="space-y-2">
-                  <Label htmlFor="addressLine2" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="addressLine2"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Address Line 2
                   </Label>
                   <Input
@@ -476,7 +551,10 @@ export const Profile = () => {
 
                 {/* Phone Number */}
                 <div className="space-y-2">
-                  <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="phoneNumber"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Phone Number
                   </Label>
                   <Input
@@ -489,7 +567,10 @@ export const Profile = () => {
 
                 {/* Alt Phone Number */}
                 <div className="space-y-2">
-                  <Label htmlFor="altPhoneNumber" className="text-sm font-medium text-gray-700">
+                  <Label
+                    htmlFor="altPhoneNumber"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Alt Phone Number
                   </Label>
                   <Input
@@ -503,7 +584,10 @@ export const Profile = () => {
 
               {/* User Name - Full Width */}
               <div className="mt-6 space-y-2">
-                <Label htmlFor="userName" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="userName"
+                  className="text-sm font-medium text-gray-700"
+                >
                   User Name
                 </Label>
                 <Input
@@ -535,7 +619,7 @@ export const Profile = () => {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // View Mode
@@ -544,12 +628,18 @@ export const Profile = () => {
       <div className="mx-auto space-y-6">
         {/* Back Button at the very top */}
         <div className="flex justify-between items-center">
-          <Button variant="outline" onClick={handleBack} className="flex items-center gap-2 bg-transparent">
+          <Button
+            variant="outline"
+            onClick={handleBack}
+            className="flex items-center gap-2 bg-transparent"
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           {/* Profile Header */}
           <div className="flex-1">
-            <h2 className="text-[24px] font-semibold text-gray-700 text-start ml-5">Profile Information</h2>
+            <h2 className="text-[24px] font-semibold text-gray-700 text-start ml-5">
+              Profile Information
+            </h2>
           </div>
           {/* Empty div for balance */}
           <div className="w-[104px]"></div>
@@ -570,15 +660,21 @@ export const Profile = () => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-lg font-semibold">{studData?.data?.full_name || "Student Name"}</h3>
+                <h3 className="text-lg font-semibold">
+                  {studData?.data?.full_name || "Student Name"}
+                </h3>
                 <p className="text-sm text-gray-500">
                   Joined on {formatDate(studData?.data?.createdAt) || "N/A"}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Location: {studData?.data?.contact_info?.city || "Location not specified"}
+                  Location:{" "}
+                  {studData?.data?.contact_info?.city ||
+                    "Location not specified"}
                 </p>
                 <Badge
-                  className={`mt-1 ${studData?.data?.is_active ? "bg-[#3AB635]" : "bg-gray-500"} text-white hover:bg-[#3AB635] w-[90px] h-[38px]`}
+                  className={`mt-1 ${
+                    studData?.data?.is_active ? "bg-[#3AB635]" : "bg-gray-500"
+                  } text-white hover:bg-[#3AB635] w-[90px] h-[38px]`}
                 >
                   {studData?.data?.is_active ? "Active" : "Inactive"}
                 </Badge>
@@ -592,26 +688,45 @@ export const Profile = () => {
 
         {/* Additional Details */}
         <div>
-          <h3 className="text-lg font-medium text-gray-700 mb-4">Additional Details</h3>
+          <h3 className="text-lg font-medium text-gray-700 mb-4">
+            Additional Details
+          </h3>
           <Tabs defaultValue="info" className="w-full">
             <TabsList className="h-[48px] mb-6 bg-transparent p-0 flex gap-2">
               <TabsTrigger
                 value="info"
-                className="h-full px-6 border border-gray-300 rounded-lg data-[state=active]:bg-[#3AB635] data-[state=active]:text-white data-[state=active]:border-[#3AB635] data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 hover:bg-gray-50"
+                className="h-full px-6 flex items-center gap-2 border border-gray-300 rounded-lg 
+               data-[state=active]:bg-[#3AB635] data-[state=active]:text-white 
+               data-[state=active]:border-[#3AB635] 
+               data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 
+               hover:bg-gray-50"
               >
-                Info
+                <Info className="w-5 h-5" />
+                <span>Info</span>
               </TabsTrigger>
+
               <TabsTrigger
                 value="classes"
-                className="h-full px-6 border border-gray-300 rounded-lg data-[state=active]:bg-[#3AB635] data-[state=active]:text-white data-[state=active]:border-[#3AB635] data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 hover:bg-gray-50"
+                className="h-full px-6 flex items-center gap-2 border border-gray-300 rounded-lg 
+               data-[state=active]:bg-[#3AB635] data-[state=active]:text-white 
+               data-[state=active]:border-[#3AB635] 
+               data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 
+               hover:bg-gray-50"
               >
-                Classes
+                <ShieldCheck className="w-5 h-5" />
+                <span>Classes</span>
               </TabsTrigger>
+
               <TabsTrigger
                 value="activity"
-                className="h-full px-6 border border-gray-300 rounded-lg data-[state=active]:bg-[#3AB635] data-[state=active]:text-white data-[state=active]:border-[#3AB635] data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 hover:bg-gray-50"
+                className="h-full px-6 flex items-center gap-2 border border-gray-300 rounded-lg 
+               data-[state=active]:bg-[#3AB635] data-[state=active]:text-white 
+               data-[state=active]:border-[#3AB635] 
+               data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700 
+               hover:bg-gray-50"
               >
-                Activity
+                <RiPresentationFill className="w-5 h-5" />
+                <span>Activity</span>
               </TabsTrigger>
             </TabsList>
 
@@ -621,7 +736,10 @@ export const Profile = () => {
                 <h4 className="text-[24px] text-gray-700 mb-4">Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="userName" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="userName"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       User Name
                     </Label>
                     <Input
@@ -632,7 +750,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Email
                     </Label>
                     <Input
@@ -644,7 +765,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="status" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="status"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Status
                     </Label>
                     <Input
@@ -655,7 +779,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="gender" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="gender"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Gender
                     </Label>
                     <Input
@@ -666,7 +793,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="dob" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="dob"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       DOB
                     </Label>
                     <Input
@@ -677,7 +807,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="qualification" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="qualification"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Qualification
                     </Label>
                     <Input
@@ -688,7 +821,10 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="contact" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="contact"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Contact
                     </Label>
                     <Input
@@ -699,26 +835,40 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="altContact" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="altContact"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Alt Contact
                     </Label>
                     <Input
                       id="altContact"
-                      value={studData?.data?.contact_info?.alternate_phone_number || ""}
+                      value={
+                        studData?.data?.contact_info?.alternate_phone_number ||
+                        ""
+                      }
                       readOnly
                       className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
                     />
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <Label htmlFor="address" className="text-sm font-medium text-gray-600">
+                  <Label
+                    htmlFor="address"
+                    className="text-sm font-medium text-gray-600"
+                  >
                     Address
                   </Label>
                   <Textarea
                     id="address"
                     value={
-                      `${studData?.data?.contact_info?.address1 || ""} ${studData?.data?.contact_info?.address2 || ""} ${studData?.data?.contact_info?.city || ""} ${studData?.data?.contact_info?.state || ""} ${studData?.data?.contact_info?.pincode || ""}`.trim() ||
-                      "Address not specified"
+                      `${studData?.data?.contact_info?.address1 || ""} ${
+                        studData?.data?.contact_info?.address2 || ""
+                      } ${studData?.data?.contact_info?.city || ""} ${
+                        studData?.data?.contact_info?.state || ""
+                      } ${
+                        studData?.data?.contact_info?.pincode || ""
+                      }`.trim() || "Address not specified"
                     }
                     readOnly
                     className="min-h-[80px] w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
@@ -728,10 +878,15 @@ export const Profile = () => {
 
               {/* Course Details Section */}
               <div className="bg-white p-6 rounded-lg border shadow-md">
-                <h4 className="text-base font-medium text-gray-700 mb-4">Course Details</h4>
+                <h4 className="text-base font-medium text-gray-700 mb-4">
+                  Course Details
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="courseId" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="courseId"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Course ID
                     </Label>
                     <Input
@@ -742,18 +897,26 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="courseName" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="courseName"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Course Name
                     </Label>
                     <Input
                       id="courseName"
-                      value={studData?.data?.userDetail?.course?.course_name || ""}
+                      value={
+                        studData?.data?.userDetail?.course?.course_name || ""
+                      }
                       readOnly
                       className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="courseDuration" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="courseDuration"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Course Duration
                     </Label>
                     <Input
@@ -764,24 +927,37 @@ export const Profile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="coursePrice" className="text-sm font-medium text-gray-600">
+                    <Label
+                      htmlFor="coursePrice"
+                      className="text-sm font-medium text-gray-600"
+                    >
                       Course Price
                     </Label>
                     <Input
                       id="coursePrice"
-                      value={studData?.data?.userDetail?.course?.current_price?.toString() || ""}
+                      value={
+                        studData?.data?.userDetail?.course?.current_price?.toString() ||
+                        ""
+                      }
                       readOnly
                       className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
                     />
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
-                  <Label htmlFor="learningFormat" className="text-sm font-medium text-gray-600">
+                  <Label
+                    htmlFor="learningFormat"
+                    className="text-sm font-medium text-gray-600"
+                  >
                     Learning Format
                   </Label>
                   <Textarea
                     id="learningFormat"
-                    value={studData?.data?.userDetail?.course?.class_type?.join(", ") || ""}
+                    value={
+                      studData?.data?.userDetail?.course?.class_type?.join(
+                        ", "
+                      ) || ""
+                    }
                     readOnly
                     className="min-h-[80px] w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
                   />
@@ -797,29 +973,40 @@ export const Profile = () => {
                 >
                   Delete
                 </Button>
-                <Button onClick={handleEdit} className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white h-10 px-6">
+                <Button
+                  onClick={handleEdit}
+                  className="bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 text-white h-10 px-6"
+                >
                   Edit
                 </Button>
               </div>
             </TabsContent>
 
             <TabsContent className="grid grid-cols-3" value="classes">
-
-              <Card
-
-                className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] "
-              >
+              <Card className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] ">
                 <CardContent className="p-6 flex flex-col h-full">
                   <div className="flex-grow space-y-2">
-                    <h3 className='whitespace-nowrap' style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-
-                    </h3>
-                    <p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                    <h3
+                      className="whitespace-nowrap"
+                      style={{
+                        ...FONTS.heading_06,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    ></h3>
+                    <p
+                      style={{
+                        ...FONTS.heading_07,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
                       Students on this Class
                     </p>
-                    <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
-
-                    </p>
+                    <p
+                      style={{
+                        ...FONTS.heading_08,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    ></p>
                   </div>
                   <div className="flex justify-end mt-4">
                     <Button
@@ -861,17 +1048,19 @@ export const Profile = () => {
 
                       {/* Card */}
                       <div className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
-                        <h3 className="text-gray-800 font-semibold text-sm mb-1">{item?.titlte}</h3>
+                        <h3 className="text-gray-800 font-semibold text-sm mb-1">
+                          {item?.titlte}
+                        </h3>
                         <p className="text-xs text-gray-600">Create</p>
-                        <p className="text-xs text-gray-600">{item?.description}</p>
+                        <p className="text-xs text-gray-600">
+                          {item?.description}
+                        </p>
                         <p className="text-[10px] text-gray-400 mt-2">
                           July 17, 2025 at 06:13:23 PM
                         </p>
                       </div>
-
                     </div>
                   ))}
-
                 </div>
               </div>
             </TabsContent>
@@ -879,5 +1068,5 @@ export const Profile = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

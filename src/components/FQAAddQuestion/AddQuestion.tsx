@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
@@ -26,7 +25,7 @@ const AddQuestion = () => {
   const [modalStage, setModalStage] = useState<
     "confirm" | "processing" | "success" | "dialog" | null
   >(null);
-  const [loading, setLoading] = useState(true); // Skeleton loader state
+  const [loading, setLoading] = useState(true);
 
   const categories = useSelector(faqCategory);
   const dispatch = useDispatch<any>();
@@ -256,16 +255,18 @@ const AddQuestion = () => {
         </table>
       </div>
 
-
       {/* Modal */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
-            ? "justify-center"
-            : "justify-end"
-            } z-50`}
+          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
+            modalStage === "success" ||
+            modalStage === "dialog" ||
+            modalStage === "processing"
+              ? "justify-center"
+              : "justify-end"
+          } z-50`}
         >
-          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
+          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative h-[90%]">
             {/* Form Stage */}
             {modalStage === "confirm" && (
               <div>
@@ -277,7 +278,7 @@ const AddQuestion = () => {
                     onClick={resetForm}
                     className="ml-auto h-6 w-6 bg-gray-500 rounded-full right-4 text-black"
                   >
-                    <IoMdClose size={20} className="ml-0.5" />
+                    <IoMdClose size={20} className="ml-0.5 text-white" />
                   </button>
                 </div>
                 <form

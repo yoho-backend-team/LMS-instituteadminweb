@@ -1,10 +1,10 @@
-import { CertificateManager } from '../../../components/cerificateManagement/certificate';
+import { CertificateManager } from "../../../components/cerificateManagement/certificate";
 
 const StudentCertificate = () => {
-	return (
-		<div>
-			<CertificateManager />
-		</div>
-	);
+  return (
+    <div>
+      <CertificateManager />
+    </div>
+  );
 };
 export default StudentCertificate;

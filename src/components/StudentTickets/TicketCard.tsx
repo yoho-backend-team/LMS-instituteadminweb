@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import { FiCalendar, FiClock, FiMoreVertical, FiCheckCircle } from "react-icons/fi";
+import {
+  FiCalendar,
+  FiClock,
+  FiMoreVertical,
+  FiCheckCircle,
+} from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import avatarimg from '../../assets/navbar/avatarimg.png'
+import avatarimg from "../../assets/navbar/avatarimg.png";
 
 interface TicketProps {
   data: any;
 }
 
-const TicketCard: React.FC<TicketProps> = ({
-  data
-}) => {
+const TicketCard: React.FC<TicketProps> = ({ data }) => {
+  console.log("Data", data);
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
- const handleResolve = () => {
-  setShowMenu(false);
-  navigate(`/tickets/${data?.uuid}`, { state: { ticket: data } });
-};
-
+  const handleResolve = () => {
+    setShowMenu(false);
+    navigate(`/tickets/${data?.uuid}`, { state: { ticket: data } });
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 relative border-2">
@@ -26,10 +29,14 @@ const TicketCard: React.FC<TicketProps> = ({
           <img
             src={avatarimg}
             alt="Avatar"
-            className="w-10 h-10 rounded-full" />
+            className="w-10 h-10 rounded-full"
+          />
           <div>
-            <h2 className="text-gray-800 font-semibold">{data?.category}</h2>
-            <p className="text-gray-500 text-sm">{data?.description}</p>
+            <h2 className="text-gray-800 font-semibold">
+              {data?.user?.full_name ||
+                data?.user?.first_name + data?.user?.last_name}
+            </h2>
+            <p className="text-gray-500 text-sm">{data?.user?.email}</p>
           </div>
         </div>
 
@@ -53,22 +60,31 @@ const TicketCard: React.FC<TicketProps> = ({
         )}
       </div>
 
-      <p className="text-gray-700 mb-4">{ }</p>
+      <div>
+        <p className="text-gray-700 mb-4 line-clamp-2">{data?.query}</p>
+      </div>
 
       <div className="flex justify-between text-sm text-gray-500 mb-4">
         <div className="flex items-center gap-1">
           <FiCalendar />
-          {data?.date ? new Date(data?.date).toLocaleDateString() : 'N/A'}
+          {data?.date ? new Date(data?.date).toLocaleDateString() : "N/A"}
         </div>
         <div className="flex items-center gap-1">
           <FiClock />
-          {data?.date ? new Date(data?.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+          {data?.date
+            ? new Date(data?.date).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "N/A"}
         </div>
       </div>
 
       <button
-        className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${data?.priority === "High" ? "bg-red-500" : data?.priority === "Medium" ? "bg-yellow-300" : "bg-green-400"
-          }`} >
+        className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
+          data.priority === "High" ? "bg-[#14b8c6]" : "bg-[#14b8c6]"
+        }`}
+      >
         <FiCalendar />
         Priority: {data?.priority}
       </button>

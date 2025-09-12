@@ -1,19 +1,38 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
-import { ArrowLeft, ArrowRight, BookOpen, MailOpen, MessageSquare, MoreVertical, Ticket, Users } from "lucide-react"
-import { useState, useRef, useEffect } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { Button } from "../../components/ui/button"
-import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { motion, AnimatePresence } from "framer-motion"
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  MailOpen,
+  MessageSquare,
+  MoreVertical,
+  Ticket,
+  Users,
+} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  LabelList,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { motion, AnimatePresence } from "framer-motion";
 import Courses from "../../assets/courses.png";
 import Payouts from "../../assets/payout.png";
 import Profit from "../../assets/profit.png";
 
 interface BranchDetailsPageProps {
-  locationName: string
-  onBack: () => void
+  locationName: string;
+  onBack: () => void;
 }
 
 const statCards = [
@@ -22,57 +41,57 @@ const statCards = [
     value: "₹21,440",
     icon: Payouts,
     color: "#E4E1FF", // Dark slate
-    textColor: "#000000ff"
+    textColor: "#000000ff",
   },
   {
     title: "Profits",
     value: "10,000",
     icon: Profit,
     color: "#E4E1FF", // Darker slate
-    textColor: "#000000ff"
+    textColor: "#000000ff",
   },
   {
     title: "Courses",
     value: "543",
     icon: Courses,
     color: "#FAD3EF",
-    textColor: "#000000ff"
+    textColor: "#000000ff",
   },
   {
     title: "Students",
     value: "10,000",
     icon: Courses,
     color: "#FAD3EF",
-    textColor: "#000000ff"
+    textColor: "#000000ff",
   },
   {
     title: "Revenue",
     value: "₹8,000",
     icon: Payouts,
     color: "#FAD3EF",
-    textColor: "#000000ff"
+    textColor: "#000000ff",
   },
 ];
 
 const CylinderBar = (props: any) => {
-  const { x, y, width, height, value, data, dataKey } = props
-  const barX = Number.isNaN(x) ? 0 : x
-  const barY = Number.isNaN(y) ? 0 : Math.max(0, y)
-  const barWidth = Number.isNaN(width) ? 30 : Math.max(0, width)
-  const barHeight = Number.isNaN(height) ? 0 : Math.max(0, height)
+  const { x, y, width, height, value, data, dataKey } = props;
+  const barX = Number.isNaN(x) ? 0 : x;
+  const barY = Number.isNaN(y) ? 0 : Math.max(0, y);
+  const barWidth = Number.isNaN(width) ? 30 : Math.max(0, width);
+  const barHeight = Number.isNaN(height) ? 0 : Math.max(0, height);
 
   // Find max value in current dataset
-  const maxValue = Math.max(...data.map((item: any) => item[dataKey]))
+  const maxValue = Math.max(...data.map((item: any) => item[dataKey]));
 
   // Colors - use #27AE60 for highest bar, #E4E1FF for others
-  const baseColor = value === maxValue ? "#27AE60" : "#C4E8D0"
-  const topHighlightColor = "rgba(255, 255, 255, 0.5)"
-  const sideHighlightColor = "rgba(255, 255, 255, 0.2)"
-  const shadowColor = "rgba(0, 0, 0, 0.2)"
+  const baseColor = value === maxValue ? "#27AE60" : "#C4E8D0";
+  const topHighlightColor = "rgba(255, 255, 255, 0.5)";
+  const sideHighlightColor = "rgba(255, 255, 255, 0.2)";
+  const shadowColor = "rgba(0, 0, 0, 0.2)";
 
   // Cylinder dimensions
-  const radius = barWidth / 2
-  const curveHeight = 8 // Height of the curved top/bottom
+  const radius = barWidth / 2;
+  const curveHeight = 8; // Height of the curved top/bottom
 
   return (
     <g>
@@ -81,7 +100,9 @@ const CylinderBar = (props: any) => {
         d={`
           M${barX},${barY + curveHeight}
           L${barX},${barY + barHeight - curveHeight}
-          A${radius} ${curveHeight} 0 0 0 ${barX + barWidth},${barY + barHeight - curveHeight}
+          A${radius} ${curveHeight} 0 0 0 ${barX + barWidth},${
+          barY + barHeight - curveHeight
+        }
           L${barX + barWidth},${barY + curveHeight}
           A${radius} ${curveHeight} 0 0 1 ${barX},${barY + curveHeight}
           Z
@@ -121,9 +142,13 @@ const CylinderBar = (props: any) => {
         d={`
           M${barX + barWidth * 0.7},${barY + curveHeight}
           L${barX + barWidth * 0.7},${barY + barHeight - curveHeight}
-          A${radius * 0.3} ${curveHeight} 0 0 0 ${barX + barWidth},${barY + barHeight - curveHeight}
+          A${radius * 0.3} ${curveHeight} 0 0 0 ${barX + barWidth},${
+          barY + barHeight - curveHeight
+        }
           L${barX + barWidth},${barY + curveHeight}
-          A${radius * 0.3} ${curveHeight} 0 0 1 ${barX + barWidth * 0.7},${barY + curveHeight}
+          A${radius * 0.3} ${curveHeight} 0 0 1 ${barX + barWidth * 0.7},${
+          barY + curveHeight
+        }
         `}
         fill={sideHighlightColor}
         opacity="0.3"
@@ -139,29 +164,105 @@ const CylinderBar = (props: any) => {
         opacity="0.2"
       />
     </g>
-  )
-}
+  );
+};
 
-export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPageProps) {
+export function BranchDetailsPage({
+  locationName,
+  onBack,
+}: BranchDetailsPageProps) {
   const chartData = [
-    { month: "Jan", fee: 10000, salary: 5000, pendings: 2000, totalIncome: 12000 },
-    { month: "Feb", fee: 15000, salary: 7000, pendings: 3000, totalIncome: 18000 },
-    { month: "Mar", fee: 20000, salary: 8000, pendings: 4000, totalIncome: 22000 },
-    { month: "Apr", fee: 25000, salary: 10000, pendings: 5000, totalIncome: 28000 },
-    { month: "May", fee: 15000, salary: 8000, pendings: 3000, totalIncome: 18000 },
-    { month: "Jun", fee: 50000, salary: 20000, pendings: 10000, totalIncome: 60000 },
-    { month: "Jul", fee: 35000, salary: 15000, pendings: 7000, totalIncome: 40000 },
-    { month: "Aug", fee: 30000, salary: 12000, pendings: 6000, totalIncome: 35000 },
-    { month: "Sep", fee: 36000, salary: 14000, pendings: 7500, totalIncome: 42000 },
-    { month: "Oct", fee: 30000, salary: 13000, pendings: 6500, totalIncome: 38000 },
-    { month: "Nov", fee: 40000, salary: 18000, pendings: 8000, totalIncome: 48000 },
-    { month: "Dec", fee: 26000, salary: 11000, pendings: 5500, totalIncome: 30000 },
-  ]
+    {
+      month: "Jan",
+      fee: 10000,
+      salary: 5000,
+      pendings: 2000,
+      totalIncome: 12000,
+    },
+    {
+      month: "Feb",
+      fee: 15000,
+      salary: 7000,
+      pendings: 3000,
+      totalIncome: 18000,
+    },
+    {
+      month: "Mar",
+      fee: 20000,
+      salary: 8000,
+      pendings: 4000,
+      totalIncome: 22000,
+    },
+    {
+      month: "Apr",
+      fee: 25000,
+      salary: 10000,
+      pendings: 5000,
+      totalIncome: 28000,
+    },
+    {
+      month: "May",
+      fee: 15000,
+      salary: 8000,
+      pendings: 3000,
+      totalIncome: 18000,
+    },
+    {
+      month: "Jun",
+      fee: 50000,
+      salary: 20000,
+      pendings: 10000,
+      totalIncome: 60000,
+    },
+    {
+      month: "Jul",
+      fee: 35000,
+      salary: 15000,
+      pendings: 7000,
+      totalIncome: 40000,
+    },
+    {
+      month: "Aug",
+      fee: 30000,
+      salary: 12000,
+      pendings: 6000,
+      totalIncome: 35000,
+    },
+    {
+      month: "Sep",
+      fee: 36000,
+      salary: 14000,
+      pendings: 7500,
+      totalIncome: 42000,
+    },
+    {
+      month: "Oct",
+      fee: 30000,
+      salary: 13000,
+      pendings: 6500,
+      totalIncome: 38000,
+    },
+    {
+      month: "Nov",
+      fee: 40000,
+      salary: 18000,
+      pendings: 8000,
+      totalIncome: 48000,
+    },
+    {
+      month: "Dec",
+      fee: 26000,
+      salary: 11000,
+      pendings: 5500,
+      totalIncome: 30000,
+    },
+  ];
 
-  const [activeTab, setActiveTab] = useState<keyof typeof chartData[0]>("fee")
-  const [startIndex, setStartIndex] = useState(0)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] =
+    useState<keyof (typeof chartData)[0]>("fee");
+  const [startIndex, setStartIndex] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Animation variants
   const containerVariants = {
@@ -169,71 +270,69 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   const itemVariants = {
-    hidden: { opacity: 1, scale: 1 },  // Always visible
+    hidden: { opacity: 1, scale: 1 }, // Always visible
     show: { opacity: 1, scale: 1 },
-  }
+  };
 
   const cardHoverVariants = {
     hover: {
       y: -5,
       boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
-      transition: { duration: 0.3 }
-    }
-  }
+      transition: { duration: 0.3 },
+    },
+  };
 
   const visibleCards = [
     statCards[startIndex % statCards.length],
     statCards[(startIndex + 1) % statCards.length],
     statCards[(startIndex + 2) % statCards.length],
-  ]
+  ];
 
   const handleNext = () => {
-    setStartIndex((prev) => (prev + 1) % statCards.length)
-  }
-
+    setStartIndex((prev) => (prev + 1) % statCards.length);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <motion.div
-
-      className="bg-white rounded-xl p-6"
-    >
+    <motion.div className="bg-white rounded-xl p-6">
       <div className="flex items-center justify-between mb-8">
-        <motion.div variants={itemVariants} >
+        <motion.div variants={itemVariants}>
           <Button
             variant="ghost"
             onClick={onBack}
             className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/10 transition-colors duration-300"
-
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-lg font-medium">Back to Locations</span>
           </Button>
         </motion.div>
-        <motion.h1
+        {/* <motion.h1
           className="text-2xl font-bold text-[#1BBFCA]"
           variants={itemVariants}
         >
           {locationName} Dashboard
-        </motion.h1>
+        </motion.h1> */}
       </div>
 
       <motion.div
@@ -249,11 +348,11 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
               variants={cardHoverVariants}
               className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6 transition-all duration-300"
             >
-              <h2 className="text-xl font-semibold text-[#716F6F] mb-6">Key Metrics</h2>
+              <h2 className="text-xl font-semibold text-[#716F6F] mb-6">
+                Key Metrics
+              </h2>
 
               <div className="relative w-full flex items-center justify-center overflow-visible">
-
-
                 <div className="flex gap-6 justify-center relative z-0 w-[calc(100%-84px)] py-4">
                   <AnimatePresence initial={false} mode="popLayout">
                     {visibleCards.map((card, index) => (
@@ -269,14 +368,15 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         }}
                         exit={{ opacity: 0, y: -30, scale: 0.9 }}
                         transition={{ duration: 0.3 }}
-                        className={`flex-shrink-0 ${index === 1
-                          ? "w-[220px] h-[280px] rounded-3xl"
-                          : "w-[200px] h-[250px] rounded-2xl"
-                          } text-white shadow-lg flex items-center justify-between px-6 py-6 relative`}
+                        className={`flex-shrink-0 ${
+                          index === 1
+                            ? "w-[220px] h-[280px] rounded-3xl"
+                            : "w-[200px] h-[250px] rounded-2xl"
+                        } text-white shadow-lg flex items-center justify-between px-6 py-6 relative`}
                         style={{ backgroundColor: card.color }}
                         whileHover={{
                           scale: 1.05,
-                          boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.2)"
+                          boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.2)",
                         }}
                       >
                         <div className="flex flex-col justify-between h-full w-full">
@@ -288,7 +388,9 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                                 className="h-10 w-10"
                               />
                             </div>
-                            <p className="text-base font-semibold">{card.title}</p>
+                            <p className="text-base font-semibold">
+                              {card.title}
+                            </p>
                           </div>
                           <div>
                             <p className="text-2xl font-bold">{card.value}</p>
@@ -318,14 +420,16 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                 <CardHeader className="flex flex-col gap-4">
                   {/* Top row with Statistics title and dropdown button */}
                   <div className="flex justify-between items-center w-full">
-                    <h2 className="text-xl font-semibold text-[#716F6F] capitalize">Statistics</h2>
+                    <h2 className="text-xl font-semibold text-[#716F6F] capitalize">
+                      Statistics
+                    </h2>
                     <div className="relative" ref={dropdownRef}>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="bg-[#1BBFCA] rounded-lg hover:bg-[#1BBFCA]/90 transition-colors duration-300"
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      // whileHover={{rotate: 90 }}
+                        // whileHover={{rotate: 90 }}
                       >
                         <MoreVertical className="w-5 h-5 text-white" />
                       </Button>
@@ -341,21 +445,21 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                           >
                             <div className="w-full flex flex-col gap-2 p-4">
                               <motion.button
-                                whileHover={{ backgroundColor: '#1BBFCA' }}
+                                whileHover={{ backgroundColor: "#1BBFCA" }}
                                 whileTap={{ scale: 0.98 }}
                                 className="w-full text-left px-4 py-3 rounded-lg bg-[#1BBFCA] text-white"
                               >
                                 <span className="font-medium">Last Week</span>
                               </motion.button>
                               <motion.button
-                                whileHover={{ backgroundColor: '#f5f5f5' }}
+                                whileHover={{ backgroundColor: "#f5f5f5" }}
                                 whileTap={{ scale: 0.98 }}
                                 className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg text-[#716F6F]"
                               >
                                 <span className="font-medium">Last Month</span>
                               </motion.button>
                               <motion.button
-                                whileHover={{ backgroundColor: '#f5f5f5' }}
+                                whileHover={{ backgroundColor: "#f5f5f5" }}
                                 whileTap={{ scale: 0.98 }}
                                 className="w-full text-left px-4 py-3 border border-[#716F6F] rounded-lg text-[#716F6F]"
                               >
@@ -371,11 +475,20 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                   {/* Combined Earning Reports and Tabs section - now properly aligned */}
                   <div className="flex flex-row justify-between items-center w-full">
                     <div className="flex flex-col">
-                      <h3 className="text-xl font-semibold text-[#716F6F]">Earning Reports</h3>
-                      <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
+                      <h3 className="text-xl font-semibold text-[#716F6F]">
+                        Earning Reports
+                      </h3>
+                      <p className="text-base font-light text-[#7D7D7D] capitalize">
+                        Yearly Earnings Overview
+                      </p>
                     </div>
 
-                    <Tabs defaultValue="fee" onValueChange={(value) => setActiveTab(value as keyof typeof chartData[0])}>
+                    <Tabs
+                      defaultValue="fee"
+                      onValueChange={(value) =>
+                        setActiveTab(value as keyof (typeof chartData)[0])
+                      }
+                    >
                       <TabsList className="bg-transparent p-0 gap-4 h-auto">
                         <TabsTrigger
                           value="fee"
@@ -383,7 +496,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         >
                           <span className=" text-[#23AF62] font-semibold text-lg relative">
                             Fee
-                            <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "fee" ? "active" : "inactive"}></span>
+                            <span
+                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full"
+                              data-state={
+                                activeTab === "fee" ? "active" : "inactive"
+                              }
+                            ></span>
                           </span>
                         </TabsTrigger>
                         <TabsTrigger
@@ -392,7 +510,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         >
                           <span className="text-[#FF8400] font-semibold text-lg relative">
                             Salary
-                            <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "salary" ? "active" : "inactive"}></span>
+                            <span
+                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full"
+                              data-state={
+                                activeTab === "salary" ? "active" : "inactive"
+                              }
+                            ></span>
                           </span>
                         </TabsTrigger>
                         <TabsTrigger
@@ -401,7 +524,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         >
                           <span className="text-[#CA2858] font-semibold text-lg relative">
                             Pendings
-                            <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#CA2858] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "pendings" ? "active" : "inactive"}></span>
+                            <span
+                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#CA2858] transition-all duration-300 data-[state=active]:w-full"
+                              data-state={
+                                activeTab === "pendings" ? "active" : "inactive"
+                              }
+                            ></span>
                           </span>
                         </TabsTrigger>
                         <TabsTrigger
@@ -410,7 +538,14 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         >
                           <span className="text-[#FFCC00] font-semibold text-lg relative">
                             Total Income
-                            <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FFCC00] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "totalIncome" ? "active" : "inactive"}></span>
+                            <span
+                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FFCC00] transition-all duration-300 data-[state=active]:w-full"
+                              data-state={
+                                activeTab === "totalIncome"
+                                  ? "active"
+                                  : "inactive"
+                              }
+                            ></span>
                           </span>
                         </TabsTrigger>
                       </TabsList>
@@ -443,7 +578,13 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                       />
                       <Bar
                         dataKey={activeTab}
-                        shape={(props: any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+                        shape={(props: any) => (
+                          <CylinderBar
+                            {...props}
+                            data={chartData}
+                            dataKey={activeTab}
+                          />
+                        )}
                         barSize={30}
                       >
                         <LabelList
@@ -469,7 +610,9 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             <motion.div whileHover="hover" variants={cardHoverVariants}>
               <Card className="shadow-lg rounded-2xl">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-[#716F6F]">Recent Activities</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-[#716F6F]">
+                    Recent Activities
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 max-h-[855px] overflow-y-auto pr-2">
@@ -480,7 +623,7 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                         whileHover={{
                           scale: 1.02,
                           backgroundColor: "#1BBFCA",
-                          borderColor: "#1BBFCA"
+                          borderColor: "#1BBFCA",
                         }}
                         transition={{ duration: 0.2 }}
                       >
@@ -489,8 +632,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
 
                         {/* Text container - ALL text turns white on hover */}
                         <div className="flex-1 [&>*]:text-[#716F6F] [&>*]:group-hover:text-white">
-                          <span className="text-lg font-semibold">Notes Created</span>
-                          <p className="text-sm">| Create | Rvr - Study Material Created</p>
+                          <span className="text-lg font-semibold">
+                            Notes Created
+                          </span>
+                          <p className="text-sm">
+                            | Create | Rvr - Study Material Created
+                          </p>
                         </div>
                       </motion.div>
                     ))}
@@ -505,21 +652,24 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
         <div className="lg:col-span-3 space-y-6">
           {/* Detailed Insights Card */}
           <motion.div variants={itemVariants}>
-            <motion.div
-              whileHover="hover"
-              variants={cardHoverVariants}
-            >
+            <motion.div whileHover="hover" variants={cardHoverVariants}>
               <Card className="shadow-lg rounded-2xl w-full transition-all duration-300 hover:shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-[#716F6F]">Detailed Insights</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-[#716F6F]">
+                    Detailed Insights
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Courses Card (Active/Inactive) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Courses</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Month Ago</span>
+                        <h3 className="text-[#716F6F] text-xl font-semibold">
+                          Courses
+                        </h3>
+                        <span className="text-[#7D7D7D] text-sm font-light">
+                          Updates 1 Month Ago
+                        </span>
                       </div>
 
                       <div className="space-y-4">
@@ -531,7 +681,9 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Active</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">22</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            22
+                          </span>
                         </div>
 
                         {/* Inactive Courses */}
@@ -541,8 +693,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                               <BookOpen className="w-5 h-5 text-[#8A2BE2]" />
                             </div>
                           </div>
-                          <span className="text-[#716F6F] text-lg">Inactive</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">03</span>
+                          <span className="text-[#716F6F] text-lg">
+                            Inactive
+                          </span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            03
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -550,8 +706,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                     {/* Classes Card (Online/Offline) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Classes</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Week Ago</span>
+                        <h3 className="text-[#716F6F] text-xl font-semibold">
+                          Classes
+                        </h3>
+                        <span className="text-[#7D7D7D] text-sm font-light">
+                          Updates 1 Week Ago
+                        </span>
                       </div>
 
                       <div className="space-y-4">
@@ -563,7 +723,9 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Online</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">230</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            230
+                          </span>
                         </div>
 
                         {/* Offline Classes */}
@@ -573,8 +735,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                               <Users className="w-5 h-5 text-[#00BCD4]" />
                             </div>
                           </div>
-                          <span className="text-[#716F6F] text-lg">Offline</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">45</span>
+                          <span className="text-[#716F6F] text-lg">
+                            Offline
+                          </span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            45
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -582,8 +748,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                     {/* Staff Card (Teaching/Non-Teaching) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Staff</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Day Ago</span>
+                        <h3 className="text-[#716F6F] text-xl font-semibold">
+                          Staff
+                        </h3>
+                        <span className="text-[#7D7D7D] text-sm font-light">
+                          Updates 1 Day Ago
+                        </span>
                       </div>
 
                       <div className="space-y-4">
@@ -594,8 +764,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                               <Users className="w-5 h-5 text-[#4CAF50]" />
                             </div>
                           </div>
-                          <span className="text-[#716F6F] text-lg">Teaching</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">66</span>
+                          <span className="text-[#716F6F] text-lg">
+                            Teaching
+                          </span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            66
+                          </span>
                         </div>
 
                         {/* Non-Teaching Staff */}
@@ -605,8 +779,12 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                               <Users className="w-5 h-5 text-[#4CAF50]" />
                             </div>
                           </div>
-                          <span className="text-[#716F6F] text-lg">Non-Teaching</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">10</span>
+                          <span className="text-[#716F6F] text-lg">
+                            Non-Teaching
+                          </span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">
+                            10
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -625,7 +803,9 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
             >
               {/* Header */}
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-[#716F6F] text-xl font-semibold">Support Tickets</h3>
+                <h3 className="text-[#716F6F] text-xl font-semibold">
+                  Support Tickets
+                </h3>
                 <motion.span
                   className="text-[#CA406F] text-2xl font-semibold"
                   animate={{ scale: [1, 1.05, 1] }}
@@ -645,9 +825,13 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                           <Ticket className="w-5 h-5 text-white" />
                         </div>
                       </div>
-                      <span className="text-[#716F6F] text-lg">New Tickets</span>
+                      <span className="text-[#716F6F] text-lg">
+                        New Tickets
+                      </span>
                     </div>
-                    <span className="text-[#716F6F] text-2xl font-bold text-right">142</span>
+                    <span className="text-[#716F6F] text-2xl font-bold text-right">
+                      142
+                    </span>
                   </div>
                 </div>
 
@@ -660,9 +844,13 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                           <MailOpen className="w-5 h-5 text-white" />
                         </div>
                       </div>
-                      <span className="text-[#716F6F] text-lg">Open Tickets</span>
+                      <span className="text-[#716F6F] text-lg">
+                        Open Tickets
+                      </span>
                     </div>
-                    <span className="text-[#716F6F] text-2xl font-bold text-right">28</span>
+                    <span className="text-[#716F6F] text-2xl font-bold text-right">
+                      28
+                    </span>
                   </div>
                 </div>
 
@@ -675,9 +863,13 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
                           <MessageSquare className="w-5 h-5 text-white" />
                         </div>
                       </div>
-                      <span className="text-[#716F6F] text-lg">Avg Response Time</span>
+                      <span className="text-[#716F6F] text-lg">
+                        Avg Response Time
+                      </span>
                     </div>
-                    <span className="text-[#716F6F] text-2xl font-bold text-right">1 Day</span>
+                    <span className="text-[#716F6F] text-2xl font-bold text-right">
+                      1 Day
+                    </span>
                   </div>
                 </div>
               </div>
@@ -686,5 +878,5 @@ export function BranchDetailsPage({ locationName, onBack }: BranchDetailsPagePro
         </div>
       </motion.div>
     </motion.div>
-  )
+  );
 }

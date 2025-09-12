@@ -12,7 +12,7 @@ import {
 } from "../../components/ui/drawer";
 import { X } from "lucide-react";
 import type { FAQItem } from "../../types/faq";
-import { UpdateFaq } from"../../features/Faq/service";
+import { UpdateFaq } from "../../features/Faq/service";
 import { toast } from "react-toastify";
 
 interface EditFAQDrawerProps {
@@ -20,7 +20,6 @@ interface EditFAQDrawerProps {
   onOpenChange: (open: boolean) => void;
   faqToEdit: FAQItem | null;
 }
-
 
 export function EditFAQDrawer({
   open,
@@ -32,15 +31,14 @@ export function EditFAQDrawer({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  if (faqToEdit) {
-    setTitle(faqToEdit.title || "");
-    setDescription(faqToEdit.description || "");
-  } else {
-    setTitle("");
-    setDescription("");
-  }
-}, [faqToEdit]);
-
+    if (faqToEdit) {
+      setTitle(faqToEdit.title || "");
+      setDescription(faqToEdit.description || "");
+    } else {
+      setTitle("");
+      setDescription("");
+    }
+  }, [faqToEdit]);
 
   const handleSubmit = async () => {
     if (!faqToEdit) return;
@@ -64,7 +62,7 @@ export function EditFAQDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l h-[90%] mt-10 rounded-xl ">
         <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
           <DrawerTitle className="text-lg font-semibold">Edit FAQ</DrawerTitle>
           <DrawerClose>
