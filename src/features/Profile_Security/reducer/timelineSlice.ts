@@ -6,6 +6,8 @@ const timelineSlice = createSlice({
     name: 'timelineSlice',
     initialState: {
         data: [],
+        loading: false,
+        error: [],
     },
     reducers: {
         gettimeline: (state, action) => {

@@ -29,7 +29,6 @@ type Category = {
   status?: "Active" | "Inactive";
 };
 
-
 const FaqCategory: React.FC = () => {
   const [openStatusIndex, setOpenStatusIndex] = useState<number | null>(null);
   const [openActionIndex, setOpenActionIndex] = useState<number | null>(null);
@@ -53,6 +52,9 @@ const FaqCategory: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const dispatch = useDispatch<any>();
+  const category = useSelector(faqCategory);
+
   useEffect(() => {
     if (
       isFormOpen ||
@@ -74,6 +76,18 @@ const FaqCategory: React.FC = () => {
     isDeleteConfirmOpen,
   ]);
 
+  useEffect(() => {
+    const params = {
+      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      page: 1,
+      perPage: 10,
+    };
+
+    setLoading(true);
+    dispatch(fetchFaqCategoryThunk(params)).finally(() => setLoading(false));
+  }, [dispatch]);
+
   const toggleStatus = (index: number) => {
     setOpenStatusIndex(openStatusIndex === index ? null : index);
   };
@@ -83,18 +97,12 @@ const FaqCategory: React.FC = () => {
   };
 
   const handleStatusChange = async (
-    // index: number,
     newStatus: "Active" | "Inactive",
     uuid: string
   ) => {
-    const Uuid = uuid;
-
-    const payload = {
-      is_active: newStatus === "Active",
-    };
-
+    const payload = { is_active: newStatus === "Active" };
     try {
-      await updateFaqCategories(Uuid, payload);
+      await updateFaqCategories(uuid, payload);
       dispatch(
         fetchFaqCategoryThunk({
           branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
@@ -107,7 +115,6 @@ const FaqCategory: React.FC = () => {
       console.error("Failed to update status:", error);
       alert("Failed to update status. Please try again.");
     }
-
     setOpenStatusIndex(null);
   };
 
@@ -128,34 +135,15 @@ const FaqCategory: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const dispatch = useDispatch<any>();
-  const category = useSelector(faqCategory);
-
-  console.log("category", category);
-
-  useEffect(() => {
-    const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      page: 1,
-      perPage: 10,
-    };
-
-    setLoading(true);
-    dispatch(fetchFaqCategoryThunk(params)).finally(() => setLoading(false));
-  }, [dispatch]);
-
   const handleSubmit = async () => {
     if (newTitle.trim() === "") return;
 
     if (isEditing && editCategoryId !== null) {
       const uuid = selectedUUid;
-      const payload = {
+      await updateFaqCategories(uuid, {
         category_name: newTitle,
         description: newDescription,
-      };
-
-      updateFaqCategories(uuid, payload);
+      });
       setIsEditSuccessModalOpen(true);
       setSelectedUUId(null);
     } else {
@@ -165,7 +153,6 @@ const FaqCategory: React.FC = () => {
         branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         institute_id: "67f3a26df4b2c530acd16419",
       };
-
       try {
         await createFaqCategories(payload);
         dispatch(
@@ -196,7 +183,6 @@ const FaqCategory: React.FC = () => {
 
   const confirmDelete = async () => {
     if (!deleteCategoryUuid) return;
-
     try {
       await deleteFaqCategories(deleteCategoryUuid);
       dispatch(
@@ -211,7 +197,6 @@ const FaqCategory: React.FC = () => {
     } catch (error) {
       console.error("Delete failed:", error);
     }
-
     setIsDeleteConfirmOpen(false);
     setDeleteCategoryUuid(null);
   };
@@ -223,8 +208,8 @@ const FaqCategory: React.FC = () => {
 
   const filtered = Array.isArray(category)
     ? category.filter((c: any) =>
-      c?.category_name?.toLowerCase?.().includes(search.toLowerCase())
-    )
+        c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
+      )
     : [];
 
   return (
@@ -254,117 +239,116 @@ const FaqCategory: React.FC = () => {
       <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]">
         <div className="grid grid-cols-4 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md">
           <div>ID</div>
-          <div>Category Name</div>
-          <div>Status</div>
-          <div>Actions</div>
+          <div className="">Category Name</div>
+          <div className=""> Status</div>
+          <div className="text-right">Actions</div>
         </div>
         <div className="flex flex-col gap-3 mt-3">
           {loading
             ? Array.from({ length: 5 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
-              >
-                <div className="h-4 w-6 bg-gray-200 rounded"></div>
-                <div>
-                  <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                <div
+                  key={idx}
+                  className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
+                >
+                  <div className="h-4 w-6 bg-gray-200 rounded"></div>
+                  <div>
+                    <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                  </div>
+                  <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                  <div className="h-4 w-16 bg-gray-200 rounded"></div>
                 </div>
-                <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                <div className="h-4 w-16 bg-gray-200 rounded"></div>
-              </div>
-            ))
+              ))
             : filtered.map((cat: any, index: any) => (
-              <div
-                key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]  text-[#7D7D7D]  text-sm rounded-md relative"
-              >
-                <div>{cat.id}</div>
-                <div>
-                  <p className="font-semibold">{cat.category_name}</p>
-                  <p className="text-[#7D7D7D]">{cat.description}</p>
-                </div>
+                <div
+                  key={cat.id}
+                  className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
+                >
+                  <div>{cat.id}</div>
+                  <div>
+                    <p className="font-semibold">{cat.category_name}</p>
+                    <p className="text-[#7D7D7D]">{cat.description}</p>
+                  </div>
 
-                {/* Status Dropdown */}
-                <div className="relative">
-                  <button
-                    className="flex items-center gap-1 text-sm"
-                    onClick={() => toggleStatus(index)}
-                  >
-                    {cat.is_active ? "Active" : "Inactive"}
+                  {/* Status Dropdown */}
+                  <div className="relative">
+                    <button
+                      className="flex items-center gap-1 text-sm"
+                      onClick={() => toggleStatus(index)}
+                    >
+                      {cat.is_active ? "Active" : "Inactive"}
+                      <img
+                        src={dropdownIcon}
+                        alt="dropdown"
+                        className="w-3 h-3"
+                      />
+                    </button>
+                    {openStatusIndex === index && (
+                      <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
+                        <button
+                          onClick={() =>
+                            handleStatusChange("Active", cat?.uuid)
+                          }
+                          className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
+                        >
+                          Active
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusChange("Inactive", cat.uuid)
+                          }
+                          className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
+                        >
+                          Inactive
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="text-right relative ">
                     <img
-                      src={dropdownIcon}
-                      alt="dropdown"
-                      className="w-3 h-3"
+                      src={button1}
+                      alt="options"
+                      className="w-5 h-5 inline-block cursor-pointer"
+                      onClick={() => toggleAction(index)}
                     />
-                  </button>
-
-                  {openStatusIndex === index && (
-                    <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
-                      <button
-                        onClick={() =>
-                          handleStatusChange("Active", cat?.uuid)
-                        }
-                        className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
-                      >
-                        Active
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleStatusChange("Inactive", cat.uuid)
-                        }
-                        className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
-                      >
-                        Inactive
-                      </button>
-                    </div>
-                  )}
+                    {openActionIndex === index && (
+                      <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[150px]">
+                        <button
+                          className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md"
+                          onClick={() => {
+                            openEditForm(cat);
+                            setOpenActionIndex(null);
+                            setSelectedUUId(cat.uuid);
+                          }}
+                        >
+                          <img src={edit} alt="Edit" className="w-4 h-4" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirm(cat.uuid)}
+                          className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
+                        >
+                          <img
+                            src={deleteIcon}
+                            alt="Delete"
+                            className="w-4 h-4"
+                          />
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {/* Actions */}
-                <div className="text-left relative">
-                  <img
-                    src={button1}
-                    alt="options"
-                    className="w-5 h-5 inline-block cursor-pointer"
-                    onClick={() => toggleAction(index)}
-                  />
-                  {openActionIndex === index && (
-                    <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[150px]">
-                      <button
-                        className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md"
-                        onClick={() => {
-                          openEditForm(cat);
-                          setOpenActionIndex(null);
-                          setSelectedUUId(cat.uuid);
-                        }}
-                      >
-                        <img src={edit} alt="Edit" className="w-4 h-4" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openDeleteConfirm(cat.uuid)}
-                        className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
-                      >
-                        <img
-                          src={deleteIcon}
-                          alt="Delete"
-                          className="w-4 h-4"
-                        />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
 
       {/* Form Modal */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-[#7D7D7D] bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow_0px_4px_24px_0px_#00000026 relative  ">
+        <div className="fixed inset-0 bg-[#7D7D7D] bg-opacity-40 flex items-center justify-end z-50 px-4 ">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow relative  h-[90%]">
             <h2 className="text-xl text-[#716F6F] font-bold mb-4">
               {isEditing ? "Edit FAQ Category" : "Add FAQ Category"}
             </h2>
@@ -374,8 +358,7 @@ const FaqCategory: React.FC = () => {
             >
               <img src={cancel} alt="Cancel" className="h-4 w-4" />
             </button>
-
-            <label className="block mb-2 text-sm  text-[#7D7D7D] font-medium">
+            <label className="block mb-2 text-sm text-[#7D7D7D] font-medium">
               Category
             </label>
             <input
@@ -384,7 +367,6 @@ const FaqCategory: React.FC = () => {
               onChange={(e) => setNewTitle(e.target.value)}
               className="border border-gray-400 w-full px-4 py-2 rounded mb-4"
             />
-
             <label className="block mb-2 text-sm text-[#7D7D7D] font-medium">
               Description
             </label>
@@ -394,7 +376,6 @@ const FaqCategory: React.FC = () => {
               onChange={(e) => setNewDescription(e.target.value)}
               className="border border-gray-400 w-full px-4 py-2 rounded mb-6"
             />
-
             <div className="flex justify-end gap-4">
               <button onClick={() => setIsFormOpen(false)}></button>
               <button
@@ -410,9 +391,13 @@ const FaqCategory: React.FC = () => {
 
       {/* Add Success Modal */}
       {isAddSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-end z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-[90%]">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Added!
             </h2>
@@ -428,9 +413,13 @@ const FaqCategory: React.FC = () => {
 
       {/* Edit Success Modal */}
       {isEditSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-end z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg mt-10">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Updated!
             </h2>
@@ -447,6 +436,7 @@ const FaqCategory: React.FC = () => {
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          {" "}
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
             <img
               src={warning}
@@ -461,8 +451,7 @@ const FaqCategory: React.FC = () => {
             </p>
             <div className="flex justify-center gap-4">
               <button
-                onClick={confirmDelete
-                }
+                onClick={confirmDelete}
                 className="bg-red-500 hover:bg-[#3ABE65] text-white font-semibold px-6 py-2 rounded-lg"
               >
                 Yes, Delete

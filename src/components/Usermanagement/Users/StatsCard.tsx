@@ -1,4 +1,3 @@
-
 import Icon from "../../../assets/moneyicon.png";
 import Icon2 from "../../../assets/moneyicon2.png";
 import Icon3 from "../../../assets/moneyicon3.png";
