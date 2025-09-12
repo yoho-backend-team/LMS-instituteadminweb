@@ -47,7 +47,15 @@ Axios.interceptors.response.use(
 
 class HttpClient {
 	async get(url: string, params?: any) {
-		const response = await Axios.get(url, { params });
+		const response = await Axios.get(url, {
+			params,
+			headers: {
+				'Cache-Control': 'no-cache',
+				'Pragma': 'co-cache',
+				'If-None-Match': '',
+				'If-Modifiec-Since': '',
+			}
+		},);
 		return response.data;
 	}
 

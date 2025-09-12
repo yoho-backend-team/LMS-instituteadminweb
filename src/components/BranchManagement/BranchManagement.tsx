@@ -100,7 +100,7 @@ export function LocationCardsGrid() {
 				);
 			} else {
 				await dispatch(
-					AddBranchThunk({ instituteId: 'YOUR_INSTITUTE_ID', data: branchData })
+					AddBranchThunk(branchData)
 				);
 			}
 
@@ -232,18 +232,18 @@ export function LocationCardsGrid() {
 				{!loading && filteredBranches.length > 0
 					? filteredBranches.map((branch: any) => (
 						<LocationCard
-							key={branch._id} // Changed from id to _id
-							id={branch._id} // Changed from id to _id
+							key={branch?._id} // Changed from id to _id
+							id={branch?._id} // Changed from id to _id
 							imageSrc={TrichyImg} // You might want to get this from API if available
-							cityName={branch.branch_identity} // Using branch_identity instead of cityName
-							address={branch.contact_info.address} // Updated path to address
-							status={branch.is_active ? 'Active' : 'Inactive'} // Convert boolean to status string
+							cityName={branch?.branch_identity} // Using branch_identity instead of cityName
+							address={branch?.contact_info.address} // Updated path to address
+							status={branch?.is_active ? 'Active' : 'Inactive'} // Convert boolean to status string
 							// phoneNumber={branch.contact_info.phone_no} 
 							onViewDetails={() => setViewingBranch(branch)}
 							onEdit={() => handleEditBranch(branch)}
-							onDelete={() => handleDeleteBranch(branch._id)} // Changed from id to _id
+							onDelete={() => handleDeleteBranch(branch?._id)} // Changed from id to _id
 							onStatusChange={(newStatus) =>
-								handleStatusChange(branch.id, newStatus)
+								handleStatusChange(branch?.id, newStatus)
 							}
 						/>
 					))

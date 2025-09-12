@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaEye } from 'react-icons/fa';
