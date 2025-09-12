@@ -182,7 +182,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     if (editData?.uuid) {
       const updatePayload = { uuid: editData.uuid, ...apiPayload };
-      console.log("Update: coide", editData.uuid);
+   
       await updateRefund(updatePayload);
     } else {
       dispatch(CreateRefundThunk(apiPayload));

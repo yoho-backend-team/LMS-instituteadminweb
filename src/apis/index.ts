@@ -400,6 +400,12 @@ class Client {
 				HTTP_END_POINTS.student.getall.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()).replace(':courseUUID', params?.uuid),
 				{}
 			),
+			activitylog:(params:any)=>HttpClient.get(
+				HTTP_END_POINTS.student.activitylog.replace(':studentId',params?.studentId),params
+			),
+			studentclass:(params:any)=>HttpClient.get(
+				HTTP_END_POINTS.student.studentclass.replace(':studentid',params?.studentid),params
+			)
 	};
 	community = {
 		getAll: (data: any) =>

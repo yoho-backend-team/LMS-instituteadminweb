@@ -60,7 +60,7 @@ const OtpVerification = () => {
 			RemoveLocalStorage('OtpToken')
 			RemoveLocalStorage('otp')
 			RemoveLocalStorage('email')
-			console.log(response)
+			
 			login(response?.data?.token)
 
 		} else {

@@ -20,11 +20,13 @@ import { ArrowLeft, Info, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getclassstudentData,
   getcoursesdata,
   getLiveClassDataSet,
   getStudentActivityData,
 } from "../../features/StudentManagement/reducer/thunks";
 import {
+  selectClassData,
   selectCoursedata,
   selectStudentActivityData,
 } from "../../features/StudentManagement/reducer/selector";
@@ -50,6 +52,9 @@ export const Profile = () => {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch<any>();
   const studData = useSelector(selectCoursedata);
+const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
+const itemsPerPage = 10;
 
   // Get student data from navigation state
   const studentDataFromLocation = location.state?.studentData || {};
@@ -58,7 +63,7 @@ export const Profile = () => {
   const branchId = getSelectedBranchId();
 
   const studentActivityData = useSelector(selectStudentActivityData)?.data;
-  console.log("student activity data :", studentActivityData);
+ 
 
   const fetchLiveData = async () => {
     try {
@@ -76,22 +81,43 @@ export const Profile = () => {
     }
   };
 
-  const fetchActivityData = async () => {
-    try {
-      await dispatch(
-        getStudentActivityData({
-          id: studentDataFromLocation?.uuid,
-        })
-      );
-      console.log("activity id:", studData?.data?.uuid);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
+const fetchActivityData = async (page = 1) => {
+  try {
+    const res: any = await dispatch(
+      getStudentActivityData({
+        studentId: "67f3b8feb8d2634300cc8819",
+        page,
+        limit: itemsPerPage,
+      })
+    );
+
+    // Check if the response has the expected structure
+    if (res.payload && res.payload.totalCount) {
+      setTotalPages(Math.ceil(res.payload.totalCount / itemsPerPage));
+    } else if (res.payload && Array.isArray(res.payload)) {
+      // If API returns just the array, calculate total pages based on length
+      setTotalPages(Math.ceil(res.payload.length / itemsPerPage));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  const ClassViewData = useSelector(selectClassData);
+
+   console.log(ClassViewData,'class view')
+
+  useEffect(()=>{
+    dispatch(getclassstudentData({studentid:'67f3b8feb8d2634300cc8819'}))
+  },[dispatch])
+  
+useEffect(() => {
+  fetchActivityData(currentPage);
+}, [currentPage, dispatch]);
   useEffect(() => {
     fetchLiveData();
-    fetchActivityData();
+    // fetchActivityData();
   }, []);
 
   const fetchData = async () => {
@@ -1020,50 +1046,78 @@ export const Profile = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="activity">
-              <div className="bg-white p-6 min-h-screen">
-                <h1
-                  style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }}
-                  className="mb-6"
-                >
-                  User Activity Timeline
-                </h1>
+           <TabsContent value="activity">
+  <div className="bg-white p-6 min-h-screen">
+    <h1
+      style={{ ...FONTS.heading_04, color: COLORS.gray_dark_02 }}
+      className="mb-6"
+    >
+      User Activity Timeline
+    </h1>
 
-                <div className="relative">
-                  {/* Timeline item */}
-                  {studentActivityData?.map((item: any) => (
-                    <div key={item.id} className="flex items-start relative">
-                      <div className="flex flex-col items-center mr-6">
-                        {/* Label */}
-                        <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                          Notes Created
-                        </span>
+    <div className="relative">
+      {/* Timeline - Use paginated data */}
+      {studentActivityData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item: any) => (
+        <div key={item.id || item._id} className="flex items-start relative">
+          {/* Left timeline section */}
+          <div className="flex flex-col items-center mr-6">
+            <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+              {item?.action || "Activity"}
+            </span>
+            <span className="w-2 h-2 bg-[#1BBFCA] rounded-full mt-1"></span>
+            <div className="w-px h-30 bg-[#1BBFCA]"></div>
+          </div>
 
-                        {/* Dot */}
-                        <span className="w-2 h-2 bg-[#1BBFCA] rounded-full mt-1"></span>
+          {/* Card */}
+          <div className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
+            <h3 className="text-gray-800 font-semibold text-sm mb-1">
+              {item?.title || "Untitled Activity"}
+            </h3>
 
-                        {/* Visible teal line */}
-                        <div className="w-px h-30 bg-[#1BBFCA]"></div>
-                      </div>
+            {item?.details && <p className="text-xs text-gray-600">{item.details}</p>}
+            {item?.model && <p className="text-xs text-gray-600 italic">{item.model}</p>}
 
-                      {/* Card */}
-                      <div className="bg-white rounded-xl shadow-md px-5 py-4 w-[350px] mb-10">
-                        <h3 className="text-gray-800 font-semibold text-sm mb-1">
-                          {item?.titlte}
-                        </h3>
-                        <p className="text-xs text-gray-600">Create</p>
-                        <p className="text-xs text-gray-600">
-                          {item?.description}
-                        </p>
-                        <p className="text-[10px] text-gray-400 mt-2">
-                          July 17, 2025 at 06:13:23 PM
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </TabsContent>
+            <p className="text-[10px] text-gray-400 mt-2">
+              {new Date(item?.createdAt).toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </p>
+          </div>
+        </div>
+      ))}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-3 mt-8">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex items-center"
+          >
+            Previous
+          </Button>
+          
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex items-center"
+          >
+            Next
+          </Button>
+        </div>
+      )}
+    </div>
+  </div>
+</TabsContent>
           </Tabs>
         </div>
       </div>

@@ -91,7 +91,7 @@ export default function FAQPage() {
     setIsConfirmDeleteModalOpen(true);
   };
 
-  console.log(faqToDeleteId, "id");
+
 
   const handleConfirmDelete = async () => {
     if (!faqToDeleteId) return;

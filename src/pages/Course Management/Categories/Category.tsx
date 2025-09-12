@@ -154,7 +154,7 @@ export const DashboardCards: React.FC = () => {
   const page = 1;
 
   const categoriess = useSelector(selectCategories);
-  console.log("fetched data", categoriess);
+ 
 
   useEffect(() => {
     dispatch(
@@ -183,7 +183,7 @@ export const DashboardCards: React.FC = () => {
         is_active: newStatus === "Active",
       };
 
-      console.log("Status Update Payload:", payload);
+
 
       await UpdateCategories(payload);
 
@@ -280,7 +280,7 @@ export const DashboardCards: React.FC = () => {
         image: selectedImage,
       };
 
-      console.log(payload, "payload");
+      
 
       const createdCategory = await CreateCategories(payload);
 
@@ -351,14 +351,13 @@ export const DashboardCards: React.FC = () => {
   };
 
   const handleDeleteCategory = async (uuid: string) => {
-    console.log(uuid, "uuid");
-    console.log(instituteId, "institutteId");
+ 
     try {
       await deleteCategories(instituteId, uuid);
       setCategories((prev: any) =>
         prev.filter((cat: any) => cat.uuid !== uuid)
       );
-      console.log("Category deleted");
+     
     } catch (error) {
       console.error("Error deleting category:", error);
     }

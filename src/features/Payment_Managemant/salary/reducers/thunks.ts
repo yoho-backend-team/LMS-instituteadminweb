@@ -62,8 +62,8 @@ export const UpdateAllSalaryThunks = (params: any) => async (dispatch: any) => {
 export const DeleteSalaryThunk = (data: any) => async (dispatch: any) => {
 	try {
 		const response = await DeleteSalary(data);
-		dispatch(deleteSalary(response.data));
-		return { payload: response.data };
+		dispatch(deleteSalary(response?.data));
+		return { payload: response?.data };
 	} catch (error) {
 		console.log('Error in UpdateAllSalaryThunks:', error);
 	}

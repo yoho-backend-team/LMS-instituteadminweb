@@ -103,7 +103,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       ref.current.click();
     }
   };
-  console.log("category in detail", categories);
+ 
 
   const handleDelete = async () => {
     const courseUuid = courseData.uuid;
@@ -147,7 +147,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
         price: courseData.actual_price,
       };
 
-      console.log("Payload:", payload);
+      
 
       await updateCourse(payload);
 

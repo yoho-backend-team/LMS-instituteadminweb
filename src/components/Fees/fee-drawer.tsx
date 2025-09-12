@@ -51,7 +51,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   useEffect(() => {
     const fetchStudentUpdateData = async () => {
       const result = await dispatch(EditStudentthunks({}) as any);
-      console.log(result, "Update Student Fees data");
+     
       setUpdateStudentFees(result);
     };
 

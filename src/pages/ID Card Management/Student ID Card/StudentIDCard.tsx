@@ -38,7 +38,7 @@ const StudentIDCard = () => {
     })();
   }, [dispatch]);
 
-  console.log(studentID, "studenID card Details");
+  
   return (
     <div>
       <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>

@@ -134,6 +134,8 @@ const generateEndpoints = () => {
 			getWithCourse: `/api/institutes/:instituteid/branches/`,
 			update: `/api/institutes/:instituteId/students/update/`,
 			delete: `/api/institutes/student/student/`,
+		    activitylog:'/api/institutes/user/activity/student/:studentId',
+			studentclass:'/api/institutes/class/student/:studentid',
 			activity: `/api/institutes/:instituteid/students/student/activity/`,
 			liveClasses: `/api/institutes/class/online/all/`,
 			// classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8e e4/students/`,

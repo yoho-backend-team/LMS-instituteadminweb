@@ -36,14 +36,14 @@ const TicketsPage: React.FC = () => {
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] =
     useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  console.log("Selecteduser", selectedTicketUserDetails);
+ 
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
 
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
-  console.log("Admin", adminTickets);
+ 
 
   useEffect(() => {
     const params = {
@@ -90,7 +90,7 @@ const TicketsPage: React.FC = () => {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
-        console.log(formData, "formdatatatatatatatataat");
+       
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
       }

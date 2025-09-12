@@ -64,7 +64,7 @@ const PlacementForm = ({
     if (initialData) reset(initialData);
   }, [initialData, reset]);
 
-  console.log(initialData, "asdfghjkjhgfd");
+
   const onFormSubmit = (data: PlacementFormData) => {
     onSubmit(data);
     onClose();

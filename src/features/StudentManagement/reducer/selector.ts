@@ -3,4 +3,5 @@ export const selectCoursedata = (state: any) => state.StudentSlice.data2;
 export const selectLiveData = (state: any) => state.StudentSlice.liveClassdata;
 export const selectStudentActivityData = (state: any) =>
 	state.StudentSlice.activitydata;
-export const selectLoading = (state: any) => state.StudentSlice.loading;
+export const selectLoading = (state: any) => state?.StudentSlice?.loading;
+export const selectClassData=(state:any)=>state?.StudentSlice?.class;

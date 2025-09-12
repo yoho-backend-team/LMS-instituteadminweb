@@ -182,7 +182,7 @@ const Students = () => {
         type: "payment",
       };
 
-      console.log("Submitting payload:", payload);
+     
 
       await dispatch(createstudentdata(payload)).unwrap();
 

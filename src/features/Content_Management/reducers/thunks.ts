@@ -25,8 +25,8 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
 		const response = await GetAllModule(params);
-		console.log("THUnk module",response)
-		dispatch(getModule(response.data.data));
+		
+		dispatch(getModule(response?.data?.data));
 		dispatch(setLoading(false));
 	} catch (error) {
 		console.log('error in thunks', error);

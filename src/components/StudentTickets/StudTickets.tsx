@@ -11,7 +11,7 @@ const StudTickets: React.FC = () => {
   const dispatch = useDispatch<any>();
   const studentTicketData = useSelector(selectStudentTicket);
 
-  console.log(studentTicketData, "data for student");
+ 
 
   const fetchstudentTickets = async () => {
     try {

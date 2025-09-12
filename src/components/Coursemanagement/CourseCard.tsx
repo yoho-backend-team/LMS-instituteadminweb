@@ -32,7 +32,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
-  console.log("is active", courseStatus);
+
 
   const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
     try {

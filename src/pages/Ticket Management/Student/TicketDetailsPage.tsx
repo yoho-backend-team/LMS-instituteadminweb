@@ -53,7 +53,7 @@ const TicketDetailsPage: React.FC = () => {
         user: ticketData?.user,
       };
       const response = await updateStudentTicketService(data);
-      console.log(data, "sdfghjklkjhfdsasdfghjklkjhfdsdfgk");
+      
       if (response) {
         fetchstudentTicketsById();
         Object.assign(ticketData, { status: newStatus });

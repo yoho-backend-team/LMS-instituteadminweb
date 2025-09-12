@@ -36,7 +36,7 @@ const AddAttendance = () => {
     (state: any) => state.staffAttendace.attendance
   );
 
-  // console.log(staffAttendace, 'staff att full')
+ 
 
   useEffect(() => {
     if (!staff.staff) {

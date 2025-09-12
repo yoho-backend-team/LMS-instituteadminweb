@@ -4,8 +4,11 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 
+
 export default function ClassView() {
   const navigate = useNavigate();
+
+  
 
   const handleBack = () => {
     navigate(-1);

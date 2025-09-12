@@ -33,7 +33,7 @@ const UsersDetails = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await getUserById({ id });
-        console.log("Responsess", response);
+       
         setUserDetail(response?.data);
       } catch (error) {
         console.log(error);

@@ -13,7 +13,7 @@ interface TicketProps {
 }
 
 const TicketCard: React.FC<TicketProps> = ({ data }) => {
-  console.log("Data", data);
+  
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
