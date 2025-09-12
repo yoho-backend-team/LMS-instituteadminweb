@@ -154,6 +154,7 @@ export function LocationCardsGrid() {
   if (viewingBranch) {
     return (
       <BranchDetailsPage
+        uuid = {viewingBranch.uuid}
         locationName={viewingBranch.cityName}
         onBack={handleBackFromBranchDetails}
       />

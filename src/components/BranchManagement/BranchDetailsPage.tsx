@@ -29,49 +29,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import Courses from "../../assets/courses.png";
 import Payouts from "../../assets/payout.png";
 import Profit from "../../assets/profit.png";
+import { getBranchIdData } from "../../features/batchManagement/reducers/thunks";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { selectBranchId } from "../../features/batchManagement/reducers/selectors";
+import { getActivitythunks, getDashboardthunks } from "../../features/Dashboard/reducers/thunks";
+import { selectActivityData, selectDashboardData } from "../../features/Dashboard/reducers/selectors";
 
 interface BranchDetailsPageProps {
+  uuid: string;
   locationName: string;
   onBack: () => void;
 }
-
-const statCards = [
-  {
-    title: "Payouts",
-    value: "₹21,440",
-    icon: Payouts,
-    color: "#E4E1FF", // Dark slate
-    textColor: "#000000ff",
-  },
-  {
-    title: "Profits",
-    value: "10,000",
-    icon: Profit,
-    color: "#E4E1FF", // Darker slate
-    textColor: "#000000ff",
-  },
-  {
-    title: "Courses",
-    value: "543",
-    icon: Courses,
-    color: "#FAD3EF",
-    textColor: "#000000ff",
-  },
-  {
-    title: "Students",
-    value: "10,000",
-    icon: Courses,
-    color: "#FAD3EF",
-    textColor: "#000000ff",
-  },
-  {
-    title: "Revenue",
-    value: "₹8,000",
-    icon: Payouts,
-    color: "#FAD3EF",
-    textColor: "#000000ff",
-  },
-];
 
 const CylinderBar = (props: any) => {
   const { x, y, width, height, value, data, dataKey } = props;
@@ -168,102 +137,258 @@ const CylinderBar = (props: any) => {
 };
 
 export function BranchDetailsPage({
+  uuid,
   locationName,
   onBack,
 }: BranchDetailsPageProps) {
-  const chartData = [
-    {
-      month: "Jan",
-      fee: 10000,
-      salary: 5000,
-      pendings: 2000,
-      totalIncome: 12000,
-    },
-    {
-      month: "Feb",
-      fee: 15000,
-      salary: 7000,
-      pendings: 3000,
-      totalIncome: 18000,
-    },
-    {
-      month: "Mar",
-      fee: 20000,
-      salary: 8000,
-      pendings: 4000,
-      totalIncome: 22000,
-    },
-    {
-      month: "Apr",
-      fee: 25000,
-      salary: 10000,
-      pendings: 5000,
-      totalIncome: 28000,
-    },
-    {
-      month: "May",
-      fee: 15000,
-      salary: 8000,
-      pendings: 3000,
-      totalIncome: 18000,
-    },
-    {
-      month: "Jun",
-      fee: 50000,
-      salary: 20000,
-      pendings: 10000,
-      totalIncome: 60000,
-    },
-    {
-      month: "Jul",
-      fee: 35000,
-      salary: 15000,
-      pendings: 7000,
-      totalIncome: 40000,
-    },
-    {
-      month: "Aug",
-      fee: 30000,
-      salary: 12000,
-      pendings: 6000,
-      totalIncome: 35000,
-    },
-    {
-      month: "Sep",
-      fee: 36000,
-      salary: 14000,
-      pendings: 7500,
-      totalIncome: 42000,
-    },
-    {
-      month: "Oct",
-      fee: 30000,
-      salary: 13000,
-      pendings: 6500,
-      totalIncome: 38000,
-    },
-    {
-      month: "Nov",
-      fee: 40000,
-      salary: 18000,
-      pendings: 8000,
-      totalIncome: 48000,
-    },
-    {
-      month: "Dec",
-      fee: 26000,
-      salary: 11000,
-      pendings: 5500,
-      totalIncome: 30000,
-    },
-  ];
+  // const chartData = [
+  //   {
+  //     month: "Jan",
+  //     fee: 10000,
+  //     salary: 5000,
+  //     pendings: 2000,
+  //     totalIncome: 12000,
+  //   },
+  //   {
+  //     month: "Feb",
+  //     fee: 15000,
+  //     salary: 7000,
+  //     pendings: 3000,
+  //     totalIncome: 18000,
+  //   },
+  //   {
+  //     month: "Mar",
+  //     fee: 20000,
+  //     salary: 8000,
+  //     pendings: 4000,
+  //     totalIncome: 22000,
+  //   },
+  //   {
+  //     month: "Apr",
+  //     fee: 25000,
+  //     salary: 10000,
+  //     pendings: 5000,
+  //     totalIncome: 28000,
+  //   },
+  //   {
+  //     month: "May",
+  //     fee: 15000,
+  //     salary: 8000,
+  //     pendings: 3000,
+  //     totalIncome: 18000,
+  //   },
+  //   {
+  //     month: "Jun",
+  //     fee: 50000,
+  //     salary: 20000,
+  //     pendings: 10000,
+  //     totalIncome: 60000,
+  //   },
+  //   {
+  //     month: "Jul",
+  //     fee: 35000,
+  //     salary: 15000,
+  //     pendings: 7000,
+  //     totalIncome: 40000,
+  //   },
+  //   {
+  //     month: "Aug",
+  //     fee: 30000,
+  //     salary: 12000,
+  //     pendings: 6000,
+  //     totalIncome: 35000,
+  //   },
+  //   {
+  //     month: "Sep",
+  //     fee: 36000,
+  //     salary: 14000,
+  //     pendings: 7500,
+  //     totalIncome: 42000,
+  //   },
+  //   {
+  //     month: "Oct",
+  //     fee: 30000,
+  //     salary: 13000,
+  //     pendings: 6500,
+  //     totalIncome: 38000,
+  //   },
+  //   {
+  //     month: "Nov",
+  //     fee: 40000,
+  //     salary: 18000,
+  //     pendings: 8000,
+  //     totalIncome: 48000,
+  //   },
+  //   {
+  //     month: "Dec",
+  //     fee: 26000,
+  //     salary: 11000,
+  //     pendings: 5500,
+  //     totalIncome: 30000,
+  //   },
+  // ];
 
-  const [activeTab, setActiveTab] =
-    useState<keyof (typeof chartData)[0]>("fee");
+  const [activeTab, setActiveTab] = useState<"revenue" | "expense">("revenue");
   const [startIndex, setStartIndex] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  //get branch details using Id
+
+  const branchData = useSelector(selectBranchId);
+  console.log("branchId",branchData)
+
+  // dashboard graph data
+  const dashData = useSelector(selectDashboardData);
+  
+  // activity data
+  const ActivityData = useSelector(selectActivityData);
+  
+  const chartData = [
+  {
+    month: "Jan",
+    revenue: dashData?.revenue?.[0],
+    expense: dashData?.expenses?.[0],
+    // pendings: 2000,
+    // totalIncome: 12000,
+  },
+  {
+    month: "Feb",
+    revenue: dashData?.revenue?.[1],
+    expense: dashData?.expenses?.[1],
+    // pendings: 3000,
+    // totalIncome: 18000,
+  },
+  {
+    month: "Mar",
+    revenue: dashData?.revenue?.[2],
+    expense: dashData?.expenses?.[2],
+    // pendings: 4000,
+    // totalIncome: 22000,
+  },
+  {
+    month: "Apr",
+    revenue: dashData?.revenue?.[3],
+    expense: dashData?.expenses?.[3],
+    // pendings: 5000,
+    // totalIncome: 28000,
+  },
+  {
+    month: "May",
+    revenue: dashData?.revenue?.[4],
+    expense: dashData?.expenses?.[4],
+    // pendings: 3000,
+    // totalIncome: 18000,
+  },
+  {
+    month: "Jun",
+    revenue: dashData?.revenue?.[5],
+    expense: dashData?.expenses?.[5],
+    // pendings: 10000,
+    // totalIncome: 60000,
+  },
+  {
+    month: "Jul",
+    revenue: dashData?.revenue?.[6],
+    expense: dashData?.expenses?.[6],
+    // pendings: 7000,
+    // totalIncome: 40000,
+  },
+  {
+    month: "Aug",
+    revenue: dashData?.revenue?.[7],
+    expense: dashData?.expenses?.[7],
+    // pendings: 6000,
+    // totalIncome: 35000,
+  },
+  {
+    month: "Sep",
+    revenue: dashData?.revenue?.[8],
+    expense: dashData?.expenses?.[8],
+    // pendings: 7500,
+    // totalIncome: 42000,
+  },
+  {
+    month: "Oct",
+    revenue: dashData?.revenue?.[9],
+    expense: dashData?.expenses?.[9],
+    // pendings: 6500,
+    // totalIncome: 38000,
+  },
+  {
+    month: "Nov",
+    revenue: dashData?.revenue?.[10],
+    expense: dashData?.expenses?.[10],
+    // pendings: 8000,
+    // totalIncome: 48000,
+  },
+  {
+    month: "Dec",
+    revenue: dashData?.revenue?.[11],
+    expense: dashData?.expenses?.[11],
+    // pendings: 5500,
+    // totalIncome: 30000,
+  },
+];
+
+
+  // Replace the static statCards array with this dynamic version
+const statCards = [
+  {
+    title: "Payouts",
+    value: `₹${branchData?.payouts || '0'}`,
+    icon: Payouts,
+    color: "#E4E1FF",
+    textColor: "#000000ff",
+  },
+  {
+    title: "Profits",
+    value: `${branchData?.profits || '0'}`,
+    icon: Profit,
+    color: "#E4E1FF",
+    textColor: "#000000ff",
+  },
+  {
+    title: "Courses",
+    value: `${branchData?.courses || '0'}`,
+    icon: Courses,
+    color: "#FAD3EF",
+    textColor: "#000000ff",
+  },
+  {
+    title: "Students",
+    value: `${branchData?.students || '0'}`,
+    icon: Courses,
+    color: "#FAD3EF",
+    textColor: "#000000ff",
+  },
+  {
+    title: "Revenue",
+    value: `₹${branchData?.revenue || '0'}`,
+    icon: Payouts,
+    color: "#FAD3EF",
+    textColor: "#000000ff",
+  },
+];
+
+  const dispatch = useDispatch<any>();
+  
+  const branchid = uuid;
+  console.log("select uuid",uuid);
+  //get branch by id
+  useEffect(() => {
+    dispatch(getBranchIdData(
+      branchid
+    ))
+  },[dispatch]);
+
+  //get dash report
+  useEffect(() => {
+    dispatch(getDashboardthunks({branchid}))
+    dispatch(getActivitythunks({ page: 1 }));
+  }, [dispatch, branchid]);
+  
+  
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -288,6 +413,9 @@ export function BranchDetailsPage({
     },
   };
 
+  console.log("dashId",dashData)
+  console.log("activity data",ActivityData)
+  
   const visibleCards = [
     statCards[startIndex % statCards.length],
     statCards[(startIndex + 1) % statCards.length],
@@ -484,45 +612,45 @@ export function BranchDetailsPage({
                     </div>
 
                     <Tabs
-                      defaultValue="fee"
+                      defaultValue="revenue"
                       onValueChange={(value) =>
-                        setActiveTab(value as keyof (typeof chartData)[0])
+                        setActiveTab(value as "revenue" | "expense")
                       }
                     >
                       <TabsList className="bg-transparent p-0 gap-4 h-auto">
                         <TabsTrigger
-                          value="fee"
+                          value="revenue"
                           className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
                         >
                           <span className=" text-[#23AF62] font-semibold text-lg relative">
-                            Fee
+                            Revenue
                             <span
                               className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full"
                               data-state={
-                                activeTab === "fee" ? "active" : "inactive"
+                                activeTab === "revenue" ? "active" : "inactive"
                               }
                             ></span>
                           </span>
                         </TabsTrigger>
                         <TabsTrigger
-                          value="salary"
+                          value="expense"
                           className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
                         >
                           <span className="text-[#FF8400] font-semibold text-lg relative">
-                            Salary
+                            Expense
                             <span
                               className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full"
                               data-state={
-                                activeTab === "salary" ? "active" : "inactive"
+                                activeTab === "expense" ? "active" : "inactive"
                               }
                             ></span>
                           </span>
                         </TabsTrigger>
-                        <TabsTrigger
+                        {/* <TabsTrigger
                           value="pendings"
                           className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
                         >
-                          <span className="text-[#CA2858] font-semibold text-lg relative">
+                          {/* <span className="text-[#CA2858] font-semibold text-lg relative">
                             Pendings
                             <span
                               className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#CA2858] transition-all duration-300 data-[state=active]:w-full"
@@ -530,9 +658,9 @@ export function BranchDetailsPage({
                                 activeTab === "pendings" ? "active" : "inactive"
                               }
                             ></span>
-                          </span>
-                        </TabsTrigger>
-                        <TabsTrigger
+                          </span> */}
+                        {/* </TabsTrigger> */} 
+                        {/* <TabsTrigger
                           value="totalIncome"
                           className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
                         >
@@ -547,7 +675,7 @@ export function BranchDetailsPage({
                               }
                             ></span>
                           </span>
-                        </TabsTrigger>
+                        </TabsTrigger> */}
                       </TabsList>
                     </Tabs>
                   </div>
@@ -616,7 +744,7 @@ export function BranchDetailsPage({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 max-h-[855px] overflow-y-auto pr-2">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((index) => (
+                    {ActivityData?.map((item:any,index:number) => (
                       <motion.div
                         key={index}
                         className="group flex items-start gap-4 p-4 rounded-lg border bg-white border-gray-200"
@@ -633,10 +761,10 @@ export function BranchDetailsPage({
                         {/* Text container - ALL text turns white on hover */}
                         <div className="flex-1 [&>*]:text-[#716F6F] [&>*]:group-hover:text-white">
                           <span className="text-lg font-semibold">
-                            Notes Created
+                            {item.title}
                           </span>
                           <p className="text-sm">
-                            | Create | Rvr - Study Material Created
+                            | {item.action} | {item.details}
                           </p>
                         </div>
                       </motion.div>
