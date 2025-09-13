@@ -16,6 +16,7 @@ import {
   deleteFaqCategories,
   updateFaqCategories,
 } from "../../features/Faq_Category/service";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 type Category = {
   id: number;
@@ -104,6 +105,11 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
+  const overall_branch_id=GetLocalStorage("selectedBranchId")
+      const overall_istitute_id=GetLocalStorage("instituteId")
+     console.log(overall_branch_id,"branch id ")
+     console.log(overall_istitute_id,"institute id")
+
   const handleStatusChange = async (
     index: number,
     newStatus: "Active" | "Inactive",
@@ -114,13 +120,12 @@ const FaqCategory: React.FC = () => {
     const payload = {
       is_active: newStatus === "Active",
     };
-
     try {
       await updateFaqCategories(Uuid, payload);
       dispatch(
         fetchFaqCategoryThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -155,10 +160,12 @@ const FaqCategory: React.FC = () => {
 
   console.log("category", category);
 
+
+
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -184,16 +191,17 @@ const FaqCategory: React.FC = () => {
       const payload = {
         category_name: newTitle,
         description: newDescription,
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        institute_id: "67f3a26df4b2c530acd16419",
+        branchid: overall_branch_id,
+        institute_id: "67f3a26df4b2c530acd16419",/*973195c0-66ed-47c2-b098-d8989d3e4529 institute
+         id in console --> but here different isntitute id that'y didn't replace*/
       };
 
       try {
         await createFaqCategories(payload);
         dispatch(
           fetchFaqCategoryThunk({
-            branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-            instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+            branchid: overall_branch_id,
+            instituteid: overall_istitute_id,
             page: 1,
             perPage: 10,
           })
@@ -223,8 +231,8 @@ const FaqCategory: React.FC = () => {
       await deleteFaqCategories(deleteCategoryUuid);
       dispatch(
         fetchFaqCategoryThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
