@@ -43,6 +43,8 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { COLORS, FONTS } from "../../constants/uiConstants";
 import { RiPresentationFill } from "react-icons/ri";
+import { Calendar, Clock } from 'lucide-react';
+// import { Calendar, Clock, Monitor, Video, BookOpen } from 'lucide-react';
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -54,7 +56,7 @@ export const Profile = () => {
   const studData = useSelector(selectCoursedata);
 const [currentPage, setCurrentPage] = useState(1);
 const [totalPages, setTotalPages] = useState(1);
-const itemsPerPage = 10;
+const itemsPerPage = 5;
 
   // Get student data from navigation state
   const studentDataFromLocation = location.state?.studentData || {};
@@ -1008,43 +1010,119 @@ useEffect(() => {
               </div>
             </TabsContent>
 
-            <TabsContent className="grid grid-cols-3" value="classes">
-              <Card className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] ">
-                <CardContent className="p-6 flex flex-col h-full">
-                  <div className="flex-grow space-y-2">
-                    <h3
-                      className="whitespace-nowrap"
-                      style={{
-                        ...FONTS.heading_06,
-                        color: COLORS.gray_dark_02,
-                      }}
-                    ></h3>
-                    <p
-                      style={{
-                        ...FONTS.heading_07,
-                        color: COLORS.gray_dark_02,
-                      }}
-                    >
-                      Students on this Class
-                    </p>
-                    <p
-                      style={{
-                        ...FONTS.heading_08,
-                        color: COLORS.gray_dark_02,
-                      }}
-                    ></p>
-                  </div>
-                  <div className="flex justify-end mt-4">
-                    <Button
-                      className="bg-green-500 hover:bg-green-600 text-white"
-                      onClick={() => navigate("/students/Profile/view")}
-                    >
-                      View
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+        <TabsContent className="grid grid-cols-3 gap-4" value="classes">
+  {ClassViewData && ClassViewData.length > 0 ? (
+    ClassViewData.map((classItem: any) => {
+    
+      const classDate = classItem.start_date 
+        ? new Date(classItem.start_date).toLocaleDateString('en-US', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          })
+        : 'No date set';
+
+           const formatTimeFromDateTime = (datetimeString: string) => {
+        if (!datetimeString) return 'No time set';
+        
+        try {
+          
+          const timePart = datetimeString.includes('T') 
+            ? datetimeString.split('T')[1] 
+            : datetimeString;
+          
+         
+          const [hours, minutes] = timePart.split(':');
+          const time = `${hours}:${minutes}`;
+          
+        
+          const [hour, minute] = time.split(':');
+          const hourNum = parseInt(hour, 10);
+          const period = hourNum >= 12 ? 'PM' : 'AM';
+          const hour12 = hourNum % 12 || 12;
+          
+          return `${hour12}:${minute} ${period}`;
+        } catch (error) {
+          console.error('Error formatting time:', error);
+          return 'Invalid time';
+        }
+      };
+
+      const startTime = formatTimeFromDateTime(classItem.start_time);
+      const endTime = formatTimeFromDateTime(classItem.end_time);
+
+      return (
+        <Card 
+          key={classItem.uuid || classItem._id} 
+          className="bg-white w-full rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]"
+        >
+          <CardContent className="p-6 flex flex-col h-full">
+            <div className="flex-grow space-y-3">
+              {/* 1. Class Name */}
+              <h1
+                className="text-xl text-bold text-black-600"
+                style={{
+                  ...FONTS.heading_07,
+                  color: COLORS.gray_dark_02,
+                }}
+              >
+                {classItem.course?.course_name || 'No course assigned'}
+              </h1>
+
+              <h3
+                className="whitespace-nowrap text-lg font-semibold truncate"
+                style={{
+                  ...FONTS.heading_06,
+                  color: COLORS.gray_dark_02,
+                }}
+              >
+                {classItem.class_name || 'Unnamed Class'}
+              </h3>
+              
+           
+              
+              
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span
+                  className="text-sm"
+                  style={{
+                    ...FONTS.heading_08,
+                    color: COLORS.gray_dark_02,
+                  }}
+                >
+                  {classDate}
+                </span>
+              </div>
+              
+              {/* 4. Time - Start and End */}
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4 text-gray-500" />
+                <span
+                  className="text-sm"
+                  style={{
+                    ...FONTS.heading_08,
+                    color: COLORS.gray_dark_02,
+                  }}
+                >
+                  {startTime} - {endTime}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    })
+  ) : (
+    <div className="col-span-3 flex items-center justify-center py-12">
+      <div className="text-center">
+        <p className="text-gray-500 text-lg">No classes found</p>
+        <p className="text-gray-400 text-sm">This student is not enrolled in any classes yet.</p>
+      </div>
+    </div>
+  )}
+</TabsContent>
 
            <TabsContent value="activity">
   <div className="bg-white p-6 min-h-screen">
@@ -1056,10 +1134,10 @@ useEffect(() => {
     </h1>
 
     <div className="relative">
-      {/* Timeline - Use paginated data */}
+      
       {studentActivityData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item: any) => (
         <div key={item.id || item._id} className="flex items-start relative">
-          {/* Left timeline section */}
+         
           <div className="flex flex-col items-center mr-6">
             <span className="bg-[#1BBFCA] text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
               {item?.action || "Activity"}

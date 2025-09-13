@@ -56,6 +56,7 @@ export const getActivityStudentdata = async(params:any)=>{
 
 export const getStudentClass = async (params:any)=>{
 	const response = await Client.student.studentclass(params)
+	console.log("pro res",response);
 	if(response){
 		return response;
 	}
