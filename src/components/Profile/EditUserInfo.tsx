@@ -1,11 +1,9 @@
 // EditUserInfo.tsx
-import React, { useState, useRef, type ChangeEvent } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import profileimg from "../../assets/navbar/Editprofile.png";
-import { FONTS } from "../../../src/constants/uiConstants";
-import { useDispatch } from "react-redux";
-import { UpdateProfileThunks } from "../../features/Auth/reducer/thunks";
-import type { AppDispatch } from "../../store/store";
+import React, { useState, useRef, type ChangeEvent } from 'react';
+import { useNavigate } from "react-router-dom"
+import profileimg from '../../assets/navbar/Editprofile.png';
+import { FONTS } from '../../../src/constants/uiConstants';
+import { ArrowLeft } from 'lucide-react';
 
 interface UserInfo {
   first_name: string;
@@ -56,11 +54,13 @@ const EditUserInfo: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg ">
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <div
-        className="bg-cyan-500 text-white text-center py-3 rounded-lg"
-        style={{ ...FONTS.heading_04 }}
-      >
+        onClick={() => navigate(-1)}
+        className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
+        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+      </div>
+      <div className="bg-cyan-500 text-white text-center py-3 rounded-lg" style={{ ...FONTS.heading_04 }}>
         Edit User Informations
       </div>
       <div className="flex flex-col items-center mt-4">
@@ -69,12 +69,9 @@ const EditUserInfo: React.FC = () => {
           alt="Profile"
           className="rounded-full w-24 h-24 object-cover"
         />
-        <span
-          onClick={handleUploadClick}
-          className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer"
-        >
-          Upload
-        </span>
+        {/* <p className="mt-2 font-semibold text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Chandran R</p>*/}
+
+        <span onClick={handleUploadClick} className="text-green-600 font-poppins font-bold text-[12px] mt-2 cursor-pointer">Upload</span>
         <input
           type="file"
           ref={fileInputRef}

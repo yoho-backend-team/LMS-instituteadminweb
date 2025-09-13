@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Plus, Filter, Mail } from "lucide-react";
+import { Plus, Filter, Mail, ArrowLeft } from "lucide-react";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import {
@@ -197,9 +197,9 @@ const TeachingStaffs: React.FC = () => {
       staff.map((member) =>
         member.id === id
           ? {
-              ...member,
-              status: member.status === "Active" ? "Inactive" : "Active",
-            }
+            ...member,
+            status: member.status === "Active" ? "Inactive" : "Active",
+          }
           : member
       )
     );
@@ -234,23 +234,24 @@ const TeachingStaffs: React.FC = () => {
     fetchClassData();
   }, []);
 
-  // const handleUploadClick = () => {};
+  const handleFileChange = () => { };
 
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const handleUploadClick = () => { };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
-    }
-  };
+
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
+
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
 
       {showAddStaff ? (
         <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+          <div
+            onClick={() => setShowAddStaff(false)}
+            className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+            <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+          </div>
           <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
 
           <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
@@ -893,9 +894,8 @@ const TeachingStaffs: React.FC = () => {
                           <SelectTrigger
                             className={`gap-2 w-[120px] ${getStatusButtonStyle(
                               member.status
-                            )} bg-[${
-                              COLORS.primary
-                            }] text-white flex justify-between items-center`}
+                            )} bg-[${COLORS.primary
+                              }] text-white flex justify-between items-center`}
                           >
                             <SelectValue placeholder={member?.is_active} />
                             <IoIosArrowDown className="w-4 h-4 text-white" />

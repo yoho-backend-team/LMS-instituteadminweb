@@ -11,6 +11,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GetImageUrl } from "../../utils/helper";
+import { ArrowLeft } from "lucide-react";
 
 const TABS = ["Info", "Security", "Classes", "Attendance", "Activity"];
 
@@ -28,10 +29,11 @@ const MainPage: React.FC = () => {
   if (!staffMember) {
     return (
       <div className="max-w-6xl mx-auto p-6">
-        <IoMdArrowRoundBack
+        <div
           onClick={handleback}
-          className="h-10 w-10 text-[#1BBFCA] mb-2 cursor-pointer"
-        />
+          className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+        </div>
         <Card className="p-6 text-center">
           <p>
             No staff member selected. Please go back and select a staff member.
@@ -42,11 +44,12 @@ const MainPage: React.FC = () => {
   }
 
   return (
-    <div className=" mx-auto ">
-      <IoMdArrowRoundBack
+    <div className="max-w-6xl mx-auto p-6">
+      <div
         onClick={handleback}
-        className="h-10 w-10 text-[#1BBFCA] mb-2 cursor-pointer"
-      />
+        className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+      </div>
       <Card className="p-6 mb-6 flex flex-col md:flex-row justify-between items-center bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
         <div
           className="flex items-
@@ -63,11 +66,10 @@ const MainPage: React.FC = () => {
           </h3>
         </div>
         <Button
-          className={`${
-            staffMember?.is_active === "true"
+          className={`${staffMember?.is_active === "true"
               ? "bg-[#3ABE65]"
               : "bg-destructive"
-          } text-white`}
+            } text-white`}
         >
           {staffMember?.is_active}
         </Button>
@@ -80,11 +82,10 @@ const MainPage: React.FC = () => {
               key={tab}
               variant={activeTab === tab ? "default" : "outline"}
               onClick={() => setActiveTab(tab)}
-              className={`${
-                activeTab === tab
+              className={`${activeTab === tab
                   ? "bg-[#3ABE65] text-white"
                   : "bg-white text-[#716F6F] border border-[#716F6F]"
-              }`}
+                }`}
             >
               {tab}
             </Button>

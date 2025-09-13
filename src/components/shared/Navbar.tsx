@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const dispatch = useDispatch<any>()
-  const profile = useSelector((state: any) => state.authuser?.user)
+  const profile = useSelector((state: any) => state?.authuser?.user)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -149,7 +149,7 @@ const Navbar = () => {
                     <p className="text-lg font-bold text-gray-800">{profile?.first_name + ' ' + profile?.last_name}</p>
                   </div>
                   <button className="bg-green-500 text-white text-xs px-2 py-1 rounded-sm">
-                    {profile.is_active ? 'Active' : 'Inactive'}
+                    {profile?.is_active ? 'Active' : 'Inactive'}
                   </button>
                 </div>
                 <ul className="p-2">

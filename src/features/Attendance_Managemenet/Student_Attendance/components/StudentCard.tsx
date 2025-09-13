@@ -46,11 +46,11 @@ const StudentCard: React.FC<props> = ({ studentAttendances }) => {
 
   const handleStudentAttendanceDetails = (studentId: string) => {
     try {
-      navigate(`/students-attendance/details/${studentId}`);
+      navigate(`/students-attendance/details/${studentId}`)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
   return (
     <div className="w-full grid grid-cols-3 gap-[30px] mt-5">
       {studentAttendances?.map((card, index) => (

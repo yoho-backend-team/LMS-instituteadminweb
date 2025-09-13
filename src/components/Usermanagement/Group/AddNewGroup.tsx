@@ -245,10 +245,10 @@ function AddNewGroup({
         variant="ghost"
         size="icon"
         onClick={() => navigate("/group")}
-        className="mb-4 text-xl text-[#7D7D7D] hover:text-gray-500"
+        className="mb-4 text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white"
       >
-        <ArrowLeft />
-        <span className="sr-only">Go back</span>
+        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+      
       </Button>
 
       {/* Header */}

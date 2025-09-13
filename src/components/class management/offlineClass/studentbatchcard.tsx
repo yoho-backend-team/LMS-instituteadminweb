@@ -28,37 +28,37 @@ const StudentClassBatch: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className='p-6 bg-white min-h-screen'>
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-[#1BBFCA] hover:text-[#1BBFCA] transition-all mb-4"
+        className='flex items-center gap-2text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit transition-all mb-4'
       >
-        <ArrowLeft className="w-7 h-7" />
+        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
       </button>
       <Button
-        type="button"
-        className="!bg-[#1BBFCA] !text-white"
+        type='button'
+        className='!bg-[#1BBFCA] !text-white'
         style={{ ...FONTS.heading_07 }}
       >
         {classData?.batch?.batch_name}
       </Button>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <h2
           style={{ ...FONTS.heading_06, color: COLORS.gray_dark_01 }}
-          className="mt-2"
+          className='mt-2'
         >
           Batch {classData?.batch?.id}
         </h2>
-        <div className="flex gap-4 items-center">
+        <div className='flex gap-4 items-center'>
           <span
             style={{ ...FONTS.heading_08_bold, color: COLORS.gray_dark_02 }}
           >
             Duration: {classData?.duration} days
           </span>
           <Button
-            type="button"
-            className="!bg-[#3ABE65] text-center !text-white"
+            type='button'
+            className='!bg-[#3ABE65] text-center !text-white'
             style={{ ...FONTS.heading_07 }}
           >
             Offline

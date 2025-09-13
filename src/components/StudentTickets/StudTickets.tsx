@@ -4,6 +4,7 @@ import ticket1 from "../../assets/ticket1.png";
 import { useDispatch, useSelector } from "react-redux";
 import { getStudentTicket } from "../../features/StudentTicket/Reducers/thunks";
 import { selectStudentTicket } from "../../features/StudentTicket/Reducers/selectors";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 const StudTickets: React.FC = () => {
   const [filter, setFilter] = useState<"opened" | "closed">("opened");
@@ -13,12 +14,17 @@ const StudTickets: React.FC = () => {
 
   console.log(studentTicketData, "data for student");
 
+   const overall_branch_id=GetLocalStorage("selectedBranchId")
+    const overall_istitute_id=GetLocalStorage("instituteId")
+   console.log(overall_branch_id,"branch id ")
+   console.log(overall_istitute_id,"institute id")
+
   const fetchstudentTickets = async () => {
     try {
       setLoading(true);
       const params = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branch_id: overall_branch_id,
+        institute_id: overall_istitute_id,
         status: filter,
       };
       await dispatch(getStudentTicket(params));

@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { GetViewCard, UpdateGroup } from "../../../features/Users_Management/Group/reducers/service";
 import toast from "react-hot-toast";
+import { ArrowLeft } from "lucide-react";
 
 const permissions = ["Read", "Create", "Update", "Delete"] as const;
 type Permission = (typeof permissions)[number];
@@ -96,9 +97,9 @@ function Edit() {
       {/* Back Button */}
       <div
         onClick={() => navigate("/group")}
-        className="mb-4 cursor-pointer text-xl text-[#7D7D7D] hover:text-gray-500 w-fit"
+        className="mb-4 cursor-pointer text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit"
       >
-        <IoMdArrowRoundBack />
+         <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
       </div>
 
       {/* Header */}

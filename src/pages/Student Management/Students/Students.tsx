@@ -30,23 +30,14 @@ import { getStudentmanagement } from "../../../features/StudentManagement/reduce
 import {
   selectLoading,
   selectStudent,
-} from "../../../features/StudentManagement/reducer/selector";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { GetImageUrl } from "../../../utils/helper";
-import { createstudentdata } from "../../../features/StudentManagement/services/Student";
-import { toast } from "react-toastify";
-import { uploadFile } from "../../../features/staff/services";
-import ContentLoader from "react-content-loader";
-import { GetLocalStorage } from "../../../utils/localStorage";
-import {
-  GetBranchCourseThunks,
-  GetBranchThunks,
-} from "../../../features/Content_Management/reducers/thunks";
-import {
-  Branch,
-  BranchCourse,
-} from "../../../features/Content_Management/reducers/selectors";
-import { IoArrowBack } from "react-icons/io5";
+} from '../../../features/StudentManagement/reducer/selector';
+import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
+import { GetImageUrl } from '../../../utils/helper';
+import { createstudentdata } from '../../../features/StudentManagement/services/Student';
+import { toast } from 'react-toastify';
+import { uploadFile } from '../../../features/staff/services';
+import ContentLoader from 'react-content-loader';
+import { ArrowLeft } from 'lucide-react';
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -256,10 +247,9 @@ const Students = () => {
       lastName: student.last_name,
       email: student.email,
       location: student.contact_info
-        ? `${student.contact_info.address1 || ""}, ${
-            student.contact_info.city || student.contact_info.state || ""
+        ? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
           }`.trim()
-        : "Location not specified",
+        : 'Location not specified',
       image: student.image,
       phone: student.contact_info?.phone_number,
       altPhone: student.contact_info?.alternate_phone_number,
@@ -273,7 +263,7 @@ const Students = () => {
       state: student.contact_info?.state,
       pincode: student.contact_info?.pincode,
       joinedDate: student.created_at,
-      status: student.status || "Active",
+      status: student.status || 'Active',
       uuid: student?.uuid,
     }));
   };
@@ -290,61 +280,59 @@ const Students = () => {
 
   if (showAddStudent) {
     return (
-      <div className="p-6">
+      <div className='p-6'>
         <div
-          className="mb-4 flex items-center cursor-pointer"
           onClick={toggleAddStudent}
-        >
-          <IoArrowBack className="text-[#1BBFCA] text-2xl mr-2" />
-          <span className="text-[18px] font-semibold text-[#1BBFCA]">Back</span>
+          className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
         </div>
-        <Card className="mb-6 shadow-md">
+        <Card className='mb-6 shadow-md mt-4'>
           <CardHeader>
-            <h1 className="text-[20px] text-[#1BBFCA] font-bold">
+            <h1 className='text-[20px] text-[#1BBFCA] font-bold'>
               Add New Student
             </h1>
             <hr></hr>
-            <CardTitle className="text-[20px] font-semibold">
+            <CardTitle className='text-[20px] font-semibold'>
               Upload Profile Picture
             </CardTitle>
-            <p className="text-[14px] text-gray-500">
+            <p className='text-[14px] text-gray-500'>
               Allowed PNG or JPEG. Max size of 2MB.
             </p>
           </CardHeader>
           <CardContent>
             <div
-              className="border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative"
+              className='border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative'
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  "border-[#1BBFCA]",
-                  "bg-[#1BBFCA]/10"
+                  'border-[#1BBFCA]',
+                  'bg-[#1BBFCA]/10'
                 );
               }}
               onDragLeave={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  "border-[#1BBFCA]",
-                  "bg-[#1BBFCA]/10"
+                  'border-[#1BBFCA]',
+                  'bg-[#1BBFCA]/10'
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  "border-[#1BBFCA]",
-                  "bg-[#1BBFCA]/10"
+                  'border-[#1BBFCA]',
+                  'bg-[#1BBFCA]/10'
                 );
                 if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                   handleFileUpload(e.dataTransfer.files[0]);
                 }
               }}
-              onClick={() => document.getElementById("file-upload")?.click()}
+              onClick={() => document.getElementById('file-upload')?.click()}
             >
               <input
-                id="file-upload"
-                type="file"
-                accept="image/png, image/jpeg"
-                className="hidden"
+                id='file-upload'
+                type='file'
+                accept='image/png, image/jpeg'
+                className='hidden'
                 ref={fileInputRef}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
@@ -353,24 +341,24 @@ const Students = () => {
                 }}
               />
               {newStudentForm.image ? (
-                <div className="flex flex-col items-center">
+                <div className='flex flex-col items-center'>
                   <img
                     src={
-                      typeof newStudentForm.image === "string"
+                      typeof newStudentForm.image === 'string'
                         ? newStudentForm.image
                         : URL.createObjectURL(newStudentForm.image)
                     }
-                    alt="Preview"
-                    className="h-32 w-32 rounded-full object-cover mb-4"
+                    alt='Preview'
+                    className='h-32 w-32 rounded-full object-cover mb-4'
                   />
-                  <p className="text-[14px] text-gray-700">
-                    {typeof newStudentForm.image === "string"
-                      ? "Image uploaded"
+                  <p className='text-[14px] text-gray-700'>
+                    {typeof newStudentForm.image === 'string'
+                      ? 'Image uploaded'
                       : newStudentForm.image.name}
                   </p>
                   <Button
-                    variant="ghost"
-                    className="mt-2 text-red-500 hover:text-red-700"
+                    variant='ghost'
+                    className='mt-2 text-red-500 hover:text-red-700'
                     onClick={(e) => {
                       e.stopPropagation();
                       setNewStudentForm((prev) => ({ ...prev, image: null }));
@@ -381,12 +369,12 @@ const Students = () => {
                 </div>
               ) : (
                 <>
-                  <RiUploadCloudFill className="mx-auto text-[#1BBFCA] text-3xl mb-2" />
-                  <p className="text-[14px] text-gray-500">
+                  <RiUploadCloudFill className='mx-auto text-[#1BBFCA] text-3xl mb-2' />
+                  <p className='text-[14px] text-gray-500'>
                     Drop files here or click to upload
                   </p>
                   {isUploading && (
-                    <p className="text-[14px] text-gray-500 mt-2">
+                    <p className='text-[14px] text-gray-500 mt-2'>
                       Uploading...
                     </p>
                   )}
