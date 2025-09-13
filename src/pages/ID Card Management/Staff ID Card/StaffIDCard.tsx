@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
 import bgImage from "../../../assets/IDcardManagement/staffIdBg.png";
-import barCode from "../../../assets/IDcardManagement/barcode.png";
-import { useDispatch, useSelector } from "react-redux";
-import { selectStaffId } from "../../../features/StaffIdCard/reducers/selectors";
-import { getStaffIdcardthunks } from "../../../features/StaffIdCard/reducers/thunks";
-import { GetImageUrl } from "../../../utils/helper";
-import Shimmer from "../../../components/IdcardShimmer/Shimmer";
+import barCode from "../../../assets/IDcardManagement/barcode.png"
+import { useDispatch, useSelector } from 'react-redux';
+import { selectStaffId } from '../../../features/StaffIdCard/reducers/selectors';
+import { getStaffIdcardthunks } from '../../../features/StaffIdCard/reducers/thunks';
+import { GetImageUrl } from '../../../utils/helper';
+import Shimmer from '../../../components/IdcardShimmer/Shimmer';
+import { GetLocalStorage } from '../../../utils/localStorage';
 
 const StaffIDCard = () => {
   const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
@@ -25,8 +27,8 @@ const StaffIDCard = () => {
   useEffect(() => {
     (async () => {
       const paramsData = {
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branchid: GetLocalStorage("selectedBranchId"),
+        instituteid: GetLocalStorage("instituteId"),
         page: 1,
       };
       const response = await dispatch(getStaffIdcardthunks(paramsData));
@@ -77,7 +79,6 @@ const StaffIDCard = () => {
                       className="w-[130px] h-[130px] rounded-full object-cover"
                     />
                   </div>
-
                   <div className="text-center">
                     <h4
                       style={{
@@ -142,11 +143,9 @@ const StaffIDCard = () => {
                         { label: "Contact", value: data?.contact },
                         {
                           label: "Address",
-                          value: `${data?.address?.address_line_one ?? ""}, ${
-                            data?.address?.address_line_two ?? ""
-                          }, ${data?.address?.city ?? ""}, ${
-                            data?.address?.state ?? ""
-                          } - ${data?.address?.pin_code ?? ""}`,
+                          value: `${data?.address?.address_line_one ?? ""}, ${data?.address?.address_line_two ?? ""
+                            }, ${data?.address?.city ?? ""}, ${data?.address?.state ?? ""
+                            } - ${data?.address?.pin_code ?? ""}`,
                         },
                       ].map((item, i) => (
                         <div className="flex" key={i}>

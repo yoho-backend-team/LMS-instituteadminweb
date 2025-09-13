@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useDispatch } from "react-redux";
@@ -264,12 +265,12 @@ export const DashboardCards: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const removeImage = () => {
-    setSelectedImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+  // const removeImage = () => {
+  //   setSelectedImage(null);
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.value = "";
+  //   }
+  // };
 
   const handleAddCategory = async () => {
     if (!categoryName.trim()) return;
@@ -332,10 +333,10 @@ export const DashboardCards: React.FC = () => {
         prevCategories.map((cat) =>
           cat.uuid === selecteduuid
             ? {
-                ...cat,
-                category_name: updatedCategory.category_name,
-                image: updatedCategory.image,
-              }
+              ...cat,
+              category_name: updatedCategory.category_name,
+              image: updatedCategory.image,
+            }
             : cat
         )
       );
@@ -387,9 +388,8 @@ export const DashboardCards: React.FC = () => {
         className="hidden"
       />
       <div
-        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${
-          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
-        }`}
+        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
+          }`}
         onClick={triggerFileInput}
         onDrop={handleDrop}
         onDragOver={handleDragOver}

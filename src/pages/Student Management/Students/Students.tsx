@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useEffect, useState, useRef } from "react";
 import {
@@ -38,12 +39,15 @@ import { toast } from 'react-toastify';
 import { uploadFile } from '../../../features/staff/services';
 import ContentLoader from 'react-content-loader';
 import { ArrowLeft } from 'lucide-react';
+import { GetLocalStorage } from "../../../utils/localStorage";
+import { GetBranchCourseThunks, GetBranchThunks } from "../../../features/Content_Management/reducers/thunks";
+import { Branch, BranchCourse } from "../../../features/Content_Management/reducers/selectors";
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [courseFilter, setCourseFilter] = useState("");
-  const [batchFilter, setBatchFilter] = useState("");
+  const [courseFilter, setCourseFilter] = useState<string | undefined>(undefined);
+  const [batchFilter, setBatchFilter] = useState<string | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
@@ -157,7 +161,7 @@ const Students = () => {
         dob: newStudentForm.dob,
         gender: newStudentForm.gender,
         qualification: newStudentForm.qualification,
-        course: "1958e331-84ce-464b-8865-eb06c6189414",
+        course: courseFilter,
         contact_info: {
           address1: newStudentForm.address1,
           address2: newStudentForm.address2,
@@ -168,8 +172,8 @@ const Students = () => {
           alternate_phone_number: newStudentForm.alternate_phone_number,
         },
         image: imageUrl,
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branch_id: GetLocalStorage("selectedBranchId"),
+        institute_id: GetLocalStorage("instituteId"),
         type: "payment",
       };
 
@@ -229,8 +233,9 @@ const Students = () => {
     })();
   }, [dispatch]);
 
+
   useEffect(() => {
-    dispatch(GetBranchThunks([]));
+    dispatch(GetBranchThunks({}));
   }, [dispatch]);
 
   useEffect(() => {
@@ -359,7 +364,7 @@ const Students = () => {
                   <Button
                     variant='ghost'
                     className='mt-2 text-red-500 hover:text-red-700'
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.stopPropagation();
                       setNewStudentForm((prev) => ({ ...prev, image: null }));
                     }}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ArrowLeft,
@@ -693,7 +694,7 @@ export function BranchDetailsPage({
                       />
                       <Bar
                         dataKey={activeTab}
-                        shape={(props) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+                        shape={(props: any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
                         barSize={30}
                       >
                         <LabelList

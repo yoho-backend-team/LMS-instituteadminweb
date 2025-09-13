@@ -1,5 +1,4 @@
 import { COLORS, FONTS } from "../../../../constants/uiConstants";
-import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import card1 from '../../../../assets/profileion1.png';
 import card2 from '../../../../assets/Frame 5825blue.png';
 import card4 from '../../../../assets/Frame 5825green.png';
@@ -93,6 +92,7 @@ const StudentDetails = () => {
         setAttendance(updatedResponse?.data);
       }
     } catch (error) {
+      console.warn(error)
       toast.error("Failed to update attendance");
       setAlertModal(false);
     }

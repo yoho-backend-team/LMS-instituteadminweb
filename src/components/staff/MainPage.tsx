@@ -8,7 +8,6 @@ import Activitypage from "./Activitypage";
 import Attendancepage from "./Attendancepage";
 import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GetImageUrl } from "../../utils/helper";
 import { ArrowLeft } from "lucide-react";
@@ -67,8 +66,8 @@ const MainPage: React.FC = () => {
         </div>
         <Button
           className={`${staffMember?.is_active === "true"
-              ? "bg-[#3ABE65]"
-              : "bg-destructive"
+            ? "bg-[#3ABE65]"
+            : "bg-destructive"
             } text-white`}
         >
           {staffMember?.is_active}
@@ -83,8 +82,8 @@ const MainPage: React.FC = () => {
               variant={activeTab === tab ? "default" : "outline"}
               onClick={() => setActiveTab(tab)}
               className={`${activeTab === tab
-                  ? "bg-[#3ABE65] text-white"
-                  : "bg-white text-[#716F6F] border border-[#716F6F]"
+                ? "bg-[#3ABE65] text-white"
+                : "bg-white text-[#716F6F] border border-[#716F6F]"
                 }`}
             >
               {tab}

@@ -1,9 +1,12 @@
 // EditUserInfo.tsx
 import React, { useState, useRef, type ChangeEvent } from 'react';
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import profileimg from '../../assets/navbar/Editprofile.png';
 import { FONTS } from '../../../src/constants/uiConstants';
 import { ArrowLeft } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../store/store';
+import { UpdateProfileThunks } from '../../features/Auth/reducer/thunks';
 
 interface UserInfo {
   first_name: string;

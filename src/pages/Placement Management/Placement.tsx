@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
@@ -16,7 +17,7 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import {
   deletePlacement,
   updatePlacement,

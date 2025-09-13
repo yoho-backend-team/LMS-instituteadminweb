@@ -1,21 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
 import bgImage from "../../../assets/IDcardManagement/Group 1000000936.png";
 import barCode from "../../../assets/IDcardManagement/barcode.png";
-import { useDispatch, useSelector } from "react-redux";
-import { selectStudentId } from "../../../features/StudentIdCard/reducers/selectors";
-import { getIdcardthunks } from "../../../features/StudentIdCard/reducers/thunks";
-import { GetImageUrl } from "../../../utils/helper";
-import Shimmer from "../../../components/IdcardShimmer/Shimmer";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectStudentId } from '../../../features/StudentIdCard/reducers/selectors';
+import { getIdcardthunks } from '../../../features/StudentIdCard/reducers/thunks';
+import { GetImageUrl } from '../../../utils/helper';
+import Shimmer from '../../../components/IdcardShimmer/Shimmer';
+import { GetLocalStorage } from '../../../utils/localStorage';
+
 
 const StudentIDCard = () => {
   const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
+
 
   const handleCardClick = (index: number) => {
-    setFlippedCards((prev) => ({
+    setFlippedCards(prev => ({
       ...prev,
-      [index]: !prev[index],
+      [index]: !prev[index]
     }));
   };
 
@@ -26,8 +30,8 @@ const StudentIDCard = () => {
   useEffect(() => {
     (async () => {
       const paramsData = {
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branchid: GetLocalStorage("selectedBranchId"),
+        instituteid: GetLocalStorage("instituteId"),
         page: 1,
       };
       const response = await dispatch(getIdcardthunks(paramsData));
@@ -48,7 +52,7 @@ const StudentIDCard = () => {
       {isLoading ? (
         <Shimmer />
       ) : (
-        <div  className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {studentID?.map((data: any, index: any) => {
             return (
               <div key={index} className="w-[370px] h-[560px] perspective-1000">

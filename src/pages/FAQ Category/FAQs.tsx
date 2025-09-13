@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import {
@@ -17,10 +18,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectFaq,
   selectLoading,
-} from "../../features/Faq/reducers/selectors";
-import { getAllFaqsThunk } from "../../features/Faq/reducers/thunks";
-import { StatusDropdown } from "../../components/FAQs/StatusDropdown";
-import { deleteFaq } from "../../features/Faq/service";
+} from '../../features/Faq/reducers/selectors';
+import { getAllFaqsThunk } from '../../features/Faq/reducers/thunks';
+import { StatusDropdown } from '../../components/FAQs/StatusDropdown';
+import { deleteFaq } from '../../features/Faq/service';
+import { GetLocalStorage } from '../../utils/localStorage';
 
 // Skeleton Loader Components
 const FAQSkeletonRow = () => {
@@ -73,16 +75,21 @@ export default function FAQPage() {
   const [currentPage] = useState(1);
   const loading = useSelector(selectLoading);
 
+  const overall_branch_id = GetLocalStorage("selectedBranchId")
+  const overall_istitute_id = GetLocalStorage("instituteId")
+  console.log(overall_branch_id, "branch id ")
+  console.log(overall_istitute_id, "institute id")
+
   useEffect(() => {
     const ParamsData = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteId: overall_istitute_id,
       page: currentPage,
       perPage: 10,
     };
 
     dispatch(getAllFaqsThunk(ParamsData));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, overall_branch_id, overall_istitute_id]);
 
   const toggleFilter = () => setShowFilter(!showFilter);
 
