@@ -65,40 +65,43 @@ export default function Component() {
 		setBranchMenuOpen(false);
 	};
 
-	// const handleApply = () => {
-	// 	setPeriodOpen(false);
-	// };
-
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
 		dispatch(getDashboardthunks(paramsData));
 		dispatch(getActivitythunks({ page: 1 }));
 		(() => {
-			if (localBranch == null) {
-				return setSelectedBranch(BranchData?.[0]?.branch_identity);
+			if (localBranch) {
+				console.log("local found", localBranch)
+				BranchData?.forEach((item: any) => {
+					if (item?.uuid == localBranch) {
+						console.log(item?.branch_identity, "branch")
+						return setSelectedBranch(item?.branch_identity);
+					}
+				})
+			} else {
+				const foundBranch = BranchData?.find(
+					(item: any) => item.uuid === localBranch
+				);
+				setSelectedBranch(foundBranch?.branch_identity);
 			}
-			const foundBranch = BranchData?.find(
-				(item: any) => item.uuid === localBranch
-			);
-			setSelectedBranch(foundBranch?.branch_identity);
 		})();
 	}, [BranchData, dispatch, localBranch]);
 
 
-const monthMap: { [key: string]: number } = {
-  January: 1,
-  February: 2,
-  March: 3,
-  April: 4,
-  May: 5,
-  June: 6,
-  July: 7,
-  August: 8,
-  September: 9,
-  October: 10,
-  November: 11,
-  December: 12,
-};
+	const monthMap: { [key: string]: number } = {
+		January: 1,
+		February: 2,
+		March: 3,
+		April: 4,
+		May: 5,
+		June: 6,
+		July: 7,
+		August: 8,
+		September: 9,
+		October: 10,
+		November: 11,
+		December: 12,
+	};
 
 
 
@@ -108,23 +111,23 @@ const monthMap: { [key: string]: number } = {
 
 
 	const handleApply = async () => {
-  try {
-    const monthNumber = monthMap[selectedMonth];
+		try {
+			const monthNumber = monthMap[selectedMonth];
 
-    const params = {
-      branch: selectedBranchID, 
-      month: monthNumber,
-      year: selectedYear,
-    };
+			const params = {
+				branch: selectedBranchID,
+				month: monthNumber,
+				year: selectedYear,
+			};
 
-    const data = await getDashboard(params);
-    console.log("API Response:", data);
+			const data = await getDashboard(params);
+			console.log("API Response:", data);
 
-    setPeriodOpen(false);
-  } catch (error) {
-    console.error("Error fetching dashboard:", error);
-  }
-};
+			setPeriodOpen(false);
+		} catch (error) {
+			console.error("Error fetching dashboard:", error);
+		}
+	};
 
 
 	return (
@@ -246,7 +249,7 @@ const monthMap: { [key: string]: number } = {
 										</div>
 									</div>
 
-								
+
 									<button
 										className='w-full py-2 px-4 text-white rounded-md border-0'
 										onClick={handleApply}
@@ -474,11 +477,10 @@ const monthMap: { [key: string]: number } = {
 										(item: any, index: number) => (
 											<section
 												key={index}
-												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${
-													index === 0
-														? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-														: 'bg-white'
-												}`}
+												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${index === 0
+													? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+													: 'bg-white'
+													}`}
 											>
 												<img
 													src={GetImageUrl(item?.image) ?? undefined}
@@ -487,27 +489,24 @@ const monthMap: { [key: string]: number } = {
 												/>
 												<div className='flex-grow'>
 													<h2
-														className={`${
-															index === 0 ? 'text-white' : 'text-[#716F6F]'
-														} mb-1`}
+														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
+															} mb-1`}
 														style={{ ...FONTS.bold_heading }}
 													>
 														{item?.course_name}
 													</h2>
 													<p
-														className={`${
-															index === 0 ? 'text-white' : 'text-[#716F6F]'
-														} text-sm mb-4 leading-tight line-clamp-3`}
+														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
+															} text-sm mb-4 leading-tight line-clamp-3`}
 														style={{ ...FONTS.description }}
 													>
 														{item?.description}
 													</p>
 													<p
-														className={`w-fit rounded-lg px-4 py-2 ${
-															index === 0
-																? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
-																: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
-														}`}
+														className={`w-fit rounded-lg px-4 py-2 ${index === 0
+															? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
+															: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
+															}`}
 														style={{ ...FONTS.heading_08 }}
 													>
 														{item?.coursemodules.length} Modules
@@ -540,11 +539,10 @@ const monthMap: { [key: string]: number } = {
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${
-									index === 0
-										? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-										: 'bg-white'
-								}`}
+								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${index === 0
+									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+									: 'bg-white'
+									}`}
 							>
 								<img
 									src={item?.image ?? undefined}
@@ -559,9 +557,8 @@ const monthMap: { [key: string]: number } = {
 										{item?.title}
 									</h2>
 									<p
-										className={` ${
-											index === 0 ? 'text-white' : ''
-										}  leading-tight line-clamp-3`}
+										className={` ${index === 0 ? 'text-white' : ''
+											}  leading-tight line-clamp-3`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}

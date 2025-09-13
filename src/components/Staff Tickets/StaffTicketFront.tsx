@@ -9,12 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetStaffTicketServicesThunks } from "../../features/Ticket_Management/reducers/thunks";
 import ticket1 from "../../assets/ticket1.png";
-import {
-  GetStaffTicket,
-  selectLoading,
-} from "../../features/Ticket_Management/reducers/selectors";
+import { GetStaffTicket, selectLoading } from "../../features/Ticket_Management/reducers/selectors";
 import { GetImageUrl } from "../../utils/helper";
-
+import { GetLocalStorage } from "../../utils/localStorage";
 interface Ticket {
   uuid: string;
   name: string;
@@ -27,8 +24,8 @@ interface Ticket {
 }
 
 interface GetTicketsParams {
-  branch_id: string;
-  institute_id: string;
+  branch_id: any;
+  institute_id: any;
   page: number;
   status: "opened" | "closed";
 }
@@ -45,10 +42,18 @@ const StaffTickets: React.FC = () => {
   const loading: boolean = useSelector(selectLoading);
   const error: any = useSelector((state: any) => state.staffTickets?.error);
 
+  console.log(staffTickets, "stafftickets")
+  const overall_branch_id = GetLocalStorage("selectedBranchId")
+  const overall_istitute_id = GetLocalStorage("instituteId")
+  console.log(overall_branch_id, "branch id ")
+  console.log(overall_istitute_id, "institute id")
+
   useEffect(() => {
     const params: GetTicketsParams = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      // branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      // institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branch_id: overall_branch_id,
+      institute_id: overall_istitute_id,
       page: 1,
       status: showOpenTickets ? "opened" : "closed",
     };
@@ -102,11 +107,10 @@ const StaffTickets: React.FC = () => {
             setShowOpenTickets(true);
             setShowClosedTickets(false);
           }}
-          className={`px-4 py-2 rounded-md font-semibold text-sm ${
-            showOpenTickets
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${showOpenTickets
               ? "bg-[#14b8c6] text-white"
               : "bg-gray-200 text-gray-700"
-          }`}
+            }`}
         >
           Open Tickets
         </button>
@@ -116,11 +120,10 @@ const StaffTickets: React.FC = () => {
             setShowOpenTickets(false);
             setShowClosedTickets(true);
           }}
-          className={`px-4 py-2 rounded-md font-semibold text-sm ${
-            showClosedTickets
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${showClosedTickets
               ? "bg-[#14b8c6] text-white"
               : "bg-gray-200 text-gray-700"
-          }`}
+            }`}
         >
           Closed Tickets
         </button>
@@ -213,11 +216,10 @@ const StaffTickets: React.FC = () => {
                   </div>
 
                   <button
-                    className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
-                      ticket.priority === "High"
+                    className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${ticket.priority === "High"
                         ? "bg-[#14b8c6]"
                         : "bg-[#14b8c6]"
-                    }`}
+                      }`}
                   >
                     <FiCalendar />
                     Priority: {ticket.priority}

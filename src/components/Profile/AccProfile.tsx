@@ -117,11 +117,10 @@ const AccountProfile: React.FC = () => {
         <div className="w-68 bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 ml-3 mt-5 ">
           <ul className="space-y-3">
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-                activePanel === "first"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "first"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-              } `}
+                } `}
               onClick={() => {
                 setActivePanel("first");
                 setActiveIndex(0);
@@ -131,11 +130,10 @@ const AccountProfile: React.FC = () => {
               <span style={{ ...FONTS.heading_06_bold }}>Account</span>
             </button>
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-                activePanel === "second"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "second"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-              }`}
+                }`}
               onClick={() => {
                 setActivePanel("second");
                 setActiveIndex(1);
@@ -149,11 +147,10 @@ const AccountProfile: React.FC = () => {
               <span style={{ ...FONTS.heading_06_bold }}>Security</span>
             </button>
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
-                activePanel === "third"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "third"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-              }`}
+                }`}
               onClick={() => {
                 setActivePanel("third");
                 setActiveIndex(2);

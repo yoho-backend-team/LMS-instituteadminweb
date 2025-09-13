@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import {
@@ -225,13 +226,13 @@ const StudentNotifications = () => {
           onClick={() => setOpen(true)}
           className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
         >
-		<img src={bell} alt="bell" className="w-6 h-6" />
+          <img src={bell} alt="bell" className="w-6 h-6" />
           Add Notification
         </Button>
       </div>
 
       <Drawer open={open} onOpenChange={setOpen} direction="right">
-        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l rounded-xl">
+        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white shadow-lg border-l rounded-xl">
           <DrawerHeader className="flex  justify-between p-0 mb-6 relative">
             <DrawerTitle className="text-lg font-semibold">
               Add Notification

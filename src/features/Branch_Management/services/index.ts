@@ -70,7 +70,7 @@ export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
   return response.data;
 };
 
-export const DeleteBranch = async (params: DeleteBranchParams) => {
+export const DeleteBranch = async (params: any) => {
   const response = await Client.branch.delete(
     params.uuid,
     params.institute_id

@@ -198,32 +198,32 @@ class Client {
 	};
 	batch = {
 		// create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
-		create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()), data),
+		create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), data),
 		getInstructors: (data: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()) +
+				HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) +
 				`${data.branch_id}/instructors/${data.course_id}`
 			),
 		getAll: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.batch.getAll.replace(":instituteid", getInstituteDetails()) + params.branch_id + '/batches/all',
+				HTTP_END_POINTS.batch.getAll.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) + params.branch_id + '/batches/all',
 				params
 			),
 		getWithId: (params: string) =>
-			HttpClient.get(HTTP_END_POINTS.batch.getWithId.replace(":instituteid", getInstituteDetails()), params),
+			HttpClient.get(HTTP_END_POINTS.batch.getWithId.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), params),
 		update: (data: any) =>
 			HttpClient.update(
-				HTTP_END_POINTS.batch.update.replace(":instituteid", getInstituteDetails()).replace(':batchId', data?.uuid),
+				HTTP_END_POINTS.batch.update.replace(":instituteid", getInstituteDetails()).replace(':batchId', data?.uuid).replace(':branchid', getSelectedBranchId()),
 				data
 			),
 		delete: (data: any) =>
 			HttpClient.delete(
-				HTTP_END_POINTS.batch.delete.replace(":instituteid", getInstituteDetails()).replace(':batchId', data?.uuid),
+				HTTP_END_POINTS.batch.delete.replace(":instituteid", getInstituteDetails()).replace(':batchId', data?.uuid).replace(':branchid', getSelectedBranchId()),
 				data
 			),
 		getWithCourseId: (courseId: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.batch.getBatchwithCourse.replace(":instituteid", getInstituteDetails()).replace(":branchid", courseId?.branch).replace(':courseId', courseId?.course)
+				HTTP_END_POINTS.batch.getBatchwithCourse.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()).replace(":branchid", courseId?.branch).replace(':courseId', courseId?.course)
 			),
 	};
 	online_class = {

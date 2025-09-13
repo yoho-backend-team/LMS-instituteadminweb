@@ -15,6 +15,7 @@ import {
   updateHelpCenter,
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 const AddQuestion = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,10 +39,15 @@ const AddQuestion = () => {
     description: "",
   });
 
+     const overall_branch_id=GetLocalStorage("selectedBranchId")
+        const overall_istitute_id=GetLocalStorage("instituteId")
+       console.log(overall_branch_id,"branch id ")
+       console.log(overall_istitute_id,"institute id")
+
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -52,8 +58,8 @@ const AddQuestion = () => {
 
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -67,7 +73,7 @@ const AddQuestion = () => {
       videolink: formData.videoLink,
       question: formData.status,
       answer: formData.description,
-      branch_id: '"90c93163-01cf-4f80-b88b-4bc5a5dd8ee4"',
+      branch_id: overall_branch_id,
       institute_id: "67f3a26df4b2c530acd16419",
     };
 
@@ -77,8 +83,8 @@ const AddQuestion = () => {
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -110,8 +116,8 @@ const AddQuestion = () => {
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -401,9 +407,9 @@ const AddQuestion = () => {
 
                           dispatch(
                             fetchHelpCenterThunk({
-                              branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+                              branchid: overall_branch_id,
                               instituteid:
-                                "973195c0-66ed-47c2-b098-d8989d3e4529",
+                                overall_istitute_id,
                               page: 1,
                               perPage: 10,
                             })

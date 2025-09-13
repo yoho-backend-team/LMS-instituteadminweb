@@ -17,6 +17,13 @@ export const GetProfileThunk = () => async (dispatch: any) => {
 	try {
 		const response = await GetProfileDetail();
 		dispatch(setUSerDetails(response));
+		const branch = GetLocalStorage("selectedBranchId")
+		console.log(response?.branch?.uuid, "admin branch")
+
+		if (!branch) {
+			console.log(response?.branch?.uuid, "admin branch")
+			StoreLocalStorage('selectedBranchId', response?.branch?.uuid);
+		}
 		return response.institute_id;
 	} catch (error) {
 		console.log(error);
@@ -26,10 +33,6 @@ export const GetProfileThunk = () => async (dispatch: any) => {
 export const GetBranchThunks = () => async (dispatch: any) => {
 	try {
 		const response = await getAllBranches();
-		const branch = GetLocalStorage("selectedBranchId")
-		if (!branch) {
-			StoreLocalStorage('selectedBranchId', response?.data?.[0]?.uuid);
-		}
 		dispatch(setAllBranch(response?.data));
 	} catch (error) {
 		console.log(error);

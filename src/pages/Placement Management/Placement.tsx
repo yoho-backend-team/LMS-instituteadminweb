@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
@@ -21,6 +22,7 @@ import {
   deletePlacement,
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Row
 const SkeletonRow = () => (
@@ -36,11 +38,12 @@ const SkeletonRow = () => (
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true); 
-
+  const [loading, setLoading] = useState(true); // 👈 loading state
+  const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
+  console.log(placements, "placements")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -145,7 +148,7 @@ const Placements = () => {
           }}
           className="bg-blue-500 text-white px-4 py-2 rounded flex flex-row gap-3"
         >
-          <Plus/>
+          <Plus />
           Add Placement
         </button>
       </div>
@@ -205,70 +208,74 @@ const Placements = () => {
           </TableHeader>
           <TableBody>
             {loading
-              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) 
+              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
               : placements.map((placement: any) => (
-                  <TableRow key={placement?._id} className="hover:bg-gray-50">
-                    <TableCell className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span>{placement?.company?.name ?? "N/A"}</span>
-                        <span>{placement?.company?.email ?? "N/A"}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-6 py-4">
-                      {placement?.schedule?.interviewDate
-                        ? new Date(
-                            placement.schedule.interviewDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell className="px-6 py-4">
-                      {placement?.job?.name ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="px-6 py-4">
-                      {placement?.schedule?.venue ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                <TableRow
+                  key={placement?._id}
+                  className="hover:bg-gray-50"
+                  onClick={() => navigate("/placementview", { state: { placement } })}
+                >
+                  <TableCell className="px-6 py-4">
+                    <div className="flex flex-col">
+                      <span>{placement?.company?.name ?? "N/A"}</span>
+                      <span>{placement?.company?.email ?? "N/A"}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    {placement?.schedule?.interviewDate
+                      ? new Date(
+                        placement.schedule.interviewDate
+                      ).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    {placement?.job?.name ?? "N/A"}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    {placement?.schedule?.venue ?? "N/A"}
+                  </TableCell>
+                  <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                      title="Actions"
+                      aria-label="Actions menu"
+                    >
+                      <FaEllipsisV className="h-4 w-4" />
+                    </Button>
+
+                    <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
                       <Button
                         variant="ghost"
-                        size="icon"
-                        className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
-                        title="Actions"
-                        aria-label="Actions menu"
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          setEditingPlacement(placement);
+                          setIsFormOpen(true);
+                        }}
+                        className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                        aria-label="Edit"
                       >
-                        <FaEllipsisV className="h-4 w-4" />
+                        <FaEdit className="mr-2 h-4 w-4" />
+                        <span>Edit</span>
                       </Button>
 
-                      <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
-                        <Button
-                          variant="ghost"
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            setEditingPlacement(placement);
-                            setIsFormOpen(true);
-                          }}
-                          className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                          aria-label="Edit"
-                        >
-                          <FaEdit className="mr-2 h-4 w-4" />
-                          <span>Edit</span>
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            handleDelete(placement.uuid);
-                          }}
-                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
-                          aria-label="Delete"
-                        >
-                          <FaTrash className="mr-2 h-4 w-4" />
-                          <span>Delete</span>
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      <Button
+                        variant="ghost"
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          handleDelete(placement.uuid);
+                        }}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
+                        aria-label="Delete"
+                      >
+                        <FaTrash className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
