@@ -5,7 +5,7 @@ import plus from "../../assets/navbar/plus.png";
 import edit from "../../assets/navbar/edit.png";
 import deleteIcon from "../../assets/navbar/deleteIcon.png";
 import button1 from "../../assets/navbar/button1.png";
-import cancel from "../../assets/navbar/cancel.png";
+import cancel from "../../assets/navbar/Cancel.png";
 import sucess from "../../assets/navbar/sucess.png";
 import warning from "../../assets/navbar/warning.png";
 import { useDispatch } from "react-redux";

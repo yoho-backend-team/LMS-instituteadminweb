@@ -96,3 +96,10 @@ export const deleteBatches = async (params: any) => {
 		return null;
 	}
 };
+
+//getBranch by id
+
+export const GetBranchById = async (params:any) => {
+  const response = await Client.branch.getByid(params);
+  return response;
+};
