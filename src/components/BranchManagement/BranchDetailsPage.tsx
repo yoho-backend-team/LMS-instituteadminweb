@@ -690,7 +690,7 @@ export function BranchDetailsPage({
                         tickLine={false}
                         axisLine={false}
                         tickMargin={10}
-                        tickFormatter={(value) => `₹${value / 1000}K`}
+                        tickFormatter={(value: number) => `₹${value / 1000}K`}
                       />
                       <Bar
                         dataKey={activeTab}
@@ -700,7 +700,7 @@ export function BranchDetailsPage({
                         <LabelList
                           dataKey={activeTab}
                           position="top"
-                          formatter={(value: number) => `₹${value / 1000}K`}
+                          formatter={(value: any) => `₹${value / 1000}K`}
                           fill="#716F6F"
                           offset={10}
                         />
