@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatbg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
-import cancel from "../../assets/navbar/cancel.png";
+import cancel from "../../assets/navbar/Cancel.png";
 import image from "../../assets/navbar/image.png";
 import Button from "../../assets/navbar/Button.png";
 import circle from "../../assets/navbar/circle.png";
