@@ -8,6 +8,7 @@ import { selectMessages } from "../../features/Community/Reducers/selectors";
 import socket, { socketConnect, socketDisconnect } from "../../utils/socket";
 import { GetProfileDetail } from "../../features/Auth/service";
 import { getInstituteDetails } from "../../apis/httpEndpoints";
+import type { RootState } from "../../store/store";
 
 interface Message {
   sender: string;
@@ -34,7 +35,8 @@ const Communitys: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const dispatch = useDispatch<any>();
   const communityMessages = useSelector(selectMessages);
-  console.log("send message:",communityMessages)
+  const userIds: any = useSelector((state: RootState) => state.authuser.user)
+
 
   const getProfile = async () => {
     try {
@@ -42,9 +44,8 @@ const Communitys: React.FC = () => {
       if (res?.data) {
         setUserId(res.data._id);
 
-        const fullName = `${res.data.first_name || ""} ${
-          res.data.last_name || ""
-        }`.trim();
+        const fullName = `${res.data.first_name || ""} ${res.data.last_name || ""
+          }`.trim();
         setUserName(fullName);
       }
     } catch (error) {
@@ -109,19 +110,21 @@ const Communitys: React.FC = () => {
   const handleSendMessage = () => {
     // if (!message.trim() || !selectedBatch || !userId) return;
 
+
     const msgData = {
       content: message.trim(),
       groupId: selectedBatch?._id,
-      senderId: userId,
+      senderId: userIds?._id,
       name: userName,
       time: new Date().toISOString(),
     };
 
+    console.log("send msg", msgData)
     socket.emit("sendMessage", msgData);
     setMessages((prev: any) => [
       ...prev,
       {
-        sender: userId,
+        sender: userIds?._id,
         sender_name: "You",
         text: message.trim(),
         time: formatTime(msgData.time),
@@ -141,14 +144,14 @@ const Communitys: React.FC = () => {
       if (selectedBatch) {
         dispatch(
           fetchCommunityById({
-            communityId: selectedBatch._id,
+            group: selectedBatch._id,
           })
         );
 
-        socket.emit("joinRoom", { roomId: selectedBatch._id, userId });
+        socket.emit("joinRoom", { roomId: selectedBatch._id, userId: userIds?._id });
       }
     })();
-  }, [dispatch, selectedBatch, userId]);
+  }, [dispatch, selectedBatch, userIds]);
 
   return (
     <div className="flex justify-between w-full gap-6 bg-white font-poppins">
@@ -183,7 +186,7 @@ const Communitys: React.FC = () => {
             availability: "Mon-Fri 10AM - 8PM",
             phone: "+91 98765 43265",
           }}
-          setProfileData={() => {}}
+          setProfileData={() => { }}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
