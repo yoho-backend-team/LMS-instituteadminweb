@@ -5,7 +5,7 @@ import { selectDashboardData } from '../../features/Dashboard/reducers/selectors
 import { GetLocalStorage } from '../../utils/localStorage';
 
 const Bar = () => {
-    const [selectedYear, setSelectedYear] = useState('2024');
+    const [selectedYear] = useState('2024');
     const [selectedType, setSelectedType] = useState<'Revenue' | 'Expense'>('Revenue');
 
 

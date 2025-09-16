@@ -1,15 +1,13 @@
-"use client"
-
-import type React from "react"
-import { X } from "lucide-react"
+import type React from "react";
+import { X } from "lucide-react";
 
 interface ConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => void
-  title: string
-  message: string
-  confirmButtonText: string
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmButtonText: string;
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -20,13 +18,16 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   confirmButtonText,
 }) => {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
         <div className="flex justify-end">
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -50,5 +51,5 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

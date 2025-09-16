@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../Ticket Management/Your Ticket/TicketsPage";
-import iconticket from '../../../assets/navbar/ticketicon.png';
-import ChatWindow from '../../../components/TicketManagement/ChatWindow';
+import iconticket from "../../../assets/navbar/ticketicon.png";
+import ChatWindow from "../../../components/TicketManagement/ChatWindow";
 import Sidebar from "../../../components/TicketManagement/Sidebar";
-import closeicon from '../../../assets/navbar/Cancel.png';
-import { FONTS } from '../../../constants/uiConstants';
-import fileimg from '../../../assets/navbar/fileicon.png';
+import closeicon from "../../../assets/navbar/Cancel.png";
+import { FONTS } from "../../../constants/uiConstants";
+import fileimg from "../../../assets/navbar/fileicon.png";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAdminTickets } from "../../../features/TicketManagement/YourTicket/selector";
 import { fetchAdminTicketsThunk } from "../../../features/TicketManagement/YourTicket/thunks";
-import { createTicket, updateTicket } from "../../../features/TicketManagement/YourTicket/service";
+import {
+  createTicket,
+  updateTicket,
+} from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
+import { GetLocalStorage } from "../../../utils/localStorage";
+
+interface Message {
+  id: string;
+  text: string;
+  sender: string;
+  timestamp: string;
+}
 
 const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"open" | "closed">("open");
@@ -22,33 +33,92 @@ const TicketsPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
-  const [selectedTicketUser, setSelectedTicketUser] = useState<any>(null);
-  const [selectedTicketUserDetails, setSelectedTicketUserDetails] = useState<any>(null);
-  const [messages, setMessages] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false); // 👈 New state
-
+  const [setSelectedTicketUser] = useState<any>(null);
+  const [selectedTicketUserDetails, setSelectedTicketUserDetails] =
+    useState<any>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+ 
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
 
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
+ 
+
+   const overall_branch_id=GetLocalStorage("selectedBranchId")
+      const overall_istitute_id=GetLocalStorage("instituteId")
+     console.log(overall_branch_id,"branch id ")
+     console.log(overall_istitute_id,"institute id")
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      setLoading(true); // 👈 Start loading
+    const params = {
+      branch_id: overall_branch_id,
+      status: activeTab === "open" ? "opened" : "closed",
+      page: 1,overall_istitute_id,
+    };
+    dispatch(fetchAdminTicketsThunk(params));
+  }, [activeTab, dispatch]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const formData: any = {
+      query,
+      description,
+      priority,
+      branch: overall_branch_id,
+      institute: overall_istitute_id,
+      status: activeTab === "open" ? "opened" : "closed",
+    };
+
+    if (selectedFile) {
+      const toBase64 = (file: File): Promise<string> =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+        });
+
+      try {
+        const base64String = await toBase64(selectedFile);
+        formData.file = base64String;
+      } catch (error) {
+        console.error("Failed to convert file to base64:", error);
+        return;
+      }
+    }
+
+    try {
+      if (isEditMode && editingTicketId) {
+        const response = await updateTicket(formData, editingTicketId);
+        console.log("Ticket successfully updated:", response.data);
+      } else {
+       
+        const response = await createTicket(formData);
+        console.log("Ticket successfully created:", response.data);
+      }
+
       const params = {
         branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        status: activeTab === "open" ? "opened" : "closed",
+        status: formData.status,
         page: 1,
         institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       };
-      await dispatch(fetchAdminTicketsThunk(params));
-      setLoading(false); // 👈 End loading
-    };
+      dispatch(fetchAdminTicketsThunk(params));
 
-    fetchTickets();
-  }, [activeTab, dispatch]);
+      setQuery("");
+      setDescription("");
+      setPriority("High");
+      setSelectedFile(null);
+      setviewShowModal(false);
+      setIsEditMode(false);
+      setEditingTicketId(null);
+    } catch (error) {
+      console.error("Error submitting ticket:", error);
+    }
+  };
 
   useEffect(() => {
     if (adminTickets?.messages) {
@@ -58,8 +128,8 @@ const TicketsPage: React.FC = () => {
 
   useEffect(() => {
     if (!socket) return;
-    const handleMessage = (message: any) => {
-      setMessages((prev: any) => [message, ...(prev || [])]);
+    const handleMessage = (message: Message) => {
+      setMessages((prev) => [message, ...prev]);
     };
 
     socket.on("receiveMessage", handleMessage);
@@ -68,39 +138,28 @@ const TicketsPage: React.FC = () => {
     };
   }, []);
 
-  // 👇 Skeleton Component
- // 👇 Skeleton Component
-const TicketSkeleton = () => (
-  <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
-    {/* Title */}
-    <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
-
-    {/* Query line */}
-    <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
-
-    {/* Description lines */}
-    <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
-    <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
-    <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-
-    {/* Footer placeholder */}
-    <div className="flex justify-between items-center mt-4">
-      <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-      <div className="h-3 bg-gray-300 rounded w-1/6"></div>
-    </div>
-  </div>
-);
-
+  // const TicketSkeleton = () => (
+  //   <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
+  //     <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
+  //     <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
+  //     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+  //     <div className="flex justify-between items-center mt-4">
+  //       <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+  //       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <div className="h-auto p-0">
-      {/* Header */}
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
           style={{ ...FONTS.heading_07_bold }}
         >
-          <img className="mr-2" src={iconticket} alt="ticket-icon" />
+          <img className="mr-2" src={iconticket} />
           YOUR TICKET
         </h1>
         {showCreateButton && (
@@ -132,7 +191,6 @@ const TicketSkeleton = () => (
         )}
       </div>
 
-      {/* Tabs */}
       {showbuttonWindow && (
         <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
           <button
@@ -140,10 +198,11 @@ const TicketSkeleton = () => (
               setActiveTab("open");
               setShowChatWindow(false);
             }}
-            className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
+            className={`mr-2 rounded-lg w-[157px] h-[35px] ${
+              activeTab === "open"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-teal-500 border border-teal-500"
-              }`}
+            }`}
           >
             Opened Tickets
           </button>
@@ -152,26 +211,25 @@ const TicketSkeleton = () => (
               setActiveTab("closed");
               setShowChatWindow(false);
             }}
-            className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
+            className={`rounded-lg w-[157px] h-[35px] items-center ${
+              activeTab === "closed"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-[#1BBFCA] border border-teal-500"
-              }`}
+            }`}
           >
             Closed Tickets
           </button>
         </div>
       )}
 
-      {/* Ticket Grid */}
       {activeTab === "open" && !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
-          {loading ? (
-            
-            [...Array(6)].map((_, i) => <TicketSkeleton key={i} />)
-          ) : Array.isArray(adminTickets) && adminTickets.length > 0 ? (
+          {Array.isArray(adminTickets) &&
             adminTickets.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
+                name={ticket?.user?.first_name + ticket?.user?.last_name}
+                email={ticket?.user?.email}
                 category={ticket?.description}
                 query={ticket?.query}
                 message={messages}
@@ -191,16 +249,10 @@ const TicketSkeleton = () => (
                   setShowBackButton(true);
                 }}
               />
-            ))
-          ) : (
-            <p className="text-gray-500 col-span-3 text-center">
-              No tickets found.
-            </p>
-          )}
+            ))}
         </div>
       )}
 
-      {/* Chat Window */}
       {showChatWindow && (
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
           <ChatWindow user={selectedTicketUserDetails} />
@@ -208,21 +260,29 @@ const TicketSkeleton = () => (
         </div>
       )}
 
-  
       {viewShowModal && (
-        <div className="fixed inset-0 z-30 mt-22 shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] h-full rounded-lg">
-          <div className="absolute top-0 right-5 max-w-sm min-w-[300px] h-auto overflow-auto p-2 rounded-lg bg-white shadow-lg z-40 no-scrollbar">
-            <div className="flex justify-between items-center mb-0">
-              <h2 className="text-lg font-semibold mb-2 text-[#716F6F]" style={{ ...FONTS.heading_07 }}>
+        <div className="fixed inset-0 z-30 flex justify-end items-center bg-black bg-opacity-25 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm min-w-[350px] h-auto h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
+            {/* Header */}
+            <div className="flex justify-between items-center border-b pb-2 mb-4">
+              <h2
+                className="text-lg font-semibold text-[#716F6F]"
+                style={{ ...FONTS.heading_07 }}
+              >
                 Create Ticket
               </h2>
-              <button onClick={() => setviewShowModal(false)} className="text-xl mb-3 font-bold text-gray-600 hover:text-black">
-                <img src={closeicon} alt="Close" />
+              <button
+                onClick={() => setviewShowModal(false)}
+                className="text-gray-600 hover:text-black"
+              >
+                <img src={closeicon} alt="Close" className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Query</label>
+                <label className="block mb-2 text-[#716F6F]">Query</label>
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -233,7 +293,7 @@ const TicketSkeleton = () => (
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Description</label>
+                <label className="block mb-2 text-[#716F6F]">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -244,10 +304,12 @@ const TicketSkeleton = () => (
               </div>
 
               <div style={{ ...FONTS.heading_09 }}>
-                <label className="text-gray-700 block mb-2 text-[#716F6F]">Priority</label>
+                <label className="block mb-2 text-[#716F6F]">Priority</label>
                 <select
                   value={priority}
-                  onChange={(e) => setPriority(e.target.value as "High" | "Medium" | "Low")}
+                  onChange={(e) =>
+                    setPriority(e.target.value as "High" | "Medium" | "Low")
+                  }
                   className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#1BBFCA]"
                   required
                 >
@@ -259,7 +321,12 @@ const TicketSkeleton = () => (
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700 text-[#716F6F]" style={{ ...FONTS.heading_09 }}>Upload</label>
+                <label
+                  className="block mb-1 text-sm font-medium text-[#716F6F]"
+                  style={{ ...FONTS.heading_09 }}
+                >
+                  Upload
+                </label>
                 <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
                   <input
                     type="file"
@@ -269,18 +336,21 @@ const TicketSkeleton = () => (
                         setSelectedFile(e.target.files[0]);
                       }
                     }}
+                    className="hidden"
                   />
-                  <span className="text-sm text-gray-500">
-                    <img className="mx-auto" src={fileimg}></img> Drop Files Here Or Click To Upload
+                  <span className="text-sm text-gray-500 flex items-center gap-2">
+                    <img className="w-5 h-5" src={fileimg} />
+                    Drop Files Here Or Click To Upload
                   </span>
                 </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-5 mt-0">
+              {/* Buttons */}
+              <div className="flex justify-end gap-3 pt-5">
                 <button
                   type="button"
                   onClick={() => setviewShowModal(false)}
-                  className="border border-[#1BBFCA] text-[#1BBFCA] px-4 py-1 rounded-lg hover:bg-[1BBFCA]"
+                  className="border border-[#1BBFCA] text-[#1BBFCA] px-4 py-1 rounded-lg hover:bg-[#E6F9FA]"
                   style={{ ...FONTS.heading_08 }}
                 >
                   Cancel

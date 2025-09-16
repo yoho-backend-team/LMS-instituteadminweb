@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { Plus, Filter, Mail } from "lucide-react";
 import { Input } from "../../../components/ui/input";
@@ -196,9 +197,9 @@ const TeachingStaffs: React.FC = () => {
       staff.map((member) =>
         member.id === id
           ? {
-              ...member,
-              status: member.status === "Active" ? "Inactive" : "Active",
-            }
+            ...member,
+            status: member.status === "Active" ? "Inactive" : "Active",
+          }
           : member
       )
     );
@@ -221,21 +222,21 @@ const TeachingStaffs: React.FC = () => {
   const fileInputRef = useRef(null);
   const loading = useSelector(selectLoading);
 
-  const fetchClassData = (page: number = 1) => {
-    dispatch(
-      getStaffDetailsData({
-        page: page,
-      })
-    );
-  };
 
   useEffect(() => {
+    const fetchClassData = (page: number = 1) => {
+      dispatch(
+        getStaffDetailsData({
+          page: page,
+        })
+      );
+    };
     fetchClassData();
-  }, []);
+  }, [dispatch]);
 
-  const handleFileChange = () => {};
+  const handleFileChange = () => { };
 
-  const handleUploadClick = () => {};
+  const handleUploadClick = () => { };
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
@@ -843,7 +844,7 @@ const TeachingStaffs: React.FC = () => {
                         </span>
                         <Select
                           value={member?.is_active ? "Active" : "Inactive"}
-                          onValueChange={(value: "Active" | "Inactive") =>
+                          onValueChange={() =>
                             toggleStatus(member.id)
                           }
                         >

@@ -1,11 +1,20 @@
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "../..//components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
 export function FAQFilter() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-white shadow border-1 p-5 rounded-xl">
       <div>
-        <Label htmlFor="search-faqs" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label
+          htmlFor="search-faqs"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Search FAQs
         </Label>
         <Select>
@@ -20,7 +29,10 @@ export function FAQFilter() {
         </Select>
       </div>
       <div>
-        <Label htmlFor="filter-category" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label
+          htmlFor="filter-category"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Filter Category
         </Label>
         <Select>
@@ -35,5 +47,5 @@ export function FAQFilter() {
         </Select>
       </div>
     </div>
-  )
+  );
 }

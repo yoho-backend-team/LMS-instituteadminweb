@@ -83,7 +83,6 @@ const ViewModal: React.FC<{
     const pdfCheck = isPDF();
     const imageCheck = isImage();
 
-
     if (pdfCheck) {
       return (
         <div className="w-full h-96 bg-gray-100 rounded mb-4 border-2 border-gray-300">
@@ -202,10 +201,11 @@ const ViewModal: React.FC<{
             <span className="text-yellow-400">★</span>
           </h1>
           <span
-            className={`text-xs px-3 py-1 rounded-full ${note?.is_active
-              ? "bg-green-500 text-white"
-              : "bg-gray-500 text-white"
-              }`}
+            className={`text-xs px-3 py-1 rounded-full ${
+              note?.is_active
+                ? "bg-green-500 text-white"
+                : "bg-gray-500 text-white"
+            }`}
           >
             {note?.is_active ? "Active" : "Completed"}
           </span>
@@ -259,6 +259,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   return (
     <>
       <div className="bg-white text-[#716F6F] rounded-2xl p-4 shadow-2xl relative min-h-[200px] flex flex-col">
+        {/* Top-right dropdown */}
         <div className="ml-auto mt-3 text-2xl right-3 top-3">
           <DropdownMenu
             onView={handleView}
@@ -267,6 +268,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           />
         </div>
 
+        {/* File preview section */}
         {note.file && (
           <div className="flex gap-2 mt-2 bg-[#F7F7F7] h-12 text-xl items-center cursor-pointer rounded px-2">
             <img
@@ -278,12 +280,21 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           </div>
         )}
 
+        {/* Title */}
         <h2 className="text-xl font-semibold mt-3 flex items-center">
           <img src={titleIcon} alt="icon" className="mr-2 w-5 h-5" />
           {note.title}
         </h2>
 
-        <div className="flex items-center mt-4">
+        {/* Description or other content */}
+        <div className="mt-2 flex-1">
+          {note.description && (
+            <p className="whitespace-pre-wrap text-sm">{note.description}</p>
+          )}
+        </div>
+
+        {/* Bottom section: Active / Completed + toggle button */}
+        <div className="flex items-center mt-auto pt-3 border-t border-gray-200">
           {note?.is_active ? (
             <div className="flex items-center gap-1 text-green-600 font-medium text-lg">
               <span>Active</span>

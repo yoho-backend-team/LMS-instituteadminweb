@@ -3,13 +3,13 @@ import { ChevronDown } from "lucide-react";
 import { UpdateStatusCard } from "../../../features/Users_Management/Group/reducers/service.ts";
 
 type StatusDropdownProps = {
-  idx: number;
+  idx?: number;
   initialStatus: string;
   options: string[];
   itemId: string;
 };
 export function StatusDropdown({
-  idx,
+  // idx,
   initialStatus,
   options,
   itemId,

@@ -107,7 +107,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
 
   }
 
-   const id = staff?.uuid
+  const id = staff?.uuid
 
   const handleSubmit = async () => {
     setIsEditing(false)
@@ -122,7 +122,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
         phone_number: formData.primaryNumber,
         alternate_phone_number: formData.altNumber
       },
-      course: ['67f3b7fcb8d2634300cc87b6'], 
+      course: ['67f3b7fcb8d2634300cc87b6'],
       designation: formData.designation,
       dob: formData.dob,
       email: formData.email,
@@ -133,14 +133,14 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       qualification: formData.qualification,
       user_details: "InstituteTeachingStaff", // Hardcoded as per requirement
       username: staffIdData?.userDetail?.username || formData.fullName.replace(/\s+/g, '').toLowerCase() // Generate username if not available
-     
+
     };
-     const staffId = {
-        staffId : id
-       }
-    console.log("payload",payload)
-    try {  
-      const response = await updateStaff(staffId,payload)
+    const staffId = {
+      staffId: id
+    }
+    console.log("payload", payload)
+    try {
+      await updateStaff(staffId, payload)
     }
     catch (error) {
       console.log(error);
@@ -153,7 +153,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
- 
+
 
 
   const handleDelete = async () => {
@@ -161,7 +161,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       await deleteStaff({
         staffId: id
       });
-     
+
     } catch (error) {
       console.error("Delete failed:", error);
     }

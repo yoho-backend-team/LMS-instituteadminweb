@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { HiMiniXMark } from 'react-icons/hi2';
-import { COLORS, FONTS } from '../../constants/uiConstants';
+import React, { useEffect, useState } from "react";
+import { HiMiniXMark } from "react-icons/hi2";
+import { COLORS, FONTS } from "../../constants/uiConstants";
 import {
   getBranchService,
   getCourseService,
-} from '../../features/batchManagement/services';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFormik } from 'formik';
+} from "../../features/batchManagement/services";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
 import {
   createCertificate,
   getAllBatches,
   updateCertificate,
-} from '../../features/certificateManagement/services';
-import { getStudentmanagement } from '../../features/StudentManagement/reducer/thunks';
-import { selectStudent } from '../../features/StudentManagement/reducer/selector';
+} from "../../features/certificateManagement/services";
+import { getStudentmanagement } from "../../features/StudentManagement/reducer/thunks";
+import { selectStudent } from "../../features/StudentManagement/reducer/selector";
 
 export interface Certificate {
   id: number;
@@ -27,14 +27,16 @@ export interface Certificate {
   certificateid: string;
   uuid: string;
   batch_id: string;
-  certificate_name:string
+  certificate_name: string;
+  branch_id: String;
+  institute_id: String;
 }
 
 interface CertificateModalProps {
   isOpen: boolean;
   isEditing: boolean;
-  fetchgetStudentCertificate:()=>void;
-  editingCertificate: Certificate | null;
+  fetchgetStudentCertificate: () => void;
+  editingCertificate: Certificate | any;
   onClose: () => void;
   onSave: (formData: Partial<Certificate>) => void;
 }
@@ -68,12 +70,12 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         setBranches(branchesRes?.data || []);
         setAllBatches(batchesRes?.data || []);
       } catch (error) {
-        console.error('Error fetching certificate data:', error);
+        console.error("Error fetching certificate data:", error);
       }
     })();
     dispatch(
       getStudentmanagement({
-        branch_id: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         page: 1,
       })
     );
@@ -87,11 +89,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      title: editingCertificate?.title || '',
-      course: editingCertificate?.course || '',
-      branch: editingCertificate?.branch || '',
-      batch: editingCertificate?.batch || '',
-      student: editingCertificate?.student || '',
+      title: editingCertificate?.title || "",
+      course: editingCertificate?.course || "",
+      branch: editingCertificate?.branch || "",
+      batch: editingCertificate?.batch || "",
+      student: editingCertificate?.student || "",
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
@@ -99,10 +101,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         let payload;
         if (isEditing) {
           payload = {
-           certificate_name: values.title,
+            certificate_name: values.title,
             id: editingCertificate?.id,
             certificateid: editingCertificate?.uuid,
-            description: editingCertificate?.description
+            description: editingCertificate?.description,
           };
           await updateCertificate(payload);
           fetchgetStudentCertificate();
@@ -112,28 +114,28 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             branch_id: values.branch,
             course: values.course,
             student: values.student,
-            institute_id: '973195c0-66ed-47c2-b098-d8989d3e4529',
+            institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
           };
           await createCertificate(payload);
         }
         onSave(payload);
         onClose();
       } catch (error) {
-        console.error('Error submitting form:', error);
+        console.error("Error submitting form:", error);
       }
     },
   });
 
   if (!isOpen) return null;
 
-  console.log(editingCertificate, 'certif')
+  
 
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
       <div className="w-full max-w-md h-[90vh] p-5 gap-5 rounded-lg flex flex-col shadow-xl bg-white overflow-hidden">
         <div className="flex" style={{ ...FONTS.heading_05_bold }}>
           <h2 className="text-2xl text-[#716F6F] font-semibold mb-4">
-            {isEditing ? 'Edit Certificate' : 'Add Certificate'}
+            {isEditing ? "Edit Certificate" : "Add Certificate"}
           </h2>
           <button
             onClick={onClose}
@@ -143,11 +145,16 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4 overflow-auto">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="flex flex-col gap-4 overflow-auto"
+        >
           {/* Conditional: Title for editing, Course for creating */}
           {isEditing ? (
             <div>
-              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+              <label
+                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+              >
                 Certificate Title
               </label>
               <input
@@ -161,7 +168,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           ) : (
             <div>
-              <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+              <label
+                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+              >
                 Course
               </label>
               <select
@@ -183,7 +192,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           {!isEditing && (
             <>
               <div>
-                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                <label
+                  style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+                >
                   Branch
                 </label>
                 <select
@@ -202,7 +213,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
 
               <div>
-                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                <label
+                  style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+                >
                   Batch
                 </label>
                 <select
@@ -221,7 +234,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
 
               <div>
-                <label style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}>
+                <label
+                  style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+                >
                   Student
                 </label>
                 <select
@@ -256,7 +271,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg"
               style={{ ...FONTS.heading_08 }}
             >
-              {isEditing ? 'Update' : 'Submit'}
+              {isEditing ? "Update" : "Submit"}
             </button>
           </div>
         </form>

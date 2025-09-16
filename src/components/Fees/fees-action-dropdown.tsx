@@ -1,17 +1,19 @@
-"use client"
-import { forwardRef, useEffect } from "react"
-import { Eye, Edit, Trash2, Download } from "lucide-react"
-import { useDispatch } from "react-redux";
-import { DeleteAllThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks";
+import { forwardRef } from "react";
+import { Eye, Edit, Trash2, Download } from "lucide-react";
 
 interface FeesActionDropdownProps {
-  onAction: (action: string) => void
+  onAction: (action: string) => void;
 }
 
-
-export const FeesActionDropdown = forwardRef<HTMLDivElement, FeesActionDropdownProps>(({ onAction }, ref) => {
+export const FeesActionDropdown = forwardRef<
+  HTMLDivElement,
+  FeesActionDropdownProps
+>(({ onAction }, ref) => {
   return (
-    <div ref={ref} className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-40">
+    <div
+      ref={ref}
+      className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-40"
+    >
       <div className="py-2">
         <button
           onClick={() => onAction("view")}
@@ -43,7 +45,7 @@ export const FeesActionDropdown = forwardRef<HTMLDivElement, FeesActionDropdownP
         </button>
       </div>
     </div>
-  )
-})
+  );
+});
 
-FeesActionDropdown.displayName = "FeesActionDropdown"
+FeesActionDropdown.displayName = "FeesActionDropdown";

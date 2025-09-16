@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
-import { ChevronDown } from 'lucide-react';
 import { FaEye } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -28,7 +28,7 @@ function StatsCard() {
 	//integration
 	const dispatch = useDispatch<any>();
 	const groupCard = useSelector(selectGroup);
-	const [currentPage, setcurrentPage] = useState(1);
+	const [currentPage] = useState(1);
 	const loading = useSelector(selectLoading);
 
 	useEffect(() => {

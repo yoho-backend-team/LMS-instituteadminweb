@@ -1,6 +1,6 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
+
+import { Button } from "../../components/ui/button"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../../components/ui/drawer"
 import { CheckCircle } from "lucide-react"
 
 interface SuccessDialogProps {

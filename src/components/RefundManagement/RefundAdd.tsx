@@ -182,7 +182,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     if (editData?.uuid) {
       const updatePayload = { uuid: editData.uuid, ...apiPayload };
-      console.log("Update: coide", editData.uuid);
+   
       await updateRefund(updatePayload);
     } else {
       dispatch(CreateRefundThunk(apiPayload));
@@ -193,7 +193,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   };
 
   const getInputClass = (error: boolean) =>
-    `h-10 border px-2 rounded w-full ${error ? "border-red-500" : "border-gray-300"
+    `h-10 border px-2 rounded w-full ${
+      error ? "border-red-500" : "border-gray-300"
     }`;
 
   return (
@@ -212,7 +213,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-5 h-[75vh] overflow-y-auto pr-2"
+        className="flex flex-col gap-5 h-[85vh] overflow-y-auto pr-2"
       >
         <div className="space-y-4">
           {/* Branch Dropdown */}
@@ -331,7 +332,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
                         fee.student?.uuid === selectedStudent
                     )
                     .map((fee: any) => {
-
                       const paidAmount = fee?.paid_amount ?? 0;
                       return (
                         <option key={fee._id} value={fee._id}>

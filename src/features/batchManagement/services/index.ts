@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../apis/index';
 
 export const getWithIdBatchService = async (params: any) => {
@@ -94,4 +95,11 @@ export const deleteBatches = async (params: any) => {
 		console.error('Error in deletebatches:', error);
 		return null;
 	}
+};
+
+//getBranch by id
+
+export const GetBranchById = async (params:any) => {
+  const response = await Client.branch.getByid(params);
+  return response;
 };

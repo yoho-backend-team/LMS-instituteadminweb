@@ -15,7 +15,7 @@ export const getStudentsThunk =
 export const getAllPlacemetsThunk = (data: any) => async (dispatch: any) => {
   try {
     const response = await getAllPlacements(data)
-    dispatch(setAllPlacements(response.data))
+    dispatch(setAllPlacements(response?.data))
   } catch (error) {
     console.log(error)
   }
@@ -23,7 +23,7 @@ export const getAllPlacemetsThunk = (data: any) => async (dispatch: any) => {
 export const getPlacementByIdThunk = (params: any) => async (dispatch: any) => {
   try {
     const response = await getPlacementsByID(params);
-    dispatch(setPlacementById(response.data));
+    dispatch(setPlacementById(response?.data));
   } catch (error) {
     console.log(error)
   }
@@ -32,7 +32,7 @@ export const getPlacementByIdThunk = (params: any) => async (dispatch: any) => {
 export const createPlacementThunk = (data: any) => async (dispatch: any) => {
   try {
     const response = await createPlacement(data);
-    dispatch(addPlacement(response.data));
+    dispatch(addPlacement(response?.data));
   } catch (error) {
     console.error("Error creating placement:", error);
     throw error;

@@ -1,4 +1,3 @@
-import React from "react";
 import Icon from "../../../assets/moneyicon.png";
 import Icon2 from "../../../assets/moneyicon2.png";
 import Icon3 from "../../../assets/moneyicon3.png";
@@ -42,9 +41,9 @@ function StatsCard() {
         >
           {/* Icon and Title */}
           <div className="flex items-center gap-3">
-           <div className="w-15 h-15 bg-white rounded-lg shadow-[0_0_15px_rgba(255,255,255,010)] flex items-center justify-center">
-  <img src={card.icon} alt="icon" className="w-10 h-10" />
-</div>
+            <div className="w-15 h-15 bg-white rounded-lg shadow-[0_0_15px_rgba(255,255,255,010)] flex items-center justify-center">
+              <img src={card.icon} alt="icon" className="w-10 h-10" />
+            </div>
 
             <p className="text-xl font-medium text-[#716F6F]">{card.title}</p>
           </div>

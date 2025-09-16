@@ -39,9 +39,9 @@ export const GetAllRefundsThunk = (params?: any) => async (dispatch: any) => {
 export const CreateRefundThunk = (payload: any) => async (dispatch: any) => {
 	try {
 		dispatch(setRefundLoading(true));
-		console.log('Creating refund with payload:', payload);
+		
 		const res = await createRefund(payload);
-		console.log('Create refund response:', res);
+		
 
 		dispatch(addRefund(res.data));
 
@@ -68,8 +68,8 @@ export const UpdateRefundThunk = (payload: any) => async (dispatch: any) => {
 	try {
 		dispatch(setRefundLoading(true));
 		const res: any = await updateRefund(payload);
-		console.log('Update thunk', payload);
-		dispatch(updateRefundInState(res.data));
+		
+		dispatch(updateRefundInState(res?.data));
 	} catch (error: any) {
 		console.log('update thunk', error);
 		dispatch(setRefundError(error.message || 'Failed to update refund'));
@@ -111,7 +111,7 @@ export const GetBatchThunk = (courseId: string) => async (dispatch: any) => {
 	try {
 		dispatch(setRefundLoading(true));
 		const res = await GetBatch(courseId);
-		dispatch(getbatchwith_id(res.data));
+		dispatch(getbatchwith_id(res?.data));
 	} catch (error: any) {
 		dispatch(setRefundError(error.message || 'Failed to fetch batches'));
 	} finally {
@@ -124,7 +124,7 @@ export const GetStudentsWithBatchThunks =
 	(params: any) => async (dispatch: any) => {
 		try {
 			const response = await StudentsWithBatch(params);
-			dispatch(getstudent(response.data));
+			dispatch(getstudent(response?.data));
 			return response;
 		} catch (error) {
 			console.error('Error fetching students with batch in thunk', error);
@@ -136,7 +136,7 @@ export const GetStudentFeeThunks =
 	(studentId: string) => async (dispatch: any) => {
 		try {
 			const response = await StudentWithFee(studentId);
-			dispatch(getfee(response.data));
+			dispatch(getfee(response?.data));
 			return response;
 		} catch (error) {
 			console.log('Error in fetching student Fee', error);

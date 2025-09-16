@@ -1,7 +1,7 @@
 
 import React, { useRef, useState } from 'react';
 import otpimg from '../../../assets/otpimg.png'
-import { GetLocalStorage, RemoveLocalStorage, StoreLocalStorage } from '../../../utils/localStorage';
+import { GetLocalStorage, RemoveLocalStorage } from '../../../utils/localStorage';
 import { AuthOtp } from '../../../features/Auth/service';
 import toast from 'react-hot-toast';
 import { useAuth } from '../AuthContext';
@@ -60,7 +60,7 @@ const OtpVerification = () => {
 			RemoveLocalStorage('OtpToken')
 			RemoveLocalStorage('otp')
 			RemoveLocalStorage('email')
-			console.log(response)
+			
 			login(response?.data?.token)
 
 		} else {

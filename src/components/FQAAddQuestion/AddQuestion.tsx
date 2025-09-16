@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
@@ -16,6 +15,7 @@ import {
   updateHelpCenter,
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 const AddQuestion = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +26,7 @@ const AddQuestion = () => {
   const [modalStage, setModalStage] = useState<
     "confirm" | "processing" | "success" | "dialog" | null
   >(null);
-  const [loading, setLoading] = useState(true); // Skeleton loader state
+  const [loading, setLoading] = useState(true);
 
   const categories = useSelector(faqCategory);
   const dispatch = useDispatch<any>();
@@ -39,10 +39,15 @@ const AddQuestion = () => {
     description: "",
   });
 
+     const overall_branch_id=GetLocalStorage("selectedBranchId")
+        const overall_istitute_id=GetLocalStorage("instituteId")
+       console.log(overall_branch_id,"branch id ")
+       console.log(overall_istitute_id,"institute id")
+
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -53,8 +58,8 @@ const AddQuestion = () => {
 
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -68,7 +73,7 @@ const AddQuestion = () => {
       videolink: formData.videoLink,
       question: formData.status,
       answer: formData.description,
-      branch_id: '"90c93163-01cf-4f80-b88b-4bc5a5dd8ee4"',
+      branch_id: overall_branch_id,
       institute_id: "67f3a26df4b2c530acd16419",
     };
 
@@ -78,8 +83,8 @@ const AddQuestion = () => {
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -111,8 +116,8 @@ const AddQuestion = () => {
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -256,16 +261,18 @@ const AddQuestion = () => {
         </table>
       </div>
 
-
       {/* Modal */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
-            ? "justify-center"
-            : "justify-end"
-            } z-50`}
+          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${
+            modalStage === "success" ||
+            modalStage === "dialog" ||
+            modalStage === "processing"
+              ? "justify-center"
+              : "justify-end"
+          } z-50`}
         >
-          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
+          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative h-[90%]">
             {/* Form Stage */}
             {modalStage === "confirm" && (
               <div>
@@ -277,7 +284,7 @@ const AddQuestion = () => {
                     onClick={resetForm}
                     className="ml-auto h-6 w-6 bg-gray-500 rounded-full right-4 text-black"
                   >
-                    <IoMdClose size={20} className="ml-0.5" />
+                    <IoMdClose size={20} className="ml-0.5 text-white" />
                   </button>
                 </div>
                 <form
@@ -400,9 +407,9 @@ const AddQuestion = () => {
 
                           dispatch(
                             fetchHelpCenterThunk({
-                              branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+                              branchid: overall_branch_id,
                               instituteid:
-                                "973195c0-66ed-47c2-b098-d8989d3e4529",
+                                overall_istitute_id,
                               page: 1,
                               perPage: 10,
                             })

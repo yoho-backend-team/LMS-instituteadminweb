@@ -2,7 +2,8 @@
 import axios from 'axios';
 import { ClearLocalStorage, GetLocalStorage } from '../utils/localStorage';
 import { showSessionExpiredModal } from '../components/Session/sessionexpiremodel';
-import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
+// import { showUpgradeModal } from '../components/shared/UpgradeSubscriptionModal';
+import { showUpgradeWindow } from '../components/shared/upgradeWindow'
 
 const Axios = axios.create({
 	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
@@ -30,12 +31,15 @@ Axios.interceptors.response.use(
 		) {
 			ClearLocalStorage();
 			showSessionExpiredModal();
-		} else if (
+		}
+		if (
 			error?.response?.status === 403 &&
 			error?.response?.data?.message ===
-				'Subscription limit reached. Update your subscription plan.'
+			'Subscription limit reached. Update your subscription plan.'
 		) {
-			showUpgradeModal();
+			console.log("expire")
+			// showUpgradeModal();
+			showUpgradeWindow()
 		}
 		return Promise.reject(error);
 	}
@@ -43,7 +47,15 @@ Axios.interceptors.response.use(
 
 class HttpClient {
 	async get(url: string, params?: any) {
-		const response = await Axios.get(url, { params });
+		const response = await Axios.get(url, {
+			params,
+			headers: {
+				'Cache-Control': 'no-cache',
+				'Pragma': 'co-cache',
+				'If-None-Match': '',
+				'If-Modifiec-Since': '',
+			}
+		},);
 		return response.data;
 	}
 
@@ -54,6 +66,11 @@ class HttpClient {
 
 	async update(url: string, data?: any) {
 		const response = await Axios.put(url, data);
+		return response.data;
+	}
+
+	async patch(url: string, data?: any) {
+		const response = await Axios.patch(url, data);
 		return response.data;
 	}
 

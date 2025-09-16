@@ -1,25 +1,28 @@
-import { ArrowLeft } from 'lucide-react'
-import { Card, CardContent } from "../../components/ui/card"
-import { Input } from "../../components/ui/input"
-import { Button } from '../ui/button'
-import { useNavigate } from 'react-router-dom'
-
-
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ClassView() {
-
   const navigate = useNavigate();
 
+  
+
   const handleBack = () => {
-    navigate(-1)
-  }
+    navigate(-1);
+  };
   return (
     <div className="min-h-screen  p-4 sm:p-6 lg:p-8">
       <div className="  rounded-lg  ">
         {/* Header */}
         <div className="flex items-center mb-6 ">
-           <Button variant="outline" onClick={handleBack} className="flex items-center gap-2 bg-transparent mr-5">
+          <Button
+            variant="outline"
+            onClick={handleBack}
+            className="flex items-center gap-2 bg-transparent mr-5"
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-2xl font-semibold text-gray-800">Class</h1>
@@ -30,7 +33,9 @@ export default function ClassView() {
           <CardContent className="p-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <p className="text-sm text-gray-500 mb-1">Course</p>
-              <p className="text-lg font-semibold text-gray-800">MEAN STACK 202</p>
+              <p className="text-lg font-semibold text-gray-800">
+                MEAN STACK 202
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Batch</p>
@@ -42,7 +47,9 @@ export default function ClassView() {
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Date</p>
-              <p className="text-lg font-semibold text-gray-800">2025-06-12T:00:00:00.000Z</p>
+              <p className="text-lg font-semibold text-gray-800">
+                2025-06-12T:00:00:00.000Z
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -60,11 +67,15 @@ export default function ClassView() {
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Instructor</p>
-              <p className="text-lg font-semibold text-gray-800">MEAN STACK 202</p>
+              <p className="text-lg font-semibold text-gray-800">
+                MEAN STACK 202
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Class Link</p>
-              <p className="text-lg font-semibold text-gray-800">2025-06-12T:00:00:00.000Z</p>
+              <p className="text-lg font-semibold text-gray-800">
+                2025-06-12T:00:00:00.000Z
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -92,5 +103,5 @@ export default function ClassView() {
         </div>
       </div>
     </div>
-  )
+  );
 }

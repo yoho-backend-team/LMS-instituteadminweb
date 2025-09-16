@@ -10,7 +10,7 @@ export const COLORS = {
 	white: '#fff',
 	button: '#0AA2AC',
 };
-
+ 
 export const FONTS = {
 	bold_heading: {
 		fontFamily: 'Poppins',

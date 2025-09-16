@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // thunks/feeThunks.ts
 import {
 	creatFees,
@@ -91,7 +92,7 @@ export const DeleteAllThunks = (params: any) => async (dispatch: any) => {
 	try {
 		const response = await DeleteAll(params);
 		dispatch(deletestudent(response));
-		console.log('fees data fetched in thunk', response);
+		
 		return response;
 	} catch (error) {
 		console.log('Error in getallfees Thunks:', error);
@@ -102,7 +103,7 @@ export const EditStudentthunks = (params: any) => async (dispatch: any) => {
 	try {
 		const response = await EditStudent(params);
 		dispatch(editstudent(response));
-		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa comming', response);
+		
 		return response;
 	} catch (error) {
 		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa', error);

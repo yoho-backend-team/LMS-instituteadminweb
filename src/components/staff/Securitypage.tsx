@@ -12,11 +12,13 @@ const Securitypage: React.FC = () => {
 
   const handleConfirmToggle = () => {
     setIsEditable(false);
-  }
+  };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] p-6 w-full max-w-5xl mx-auto mt-10">
-      <h2 className="text-lg font-semibold text-gray-800 mb-6">Change Password</h2>
+    <div className="bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] p-6 w-full ">
+      <h2 className="text-lg font-semibold text-gray-800 mb-6">
+        Change Password
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* New Password */}
@@ -32,7 +34,9 @@ const Securitypage: React.FC = () => {
 
         {/* Confirm New Password */}
         <div style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
-          <label className="block text-sm text-gray-700 mb-1">Confirm New Password</label>
+          <label className="block text-sm text-gray-700 mb-1">
+            Confirm New Password
+          </label>
           <Input
             className="border border-[#716F6F]"
             type="password"
@@ -46,14 +50,14 @@ const Securitypage: React.FC = () => {
         <Button
           className="bg-[#3abe65] text-white"
           onClick={handleConfirmToggle}
-          disabled={!isEditable}    
+          disabled={!isEditable}
         >
           Confirm
         </Button>
         <Button
           className="bg-[#3abe65] text-white"
           onClick={handleEditToggle}
-          disabled={isEditable} 
+          disabled={isEditable}
         >
           Change Password
         </Button>

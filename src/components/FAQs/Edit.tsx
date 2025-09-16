@@ -12,36 +12,33 @@ import {
 } from "../../components/ui/drawer";
 import { X } from "lucide-react";
 import type { FAQItem } from "../../types/faq";
-import { UpdateFaq } from"../../features/Faq/service"; // make sure this is correct path
+import { UpdateFaq } from "../../features/Faq/service";
 import { toast } from "react-toastify";
 
 interface EditFAQDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   faqToEdit: FAQItem | null;
-  onSuccess: () => void; // callback after successful update to refresh FAQ list
 }
 
 export function EditFAQDrawer({
   open,
   onOpenChange,
   faqToEdit,
-  onSuccess,
 }: EditFAQDrawerProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  if (faqToEdit) {
-    setTitle(faqToEdit.title || "");
-    setDescription(faqToEdit.description || "");
-  } else {
-    setTitle("");
-    setDescription("");
-  }
-}, [faqToEdit]);
-
+    if (faqToEdit) {
+      setTitle(faqToEdit.title || "");
+      setDescription(faqToEdit.description || "");
+    } else {
+      setTitle("");
+      setDescription("");
+    }
+  }, [faqToEdit]);
 
   const handleSubmit = async () => {
     if (!faqToEdit) return;
@@ -52,7 +49,6 @@ export function EditFAQDrawer({
       await UpdateFaq(faqToEdit.uuid, updatedData);
       toast.success("FAQ updated successfully!");
       onOpenChange(false);
-      onSuccess();
     } catch (error) {
       toast.error("Failed to update FAQ.");
     } finally {
@@ -66,7 +62,7 @@ export function EditFAQDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l h-[90%] mt-10 rounded-xl ">
         <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
           <DrawerTitle className="text-lg font-semibold">Edit FAQ</DrawerTitle>
           <DrawerClose>

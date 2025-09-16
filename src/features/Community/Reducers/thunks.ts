@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCommunity, getcommunityById } from '../services/index';
 import { getcommunity, getMessage, setLoading } from './CommunitySlice'; // Avoid same name for action and function
 

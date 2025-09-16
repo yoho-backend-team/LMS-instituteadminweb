@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/features/BranchManagement/reducers/branchThunks.ts
 import {
 	CreateBranch,
@@ -15,26 +16,26 @@ import {
 	updateBranchStatus,
 } from './branchSlice';
 
-interface BranchParams {
-	institute_id: string;
-	page?: number;
-}
+// interface BranchParams {
+// 	institute_id: string;
+// 	page?: number;
+// }
 
-interface DeleteBranchParams {
-	id: string;
-	uuid: string;
-}
+// interface DeleteBranchParams {
+// 	id: string;
+// 	uuid: string;
+// }
 
-interface StatusUpdateParams {
-	branch_id: string;
-	status: 'active' | 'inactive';
-	uuid: string;
-}
+// interface StatusUpdateParams {
+// 	branch_id: string;
+// 	status?: 'active' | 'inactive';
+// 	uuid: string;
+// }
 
-export const GetAllBranchesThunk = (params: any) => async (dispatch: any) => {
+export const GetAllBranchesThunk = () => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
-		const response = await GetAllBranches(params);
+		const response = await GetAllBranches();
 		dispatch(getBranches(response.data));
 		dispatch(setLoading(false));
 		return response.data;
@@ -48,39 +49,39 @@ export const GetAllBranchesThunk = (params: any) => async (dispatch: any) => {
 
 export const DeleteBranchThunk =
 	(params: { instituteId: string; branchUuid: string }) =>
-	async (dispatch: any) => {
-		try {
-			await DeleteBranch({
-				institute_id: params.instituteId,
-				uuid: params.branchUuid,
-			});
-			dispatch(deleteBranch(params.branchUuid));
-		} catch (error) {
-			console.error('Error deleting branch:', error);
-			throw error;
-		}
-	};
+		async (dispatch: any) => {
+			try {
+				await DeleteBranch({
+					institute_id: params.instituteId,
+					uuid: params.branchUuid,
+				});
+				dispatch(deleteBranch(params.branchUuid));
+			} catch (error) {
+				console.error('Error deleting branch:', error);
+				throw error;
+			}
+		};
 
 export const EditBranchThunk =
-	(params: { id: string; data: any; uuid: string }) =>
-	async (dispatch: any) => {
-		try {
-			const updatedData = await EditBranch(params);
-			dispatch(editBranch(updatedData));
-			return updatedData;
-		} catch (error) {
-			console.error('Error editing branch:', error);
-			throw error;
-		}
-	};
+	(params: { branchuuid: string; data: any; }) =>
+		async (dispatch: any) => {
+			try {
+				const updatedData = await EditBranch(params);
+				dispatch(editBranch(updatedData));
+				return updatedData;
+			} catch (error) {
+				console.error('Error editing branch:', error);
+				throw error;
+			}
+		};
 
 export const UpdateBranchStatusThunk =
-	(data: StatusUpdateParams) => async (dispatch: any) => {
+	(data: any) => async (dispatch: any) => {
 		try {
 			await ToggleBranchStatus(data);
 			dispatch(
 				updateBranchStatus({
-					branch_id: data.branch_id,
+					id: data.branch_id,
 					status: data.status,
 				})
 			);

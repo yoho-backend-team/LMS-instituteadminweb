@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCertificate } from '../services';
 import { setCertificateClass, setLoading } from './slice';
 

@@ -1,16 +1,18 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
-import { Plus, SlidersHorizontal } from "lucide-react"
-import type { ReactNode } from "react"
+import { Button } from "../../components/ui/button";
+import { Plus, SlidersHorizontal } from "lucide-react";
+import type { ReactNode } from "react";
 
 interface FAQActionBarProps {
-  showFilter: boolean
-  onToggleFilter: () => void
-  onAddFAQClick: () => void
+  showFilter: boolean;
+  onToggleFilter: () => void;
+  onAddFAQClick: () => void;
 }
 
-export function FAQActionBar({ showFilter, onToggleFilter, onAddFAQClick }: FAQActionBarProps): ReactNode {
+export function FAQActionBar({
+  showFilter,
+  onToggleFilter,
+  onAddFAQClick,
+}: FAQActionBarProps): ReactNode {
   return (
     <div className="flex justify-between items-center mb-6">
       <Button
@@ -30,5 +32,5 @@ export function FAQActionBar({ showFilter, onToggleFilter, onAddFAQClick }: FAQA
         </Button>
       </div>
     </div>
-  )
+  );
 }

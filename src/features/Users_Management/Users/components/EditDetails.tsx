@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChevronDownIcon } from "lucide-react";
 import { Input } from "../../../../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
@@ -10,30 +11,30 @@ import { getInstituteDetails, getSelectedBranchId } from "../../../../apis/httpE
 import { updateUser } from "../service";
 
 interface Group {
-  _id: string;
-  identity: string;
-  [key: string]: any;
+    _id: string;
+    identity: string;
+    [key: string]: any;
 }
 
 interface UserDetail {
-  first_name?: string;
-  last_name?: string;
-  email?: string;
-  username?: string;
-  designation?: string;
-  role?: {
-    identity?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    username?: string;
+    designation?: string;
+    role?: {
+        identity?: string;
+        [key: string]: any;
+    };
+    phone_number?: string;
+    image?: string;
+    uuid?: string;
     [key: string]: any;
-  };
-  phone_number?: string;
-  image?: string;
-  uuid?: string;
-  [key: string]: any;
 }
 
 interface EditDetailsProps {
-  setShowEditModal: (show: boolean) => void;
-  userDetail: UserDetail | null;
+    setShowEditModal: (show: boolean) => void;
+    userDetail: UserDetail | undefined;
 }
 
 const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail }) => {
@@ -54,25 +55,24 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
         }
     }
 
-    const initialValues = {
-        first_name: "",
-        last_name: "",
-        email: "",
-        username: "",
-        designation: "",
-        role: "",
-        phone_number: "",
-        image: "",
-        userId: ""
+    type initialValues = {
+        first_name: string | undefined,
+        last_name: string | undefined,
+        email: string | undefined,
+        username: string | undefined,
+        designation: string | undefined,
+        role: string | undefined,
+        phone_number: string | undefined,
+        image: string | undefined,
+        userId: string | undefined
     }
 
-    const { 
-        register, 
-        setValue, 
-        handleSubmit, 
-        reset, 
-        formState: { errors } 
-    } = useForm<typeof initialValues>();
+    const {
+        register,
+        setValue,
+        handleSubmit,
+        reset,
+    } = useForm<initialValues>();
 
     useEffect(() => {
         if (userDetail) {
@@ -90,7 +90,7 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
         }
     }, [userDetail, reset]);
 
-    const onSubmit = async (data: typeof initialValues) => {
+    const onSubmit = async (data: initialValues) => {
         try {
             await updateUser(data);
             setShowEditModal(false);
@@ -105,11 +105,11 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
                 <div className={`border bg-[${COLORS.primary}] h-[48px] rounded-xl text-white flex items-center justify-center`}>
                     <h1 style={{ ...FONTS.heading_05_bold }}>Edit user Information</h1>
                 </div>
-                
+
                 <div className='p-9 grid justify-center'>
-                    <img 
-                        src={GetImageUrl(userDetail?.image) ?? ""} 
-                        className={`w-[100px] h-[100px] border rounded-full mx-auto`} 
+                    <img
+                        src={GetImageUrl(userDetail?.image ?? "") ?? undefined}
+                        className={`w-[100px] h-[100px] border rounded-full mx-auto`}
                         alt='Preview'
                     />
                     <input
@@ -119,7 +119,7 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
                         className='p-2 mx-auto'
                     />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-5">
                     <div className="grid gap-1">
                         <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>First Name</label>
@@ -178,12 +178,12 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
 
                     <div className='grid gap-1'>
                         <label className={`text-[${COLORS.gray_dark_02}]`} style={{ ...FONTS.heading_08_bold }}>Role</label>
-                        <Select 
-                            onValueChange={(value) => setValue("role", value)} 
+                        <Select
+                            onValueChange={(value) => setValue("role", value)}
                             defaultValue={userDetail?.role?.identity || ""}
                         >
-                            <SelectTrigger 
-                                style={{ height: '45px' }} 
+                            <SelectTrigger
+                                style={{ height: '45px' }}
                                 className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
                             >
                                 <SelectValue placeholder={userDetail?.role?.identity || "Select role"} />
@@ -191,9 +191,9 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
                             </SelectTrigger>
                             <SelectContent className='bg-white'>
                                 {groups.map((group) => (
-                                    <SelectItem 
-                                        key={group._id} 
-                                        value={group._id} 
+                                    <SelectItem
+                                        key={group._id}
+                                        value={group._id}
                                         className={`hover:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer`}
                                         style={{ ...FONTS.heading_08 }}
                                     >
@@ -204,19 +204,19 @@ const EditDetails: React.FC<EditDetailsProps> = ({ setShowEditModal, userDetail 
                         </Select>
                     </div>
                 </div>
-                
+
                 <div className='flex justify-end gap-2 mt-6'>
-                    <button 
+                    <button
                         type="button"
-                        onClick={() => setShowEditModal(false)} 
-                        style={{ ...FONTS.heading_08_bold }} 
+                        onClick={() => setShowEditModal(false)}
+                        style={{ ...FONTS.heading_08_bold }}
                         className={`bg-[#D7F6F5] border border-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#1BBFCA]`}
                     >
                         Cancel
                     </button>
-                    <button 
-                        type='submit' 
-                        style={{ ...FONTS.heading_08_bold }} 
+                    <button
+                        type='submit'
+                        style={{ ...FONTS.heading_08_bold }}
                         className='bg-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-white'
                     >
                         Save Changes

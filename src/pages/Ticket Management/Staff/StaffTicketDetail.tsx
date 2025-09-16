@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiX, FiSend, FiArrowLeft } from "react-icons/fi";
+import {  FiSend, FiArrowLeft } from "react-icons/fi";
 import chtimg from "../../../assets/icons/chtimg.png";
 import userblue from "../../../assets/navbar/userblue.png";
 import { useTicketContext } from "../../../components/Staff Tickets/StaffTicketContext";
@@ -13,40 +13,41 @@ import dayjs from "dayjs";
 import { updateStaffTicketService } from "../../../features/Ticket_Management/services";
 import socket from "../../../utils/socket";
 import { GetProfileDetail } from "../../../features/Auth/service";
+import { IoIosCloseCircle } from "react-icons/io";
 
 interface Message {
   sender: "user" | "admin";
   text: string;
   time: string;
 }
+interface AdminProfile {
+  _id: string;
+  full_name?: string;
+  [key: string]: any;
+}
 
 const StaffTicketDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { updateTicketStatus, tickets } = useTicketContext();
-  const [adminProfile, SetAdminProfile] = useState();
-  const [messages, setMessages] = useState<Message[]>()
+  const { tickets } = useTicketContext();
+  const [adminProfile, SetAdminProfile] = useState<AdminProfile | null>(null);
+  const [messages, setMessages] = useState<Message[]>();
 
   const ticketId: any = id;
   const ticket = tickets.find((t: any) => t.id === ticketId);
   const status = ticket?.status ?? "opened";
 
-  const dispatch = useDispatch<any>()
+  const dispatch = useDispatch<any>();
 
-  const individualData = useSelector(getindividualStaffdata)
+  const individualData = useSelector(getindividualStaffdata);
 
   useEffect(() => {
-
-    dispatch(GetIndividualStaffTicketThunks(ticketId))
-
-  }, [])
-
+    dispatch(GetIndividualStaffTicketThunks(ticketId));
+  }, [dispatch, ticketId]);
 
   const handleCloseTicket = async (ticketId: any) => {
-
-    const respone = await updateStaffTicketService(ticketId)
-    console.log(respone)
-
+    const respone = await updateStaffTicketService(ticketId);
+    console.log(respone);
   };
 
   const [inputValue, setInputValue] = useState("");
@@ -54,18 +55,18 @@ const StaffTicketDetail: React.FC = () => {
 
   const getProfile = async () => {
     const response = await GetProfileDetail();
-    SetAdminProfile(response?.data)
-  }
+    SetAdminProfile(response?.data);
+  };
 
   useEffect(() => {
     if (individualData?.messages) {
-      setMessages(individualData.messages)
+      setMessages(individualData.messages);
     }
-  }, [individualData])
+  }, [individualData]);
 
   useEffect(() => {
     getProfile();
-  }, [])
+  }, []);
 
   const handleSend = () => {
     if (inputValue.trim() === "") return;
@@ -74,10 +75,13 @@ const StaffTicketDetail: React.FC = () => {
       ticket_id: id,
       text: inputValue,
       senderType: "InstituteAdmin",
-      user: adminProfile?._id
-    };
-    socket.emit("sendTeacherTicketMessage", newMessage)
-    setMessages((prev) => [{ sender: adminProfile?._id, content: inputValue, date: new Date() }, ...prev]);
+      user: adminProfile?._id,
+    } as any;
+    socket.emit("sendTeacherTicketMessage", newMessage);
+    setMessages((prev: any) => [
+      { sender: adminProfile?._id, content: inputValue, date: new Date() },
+      ...prev,
+    ]);
     setInputValue("");
   };
 
@@ -88,22 +92,21 @@ const StaffTicketDetail: React.FC = () => {
   }, [inputValue]);
 
   useEffect(() => {
-    socket.connect()
+    socket.connect();
     socket.on("connect", () => {
-      socket.emit("joinTicket", id)
+      socket.emit("joinTicket", id);
     });
 
     const handleMessage = (message: Message) => {
-      console.log(" Staff Mess", message)
-      setMessages((prev) => [message, ...prev])
-    }
+      console.log(" Staff Mess", message);
+      setMessages((prev: any) => [message, ...prev]);
+    };
 
-    socket.on("receiveTeacherTicketMessage", handleMessage)
+    socket.on("receiveTeacherTicketMessage", handleMessage);
     return () => {
-      socket.off("receiveTeacherTicketMessage", handleMessage)
-    }
-  })
-
+      socket.off("receiveTeacherTicketMessage", handleMessage);
+    };
+  });
 
   return (
     <div className="p-6 pt-0">
@@ -113,7 +116,7 @@ const StaffTicketDetail: React.FC = () => {
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-4 py-2 text-black rounded-md text-sm font-semibold"
           >
-            <FiArrowLeft className="text-lg" /> Back
+            <FiArrowLeft className="text-xl" />
           </button>
           <h1 className="text-xl font-bold">Staff Ticket</h1>
         </div>
@@ -122,18 +125,19 @@ const StaffTicketDetail: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
         <div>
           <p className="text-sm font-semibold">
-            TICKET ID : <span className="text-[#14b8c6]">#{individualData?.id}</span>
+            TICKET ID :{" "}
+            <span className="text-[#14b8c6]">#{individualData?.id}</span>
           </p>
           <p className="text-sm text-gray-600 mt-1">
             RAISED DATE & TIME :{" "}
-            <span className="font-medium">{dayjs(individualData?.date).format("DD-MM-YYYY , HH:MM A")}</span>
+            <span className="font-medium">
+              {dayjs(individualData?.date).format("DD-MM-YYYY , HH:MM A")}
+            </span>
           </p>
         </div>
         {status !== "closed" && (
-          <button
-            className="flex items-center gap-2 px-4 py-2 bg-[#14b8c6] text-white rounded-md text-sm font-semibold"
-          >
-            <FiX className="text-lg" /> CLOSE TICKET
+          <button className="flex items-center gap-2 px-4 py-2 bg-white text-[#3ABE65] rounded-md text-sm font-semibold border-2 shadow">
+            <IoIosCloseCircle className="text-lg" /> CLOSE TICKET
           </button>
         )}
       </div>
@@ -167,8 +171,9 @@ const StaffTicketDetail: React.FC = () => {
               {messages?.map((msg: any, idx: any) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? "justify-end" : ""
-                    }`}
+                  className={`flex items-start gap-2 ${
+                    msg.sender === adminProfile?._id ? "justify-end" : ""
+                  }`}
                 >
                   {msg.sender === "user" && (
                     <img
@@ -178,17 +183,19 @@ const StaffTicketDetail: React.FC = () => {
                     />
                   )}
                   <div
-                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === adminProfile?._id
+                    className={`p-2 rounded shadow text-sm max-w-[75%] ${
+                      msg.sender === adminProfile?._id
                         ? "bg-[#14b8c6] text-white"
                         : "bg-white text-gray-800"
-                      }`}
+                    }`}
                   >
                     {msg.content}
                     <div
-                      className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
+                      className={`text-[10px] text-right mt-1 ${
+                        msg.sender === adminProfile?._id
                           ? "text-white"
                           : "text-gray-500"
-                        }`}
+                      }`}
                     >
                       {dayjs(msg.date).format("HH:MM A")}
                     </div>
@@ -211,9 +218,7 @@ const StaffTicketDetail: React.FC = () => {
                   >
                     Solved
                   </button>
-                  <button
-                    className="bg-[#1BBFCA] text-white text-sm font-medium px-4 py-2 rounded"
-                  >
+                  <button className="bg-[#1BBFCA] text-white text-sm font-medium px-4 py-2 rounded">
                     Not Related
                   </button>
                 </div>
@@ -257,17 +262,22 @@ const StaffTicketDetail: React.FC = () => {
             <p className="text-sm text-gray-600 break-all">
               {GetImageUrl(individualData?.file)}
             </p>
-            <a href={GetImageUrl(individualData?.file) ?? undefined} target="_blank" className="text-blue-500 underline text-sm">
+            <a
+              href={GetImageUrl(individualData?.file) ?? undefined}
+              target="_blank"
+              className="text-blue-500 underline text-sm"
+            >
               View
             </a>
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
-              className={`inline-block px-3 py-2 rounded text-sm ${status === "opened"
+              className={`inline-block px-3 py-2 rounded text-sm ${
+                status === "opened"
                   ? "text-white bg-[#1BBFCA]"
                   : "text-white bg-[#3ABE65]"
-                }`}
+              }`}
             >
               {status}
             </span>

@@ -1,23 +1,24 @@
 import React, { useRef, useState } from "react";
 import cloud from "../../assets/cloud.png";
+import { ArrowLeft } from "lucide-react";
 
 interface AddNewCourseFormProps {
   onBack: () => void;
   onSubmit: (course: any) => void;
   branches: any[];
-   initialValues?: any; 
-   categories: any[];
+  initialValues?: any;
+  categories: any[];
 }
 
 const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
   onBack,
   onSubmit,
   branches,
-  initialValues,
+
   categories = [],
 }) => {
-  const courseImageInputRef = useRef<HTMLInputElement>(null);
-  const bannerImageInputRef = useRef<HTMLInputElement>(null);
+  const courseImageInputRef = useRef<HTMLInputElement | null>(null);
+  const bannerImageInputRef = useRef<HTMLInputElement | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -70,7 +71,12 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
 
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-[#1BBFCA] text-lg font-semibold mb-6">
+      <div 
+      onClick={onBack}
+      className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
+				<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+			</div>
+      <h2 className="text-[#1BBFCA] text-lg font-semibold mb-6 mt-4">
         Add New Course
       </h2>
 
@@ -81,7 +87,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             name="title"
             value={formData.title}
             onChange={handleChange}
-            
+
             className="border rounded-md p-2 w-full"
           />
         </div>
@@ -104,22 +110,35 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
         <div>
           <label className="text-sm text-gray-600">Actual Price</label>
           <input
+            type="text"
             name="actualPrice"
             value={formData.actualPrice}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Allow only digits (no letters, no special chars)
+              if (/^\d*$/.test(value)) {
+                setFormData({ ...formData, actualPrice: value });
+              }
+            }}
             className="border rounded-md p-2 w-full"
-            
+            placeholder="Enter actual price"
           />
         </div>
 
         <div>
           <label className="text-sm text-gray-600">Current Price</label>
           <input
+            type="text"
             name="price"
             value={formData.price}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setFormData({ ...formData, price: value });
+              }
+            }}
             className="border rounded-md p-2 w-full"
-            
+            placeholder="Enter current price"
           />
         </div>
 
@@ -143,48 +162,56 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
         <div>
           <label className="text-sm text-gray-600">Total Review</label>
           <input
+            type="text"
             name="review"
             value={formData.review}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              // allow only digits
+              if (/^\d*$/.test(value)) {
+                setFormData({ ...formData, review: value });
+              }
+            }}
             className="border rounded-md p-2 w-full"
-            
+            placeholder="Enter total reviews"
           />
         </div>
 
+
         <div>
           <label className="text-sm text-gray-600">Select Branches</label>
-         <select
-  name="branch"
-  value={formData.branch}
-  onChange={handleChange}
-  className="border rounded-md p-2 w-full"
->
-  <option value="">Select Branch</option>
-  {branches.map((br) => (
-    <option key={br.uuid} value={br.uuid}>
-      {br.branch_identity}
-    </option>
-  ))}
-</select>
+          <select
+            name="branch"
+            value={formData.branch}
+            onChange={handleChange}
+            className="border rounded-md p-2 w-full"
+          >
+            <option value="">Select Branch</option>
+            {branches.map((br) => (
+              <option key={br.uuid} value={br.uuid}>
+                {br.branch_identity}
+              </option>
+            ))}
+          </select>
         </div>
 
-       <div>
-  <label className="text-sm text-gray-600">Select Category</label>
-  <select
-    name="category"
-    value={formData.category}
-    onChange={handleChange}
-    className="border rounded-md p-2 w-full"
-  >
-    <option value="">Select Category</option>
-   {Array.isArray(categories) &&
-  categories.map((cat) => (
-    <option key={cat.uuid} value={cat.uuid}>
-      {cat.category_name}
-    </option>
-))}
-  </select>
-</div>
+        <div>
+          <label className="text-sm text-gray-600">Select Category</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="border rounded-md p-2 w-full"
+          >
+            <option value="">Select Category</option>
+            {Array.isArray(categories) &&
+              categories.map((cat) => (
+                <option key={cat.uuid} value={cat.uuid}>
+                  {cat.category_name}
+                </option>
+              ))}
+          </select>
+        </div>
 
         <div>
           <label className="text-sm text-gray-600">Learning Format</label>
@@ -209,7 +236,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.overview}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            
+
           />
         </div>
 
@@ -220,7 +247,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.description}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-            
+
           />
         </div>
 
@@ -228,8 +255,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           <label className="text-sm text-gray-600 mb-2 block">Thumbnail</label>
           <div
             className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer"
-            onClick={() => handleCloudClick(courseImageInputRef)}
-          >
+            onClick={() => handleCloudClick(courseImageInputRef as React.RefObject<HTMLInputElement>)}          >
             <img src={cloud} alt="cloud" className="mx-auto w-8 mb-2" />
             <p className="text-sm text-gray-500">
               {formData.thumbnail || "Choose File"}
@@ -247,7 +273,8 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           <label className="text-sm text-gray-600 mb-2 block">Main Image</label>
           <div
             className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer"
-            onClick={() => handleCloudClick(bannerImageInputRef)}
+            onClick={() => handleCloudClick(bannerImageInputRef as React.RefObject<HTMLInputElement>)}
+
           >
             <img src={cloud} alt="cloud" className="mx-auto w-8 mb-2" />
             <p className="text-sm text-gray-500">
