@@ -14,7 +14,7 @@ import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
-import { GetLocalStorage } from "../../utils/localStorage";
+// import { GetLocalStorage } from "../../utils/localStorage";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 
