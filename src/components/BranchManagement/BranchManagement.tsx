@@ -16,6 +16,7 @@ import { ConfirmationPopup } from "../BranchManagement/ConfirmationPopup";
 import { LocationCard } from "../BranchManagement/Location-card";
 import { selectLoading } from "../../features/Branch_Management/reducers/selector";
 import type { RootState } from "../../store/store";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 export function LocationCardsGrid() {
   const dispatch = useDispatch<any>();
@@ -81,7 +82,7 @@ export function LocationCardsGrid() {
     const branchData = {
       branch_identity: formData.branchName,
       contact_info: {
-        phone_no: formData.phoneNumber,
+        phone_no: parseInt(formData.phoneNumber),
         address: formData.address,
         alternate_no: formData.alternateNumber,
         pincode: formData.pinCode,
@@ -101,7 +102,7 @@ export function LocationCardsGrid() {
         );
       } else {
         await dispatch(
-          AddBranchThunk({ instituteId: "YOUR_INSTITUTE_ID", data: branchData })
+          AddBranchThunk(branchData)
         );
       }
 
@@ -117,10 +118,10 @@ export function LocationCardsGrid() {
     try {
       await dispatch(
         DeleteBranchThunk({
-          instituteId: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          instituteId: GetLocalStorage("instituteId"),
           branchUuid: branch._id,
         })
-      ).unwrap();
+      )
 
       setShowSuccessPopup(true);
     } catch (error) {
@@ -154,7 +155,7 @@ export function LocationCardsGrid() {
   if (viewingBranch) {
     return (
       <BranchDetailsPage
-        uuid = {viewingBranch.uuid}
+        uuid={viewingBranch.uuid}
         locationName={viewingBranch.cityName}
         onBack={handleBackFromBranchDetails}
       />
@@ -232,19 +233,19 @@ export function LocationCardsGrid() {
       {/* Branch Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {!loading && filteredBranches.length > 0
-          ? filteredBranches.map((branch: any) => (
-            <div key={branch._id} className="w-full">
+          ? filteredBranches.map((branch: any, index: number) => (
+            <div key={index} className="w-full">
               <LocationCard
-                id={branch._id}
+                id={branch?.uuid}
                 imageSrc={TrichyImg}
-                cityName={branch.branch_identity}
-                address={branch.contact_info.address}
-                status={branch.is_active ? "Active" : "Inactive"}
+                cityName={branch?.branch_identity}
+                address={branch?.contact_info?.address}
+                status={branch?.is_active ? "Active" : "Inactive"}
                 onViewDetails={() => setViewingBranch(branch)}
                 onEdit={() => handleEditBranch(branch)}
-                onDelete={() => handleDeleteBranch(branch._id)}
+                onDelete={handleDeleteBranch}
                 onStatusChange={(newStatus) =>
-                  handleStatusChange(branch._id, newStatus)
+                  handleStatusChange(branch?._id, newStatus)
                 }
               />
             </div>

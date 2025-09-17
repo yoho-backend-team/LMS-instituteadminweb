@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface Branch {
@@ -43,7 +44,7 @@ const branchSlice = createSlice({
 		deleteBranch: (state, action: PayloadAction<string>) => {
 			const idToDelete = action.payload;
 			state.branches = state.branches.filter(
-				(branch) => branch._id === idToDelete
+				(branch) => branch._id !== idToDelete
 			);
 		},
 

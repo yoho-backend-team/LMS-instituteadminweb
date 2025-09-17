@@ -16,22 +16,6 @@ import {
 	updateBranchStatus,
 } from './branchSlice';
 
-// interface BranchParams {
-// 	institute_id: string;
-// 	page?: number;
-// }
-
-// interface DeleteBranchParams {
-// 	id: string;
-// 	uuid: string;
-// }
-
-// interface StatusUpdateParams {
-// 	branch_id: string;
-// 	status?: 'active' | 'inactive';
-// 	uuid: string;
-// }
-
 export const GetAllBranchesThunk = () => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
@@ -48,9 +32,10 @@ export const GetAllBranchesThunk = () => async (dispatch: any) => {
 };
 
 export const DeleteBranchThunk =
-	(params: { instituteId: string; branchUuid: string }) =>
+	(params: { instituteId: any; branchUuid: string }) =>
 		async (dispatch: any) => {
 			try {
+				console.log(params)
 				await DeleteBranch({
 					institute_id: params.instituteId,
 					uuid: params.branchUuid,
@@ -94,7 +79,7 @@ export const UpdateBranchStatusThunk =
 export const AddBranchThunk = (data: any) => async (dispatch: any) => {
 	try {
 		const result = await CreateBranch(data);
-		dispatch(addBranch(result));
+		dispatch(addBranch(result?.newBranch));
 		return result;
 	} catch (error) {
 		console.error('Error adding branch:', error);
