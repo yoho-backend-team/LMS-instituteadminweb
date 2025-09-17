@@ -58,9 +58,8 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
             <div
               key={index}
               onClick={() => onSelectBatch(batch)}
-              className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
-                selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
-              }`}
+              className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
+                }`}
             >
               <img
                 src={GetImageUrl(batch?.groupimage) ?? circle}
@@ -71,7 +70,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
                 <p className="text-[#7D7D7D] font-bold text-sm">
                   {batch?.group}
                 </p>
-                <p className="text-[#7D7D7D] text-xs">Batch Description</p>
+                <p className="text-[#7D7D7D] text-xs">{batch?.last_message?.message ?? "no message"}</p>
               </div>
             </div>
           ))

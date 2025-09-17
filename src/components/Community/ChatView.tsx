@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatbg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
@@ -13,6 +14,9 @@ import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
+import { GetLocalStorage } from "../../utils/localStorage";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 interface Message {
   sender: string;
@@ -58,7 +62,7 @@ function getSenderColor(sender: string) {
 }
 
 const ChatView: React.FC<Props> = ({
-  userId,
+  // userId,
   selectedBatch,
   messages,
   message,
@@ -76,6 +80,8 @@ const ChatView: React.FC<Props> = ({
     onChangeMessage(message + emojiData.emoji);
   };
 
+  const userIds: any = useSelector((state: RootState) => state.authuser.user)
+
   return (
     <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl relative">
       <div className="rounded-lg shadow md:px-6 flex flex-col pb-6 h-full">
@@ -88,7 +94,7 @@ const ChatView: React.FC<Props> = ({
             src={
               selectedBatch
                 ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
-                  undefined
+                undefined
                 : circle
             }
             alt="batch"
@@ -120,11 +126,10 @@ const ChatView: React.FC<Props> = ({
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`mb-3 flex ${
-                msg.sender === userId ? "justify-end" : "justify-start"
-              } group items-end`}
+              className={`mb-3 flex ${msg.sender === userIds?._id ? "justify-end" : "justify-start"
+                } group items-end`}
             >
-              {msg.sender !== userId && (
+              {msg.sender !== userIds?._id && (
                 <img
                   src={contact}
                   alt="icon"
@@ -143,11 +148,10 @@ const ChatView: React.FC<Props> = ({
                 </p>
 
                 <div
-                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${
-                    msg.sender === userId
-                      ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
-                      : "bg-white border text-black rounded-bl-none"
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${msg.sender === userIds?._id
+                    ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
+                    : "bg-white border text-black rounded-bl-none"
+                    }`}
                 >
                   <p>{msg.text}</p>
                   <p className="text-[10px] text-right mt-1 opacity-70">
@@ -155,7 +159,7 @@ const ChatView: React.FC<Props> = ({
                   </p>
                 </div>
 
-                {msg.sender === userId && (
+                {msg.sender === userIds?._id && (
                   <div className="absolute top-1 -left-8">
                     <button
                       onClick={() =>
@@ -186,7 +190,7 @@ const ChatView: React.FC<Props> = ({
                 )}
               </div>
 
-              {msg.sender === userId && (
+              {msg.sender === userIds?._id && (
                 <img
                   src={image}
                   alt="You"
@@ -243,7 +247,7 @@ const ChatView: React.FC<Props> = ({
               src={
                 selectedBatch
                   ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
-                    undefined
+                  undefined
                   : circle
               }
               alt="profile"
