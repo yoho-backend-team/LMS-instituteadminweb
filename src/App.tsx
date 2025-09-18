@@ -6,8 +6,6 @@ import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
 import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
 import UpgradeContext from './context/UpgradeContext';
-// import store from './store/store'; // ✅ Correct for default export
-// import { Provider } from 'react-redux';
 
 function App() {
 	return (

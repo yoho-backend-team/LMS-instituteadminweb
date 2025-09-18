@@ -1,5 +1,5 @@
-import { GetBranchById, getWithIdBatchService } from "../services";
-import { getBranchId, getwithIdBatch, setLoading } from "./slices";
+import { GetBranchById, getWithCourse, getWithIdBatchService } from "../services";
+import { getBranchId, getCourseId, getwithIdBatch, setLoading } from "./slices";
 
 export const getwithIdBatches = (params:any) => async(dispatch:any)  =>
     {
@@ -24,6 +24,17 @@ export const getBranchIdData = (params:any) => async(dispatch:any) => {
         const response = await GetBranchById(params);
         console.log("thunk res",response);
         dispatch(getBranchId(response));
+    }
+    catch(error) {
+        console.log(error)
+    }
+}
+
+export const getCourseIdData = (params:any) => async(dispatch:any) => {
+    try{
+        const response = await getWithCourse(params);
+        console.log("thunk res",response);
+        dispatch(getCourseId(response));
     }
     catch(error) {
         console.log(error)

@@ -34,14 +34,21 @@ export const CreateBatchModal = ({
   const [students, setStudents] = useState<OptionType[]>([]);
   const [staffs, setStaffs] = useState<OptionType[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
+  const [branchId, setBranchId] = useState<any>();
   const dispatch = useDispatch<any>();
 
   const [courseUUID, setCourseUUID] = useState("");
   const [courseObjectId, setCourseObjectId] = useState("");
 
+  console.log("branch id",branchId);
+
+  const branch = branchId;
+
   const fetchAllCourses = async () => {
     try {
-      const response = await getCourseService({});
+      const response = await getCourseService(
+       { branch}
+      );
       if (response) {
         setCourses(response?.data);
       }
@@ -82,7 +89,7 @@ export const CreateBatchModal = ({
   const fetchAllStaff = async () => {
     if (!courseObjectId) return;
     try {
-      const response = await getStaffService({ uuid: courseObjectId });
+      const response = await getStaffService({ uuid: branchId });
       if (response && Array.isArray(response.data)) {
         const mappedStaff = response.data.map((staff: any) => ({
           value: staff.uuid,
@@ -97,10 +104,15 @@ export const CreateBatchModal = ({
     }
   };
 
+
+
   useEffect(() => {
-    fetchAllCourses();
     fetchAllBranches();
   }, [dispatch]);
+
+  useEffect(() => {
+    fetchAllCourses();
+  },[branchId])
 
   useEffect(() => {
     fetchAllStudents();
@@ -149,7 +161,7 @@ export const CreateBatchModal = ({
         batch_name: values.batchName,
         start_date: values.startDate,
         end_date: values.endDate,
-        branch_id: values.branch,
+        branch_identity: values.branch,
         course: values.course,
         instructor: values.staffs,
         student: values.students,
@@ -173,6 +185,8 @@ export const CreateBatchModal = ({
       }
     },
   });
+
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -275,7 +289,18 @@ export const CreateBatchModal = ({
                 name="branch"
                 className="w-full border rounded-md px-4 py-2"
                 value={formik.values.branch}
-                onChange={formik.handleChange}
+                // onChange={formik.handleChange}
+                 onChange={(e) => {
+                  const selectedBranch = branches.find(
+                    (b: any) => b.branch_identity === e.target.value
+                  );
+
+                  // update formik field
+                  formik.handleChange(e);
+
+                  // store branch _id in state
+                  setBranchId(selectedBranch?.uuid || "");
+                }}
                 onBlur={formik.handleBlur}
               >
                 <option value="">Select Branch</option>

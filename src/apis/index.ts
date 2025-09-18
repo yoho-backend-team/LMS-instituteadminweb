@@ -377,7 +377,7 @@ class Client {
 				{}
 			),
 		getCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(":branchid",params.branch), params),
 	};
 	student = {
 		activity: (data: any) =>

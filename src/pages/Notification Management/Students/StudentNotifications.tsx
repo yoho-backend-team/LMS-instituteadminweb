@@ -48,6 +48,10 @@ import {
 } from "../../../features/StudentNotification/services/Notification";
 import ContentLoader from "react-content-loader";
 import bell from "../../../assets/bell.png";
+import { GetAllCoursesThunk } from "../../../features/CourseManagement/Course/thunks";
+import { selectCoursesData } from "../../../features/CourseManagement/Course/selector";
+import { getCourseIdData } from "../../../features/batchManagement/reducers/thunks";
+import { selectCourseId } from "../../../features/batchManagement/reducers/selectors";
 
 interface StudentNotificationData {
   _id: string;
@@ -112,10 +116,25 @@ const StudentNotifications = () => {
 
   const dispatch = useDispatch<any>();
 
-  const coursedata = useSelector(selectCoursedata)?.data;
+  const coursedata = useSelector(selectCoursesData);
+  const batchData = useSelector(selectCourseId)?.data; 
+
+  console.log("course select :",coursedata)
+  console.log("batch select :",batchData)
+  console.log("select id:",selectedCourse);
 
   useEffect(() => {
-    dispatch(getcourse({}));
+    dispatch(getCourseIdData({
+      course : selectedCourse
+    }))
+  },[selectedCourse]);
+
+  useEffect(() => {
+    dispatch(GetAllCoursesThunk({
+      page:1,
+      limit:50
+    }));
+    
     dispatch(
       getStudentnotification({
         branch: branchId,
@@ -251,8 +270,8 @@ const StudentNotifications = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-white">
                   {coursedata?.map((item: any) => (
-                    <SelectItem key={item._id} value="67f3b7fcb8d2634300cc87b6">
-                      {item.slug}
+                    <SelectItem key={item._id} value={item.uuid}>
+                      {item.course_name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -266,10 +285,11 @@ const StudentNotifications = () => {
                   <SelectValue placeholder="Select Batch" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
-                  <SelectItem value="688deb796f788de6b9237c44">
-                    Batch 1
+                {batchData?.map((item,index) => (
+                  <SelectItem key={index} value={item._id}>
+                    {item.batch_name}
                   </SelectItem>
-                  <SelectItem value="batch2">Batch 2</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

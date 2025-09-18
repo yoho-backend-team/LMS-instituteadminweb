@@ -9,6 +9,7 @@ const batchSlice = createSlice({
       batch : [],
       loading:false,
       branchId: [],
+      courseId: []
    }, reducers:{
     getwithIdBatch:(state,actions)=>{
         state.batch = actions.payload;
@@ -19,10 +20,13 @@ const batchSlice = createSlice({
     getBranchId: (state,action) => {
         state.branchId = action.payload;
     },
+    getCourseId: (state,action) => {
+        state.courseId = action.payload
+    }
    }
 
 
 });
 
-export const {getwithIdBatch,setLoading,getBranchId} =  batchSlice.actions;
+export const {getwithIdBatch,setLoading,getBranchId,getCourseId} =  batchSlice.actions;
 export default batchSlice.reducer;

@@ -103,3 +103,17 @@ export const GetBranchById = async (params:any) => {
   const response = await Client.branch.getByid(params);
   return response;
 };
+
+//get batch by course ID
+
+export const getWithCourse = async (data: any) => {
+	try {
+		const response = await Client.batch.getWithCourseId(data);
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.error('Error in getbranchService:', error);
+		return null;
+	}
+};
