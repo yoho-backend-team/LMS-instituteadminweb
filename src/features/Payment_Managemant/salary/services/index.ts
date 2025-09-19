@@ -35,7 +35,7 @@ export const DeleteSalary = async (data: any) => {
   return response?.data;
 };
 
-export const GetStaffName_Branch = async (branch: string) => {
+export const GetStaffName_Branch = async (branch: any) => {
   const response = await Client.TeachingStaff.getWithBranch(branch);
   return response.data;
 };

@@ -37,7 +37,6 @@ Axios.interceptors.response.use(
 			error?.response?.data?.message ===
 			'Subscription limit reached. Update your subscription plan.'
 		) {
-			console.log("expire")
 			// showUpgradeModal();
 			showUpgradeWindow()
 		}

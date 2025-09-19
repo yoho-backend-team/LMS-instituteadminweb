@@ -34,6 +34,7 @@ export const CreateBatchModal = ({
   const [students, setStudents] = useState<OptionType[]>([]);
   const [staffs, setStaffs] = useState<OptionType[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
+  const [selectedBranch, setSelectedBranch] = useState<any>('')
   const dispatch = useDispatch<any>();
 
   const [courseUUID, setCourseUUID] = useState("");
@@ -41,13 +42,13 @@ export const CreateBatchModal = ({
 
   const fetchAllCourses = async () => {
     try {
-      const response = await getCourseService({});
+      const response = await getCourseService({branch: formik.values.branch});
       if (response) {
         setCourses(response?.data);
       }
     } catch (error) {
       console.log("Error fetching course data:", error);
-    }
+    }   
   };
 
   const fetchAllBranches = async () => {
@@ -79,10 +80,12 @@ export const CreateBatchModal = ({
     }
   };
 
+  console.log(selectedBranch, 'branches')
+
   const fetchAllStaff = async () => {
     if (!courseObjectId) return;
     try {
-      const response = await getStaffService({ uuid: courseObjectId });
+      const response = await getStaffService({ uuid: formik.values.branch });
       if (response && Array.isArray(response.data)) {
         const mappedStaff = response.data.map((staff: any) => ({
           value: staff.uuid,
@@ -96,16 +99,6 @@ export const CreateBatchModal = ({
       console.log("Error fetching staff data:", error);
     }
   };
-
-  useEffect(() => {
-    fetchAllCourses();
-    fetchAllBranches();
-  }, [dispatch]);
-
-  useEffect(() => {
-    fetchAllStudents();
-    fetchAllStaff();
-  }, [courseUUID, courseObjectId]);
 
   const validationSchema = Yup.object({
     batchName: Yup.string().required("Batch name is required"),
@@ -173,6 +166,17 @@ export const CreateBatchModal = ({
       }
     },
   });
+
+  
+  useEffect(() => {
+    fetchAllCourses();
+    fetchAllBranches();
+  }, [dispatch, formik.values.branch]);
+
+  useEffect(() => {
+    fetchAllStudents();
+    fetchAllStaff();
+  }, [courseUUID, courseObjectId]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -280,7 +284,7 @@ export const CreateBatchModal = ({
               >
                 <option value="">Select Branch</option>
                 {branches?.map((branch: any) => (
-                  <option key={branch?._id} value={branch?.branch_identity}>
+                  <option key={branch?._id} value={branch?.uuid}>
                     {branch?.branch_identity}
                   </option>
                 ))}

@@ -79,8 +79,8 @@ const FaqCategory: React.FC = () => {
 
   useEffect(() => {
     const params = {
-      branchid: GetLocalStorage('selectedBranchId'),
-      instituteid: GetLocalStorage('instituteId'),
+      branchid: GetLocalStorage("selectedBranchId"),
+      instituteid: GetLocalStorage("instituteId"),
       page: 1,
       perPage: 10,
     };
@@ -97,10 +97,10 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
-  const overall_branch_id = GetLocalStorage("selectedBranchId")
-  const overall_istitute_id = GetLocalStorage("instituteId")
-  console.log(overall_branch_id, "branch id ")
-  console.log(overall_istitute_id, "institute id")
+  const overall_branch_id = GetLocalStorage("selectedBranchId");
+  const overall_istitute_id = GetLocalStorage("instituteId");
+  console.log(overall_branch_id, "branch id ");
+  console.log(overall_istitute_id, "institute id");
 
   const handleStatusChange = async (
     newStatus: "Active" | "Inactive",
@@ -169,8 +169,9 @@ const FaqCategory: React.FC = () => {
         category_name: newTitle,
         description: newDescription,
         branchid: overall_branch_id,
-        institute_id: "67f3a26df4b2c530acd16419",/*973195c0-66ed-47c2-b098-d8989d3e4529 institute
-         id in console --> but here different isntitute id that'y didn't replace*/
+        institute_id:
+          "67f3a26df4b2c530acd16419" /*973195c0-66ed-47c2-b098-d8989d3e4529 institute
+         id in console --> but here different isntitute id that'y didn't replace*/,
       };
       try {
         await createFaqCategories(payload);
@@ -227,8 +228,8 @@ const FaqCategory: React.FC = () => {
 
   const filtered = Array.isArray(category)
     ? category.filter((c: any) =>
-      c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
-    )
+        c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
+      )
     : [];
 
   return (
@@ -265,102 +266,105 @@ const FaqCategory: React.FC = () => {
         <div className="flex flex-col gap-3 mt-3">
           {loading
             ? Array.from({ length: 5 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
-              >
-                <div className="h-4 w-6 bg-gray-200 rounded"></div>
-                <div>
-                  <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                <div
+                  key={idx}
+                  className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
+                >
+                  <div className="h-4 w-6 bg-gray-200 rounded"></div>
+                  <div>
+                    <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                  </div>
+                  <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                  <div className="h-4 w-16 bg-gray-200 rounded"></div>
                 </div>
-                <div className="h-4 w-20 bg-gray-200 rounded"></div>
-                <div className="h-4 w-16 bg-gray-200 rounded"></div>
-              </div>
-            ))
+              ))
             : filtered.map((cat: any, index: any) => (
-              <div
-                key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
-              >
-                <div>{cat.id}</div>
-                <div>
-                  <p className="font-semibold">{cat.category_name}</p>
-                  <p className="text-[#7D7D7D]">{cat.description}</p>
-                </div>
+                <div
+                  key={cat.id}
+                  className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
+                >
+                  <div>{cat.id}</div>
+                  <div>
+                    <p className="font-semibold">{cat.category_name}</p>
+                    <p className="text-[#7D7D7D]">{cat.description}</p>
+                  </div>
 
-                {/* Status Dropdown */}
-                <div className="relative">
-                  <button
-                    className="flex items-center gap-1 text-sm"
-                    onClick={() => toggleStatus(index)}
-                  >
-                    {cat.is_active ? "Active" : "Inactive"}
+                  {/* Status Dropdown */}
+                  <div className="relative">
+                    <button
+                      className={`flex items-center gap-1 text-sm ${
+                        cat.is_active ? "text-green-600" : "text-red-600"
+                      }`}
+                      onClick={() => toggleStatus(index)}
+                    >
+                      {cat.is_active ? "Active" : "Inactive"}
+                      <img
+                        src={dropdownIcon}
+                        alt="dropdown"
+                        className="w-3 h-3"
+                      />
+                    </button>
+
+                    {openStatusIndex === index && (
+                      <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
+                        <button
+                          onClick={() =>
+                            handleStatusChange("Active", cat?.uuid)
+                          }
+                          className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
+                        >
+                          Active
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusChange("Inactive", cat.uuid)
+                          }
+                          className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
+                        >
+                          Inactive
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="text-right relative ">
                     <img
-                      src={dropdownIcon}
-                      alt="dropdown"
-                      className="w-3 h-3"
+                      src={button1}
+                      alt="options"
+                      className="w-5 h-5 inline-block cursor-pointer"
+                      onClick={() => toggleAction(index)}
                     />
-                  </button>
-                  {openStatusIndex === index && (
-                    <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
-                      <button
-                        onClick={() =>
-                          handleStatusChange("Active", cat?.uuid)
-                        }
-                        className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
-                      >
-                        Active
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleStatusChange("Inactive", cat.uuid)
-                        }
-                        className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
-                      >
-                        Inactive
-                      </button>
-                    </div>
-                  )}
+                    {openActionIndex === index && (
+                      <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[150px]">
+                        <button
+                          className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md"
+                          onClick={() => {
+                            openEditForm(cat);
+                            setOpenActionIndex(null);
+                            setSelectedUUId(cat.uuid);
+                          }}
+                        >
+                          <img src={edit} alt="Edit" className="w-4 h-4" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirm(cat.uuid)}
+                          className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
+                        >
+                          <img
+                            src={deleteIcon}
+                            alt="Delete"
+                            className="w-4 h-4"
+                          />
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {/* Actions */}
-                <div className="text-right relative ">
-                  <img
-                    src={button1}
-                    alt="options"
-                    className="w-5 h-5 inline-block cursor-pointer"
-                    onClick={() => toggleAction(index)}
-                  />
-                  {openActionIndex === index && (
-                    <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[150px]">
-                      <button
-                        className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md"
-                        onClick={() => {
-                          openEditForm(cat);
-                          setOpenActionIndex(null);
-                          setSelectedUUId(cat.uuid);
-                        }}
-                      >
-                        <img src={edit} alt="Edit" className="w-4 h-4" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openDeleteConfirm(cat.uuid)}
-                        className="flex items-center gap-2 px-4 py-2 text-[#7D7D7D] w-full text-left hover:bg-gray-100 rounded-md mt-1"
-                      >
-                        <img
-                          src={deleteIcon}
-                          alt="Delete"
-                          className="w-4 h-4"
-                        />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
 

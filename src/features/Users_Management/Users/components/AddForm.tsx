@@ -104,7 +104,7 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
       console.log("Form values:", values);
       const formData = new FormData();
       const institute_id =
-        getInstituteDetails() ?? "973195c0-66ed-47c2-b098-d8989d3e4529";
+        getInstituteDetails();
 
       formData.append("first_name", values.first_name);
       formData.append("last_name", values.last_name);
@@ -119,7 +119,7 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
       formData.append("institute_id", institute_id);
 
       if (values.file) {
-        formData.append("image", "");
+        formData.append("image", imgSrc);
       }
 
       try {
@@ -280,7 +280,7 @@ const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
                 allBranches.map((branch) => (
                   <SelectItem
                     key={branch._id}
-                    value={branch._id}
+                    value={branch.uuid}
                     className={`hover:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer`}
                     style={{ ...FONTS.heading_08 }}
                   >

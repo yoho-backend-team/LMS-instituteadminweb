@@ -25,7 +25,7 @@ export const GetallModuleThunks = (params: any) => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
 		const response = await GetAllModule(params);
-		
+
 		dispatch(getModule(response?.data?.data));
 		dispatch(setLoading(false));
 	} catch (error) {
