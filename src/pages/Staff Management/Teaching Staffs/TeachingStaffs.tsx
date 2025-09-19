@@ -269,7 +269,6 @@ const TeachingStaffs: React.FC = () => {
               </div>
             </div>
             <Button
-              onClick={handleUploadClick}
               className="bg-green-500 hover:bg-green-600 text-white"
             >
               Upload Profile Picture

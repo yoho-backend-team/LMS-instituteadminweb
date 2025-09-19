@@ -4,6 +4,7 @@ const ModuleSlice = createSlice({
 	name: 'fees-paymanagement',
 	initialState: {
 		fees: [],
+		fees1: [],
 		branch: [],
 		branch_course: [],
 		batch: [],
@@ -16,7 +17,7 @@ const ModuleSlice = createSlice({
 		},
 
 		getallfees: (state, action) => {
-			state.fees = action.payload;
+			state.fees1 = action.payload;
 		},
 
 		getBranches(state, action) {

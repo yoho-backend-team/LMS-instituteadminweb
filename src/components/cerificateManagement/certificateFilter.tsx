@@ -44,7 +44,8 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
 
   const fetchAllCourses = async () => {
     try {
-      const response = await getCourseService({});
+      const response = await getCourseService({branch: selectedBranch});
+      console.log(response, 'course resp')
       if (response) {
         setCourses(response?.data);
       }
@@ -52,6 +53,8 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
       console.log("Error fetching course data:", error);
     }
   };
+
+
 
   const fetchAllBranches = async () => {
     try {
@@ -80,8 +83,9 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     fetchAllBranches();
     fetchAllCourses();
     fetchAllBatches();
-  }, [dispatch]);
+  }, [dispatch, selectedBranch]);
 
+  console.log(courses,"cour")
   return (
     <>
       <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
@@ -110,6 +114,28 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             <h2>Student Certificates</h2>
           </div>
           <div className=" grid md:grid-cols-2 gap-3">
+
+             <div>
+              <label
+                className="block text-lg font-medium text-[#716F6F] mb-1"
+                style={{ ...FONTS.heading_08 }}
+              >
+                Branch
+              </label>
+              <select
+                className="w-full border h-13 px-3 py-2 rounded"
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                style={{ ...FONTS.heading_08 }}
+              >
+                <option value="">All</option>
+                {branches?.map((branch: any) => (
+                  <option key={branch?._id} value={branch?.uuid}>
+                    {branch?.branch_identity}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
@@ -131,27 +157,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
                 ))}
               </select>
             </div>
-            <div>
-              <label
-                className="block text-lg font-medium text-[#716F6F] mb-1"
-                style={{ ...FONTS.heading_08 }}
-              >
-                Branch
-              </label>
-              <select
-                className="w-full border h-13 px-3 py-2 rounded"
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                style={{ ...FONTS.heading_08 }}
-              >
-                <option value="">All</option>
-                {branches?.map((branch: any) => (
-                  <option key={branch?._id} value={branch?.branch_identity}>
-                    {branch?.branch_identity}
-                  </option>
-                ))}
-              </select>
-            </div>
+           
             <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"

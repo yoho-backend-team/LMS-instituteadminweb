@@ -223,7 +223,7 @@ class Client {
 			),
 		getWithCourseId: (courseId: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.batch.getBatchwithCourse.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()).replace(":branchid", courseId?.branch).replace(':courseId', courseId?.course)
+				HTTP_END_POINTS.batch.getBatchwithCourse.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()).replace(':courseId', courseId?.course).replace(":branchid", courseId?.branch)
 			),
 	};
 	online_class = {
@@ -239,7 +239,7 @@ class Client {
 				data
 			),
 		delete: (data: any) =>
-			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.id),
+			HttpClient.delete(HTTP_END_POINTS.online_class.create + '/' + data.uuid),
 	};
 	offline_class = {
 		create: (data: any) =>
@@ -278,7 +278,7 @@ class Client {
 			),
 		getStudentsWithBatch: (data: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.student.getWithBatch +
+				HTTP_END_POINTS.student.getWithBatch.replace(":instituteid", getInstituteDetails()) +
 				data.branch_id +
 				'/batches/batch-students',
 				data
@@ -341,7 +341,7 @@ class Client {
 		get: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
 		getWithCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(":branchid", params)),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(":instituteid", getInstituteDetails()).replace(":branchid", params)),
 		getWithId: (params: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
@@ -377,7 +377,7 @@ class Client {
 				{}
 			),
 		getCourse: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse, params),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(':branchid', params?.branch), params),
 	};
 	student = {
 		activity: (data: any) =>

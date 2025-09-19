@@ -57,35 +57,6 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   const [students, setStudents] = useState<any[]>([]);
   const studentData = useSelector(selectStudent)?.data;
 
-  // Fetch all required data
-  useEffect(() => {
-    (async () => {
-      try {
-        const [coursesRes, branchesRes, batchesRes] = await Promise.all([
-          getCourseService({}),
-          getBranchService({}),
-          getAllBatches({}),
-        ]);
-        setCourses(coursesRes?.data || []);
-        setBranches(branchesRes?.data || []);
-        setAllBatches(batchesRes?.data || []);
-      } catch (error) {
-        console.error("Error fetching certificate data:", error);
-      }
-    })();
-    dispatch(
-      getStudentmanagement({
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        page: 1,
-      })
-    );
-  }, [dispatch]);
-
-  // Set students from redux
-  useEffect(() => {
-    if (Array.isArray(studentData)) setStudents(studentData);
-  }, [studentData]);
-
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -125,6 +96,35 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       }
     },
   });
+
+  // Fetch all required data
+  useEffect(() => {
+    (async () => {
+      try {
+        const [coursesRes, branchesRes, batchesRes] = await Promise.all([
+          getCourseService({branch: formik.values.branch}),
+          getBranchService({}),
+          getAllBatches({}),
+        ]);
+        setCourses(coursesRes?.data || []);
+        setBranches(branchesRes?.data || []);
+        setAllBatches(batchesRes?.data || []);
+      } catch (error) {
+        console.error("Error fetching certificate data:", error);
+      }
+    })();
+    dispatch(
+      getStudentmanagement({
+        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        page: 1,
+      })
+    );
+  }, [dispatch, formik.values.branch]);
+
+  // Set students from redux
+  useEffect(() => {
+    if (Array.isArray(studentData)) setStudents(studentData);
+  }, [studentData]);
 
   if (!isOpen) return null;
 
@@ -168,6 +168,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           ) : (
             <div>
+
+              
               <label
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
               >

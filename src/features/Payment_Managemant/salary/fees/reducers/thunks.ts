@@ -43,7 +43,7 @@ export const GetBranchThunks = (params: any) => async (dispatch: any) => {
 };
 
 export const GetBranchCourseThunks =
-	(branchname: string) => async (dispatch: any) => {
+	(branchname: any) => async (dispatch: any) => {
 		try {
 			const response = await GetBranchCourse(branchname);
 			dispatch(getBranchCourse(response.data));
@@ -78,9 +78,9 @@ export const GetAllFeesThunks = (params: any) => async (dispatch: any) => {
 	try {
 		dispatch(setLoading(true));
 		const response = await GetAllfees(params);
-		dispatch(getallfees(response.data));
+		dispatch(getallfees(response));
 		dispatch(setLoading(false));
-		return response.data;
+		return response;
 	} catch (error) {
 		console.log('Error in getallfees Thunks:', error);
 	} finally {
