@@ -121,9 +121,9 @@ class Client {
 		create: (data: any) =>
 			HttpClient.post(HTTP_END_POINTS.category.create.replace(":instituteid", getInstituteDetails()), data),
 		update: (data: any) =>
-			HttpClient.update(HTTP_END_POINTS.category.create + `/${data.id}`, data),
+			HttpClient.update(HTTP_END_POINTS.category.create.replace(":instituteid", getInstituteDetails()) + `/${data.id}`, data),
 		delete: (data: any) =>
-			HttpClient.delete(HTTP_END_POINTS.category.create + `/${data.uuid}`),
+			HttpClient.delete(HTTP_END_POINTS.category.create.replace(":instituteid", getInstituteDetails()) + `/${data.uuid}`),
 	};
 	course_module = {
 		getAll: (params: string) =>
@@ -400,12 +400,12 @@ class Client {
 				HTTP_END_POINTS.student.getall.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()).replace(':courseUUID', params?.uuid),
 				{}
 			),
-			activitylog:(params:any)=>HttpClient.get(
-				HTTP_END_POINTS.student.activitylog.replace(':studentId',params?.studentId),params
-			),
-			studentclass:(params:any)=>HttpClient.get(
-				HTTP_END_POINTS.student.studentclass.replace(':studentid',params?.studentid),params
-			)
+		activitylog: (params: any) => HttpClient.get(
+			HTTP_END_POINTS.student.activitylog.replace(':studentId', params?.studentId), params
+		),
+		studentclass: (params: any) => HttpClient.get(
+			HTTP_END_POINTS.student.studentclass.replace(':studentid', params?.studentid), params
+		)
 	};
 	community = {
 		getAll: (data: any) =>

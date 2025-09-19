@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import arr from "../../assets/navbar/arrow.png";
 import dots from "../../assets/navbar/dots.png";
 import { updateCourse } from "../../features/CourseManagement/Course/service";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { editCourse } from "../../features/CourseManagement/Course/slice";
 
 interface CourseCardProps {
   course_name: string;
@@ -31,6 +34,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
+  const dispatch = useDispatch<AppDispatch>()
 
 
 
@@ -45,6 +49,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         is_active: newStatus === "Active",
       };
 
+      dispatch(editCourse({ uuid: courseuuid, is_active: newStatus === "Active", }))
       await updateCourse(payload);
     } catch (error) {
       console.error("Failed to update status", error);
@@ -85,19 +90,17 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className={`px-3 py-1 rounded-md flex items-center gap-1 ${
-              status === "Active"
-                ? "bg-[#1BBFCA] text-white"
-                : "bg-white text-black border border-gray-300"
-            }`}
+            className={`px-3 py-1 rounded-md flex items-center gap-1 ${status === "Active"
+              ? "bg-[#1BBFCA] text-white"
+              : "bg-white text-black border border-gray-300"
+              }`}
           >
             <span>{courseStatus ? "Active" : "InActive"}</span>
             <img
               src={arr}
               alt="arrow"
-              className={`w-3 h-3 ${
-                status === "Inactive" ? "filter invert" : ""
-              }`}
+              className={`w-3 h-3 ${status === "Inactive" ? "filter invert" : ""
+                }`}
             />
           </button>
 
@@ -105,21 +108,19 @@ const CourseCard: React.FC<CourseCardProps> = ({
             <div className="absolute left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md z-10">
               <div
                 onClick={() => handleStatusChange("Active")}
-                className={`block px-4 py-2 text-sm cursor-pointer rounded-t-md ${
-                  status === "Active"
-                    ? "bg-[#1BBFCA] text-white"
-                    : "hover:bg-gray-100 text-gray-800"
-                }`}
+                className={`block px-4 py-2 text-sm cursor-pointer rounded-t-md ${status === "Active"
+                  ? "bg-[#1BBFCA] text-white"
+                  : "hover:bg-gray-100 text-gray-800"
+                  }`}
               >
                 Active
               </div>
               <div
                 onClick={() => handleStatusChange("Inactive")}
-                className={`block px-4 py-2 text-sm cursor-pointer rounded-b-md ${
-                  status === "Inactive"
-                    ? "bg-[#1BBFCA] text-white"
-                    : "hover:bg-gray-100 text-gray-800"
-                }`}
+                className={`block px-4 py-2 text-sm cursor-pointer rounded-b-md ${status === "Inactive"
+                  ? "bg-[#1BBFCA] text-white"
+                  : "hover:bg-gray-100 text-gray-800"
+                  }`}
               >
                 Inactive
               </div>

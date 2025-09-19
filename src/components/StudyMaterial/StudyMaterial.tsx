@@ -76,7 +76,7 @@ const NotesManagement = () => {
 
   useEffect(() => {
     const paramsData = {
-      branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      branch: GetLocalStorage("selectedBranchId"),
       page: 1,
     };
     dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -144,9 +144,9 @@ const NotesManagement = () => {
   const uploadFile = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-
+    const url = import.meta.env.VITE_PUBLIC_API_URL
     const response = await fetch(
-      "https://lms-node-backend-v1.onrender.com/api/upload",
+      url,
       {
         method: "POST",
         body: formData,
@@ -175,7 +175,7 @@ const NotesManagement = () => {
         description: formData.description,
         course: formData.course,
         branch: formData.branch,
-        institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute: GetLocalStorage("instituteId"),
         file: filePath,
       };
 
@@ -192,7 +192,7 @@ const NotesManagement = () => {
       }
 
       const paramsData = {
-        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch: GetLocalStorage("selectedBranchId"),
         page: 1,
       };
       dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -236,7 +236,7 @@ const NotesManagement = () => {
       await dispatch(deleteStudyMaterialThunk(id));
 
       const paramsData = {
-        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch: GetLocalStorage("selectedBranchId"),
         page: 1,
       };
       dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -279,7 +279,7 @@ const NotesManagement = () => {
 
       dispatch(
         fetchStudyMaterialsThunk({
-          branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+          branch: GetLocalStorage("selectedBranchId"),
           page: 1,
         })
       );
@@ -290,43 +290,43 @@ const NotesManagement = () => {
 
   const filteredNotes = Array.isArray(studyMaterials)
     ? studyMaterials.filter((note: any) => {
-        let statusMatch = true;
-        if (filterValues.status) {
-          if (note.status) {
-            statusMatch = note.status === filterValues.status;
-          } else if (typeof note.is_active === "boolean") {
-            statusMatch =
-              filterValues.status === "Active"
-                ? note.is_active === true
-                : note.is_active === false;
-          } else if (typeof note.active === "boolean") {
-            statusMatch =
-              filterValues.status === "Active"
-                ? note.active === true
-                : note.active === false;
-          } else if (note.status === "active" || note.status === "inactive") {
-            statusMatch =
-              (filterValues.status === "Active" && note.status === "active") ||
-              (filterValues.status === "Completed" &&
-                note.status === "inactive");
-          }
+      let statusMatch = true;
+      if (filterValues.status) {
+        if (note.status) {
+          statusMatch = note.status === filterValues.status;
+        } else if (typeof note.is_active === "boolean") {
+          statusMatch =
+            filterValues.status === "Active"
+              ? note.is_active === true
+              : note.is_active === false;
+        } else if (typeof note.active === "boolean") {
+          statusMatch =
+            filterValues.status === "Active"
+              ? note.active === true
+              : note.active === false;
+        } else if (note.status === "active" || note.status === "inactive") {
+          statusMatch =
+            (filterValues.status === "Active" && note.status === "active") ||
+            (filterValues.status === "Completed" &&
+              note.status === "inactive");
         }
+      }
 
-        let courseMatch = true;
-        if (filterValues.course) {
-          if (note.course_name) {
-            courseMatch = note.course_name === filterValues.course;
-          } else if (note.course) {
-            const filterCourseId = courseNameToIdMap[filterValues.course];
-            courseMatch =
-              note.course === filterCourseId ||
-              note.course === filterValues.course;
-          } else if (note.courseName) {
-            courseMatch = note.courseName === filterValues.course;
-          }
+      let courseMatch = true;
+      if (filterValues.course) {
+        if (note.course_name) {
+          courseMatch = note.course_name === filterValues.course;
+        } else if (note.course) {
+          const filterCourseId = courseNameToIdMap[filterValues.course];
+          courseMatch =
+            note.course === filterCourseId ||
+            note.course === filterValues.course;
+        } else if (note.courseName) {
+          courseMatch = note.courseName === filterValues.course;
         }
-        return statusMatch && courseMatch;
-      })
+      }
+      return statusMatch && courseMatch;
+    })
     : [];
 
   return (
@@ -385,15 +385,15 @@ const NotesManagement = () => {
               ))}
             </div>
           ) : filteredNotes.length > 0 ? (
-            filteredNotes.map((note: any) => {
+            filteredNotes?.map((note: any) => {
               return (
                 <NoteCard
-                  key={note.id || note.uuid}
+                  key={note?.id || note?.uuid}
                   note={note}
                   onEdit={handleEdit}
                   onView={(note: any) => setSelectedNote(note)}
                   onToggleStatus={handleToggleStatus}
-                  onDelete={() => handleDelete(note.uuid)}
+                  onDelete={() => handleDelete(note?.uuid)}
                   fileIcon={fileIcon}
                   titleIcon={titleIcon}
                 />

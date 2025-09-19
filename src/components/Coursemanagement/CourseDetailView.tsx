@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef } from "react";
 import card1 from "../../assets/navbar/card1.png";
 import editicon1 from "../../assets/editicon1.png";
@@ -6,6 +7,9 @@ import {
   deleteCourse,
   updateCourse,
 } from "../../features/CourseManagement/Course/service";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { removeCourse } from "../../features/CourseManagement/Course/slice";
 
 interface CourseFormData {
   uuid: string;
@@ -16,12 +20,12 @@ interface CourseFormData {
   format: string;
   price: string;
   category:
-    | {
-        uuid: string;
-        name?: string;
-        [key: string]: any;
-      }
-    | string;
+  | {
+    uuid: string;
+    name?: string;
+    [key: string]: any;
+  }
+  | string;
   overview: string;
   description: string;
   thumbnail: string;
@@ -50,6 +54,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
   const thumbnailRef = useRef<HTMLInputElement>(null);
   const mainImageRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch<AppDispatch>()
 
   const getStringValue = (value: any): string => {
     if (typeof value === "string") return value;
@@ -103,7 +108,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       ref.current.click();
     }
   };
- 
+
 
   const handleDelete = async () => {
     const courseUuid = courseData.uuid;
@@ -119,7 +124,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
     try {
       await deleteCourse(categoryUuid, courseUuid);
-
+      dispatch(removeCourse(courseUuid))
       onBack();
     } catch (error: any) {
       console.error("Error deleting course:", error);
@@ -147,7 +152,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
         price: courseData.actual_price,
       };
 
-      
+
 
       await updateCourse(payload);
 
@@ -173,7 +178,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
         </button>
         <button
           onClick={() => setIsEditMode(!isEditMode)}
-          className="bg-[#1BBFCA] text-white px-6 py-2 rounded text-sm inline-block hover:bg-[#17a5b0] items-center gap-2 flex "
+          className="bg-[#1BBFCA] text-white px-6 py-2 rounded text-sm hover:bg-[#17a5b0] items-center gap-2 flex "
         >
           <img src={editicon1} alt="Edit" className="w-5 h-5" />
           {isEditMode ? "Cancel" : "Edit"}

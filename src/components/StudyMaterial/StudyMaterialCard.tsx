@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { DropdownMenu } from "./DropdownMenu";
 import { MdToggleOn, MdToggleOff, MdClose } from "react-icons/md";
 import type { Note } from "../../components/StudyMaterial/Note";
+import { GetImageUrl } from "../../utils/helper";
 
 interface NoteCardProps {
   note: Note;
@@ -90,8 +91,8 @@ const ViewModal: React.FC<{
             PDF File: {fileName}
           </div>
           <iframe
-            src={fileUrl}
-            className="w-full h-full rounded"
+            src={GetImageUrl(fileName) ?? undefined}
+            className="w-full h-full rounded overflow-scroll"
             title="PDF Preview"
             style={{
               border: "none",
@@ -201,11 +202,10 @@ const ViewModal: React.FC<{
             <span className="text-yellow-400">★</span>
           </h1>
           <span
-            className={`text-xs px-3 py-1 rounded-full ${
-              note?.is_active
-                ? "bg-green-500 text-white"
-                : "bg-gray-500 text-white"
-            }`}
+            className={`text-xs px-3 py-1 rounded-full ${note?.is_active
+              ? "bg-green-500 text-white"
+              : "bg-gray-500 text-white"
+              }`}
           >
             {note?.is_active ? "Active" : "Completed"}
           </span>

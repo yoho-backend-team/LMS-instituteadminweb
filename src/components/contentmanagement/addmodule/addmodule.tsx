@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 // import { BiSolidCloudUpload } from "react-icons/bi";
@@ -44,7 +45,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
     if (branch) {
       dispatch(GetBranchCourseThunks(branch) as any);
     }
-  }, [branch]);
+  }, [branch, dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +60,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 
     try {
       await dispatch(AddModuleThunks(moduleData) as any);
+      dispatch(GetBranchCourseThunks(branch) as any);
       onSubmit(moduleData);
       onClose();
     } catch (error) {
@@ -97,7 +99,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
             <option value="">Select Branch</option>
             {Array.isArray(branches) &&
               branches.map((b: any) => (
-                <option key={b.id} value={ b.uuid}>
+                <option key={b.id} value={b.uuid}>
                   {b.branch_identity}
                 </option>
               ))}

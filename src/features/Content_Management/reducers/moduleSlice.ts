@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from '@reduxjs/toolkit';
+
+const data: any[] = []
 
 const ModuleSlice = createSlice({
 	name: 'Module',
 	initialState: {
-		data: [],
+		data,
 		upload_editdata: [],
 		branch: [],
 		branch_course: [],
@@ -18,8 +21,9 @@ const ModuleSlice = createSlice({
 			state.branch_course = action.payload;
 		},
 
-		addModules: (state: any, action) => {
-			state.data = [...state.data, ...action.payload];
+		addModules: (state, action) => {
+			const data = action.payload
+			state.data.unshift(data)
 		},
 
 		deleteModule: (state: any, action) => {

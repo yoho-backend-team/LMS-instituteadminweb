@@ -18,6 +18,7 @@ import { getCategories } from "../../../features/Category/selector";
 import { GetAllCategoryThunk } from "../../../features/Category/thunks";
 import { Card } from "../../../components/ui/card";
 import { GetLocalStorage } from "../../../utils/localStorage";
+import { addCourse } from "../../../features/CourseManagement/Course/slice";
 
 const Courses: React.FC = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -87,9 +88,10 @@ const Courses: React.FC = () => {
     };
 
     try {
-      await createCourse(payload);
-      // const createdCourse = response?.data || payload;
-      // setCourses((prev) => [...prev, createdCourse]);
+      const response = await createCourse(payload);
+      dispatch(addCourse(response?.data))
+      // const createdCourse:any = response?.data || payload;
+      // setCourses((prev:any) => [...prev, createdCourse]);
       setAddingCourse(false);
     } catch (error: any) {
       console.error("Error creating course:", error.message);
@@ -182,11 +184,11 @@ const Courses: React.FC = () => {
             <CourseCard
               key={index}
               {...course}
-              courseStatus={course.is_active}
-              courseuuid={course.uuid}
-              category_name={course.category.category_name}
-              categoryUuid={course.category.uuid}
-              image={course.image}
+              courseStatus={course?.is_active}
+              courseuuid={course?.uuid}
+              category_name={course?.category?.category_name}
+              categoryUuid={course?.category?.uuid}
+              image={course?.image}
               onView={() => handleViewCourse(course)}
             />
           ))

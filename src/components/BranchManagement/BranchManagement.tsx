@@ -17,6 +17,7 @@ import { LocationCard } from "../BranchManagement/Location-card";
 import { selectLoading } from "../../features/Branch_Management/reducers/selector";
 import type { RootState } from "../../store/store";
 import { GetLocalStorage } from "../../utils/localStorage";
+import toast from "react-hot-toast";
 
 export function LocationCardsGrid() {
   const dispatch = useDispatch<any>();
@@ -100,13 +101,14 @@ export function LocationCardsGrid() {
             data: branchData,
           })
         );
+        toast.success("edit branch success")
       } else {
         await dispatch(
           AddBranchThunk(branchData)
         );
+        setShowSuccessPopup(true);
       }
 
-      setShowSuccessPopup(true);
       resetForm();
       setIsModalOpen(false);
     } catch (error) {
