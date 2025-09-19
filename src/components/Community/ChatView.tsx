@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useState } from "react";
-import chatBg from "../../assets/navbar/chatBg.png";
+import chatBg from "../../assets/navbar/chatbg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
-import cancel from "../../assets/navbar/cancel.png";
+import cancel from "../../assets/navbar/Cancel.png";
 import image from "../../assets/navbar/image.png";
 import Button from "../../assets/navbar/Button.png";
 import circle from "../../assets/navbar/circle.png";
@@ -14,7 +14,7 @@ import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
-import { GetLocalStorage } from "../../utils/localStorage";
+// import { GetLocalStorage } from "../../utils/localStorage";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 
