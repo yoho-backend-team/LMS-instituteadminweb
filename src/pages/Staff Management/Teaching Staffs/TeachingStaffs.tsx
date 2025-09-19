@@ -22,8 +22,11 @@ import {
 } from "../../../features/staff/reducers/selector";
 import { getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { GetImageUrl } from "../../../utils/helper";
-import { createStaff } from "../../../features/staff/services";
+import { createStaff, updateStaff } from "../../../features/staff/services";
 import ContentLoader from "react-content-loader";
+import toast from "react-hot-toast";
+import { GetCourseThunk } from "../../../features/Refund_management/Reducer/refundThunks";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const theme = {
   primary: {
@@ -192,18 +195,35 @@ const TeachingStaffs: React.FC = () => {
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setStaff(
-      staff.map((member) =>
-        member.id === id
-          ? {
-            ...member,
-            status: member.status === "Active" ? "Inactive" : "Active",
-          }
-          : member
-      )
-    );
-  };
+  useEffect(()=>{
+     
+    dispatch(GetCourseThunk(''))
+  },[])
+ const toggleStatus = async (staffId: number, status: boolean) => {
+  console.log(staffId,'toggle')
+ 
+  // const member = staff.find((m) => m.id === id);
+  // // if (!member) return;
+
+  
+  // const newStatus = member.status === "Active" ? "Inactive" : "Active";
+
+  try {
+   
+    await updateStaff({ staffId }, { is_active: status });
+    fetchClassData();
+    toast.success('updated successfully')
+    // setStaff((prev) =>
+    //   prev.map((m) =>
+    //     m.id === id ? { ...m, status: newStatus } : m
+    //   )
+    // );
+  } catch (error) {
+    console.error("❌ Failed to update staff status:", error);
+     toast.error(' failed to update')
+  }
+};
+
 
   const getStatusButtonStyle = (status: "Active" | "Inactive") => {
     if (status === "Active") {
@@ -223,21 +243,22 @@ const TeachingStaffs: React.FC = () => {
   const loading = useSelector(selectLoading);
 
 
+  const fetchClassData = (page: number = 1) => {
+    dispatch(
+      getStaffDetailsData({
+        page: page,
+      })
+    );
+  };
+
   useEffect(() => {
-    const fetchClassData = (page: number = 1) => {
-      dispatch(
-        getStaffDetailsData({
-          page: page,
-        })
-      );
-    };
     fetchClassData();
   }, [dispatch]);
 
   const handleFileChange = () => { };
 
   const handleUploadClick = () => { };
-
+console.log(classData,'useSeletot')
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -268,12 +289,12 @@ const TeachingStaffs: React.FC = () => {
                 </p>
               </div>
             </div>
-            <Button
+            {/* <Button
               onClick={handleUploadClick}
               className="bg-green-500 hover:bg-green-600 text-white"
             >
               Upload Profile Picture
-            </Button>
+            </Button> */}
           </div>
 
           <div className="space-y-8">
@@ -845,7 +866,7 @@ const TeachingStaffs: React.FC = () => {
                         <Select
                           value={member?.is_active ? "Active" : "Inactive"}
                           onValueChange={() =>
-                            toggleStatus(member.id)
+                            toggleStatus(member.uuid, !member?.is_active)
                           }
                         >
                           <SelectTrigger
@@ -853,7 +874,7 @@ const TeachingStaffs: React.FC = () => {
                               member.status
                             )}`}
                           >
-                            <SelectValue placeholder={member?.is_active} />
+                            <SelectValue placeholder={member?.is_active } />
                           </SelectTrigger>
                           <SelectContent className="bg-[#1BBFCA]">
                             <SelectItem
