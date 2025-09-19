@@ -161,7 +161,7 @@ const Students = () => {
         dob: newStudentForm.dob,
         gender: newStudentForm.gender,
         qualification: newStudentForm.qualification,
-        course: courseFilter,
+        course: newStudentForm.course,
         contact_info: {
           address1: newStudentForm.address1,
           address2: newStudentForm.address2,
@@ -247,7 +247,7 @@ const Students = () => {
 
     return data.data.map((student: any) => ({
       id: student._id,
-      name: student.full_name || `${student.first_name} ${student.last_name}`,
+  name: `${student.first_name || ""} ${student.last_name || ""}`.trim(), 
       firstName: student.first_name,
       lastName: student.last_name,
       email: student.email,
