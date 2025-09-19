@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
@@ -228,7 +229,7 @@ const Modules = () => {
               fileUrl={selectedModule.fileUrl}
               fileName={selectedModule.fileName ? "" : ""}
               branch={selectedModule.branch ?? ""}
-              video={selectedModule.video} 
+              video={selectedModule.video}
               onStatusChange={() =>
                 handleToggle({
                   module_id: selectedModule.id,
@@ -307,15 +308,14 @@ const Modules = () => {
 
               <div className="mt-4 flex justify-between items-center">
                 <div
-                  className={`flex items-center gap-1 font-medium ${
-                    toggleStatusMap[card.id] !== undefined
+                  className={`flex items-center gap-1 font-medium ${toggleStatusMap[card.id] !== undefined
                       ? toggleStatusMap[card.id]
                         ? "text-green-500"
                         : "text-red-500"
                       : card.isActive
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
                 >
                   <span className="text-sm">
                     {toggleStatusMap[card.id] !== undefined
@@ -323,19 +323,18 @@ const Modules = () => {
                         ? "Active"
                         : "Inactive"
                       : card.isActive
-                      ? "Active"
-                      : "Inactive"}
+                        ? "Active"
+                        : "Inactive"}
                   </span>
                   <span
-                    className={`w-2 h-2 rounded-full ${
-                      toggleStatusMap[card.id] !== undefined
+                    className={`w-2 h-2 rounded-full ${toggleStatusMap[card.id] !== undefined
                         ? toggleStatusMap[card.id]
                           ? "bg-green-500"
                           : "bg-red-500"
                         : card.isActive
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                    }`}
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
                   />
                 </div>
 
@@ -357,8 +356,8 @@ const Modules = () => {
                               ? "active"
                               : "inactive"
                             : card.isActive
-                            ? "active"
-                            : "inactive",
+                              ? "active"
+                              : "inactive",
                       })
                     }
                   />
