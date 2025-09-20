@@ -283,8 +283,12 @@ const StaffTicketDetail: React.FC = () => {
             </span>
           </div>
         </div>
+        
       </div>
+      
     </div>
+
+    
   );
 };
 

@@ -6,6 +6,7 @@ const Placementview = () => {
     const placement = location.state?.placement;
 
     console.log("Placement Data:", placement);
+    
 
      const navigate = useNavigate()
     return (

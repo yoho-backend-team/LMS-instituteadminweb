@@ -60,7 +60,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedFee, setSelectedFee] = useState("");
   const [amount, setAmount] = useState("");
-  const feeList = fees?.fees ?? [];
+  const feeList = fees ?? [];
+
 
   const [errors, setErrors] = useState({
     branchId: false,
@@ -89,7 +90,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
   useEffect(() => {
     if (selectedCourse) {
-      dispatch(GetBatchThunk(selectedCourse));
+      dispatch(GetBatchThunk({course: selectedCourse}));
     }
   }, [selectedCourse, dispatch, branchId, instituteId]);
 
@@ -103,6 +104,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       dispatch(GetStudentsWithBatchThunks(params));
     }
   }, [selectedBatch, branchId, instituteId, dispatch]);
+
+  
 
   useEffect(() => {
     if (editData) {
@@ -196,6 +199,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     `h-10 border px-2 rounded w-full ${
       error ? "border-red-500" : "border-gray-300"
     }`;
+
+
+
+
+    
 
   return (
     <div className="relative text-[#716F6F] p-4 h-full">

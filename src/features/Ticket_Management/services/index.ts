@@ -34,3 +34,15 @@ export const updateStaffTicketService = async (id: string) => {
   }
 };
 
+export const uploadTicketService = async (data: any) => {
+  try {
+    const response = await Client.file.upload(data);
+    return response;
+  } catch (error) {
+    console.error("Error updating staff ticket:", error);
+    throw error;
+  }
+};
+
+
+
