@@ -261,6 +261,7 @@ useEffect(() => {
         _id: studData?.data?._id, // Ensure you have the student ID
         first_name: formData.fullName,
         last_name: formData.lastName,
+        full_name: `${formData.fullName} ${formData.lastName}` ,
         email: formData.email,
         dob: formData.dateOfBirth,
         gender: formData.gender,
@@ -361,7 +362,7 @@ useEffect(() => {
                   </Avatar>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {studData?.data?.full_name || "Student Name"}
+                      {`${studData?.data?.first_name || ""} ${studData?.data?.last_name || ""}`.trim()}
                     </h3>
                     <p className="text-sm text-gray-500">
                       Trainee ID: {studData?.data?.id || "N/A"}
@@ -384,12 +385,13 @@ useEffect(() => {
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Full Name */}
+                
                 <div className="space-y-2">
                   <Label
                     htmlFor="fullName"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Full Name
+                    First Name
                   </Label>
                   <Input
                     id="fullName"
@@ -689,7 +691,7 @@ useEffect(() => {
               </Avatar>
               <div>
                 <h3 className="text-lg font-semibold">
-                  {studData?.data?.full_name || "Student Name"}
+                  {`${studData?.data?.first_name || ""} ${studData?.data?.last_name || ""}`.trim()}
                 </h3>
                 <p className="text-sm text-gray-500">
                   Joined on {formatDate(studData?.data?.createdAt) || "N/A"}
@@ -764,19 +766,20 @@ useEffect(() => {
                 <h4 className="text-[24px] text-gray-700 mb-4">Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="userName"
-                      className="text-sm font-medium text-gray-600"
-                    >
-                      User Name
-                    </Label>
-                    <Input
-                      id="userName"
-                      value={studData?.data?.full_name || ""}
-                      readOnly
-                      className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
-                    />
-                  </div>
+  <Label
+    htmlFor="userName"
+    className="text-sm font-medium text-gray-600"
+  >
+    Full Name
+  </Label>
+  <Input
+    id="userName"
+    value={`${studData?.data?.first_name || ""} ${studData?.data?.last_name || ""}`.trim()}
+    readOnly
+    className="w-full h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-[18px]"
+  />
+</div>
+
                   <div className="space-y-2">
                     <Label
                       htmlFor="email"
