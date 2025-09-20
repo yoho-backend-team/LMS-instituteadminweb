@@ -166,7 +166,7 @@ export default function FAQPage() {
                   <div className="font-semibold text-gray-800">{faq.title}</div>
                   <div className="text-sm text-gray-500">{faq.description}</div>
                 </div>
-                <div className="text-gray-700">{faq.category}</div>
+                <div className="text-gray-700 ">{faq.category}</div>
                 <div className="mr-22">
                   <StatusDropdown
                     idx={faq._id}
