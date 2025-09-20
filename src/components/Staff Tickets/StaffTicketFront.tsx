@@ -41,12 +41,8 @@ const StaffTickets: React.FC = () => {
   const staffTickets = useSelector(GetStaffTicket);
   const loading: boolean = useSelector(selectLoading);
   const error: any = useSelector((state: any) => state.staffTickets?.error);
-
-  console.log(staffTickets, "stafftickets")
   const overall_branch_id = GetLocalStorage("selectedBranchId")
   const overall_istitute_id = GetLocalStorage("instituteId")
-  console.log(overall_branch_id, "branch id ")
-  console.log(overall_istitute_id, "institute id")
   const totalPages = staffTickets?.last_page
   const [currentPage, setCurrentPage] = useState(1);
 

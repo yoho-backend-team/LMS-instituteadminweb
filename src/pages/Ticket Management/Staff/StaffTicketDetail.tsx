@@ -98,7 +98,6 @@ const StaffTicketDetail: React.FC = () => {
     });
 
     const handleMessage = (message: Message) => {
-      console.log(" Staff Mess", message);
       setMessages((prev: any) => [message, ...prev]);
     };
 

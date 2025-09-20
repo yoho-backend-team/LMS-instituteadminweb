@@ -49,8 +49,7 @@ const TicketsPage: React.FC = () => {
 
    const overall_branch_id=GetLocalStorage("selectedBranchId")
       const overall_istitute_id=GetLocalStorage("instituteId")
-     console.log(overall_branch_id,"branch id ")
-     console.log(overall_istitute_id,"institute id")
+
 
   useEffect(() => {
     const params = {
@@ -71,12 +70,10 @@ const TicketsPage: React.FC = () => {
       const formFile = new FormData()
       formFile.append("file", selectedFile);
       const response = await uploadTicketService(formFile)
-      console.log(response, 'upload res')
       if(response){
         fileUrl = response?.data?.file
       }
     }
-    console.log(fileUrl, 'fileee')
     const formData: any = {
       query,
       description,
@@ -87,7 +84,6 @@ const TicketsPage: React.FC = () => {
       file: fileUrl
     };
 
-    console.log(formData, 'form data')
 
     try {
       if (isEditMode && editingTicketId) {
@@ -152,7 +148,6 @@ const TicketsPage: React.FC = () => {
 
   // );
 
-  console.log(adminTickets, 'tickets')
 
   return (
     <div className="h-auto p-0">
@@ -244,7 +239,6 @@ const TicketsPage: React.FC = () => {
                 avatarUrl={ticket?.user?.image}
                 lastPage={adminTickets?.last_page}
                 onView={() => {
-                  console.log('....')
                   // setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
                   setShowChatWindow(true);
