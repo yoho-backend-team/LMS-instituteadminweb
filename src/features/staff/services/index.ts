@@ -44,3 +44,15 @@ export const getBranchData = async (data: any) => {
 	const response = await Client.staff.getWithBranch(data);
 	if (response) return response;
 };
+
+
+export const getWihtIdclass = async (data:any)=>{
+	try{
+	const response = await Client.online_class.getWithId(data);
+	if(response)
+		return response;
+}
+catch(err){
+	console.log(err,'error for class details');
+}
+}

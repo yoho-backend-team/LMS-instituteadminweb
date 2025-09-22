@@ -6,8 +6,8 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { FONTS, COLORS } from "../../constants/uiConstants";
 import { useDispatch, useSelector } from "react-redux";
-import { getClassesData } from "../../features/staff/reducers/thunks";
-import { selectClass } from "../../features/staff/reducers/selector";
+import {  getClassesData } from "../../features/staff/reducers/thunks";
+import { selectClass, } from "../../features/staff/reducers/selector";
 
 interface ClassProps {
   classId: any;
@@ -19,6 +19,10 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
   const classData = useSelector(selectClass);
   const classesData = classData?.data?.classes;
 
+  // const StudentData= useSelector(selectClassgetId)
+  // console.log(StudentData,'studentdata')
+
+
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
@@ -27,13 +31,21 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
         getClassesData({
           id: classId,
           staff: classId,
-        })
+        }),
+       
       );
     })();
   }, [classId, dispatch]);
 
+  // useEffect(()=>{
+  //   dispatch(
+  //     getClassByIdData({class_id: classId})
+  //   )
+  // },[classId,dispatch])
+
   const handleViewMore = (index: number) => {
     setSelectedCourse(index);
+    
   };
 
   const handleBack = () => {
@@ -144,7 +156,7 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
             <hr className="my-6" />
 
             {/* Students Section */}
-            <div className="pt-4">
+            {/* <div className="pt-4">
               <Button
                 variant="outline"
                 className="border-[#CA406F] hover:bg-pink-50 px-6 py-2"
@@ -152,11 +164,11 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
               >
                 Search Student
               </Button>
-            </div>
+            </div> */}
 
             {/* Student list table headers */}
             <div className="pt-8">
-              <div className="grid grid-cols-4 gap-6 items-center bg-gray-50 py-4 px-6 rounded-lg">
+              {/* <div className="grid grid-cols-4 gap-6 items-center bg-gray-50 py-4 px-6 rounded-lg">
                 <Label className="text-sm font-medium text-gray-600 text-center">
                   Student ID
                 </Label>
@@ -169,10 +181,10 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
                 <Label className="text-sm font-medium text-gray-600 text-center">
                   Address
                 </Label>
-              </div>
+              </div> */}
 
               {/* Map Students */}
-              {course?.batch?.student?.map((student: any, idx: number) => (
+              {/* {course?.batch?.student?.map((student: any, idx: number) => (
                 <div
                   key={idx}
                   className="grid grid-cols-4 gap-6 items-center py-3 px-6 border-b"
@@ -182,7 +194,7 @@ const ClassesPage: React.FC<ClassProps> = ({ classId }) => {
                   <p className="text-center">{student?.city ?? "N/A"}</p>
                   <p className="text-center">{student?.address ?? "N/A"}</p>
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>

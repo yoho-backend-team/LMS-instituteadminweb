@@ -4,6 +4,7 @@ import {
 	getDataClasses,
 	getStaffData,
 	getStaffDataId,
+	getWihtIdclass,
 } from '../services';
 import {
 	getActivity,
@@ -11,6 +12,7 @@ import {
 	getClass,
 	getStaffDetails,
 	getStaffDetailsId,
+	getWithIdClass,
 	setLoading,
 } from './slices';
 
@@ -62,3 +64,14 @@ export const getBranchDetailsData = (data: any) => async (dispatch: any) => {
 		console.log(error);
 	}
 };
+
+
+export const getClassByIdData =(data:any)=>async (dispatch:any)=>{
+	try{
+const response = await getWihtIdclass(data)
+dispatch(getWithIdClass(response))
+	}
+	catch(err){
+		console.log(err,'erroor')
+	}
+}
