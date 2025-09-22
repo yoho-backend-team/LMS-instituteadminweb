@@ -26,6 +26,8 @@ import type { AppDispatch, RootState } from "../../store/store";
 import { GetLocalStorage } from "../../utils/localStorage";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 
+
+
 export function AddFAQDrawer({
   open,
   onOpenChange,

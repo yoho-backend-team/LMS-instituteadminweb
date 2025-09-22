@@ -53,9 +53,12 @@ console.log(filteredFees,"filfee")
   const paginatedFees = filteredFees;
 
 
+  
   const handleAddFee = (newFee: Fee) => {
-    setCurrentFeesData((prevData) => [...prevData, newFee]);
-  };
+  setCurrentFeesData((prevData) => [newFee, ...prevData]); 
+  setCurrentPage(1); 
+};
+
 
   const handleUpdateFee = (updatedFee: Fee) => {
     setCurrentFeesData((prevData) =>
@@ -86,6 +89,8 @@ console.log(filteredFees,"filfee")
   const handleDownload = (fee: Fee) => {
     setSelectedFees(fee);
   };
+
+  
 
   const handleConfirm = () => {
     setShowConfirmationModal(false);
@@ -148,6 +153,7 @@ console.log(filteredFees,"filfee")
         return "Yes";
     }
   };
+  
 
   return (
     <>

@@ -91,7 +91,7 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   // 🔹 Fetch Students
   useEffect(() => {
     const fetchStudents = async () => {
-      if ( branch && batch) {
+      if (branch && batch) {
         const params = {
           batch_id: batch,
           branch_id: branch,
@@ -117,44 +117,42 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
   }, [branch, batch, selectedFee]);
 
   // 🔹 Reset / Prefill form when opening drawer
-useEffect(() => {
-  if (isOpen) {
-    if (selectedFee) {
-      setTransactionId(selectedFee.payment_history[0].transaction_id || "");
-      setPaidAmount(selectedFee.paid_amount || "");
-      setPaymentDate(selectedFee.payment_date?.split("T")[0] || ""); // ✅ make sure it's YYYY-MM-DD
-      setStudentName(selectedFee.student?.full_name || "");
-      setStudentEmail(selectedFee.student?.email || "");
-      setBalance(selectedFee.balance?.toString() || "");
-      setDueDate(
-        selectedFee.duepaymentdate
-          ? new Date(selectedFee.duepaymentdate).toISOString().split("T")[0]
-          : ""
-      );
-      setBranch(selectedFee.branch_id || "");
-      setCourse(selectedFee.course_name || "");
-      setBatch(selectedFee.batch_name || "");
-      setStudentId(selectedFee.student?._id || "");
-    } else {
-      setBranch("");
-      setCourse("");
-      setBatch("");
-      setStudentName("");
-      setStudentEmail("");
-      setStudentId("");
-      setPaymentDate("");
-      setTransactionId("");
-      setPaidAmount("");
-      setBalance("");
-      setDueDate("");
+  useEffect(() => {
+    if (isOpen) {
+      if (selectedFee) {
+        setTransactionId(selectedFee.payment_history[0].transaction_id || "");
+        setPaidAmount(selectedFee.paid_amount || "");
+        setPaymentDate(selectedFee.payment_date?.split("T")[0] || ""); // ✅ make sure it's YYYY-MM-DD
+        setStudentName(selectedFee.student?.full_name || "");
+        setStudentEmail(selectedFee.student?.email || "");
+        setBalance(selectedFee.balance?.toString() || "");
+        setDueDate(
+          selectedFee.duepaymentdate
+            ? new Date(selectedFee.duepaymentdate).toISOString().split("T")[0]
+            : ""
+        );
+        setBranch(selectedFee.branch_id || "");
+        setCourse(selectedFee.course_name || "");
+        setBatch(selectedFee.batch_name || "");
+        setStudentId(selectedFee.student?._id || "");
+      } else {
+        setBranch("");
+        setCourse("");
+        setBatch("");
+        setStudentName("");
+        setStudentEmail("");
+        setStudentId("");
+        setPaymentDate("");
+        setTransactionId("");
+        setPaidAmount("");
+        setBalance("");
+        setDueDate("");
+      }
     }
-  }
-}, [isOpen, selectedFee]);
+  }, [isOpen, selectedFee]);
 
+  console.log(selectedFee, "sf");
 
-  console.log(selectedFee,"sf")
-
-  // 🔹 Submit Handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -162,7 +160,7 @@ useEffect(() => {
       // 🔥 Update API only runs here
       const updatedFee: Fee = {
         ...selectedFee,
-        [selectedFee.payment_history[0].transaction_id]: transactionId, // computed property
+        [selectedFee.payment_history[0].transaction_id]: transactionId,
         paid_amount: paidAmount,
         payment_date: paymentDate,
         balance,
@@ -175,7 +173,7 @@ useEffect(() => {
       await dispatch(EditStudentthunks(updatedFee) as any);
       onUpdateFee(updatedFee);
     } else {
-      // 🔥 Create Fee
+     
       const newFee: any = {
         id: 1,
         transaction_id: transactionId || "N/A",
@@ -250,17 +248,17 @@ useEffect(() => {
                 Select Branch
               </label>
               <select
-  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
-  value={branch}
-  onChange={(e) => setBranch(e.target.value)}
->
-  <option value="">Select Branch</option>
-  {branchOptions.map((b: any) => (
-    <option key={b.uuid} value={b.uuid}>
-      {b.branch_identity}
-    </option>
-  ))}
-</select>
+                className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
+                value={branch}
+                onChange={(e) => setBranch(e.target.value)}
+              >
+                <option value="">Select Branch</option>
+                {branchOptions.map((b: any) => (
+                  <option key={b.uuid} value={b.uuid}>
+                    {b.branch_identity}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Course */}
@@ -268,18 +266,18 @@ useEffect(() => {
               <label className="block text-sm text-gray-700">
                 Select Course
               </label>
-             <select
-  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
-  value={course}
-  onChange={(e) => setCourse(e.target.value)}
->
-  <option value="">Select Course</option>
-  {courseOptions.map((c: any) => (
-    <option key={c.uuid} value={c.uuid}>
-      {c.course_name}
-    </option>
-  ))}
-</select>
+              <select
+                className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
+                value={course}
+                onChange={(e) => setCourse(e.target.value)}
+              >
+                <option value="">Select Course</option>
+                {courseOptions.map((c: any) => (
+                  <option key={c.uuid} value={c.uuid}>
+                    {c.course_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Batch */}
@@ -288,17 +286,17 @@ useEffect(() => {
                 Select Batch
               </label>
               <select
-  value={batch}
-  onChange={(e) => setBatch(e.target.value)}
-  className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
->
-  <option value="">Select Batch</option>
-  {batchOptions.map((b: any) => (
-    <option key={b.uuid} value={b.uuid}>
-      {b.batch_name}
-    </option>
-  ))}
-</select>
+                value={batch}
+                onChange={(e) => setBatch(e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
+              >
+                <option value="">Select Batch</option>
+                {batchOptions.map((b: any) => (
+                  <option key={b.uuid} value={b.uuid}>
+                    {b.batch_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Student */}

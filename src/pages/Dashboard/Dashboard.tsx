@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
@@ -86,9 +85,7 @@ export default function Component() {
 			}
 		})();
 	}, [BranchData, dispatch, localBranch]);
-
-
-	const monthMap: { [key: string]: number } = {
+const monthMap: { [key: string]: number } = {
 		January: 1,
 		February: 2,
 		March: 3,
@@ -102,15 +99,7 @@ export default function Component() {
 		November: 11,
 		December: 12,
 	};
-
-
-
-
-
-
-
-
-	const handleApply = async () => {
+const handleApply = async () => {
 		try {
 			const monthNumber = monthMap[selectedMonth];
 
