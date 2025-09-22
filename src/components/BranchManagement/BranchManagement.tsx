@@ -48,7 +48,7 @@ export function LocationCardsGrid() {
 
   const filteredBranches = searchTerm
     ? branches.filter((branch: any) =>
-      branch.cityName.toLowerCase().includes(searchTerm.toLowerCase())
+      branch.branch_identity.toLowerCase().includes(searchTerm.toLowerCase())
     )
     : branches;
 
