@@ -613,6 +613,8 @@ class Client {
 	};
 
 	helpcenter = {
+		get:(data: any) => 
+			HttpClient.get(HTTP_END_POINTS.helpcenter.get,data),
 		getall: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
 		post: (data: any) =>
