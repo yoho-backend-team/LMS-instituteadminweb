@@ -128,13 +128,8 @@ export const CertificateManager: React.FC = () => {
  const filteredCertificates =
   certificateData?.data
     ?.filter((cert: any) => {
-      // Branch filter
       if (branchFilter && cert.branch_id !== branchFilter) return false;
-
-      // Course filter
       if (courseFilter && cert.course !== courseFilter) return false;
-
-      // Search term filter (certificate_name)
       if (
         searchTerm &&
         !cert.certificate_name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -173,7 +168,7 @@ export const CertificateManager: React.FC = () => {
 
   return (
     <div className="p-3">
-      {/* Filters */}
+     
       <CertificateFilter
         showFilter={showFilter}
         setShowFilter={setShowFilter}
@@ -192,7 +187,7 @@ export const CertificateManager: React.FC = () => {
         onAdd={handleAdd}
       />
 
-      {/* Table */}
+     
       <CertificateTable
         certificates={filteredCertificates || []}
         openDropdownId={openDropdownId}

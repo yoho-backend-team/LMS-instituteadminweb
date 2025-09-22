@@ -91,7 +91,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     fetchAllBatches();
   }, [dispatch, selectedBranch]);
 
-  console.log(courses,"cour")
+
   return (
     <>
       <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
