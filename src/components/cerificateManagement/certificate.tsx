@@ -31,17 +31,19 @@ export const CertificateManager: React.FC = () => {
   const dispatch = useDispatch<any>();
   const certificateData = useSelector(selectCertificate);
   const loading = useSelector(selectLoading);
-
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [courseFilter, setCourseFilter] = useState('')
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchFilter, setBranchFilter] = useState('')
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingCertificate, setEditingCertificate] =
     useState<Certificate | null>(null);
+  const [searchTerm, setSearchTerm] = useState('')
 
   // ✅ Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -123,9 +125,26 @@ export const CertificateManager: React.FC = () => {
     fetchgetStudentCertificate(currentPage);
   };
 
+ const filteredCertificates =
+  certificateData?.data
+    ?.filter((cert: any) => {
+      // Branch filter
+      if (branchFilter && cert.branch_id !== branchFilter) return false;
 
-  const filteredCertificates =
-    certificateData?.data?.flatMap((cert: any) => {
+      // Course filter
+      if (courseFilter && cert.course !== courseFilter) return false;
+
+      // Search term filter (certificate_name)
+      if (
+        searchTerm &&
+        !cert.certificate_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+    ?.flatMap((cert: any) => {
       if (!cert.student || !Array.isArray(cert.student)) return [];
 
       return cert.student
@@ -141,6 +160,7 @@ export const CertificateManager: React.FC = () => {
             title: cert?.certificate_name,
             description: cert?.description,
             branch: cert?.branch_id,
+            course: cert?.course,
             batch: cert?.batch_id,
             student: fullName,
             email,
@@ -160,11 +180,15 @@ export const CertificateManager: React.FC = () => {
         selectedCourse={selectedCourse}
         setSelectedCourse={setSelectedCourse}
         selectedBranch={selectedBranch}
+        setCourseFilter={setCourseFilter}
+        setBranchFilter={setBranchFilter}
         setSelectedBranch={setSelectedBranch}
         selectedBatch={selectedBatch}
         setSelectedBatch={setSelectedBatch}
         selectedStudent={selectedStudent}
         setSelectedStudent={setSelectedStudent}
+        setSearchTerm={setSearchTerm}
+        searchTerm={searchTerm}
         onAdd={handleAdd}
       />
 
@@ -180,7 +204,6 @@ export const CertificateManager: React.FC = () => {
         loading={loading}
       />
 
-      {/* ✅ Inline Pagination */}
       <div className="flex items-center justify-center gap-2 mt-4">
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"

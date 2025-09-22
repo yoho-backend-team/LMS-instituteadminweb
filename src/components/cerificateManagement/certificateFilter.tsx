@@ -22,6 +22,10 @@ interface CertificateFilterProps {
   selectedStudent: string;
   setSelectedStudent: (student: string) => void;
   onAdd: () => void;
+  setBranchFilter: any
+  setCourseFilter: any
+  setSearchTerm: any
+  searchTerm: any
 }
 
 export const CertificateFilter: React.FC<CertificateFilterProps> = ({
@@ -33,9 +37,13 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   setSelectedBranch,
   selectedBatch,
   setSelectedBatch,
+  setBranchFilter,
+  setCourseFilter,
   selectedStudent,
   setSelectedStudent,
   onAdd,
+  setSearchTerm,
+  searchTerm
 }) => {
   const dispatch = useDispatch<any>();
   const [courses, setCourses] = useState<any[]>([]);
@@ -53,8 +61,6 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
       console.log("Error fetching course data:", error);
     }
   };
-
-
 
   const fetchAllBranches = async () => {
     try {
@@ -115,7 +121,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
           </div>
           <div className=" grid md:grid-cols-2 gap-3">
 
-             <div>
+            <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
                 style={{ ...FONTS.heading_08 }}
@@ -125,7 +131,13 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               <select
                 className="w-full border h-13 px-3 py-2 rounded"
                 value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={(e) => {
+                  const selected = branches.find(
+                    (branch: any) => branch?.uuid === e.target.value
+                  );
+                  setSelectedBranch(selected?.uuid || "");
+                  setBranchFilter(selected?._id || "");
+                }}
                 style={{ ...FONTS.heading_08 }}
               >
                 <option value="">All</option>
@@ -136,6 +148,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
                 ))}
               </select>
             </div>
+
             <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
@@ -146,7 +159,13 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               <select
                 className="w-full border h-13 px-3 py-2 rounded"
                 value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
+                onChange={(e) => {
+                  const selected = courses.find(
+                    (course: any) => course?.uuid === e.target.value
+                  );
+                  setSelectedCourse(selected?.uuid || "");
+                  setCourseFilter(selected?._id || "");
+                }}
                 style={{ ...FONTS.heading_08 }}
               >
                 <option value="">All</option>
@@ -158,7 +177,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               </select>
             </div>
            
-            <div>
+            {/* <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
                 style={{ ...FONTS.heading_08 }}
@@ -178,20 +197,20 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
             <div>
               <input
                 type="text"
                 className="w-full text-lg border mt-8 h-13 px-3 py-2 rounded"
                 placeholder="Search Certificates"
-                value={selectedStudent}
-                onChange={(e) => setSelectedStudent(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex my-4">
+            <div className="flex my-4 pt-6 ml-28">
               <button
                 onClick={onAdd}
-                className="bg-[#1BBFCA] text-white px-4 py-2 w-2/5 flex rounded-lg"
+                className="bg-[#1BBFCA] text-white px-4 py-2 w-3.5/5 flex rounded-lg"
               >
                 <IoMdAdd
                   className="pr-2 h-6 w-7"
