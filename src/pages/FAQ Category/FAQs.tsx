@@ -69,16 +69,17 @@ export default function FAQPage() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [currentFAQToEdit, setCurrentFAQToEdit] = useState<any | null>(null);
   const [faqToDeleteId, setFaqToDeleteId] = useState<string | null>(null);
+  const [searchInput, setsearchInput] = useState<string>("");
+  const [selectCat, setselectCat] = useState<string>("");
+  const [FilterData, setFilterData] = useState<any[]>([]);
 
   const dispatch = useDispatch<any>();
-  const faqselect = useSelector(selectFaq);
+  const faqselect: any[] = useSelector(selectFaq);
   const [currentPage] = useState(1);
   const loading = useSelector(selectLoading);
 
   const overall_branch_id = GetLocalStorage("selectedBranchId")
   const overall_istitute_id = GetLocalStorage("instituteId")
-  console.log(overall_branch_id, "branch id ")
-  console.log(overall_istitute_id, "institute id")
 
   useEffect(() => {
     const ParamsData = {
@@ -131,6 +132,23 @@ export default function FAQPage() {
     setIsSuccessModalOpen(false);
   };
 
+  useEffect(() => {
+    (() => {
+      if (selectCat !== "" && searchInput !== "") {
+        const data = faqselect?.filter((item) => item?.category_id === selectCat && (item?.description?.includes(searchInput) || item?.title?.includes(searchInput)) ? item : null)
+        setFilterData(data)
+      } else if (selectCat !== "" && searchInput === "") {
+        const data = faqselect?.filter((item) => item?.category_id?._id === selectCat ? item : null)
+        setFilterData(data)
+      } else if (selectCat === "" && searchInput !== "") {
+        const data = faqselect?.filter((item) => item?.description?.includes(searchInput) || item?.title?.includes(searchInput) ? item : null)
+        setFilterData(data)
+      } else {
+        setFilterData(faqselect)
+      }
+    })()
+  }, [faqselect, searchInput, selectCat]);
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">FAQ</h1>
@@ -141,7 +159,11 @@ export default function FAQPage() {
         onAddFAQClick={() => setIsAddFAQDrawerOpen(true)}
       />
 
-      {showFilter && <FAQFilter />}
+      {showFilter && <FAQFilter
+        inputData={searchInput}
+        setSearch={setsearchInput}
+        setCat={setselectCat}
+      />}
 
       {loading ? (
         <FAQSkeleton />
@@ -156,17 +178,17 @@ export default function FAQPage() {
               <div>Actions</div>
             </div>
 
-            {faqselect.map((faq: any) => (
+            {FilterData.map((faq: any, index: number) => (
               <div
-                key={faq.id}
+                key={faq?._id}
                 className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-4 p-4 items-center shadow-sm rounded-lg shadow-gray-300"
               >
-                <div className="text-gray-700">{faq.id}</div>
+                <div className="text-gray-700">{index + 1}</div>
                 <div>
-                  <div className="font-semibold text-gray-800">{faq.title}</div>
-                  <div className="text-sm text-gray-500">{faq.description}</div>
+                  <div className="font-semibold text-gray-800">{faq?.title}</div>
+                  <div className="text-sm text-gray-500">{faq?.description}</div>
                 </div>
-                <div className="text-gray-700 ">{faq.category}</div>
+                <div className="text-gray-700 ">{faq?.category_id?.category_name}</div>
                 <div className="mr-22">
                   <StatusDropdown
                     idx={faq._id}

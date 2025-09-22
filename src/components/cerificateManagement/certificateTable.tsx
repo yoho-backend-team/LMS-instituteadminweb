@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
@@ -110,10 +111,10 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
                 </td>
               </tr>
             ) : (
-              certificates.map((cert: any) => (
-                <tr key={cert.id} className="text-[#716F6F]">
+              certificates.map((cert: any, index: number) => (
+                <tr key={index} className="text-[#716F6F]">
                   <td className="px-6 py-4" style={{ ...FONTS.heading_08 }}>
-                    {cert.id}
+                    {index + 1}
                   </td>
                   <td className="px-6 py-4 flex items-center gap-3">
                     <img

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { HiMiniXMark } from "react-icons/hi2";
 import { COLORS, FONTS } from "../../constants/uiConstants";
@@ -14,6 +15,7 @@ import {
 } from "../../features/certificateManagement/services";
 import { getStudentmanagement } from "../../features/StudentManagement/reducer/thunks";
 import { selectStudent } from "../../features/StudentManagement/reducer/selector";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 export interface Certificate {
   id: number;
@@ -69,7 +71,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        let payload;
+        let payload: any;
         if (isEditing) {
           payload = {
             certificate_name: values.title,
@@ -85,11 +87,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             branch_id: values.branch,
             course: values.course,
             student: values.student,
-            institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+            institute_id: GetLocalStorage("instituteId"),
           };
           await createCertificate(payload);
         }
-        onSave(payload);
+        onSave?.(payload);
         onClose();
       } catch (error) {
         console.error("Error submitting form:", error);
@@ -102,7 +104,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
     (async () => {
       try {
         const [coursesRes, branchesRes, batchesRes] = await Promise.all([
-          getCourseService({branch: formik.values.branch}),
+          getCourseService({ branch: formik.values.branch }),
           getBranchService({}),
           getAllBatches({}),
         ]);
@@ -128,7 +130,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
   if (!isOpen) return null;
 
-  
+
 
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
@@ -169,7 +171,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           ) : (
             <div>
 
-              
+
               <label
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
               >

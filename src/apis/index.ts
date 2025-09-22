@@ -299,7 +299,7 @@ class Client {
 			delete: (params: any) =>
 				HttpClient.delete(HTTP_END_POINTS.payment.fee.delete + params.uuid),
 			update: (data: any) =>
-				HttpClient.update(HTTP_END_POINTS.payment.fee.update, data),
+				HttpClient.update(HTTP_END_POINTS.payment.fee.update.replace(":uuid", data?.student?.uuid), data),
 		},
 		staff_salary: {
 			getall: (params: any) =>
@@ -613,8 +613,8 @@ class Client {
 	};
 
 	helpcenter = {
-		get:(data: any) => 
-			HttpClient.get(HTTP_END_POINTS.helpcenter.get,data),
+		get: (data: any) =>
+			HttpClient.get(HTTP_END_POINTS.helpcenter.get, data),
 		getall: (data: any) =>
 			HttpClient.get(HTTP_END_POINTS.helpcenter.getall, data),
 		post: (data: any) =>

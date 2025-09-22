@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetAllFaqs } from '../service';
 import { getFaqs, setLoading } from './slice';
 

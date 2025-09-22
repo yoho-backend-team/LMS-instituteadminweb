@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {  FiSend, FiArrowLeft } from "react-icons/fi";
+import { FiSend, FiArrowLeft } from "react-icons/fi";
 import chtimg from "../../../assets/icons/chtimg.png";
 import userblue from "../../../assets/navbar/userblue.png";
 import { useTicketContext } from "../../../components/Staff Tickets/StaffTicketContext";
@@ -46,8 +47,8 @@ const StaffTicketDetail: React.FC = () => {
   }, [dispatch, ticketId]);
 
   const handleCloseTicket = async (ticketId: any) => {
-    const respone = await updateStaffTicketService(ticketId);
-    console.log(respone);
+    await updateStaffTicketService(ticketId);
+    navigate(-1)
   };
 
   const [inputValue, setInputValue] = useState("");
@@ -107,6 +108,7 @@ const StaffTicketDetail: React.FC = () => {
     };
   });
 
+
   return (
     <div className="p-6 pt-0">
       <div className="flex items-center justify-between mb-4">
@@ -135,7 +137,7 @@ const StaffTicketDetail: React.FC = () => {
           </p>
         </div>
         {status !== "closed" && (
-          <button className="flex items-center gap-2 px-4 py-2 bg-white text-[#3ABE65] rounded-md text-sm font-semibold border-2 shadow">
+          <button onClick={() => handleCloseTicket(individualData?.uuid)} className="flex items-center gap-2 px-4 py-2 bg-white text-[#3ABE65] rounded-md text-sm font-semibold border-2 shadow">
             <IoIosCloseCircle className="text-lg" /> CLOSE TICKET
           </button>
         )}
@@ -170,9 +172,8 @@ const StaffTicketDetail: React.FC = () => {
               {messages?.map((msg: any, idx: any) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2 ${
-                    msg.sender === adminProfile?._id ? "justify-end" : ""
-                  }`}
+                  className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? "justify-end" : ""
+                    }`}
                 >
                   {msg.sender === "user" && (
                     <img
@@ -182,19 +183,17 @@ const StaffTicketDetail: React.FC = () => {
                     />
                   )}
                   <div
-                    className={`p-2 rounded shadow text-sm max-w-[75%] ${
-                      msg.sender === adminProfile?._id
-                        ? "bg-[#14b8c6] text-white"
-                        : "bg-white text-gray-800"
-                    }`}
+                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg.sender === adminProfile?._id
+                      ? "bg-[#14b8c6] text-white"
+                      : "bg-white text-gray-800"
+                      }`}
                   >
                     {msg.content}
                     <div
-                      className={`text-[10px] text-right mt-1 ${
-                        msg.sender === adminProfile?._id
-                          ? "text-white"
-                          : "text-gray-500"
-                      }`}
+                      className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
+                        ? "text-white"
+                        : "text-gray-500"
+                        }`}
                     >
                       {dayjs(msg.date).format("HH:MM A")}
                     </div>
@@ -272,22 +271,21 @@ const StaffTicketDetail: React.FC = () => {
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
-              className={`inline-block px-3 py-2 rounded text-sm ${
-                status === "opened"
-                  ? "text-white bg-[#1BBFCA]"
-                  : "text-white bg-[#3ABE65]"
-              }`}
+              className={`inline-block px-3 py-2 rounded text-sm ${status === "opened"
+                ? "text-white bg-[#1BBFCA]"
+                : "text-white bg-[#3ABE65]"
+                }`}
             >
               {status}
             </span>
           </div>
         </div>
-        
+
       </div>
-      
+
     </div>
 
-    
+
   );
 };
 
