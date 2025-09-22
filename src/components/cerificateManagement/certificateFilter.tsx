@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 import { TbXboxXFilled } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
@@ -44,7 +45,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
 
   const fetchAllCourses = async () => {
     try {
-      const response = await getCourseService({branch: selectedBranch});
+      const response = await getCourseService({ branch: selectedBranch });
       console.log(response, 'course resp')
       if (response) {
         setCourses(response?.data);
@@ -53,8 +54,6 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
       console.log("Error fetching course data:", error);
     }
   };
-
-
 
   const fetchAllBranches = async () => {
     try {
@@ -85,7 +84,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     fetchAllBatches();
   }, [dispatch, selectedBranch]);
 
-  console.log(courses,"cour")
+  console.log(courses, "cour")
   return (
     <>
       <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
@@ -115,7 +114,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
           </div>
           <div className=" grid md:grid-cols-2 gap-3">
 
-             <div>
+            <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
                 style={{ ...FONTS.heading_08 }}
@@ -157,7 +156,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
                 ))}
               </select>
             </div>
-           
+
             <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"

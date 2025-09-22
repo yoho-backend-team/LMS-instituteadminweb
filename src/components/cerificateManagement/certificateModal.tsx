@@ -30,8 +30,8 @@ export interface Certificate {
   uuid: string;
   batch_id: string;
   certificate_name: string;
-  branch_id: String;
-  institute_id: String;
+  branch_id: string;
+  institute_id: string;
 }
 
 interface CertificateModalProps {
