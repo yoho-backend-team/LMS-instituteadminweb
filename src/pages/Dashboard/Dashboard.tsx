@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
