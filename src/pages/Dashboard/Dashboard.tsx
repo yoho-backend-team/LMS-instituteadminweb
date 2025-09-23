@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { COLORS, FONTS } from '../../constants/uiConstants';
@@ -24,6 +25,7 @@ import {
 	StoreLocalStorage,
 } from '../../utils/localStorage';
 import { getDashboard } from '../../features/Dashboard/services';
+import { useLoader } from '../../context/LoadingContext/Loader';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -44,6 +46,7 @@ export default function Component() {
 	});
 	const branchList = BranchOptions;
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
+	const { showLoader, hideLoader } = useLoader()
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
@@ -66,9 +69,13 @@ export default function Component() {
 
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
-		dispatch(getDashboardthunks(paramsData));
-		dispatch(getActivitythunks({ page: 1 }));
-		(() => {
+		(async () => {
+			showLoader()
+			const response = await dispatch(getDashboardthunks(paramsData));
+			const responsse2 = await dispatch(getActivitythunks({ page: 1 }));
+			if (response && responsse2) {
+				hideLoader()
+			}
 			if (localBranch) {
 				console.log("local found", localBranch)
 				BranchData?.forEach((item: any) => {
@@ -84,8 +91,11 @@ export default function Component() {
 				setSelectedBranch(foundBranch?.branch_identity);
 			}
 		})();
-	}, [BranchData, dispatch, localBranch]);
-const monthMap: { [key: string]: number } = {
+		// setTimeout(() => {
+		// 	hideLoader()
+		// }, 10000);
+	}, [BranchData, dispatch, hideLoader, localBranch, showLoader]);
+	const monthMap: { [key: string]: number } = {
 		January: 1,
 		February: 2,
 		March: 3,
@@ -99,7 +109,7 @@ const monthMap: { [key: string]: number } = {
 		November: 11,
 		December: 12,
 	};
-const handleApply = async () => {
+	const handleApply = async () => {
 		try {
 			const monthNumber = monthMap[selectedMonth];
 

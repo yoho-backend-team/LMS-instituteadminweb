@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useEffect, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
@@ -18,11 +19,11 @@ export const FeesTable: React.FC = () => {
   const loading = useSelector(selectLoading);
   const feeSelector = useSelector(Fees1)
   const [currentPage, setCurrentPage] = useState(1);
-  
+
 
   useEffect(() => {
     const fetchFeesData = async () => {
-      const result = await dispatch(GetAllFeesThunks({page: currentPage}) as any);
+      const result = await dispatch(GetAllFeesThunks({ page: currentPage }) as any);
       setCurrentFeesData(result?.data);
     };
     fetchFeesData();
@@ -46,18 +47,17 @@ export const FeesTable: React.FC = () => {
     fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-console.log(filteredFees,"filfee")
 
   const totalPages = feeSelector?.last_page;
 
   const paginatedFees = filteredFees;
 
 
-  
+
   const handleAddFee = (newFee: Fee) => {
-  setCurrentFeesData((prevData) => [newFee, ...prevData]); 
-  setCurrentPage(1); 
-};
+    setCurrentFeesData((prevData) => [newFee, ...prevData]);
+    setCurrentPage(1);
+  };
 
 
   const handleUpdateFee = (updatedFee: Fee) => {
@@ -90,7 +90,7 @@ console.log(filteredFees,"filfee")
     setSelectedFees(fee);
   };
 
-  
+
 
   const handleConfirm = () => {
     setShowConfirmationModal(false);
@@ -114,13 +114,11 @@ console.log(filteredFees,"filfee")
       case "edit":
         return `Are you sure you want to edit fee ID ${selectedFees.id}?`;
       case "delete":
-        return `Are you sure you want to delete fee ID ${
-          selectedFees.id.split("-")[0]
-        }? This action cannot be undone.`;
+        return `Are you sure you want to delete fee ID ${selectedFees.id.split("-")[0]
+          }? This action cannot be undone.`;
       case "download":
-        return `Are you sure you want to download details for fee ID ${
-          selectedFees.id.split("-")[0]
-        }?`;
+        return `Are you sure you want to download details for fee ID ${selectedFees.id.split("-")[0]
+          }?`;
       default:
         return "Are you sure you want to proceed with this action?";
     }
@@ -153,7 +151,7 @@ console.log(filteredFees,"filfee")
         return "Yes";
     }
   };
-  
+
 
   return (
     <>
@@ -225,9 +223,10 @@ console.log(filteredFees,"filfee")
                 ))}
               </tbody>
             ) : filteredFees?.length ? (
-              paginatedFees?.map((fee: any) => (
+              paginatedFees?.map((fee: any, index: number) => (
                 <tbody key={fee.id}>
                   <FeesTableRow
+                    index={index}
                     fee={fee}
                     onView={handleView}
                     onEdit={handleEdit}

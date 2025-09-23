@@ -36,12 +36,12 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   setSelectedCourse,
   selectedBranch,
   setSelectedBranch,
-  selectedBatch,
-  setSelectedBatch,
+  // selectedBatch,
+  // setSelectedBatch,
   setBranchFilter,
   setCourseFilter,
-  selectedStudent,
-  setSelectedStudent,
+  // selectedStudent,
+  // setSelectedStudent,
   onAdd,
   setSearchTerm,
   searchTerm
@@ -49,9 +49,9 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   const dispatch = useDispatch<any>();
   const [courses, setCourses] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
-  const [allBatches, setAllBatches] = useState<any[]>([]);
+  const [, setAllBatches] = useState<any[]>([]);
 
-  const fetchAllCourses = async () => {
+  const fetchAllCourses = useCallback(async () => {
     try {
       const response = await getCourseService({ branch: selectedBranch });
       console.log(response, 'course resp')
@@ -61,7 +61,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     } catch (error) {
       console.log("Error fetching course data:", error);
     }
-  };
+  }, [selectedBranch])
 
   const fetchAllBranches = async () => {
     try {
@@ -90,7 +90,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     fetchAllBranches();
     fetchAllCourses();
     fetchAllBatches();
-  }, [dispatch, selectedBranch]);
+  }, [dispatch, fetchAllBatches, fetchAllCourses, selectedBranch]);
 
   return (
     <>
