@@ -165,7 +165,7 @@ export function LocationCardsGrid() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
+    <div className="container mx-auto p-3 ">
       {/* Search & Add Button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <form

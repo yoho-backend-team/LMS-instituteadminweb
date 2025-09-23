@@ -95,7 +95,9 @@ export default function AllNotifications() {
   return (
     <div className="p-6 w-full">
       {/* Add Notification Button */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
+                <p className="text-lg font-bold">All Notification</p>
+
         <AddNotificationDrawer fetchAllNotifications={fetchAllNotifications} />
       </div>
 

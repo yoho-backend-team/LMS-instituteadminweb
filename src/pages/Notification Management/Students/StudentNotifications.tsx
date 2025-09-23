@@ -73,10 +73,13 @@ interface ApiResponse {
 
 const StudentNotifications = () => {
   const [open, setOpen] = useState(false);
-  const [notificationStats, setNotificationStats] = useState([
+
+  
+  const [notificationsList, setNotificationsList] = useState<any[]>([]);
+    const [notificationStats, setNotificationStats] = useState([
     {
       title: "Total Notifications",
-      count: 0,
+      count: notificationsList.length,
       color: "bg-[#DB55D233]",
       image: purpleImg,
     },
@@ -93,7 +96,7 @@ const StudentNotifications = () => {
       image: classImg,
     },
   ]);
-  const [notificationsList, setNotificationsList] = useState<any[]>([]);
+
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<string[]>([]);
@@ -138,7 +141,7 @@ const StudentNotifications = () => {
       setNotificationStats([
         {
           title: "Total Notifications",
-          count: totalNotifications,
+          count: notificationsList.length,
           color: "bg-[#DB55D233]",
           image: purpleImg,
         },
@@ -221,7 +224,8 @@ const StudentNotifications = () => {
 
   return (
     <div className="p-6 min-h-screen">
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-between mb-6">
+        <p className="text-lg font-bold">Student Notification</p>
         <Button
           onClick={() => setOpen(true)}
           className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
