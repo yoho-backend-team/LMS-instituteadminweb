@@ -34,7 +34,6 @@ const Communitys: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const dispatch = useDispatch<any>();
   const communityMessages = useSelector(selectMessages);
-  console.log("send message:",communityMessages)
 
   const getProfile = async () => {
     try {

@@ -76,7 +76,7 @@ const StaffsNotification: React.FC = () => {
   const stats = [
     {
       title: "Total Notifications",
-      count: totalNotifications,
+      count: notifications.length,
       color: "bg-[#DB55D233]",
       image: purpleImg,
     },
@@ -180,7 +180,8 @@ const StaffsNotification: React.FC = () => {
   return (
     <div className="p-6">
       {/* Top Right Button */}
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-between mb-6">
+         <p className="text-lg font-bold">Staff Notification</p>
         <Button
           onClick={() => setOpen(true)}
           className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
@@ -192,7 +193,7 @@ const StaffsNotification: React.FC = () => {
 
       {/* Drawer for Notification Form */}
       <Drawer open={open} onOpenChange={setOpen} direction="right">
-        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l rounded-xl">
+        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white shadow-lg border-l rounded-xl">
           <DrawerHeader className="flex  justify-between p-0 mb-6 relative">
             <DrawerTitle className="text-lg font-semibold">
               Add Notification

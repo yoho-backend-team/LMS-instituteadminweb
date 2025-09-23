@@ -32,6 +32,7 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
   const batches = useSelector(selectcommunity);
   const dispatch = useDispatch<any>();
   const loading = useSelector(selectLoading);
+  console.log(batches,"batches")
 
   useEffect(() => {
     dispatch(fetchCommunity({}));
