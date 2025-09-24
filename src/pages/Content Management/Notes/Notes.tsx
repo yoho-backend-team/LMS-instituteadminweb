@@ -91,9 +91,9 @@ const Notes = () => {
           <span>Are you sure you want to delete this note?</span>
           <div className="flex justify-end gap-2 mt-2">
             <button
-              className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+              className="px-3 py-1 bg-gray-400 rounded hover:bg-gray-300 hover:text-black text-sm"
               onClick={() => toast.dismiss(t.id)}
-            >
+              >
               Cancel
             </button>
             <button
@@ -101,12 +101,14 @@ const Notes = () => {
               onClick={async () => {
                 toast.dismiss(t.id);
                 try {
-                  await dispatch(deleteNoteThunk(noteId)).unwrap();
-                  toast.success("Note deleted successfully");
-                  setShowFilter(false);
-                  setOpenIndex(null);
+                  const response = await dispatch(deleteNoteThunk(noteId)).unwrap();
+                  if(response){
+                    toast.success("Notes deleted successfully");
+                    setShowFilter(false);
+                    setOpenIndex(null);
+                  }
                 } catch (error) {
-                  toast.error("Failed to delete note");
+                  // toast.error("Failed to delete note");
                 }
               }}
             >

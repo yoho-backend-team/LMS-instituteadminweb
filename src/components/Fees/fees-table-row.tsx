@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import { MoreVertical, Eye, Edit, Trash2, Download, X } from "lucide-react";
@@ -11,9 +12,10 @@ interface FeesTableRowProps {
   onEdit?: (fee: Fee) => void;
   onDelete: (fee: Fee) => void;
   onDownload: (fee: Fee) => void;
+  index: number
 }
 
-export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
+export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit, index }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [FeeDetailsDrawer, setFeeDetailsDrawer] = useState(false);
   const dropdownRef = useRef<HTMLTableRowElement>(null);
@@ -61,12 +63,11 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
       `Student ID: ${fee.student?.id || "N/A"}`,
       `Roll No: ${fee.student?.roll_no || "N/A"}`,
       `Paid Amount: ${fee.paid_amount || "N/A"}`,
-      `Payment Date: ${
-        fee.payment_history?.[0]?.payment_date
-          ? new Date(fee.payment_history[0].payment_date)
-              .toISOString()
-              .split("T")[0]
-          : "N/A"
+      `Payment Date: ${fee.payment_history?.[0]?.payment_date
+        ? new Date(fee.payment_history[0].payment_date)
+          .toISOString()
+          .split("T")[0]
+        : "N/A"
       }`,
       `Created At: ${fee.createdAt || "N/A"}`,
       `Status: ${fee.is_active ? "Active" : "Inactive"}`,
@@ -78,9 +79,8 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
       y += 10;
     });
 
-    const fileName = `Fee_${
-      fee.student.full_name?.replace(/\s+/g, "_") || "student"
-    }_${fee.id}.pdf`;
+    const fileName = `Fee_${fee.student.full_name?.replace(/\s+/g, "_") || "student"
+      }_${fee.id}.pdf`;
     doc.save(fileName);
 
     setShowDropdown(false);
@@ -89,7 +89,7 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
   return (
     <>
       <tr ref={dropdownRef}>
-        <td className="px-4 py-3">{fee?.id}</td>
+        <td className="px-4 py-3">{index + 1}</td>
         <td className="px-4 py-3">
           {fee?.payment_history?.[0]?.transaction_id
             ? fee?.payment_history[0].transaction_id
@@ -269,8 +269,8 @@ export const FeesTableRow: React.FC<FeesTableRowProps> = ({ fee, onEdit }) => {
                     value={
                       fee?.payment_history?.[0]?.payment_date
                         ? new Date(fee?.payment_history[0].payment_date)
-                            .toISOString()
-                            .split("T")[0]
+                          .toISOString()
+                          .split("T")[0]
                         : ""
                     }
                     readOnly

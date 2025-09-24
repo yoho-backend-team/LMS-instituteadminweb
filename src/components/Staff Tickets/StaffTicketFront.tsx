@@ -34,19 +34,17 @@ const StaffTickets: React.FC = () => {
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [showOpenTickets, setShowOpenTickets] = useState<boolean>(true);
   const [showClosedTickets, setShowClosedTickets] = useState<boolean>(false);
-
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const staffTickets = useSelector(GetStaffTicket);
   const loading: boolean = useSelector(selectLoading);
   const error: any = useSelector((state: any) => state.staffTickets?.error);
-
-  console.log(staffTickets, "stafftickets")
   const overall_branch_id = GetLocalStorage("selectedBranchId")
   const overall_istitute_id = GetLocalStorage("instituteId")
-  console.log(overall_branch_id, "branch id ")
-  console.log(overall_istitute_id, "institute id")
+  const totalPages = staffTickets?.last_page
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const params: GetTicketsParams = {
@@ -54,11 +52,11 @@ const StaffTickets: React.FC = () => {
       // institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       branch_id: overall_branch_id,
       institute_id: overall_istitute_id,
-      page: 1,
+      page: currentPage,
       status: showOpenTickets ? "opened" : "closed",
     };
     dispatch(GetStaffTicketServicesThunks(params) as any);
-  }, [dispatch, showOpenTickets, showClosedTickets]);
+  }, [dispatch, showOpenTickets, showClosedTickets, currentPage]);
 
   const handleResolve = (ticket: Ticket) => {
     setMenuOpenId(null);
@@ -66,6 +64,7 @@ const StaffTickets: React.FC = () => {
       navigate(`/staff-tickets/${ticket.uuid}`);
     }
   };
+
 
   // Skeleton component
   const TicketSkeleton = () => (
@@ -143,9 +142,9 @@ const StaffTickets: React.FC = () => {
             </div>
           ) : error ? (
             <p className="text-red-500">Error loading tickets.</p>
-          ) : staffTickets.length > 0 ? (
+          ) : staffTickets?.data?.length > 0 ? (
             <div className="grid md:grid-cols-3 gap-6">
-              {staffTickets.map((ticket: any) => (
+              {staffTickets?.data?.map((ticket: any) => (
                 <div
                   key={ticket.id}
                   className="bg-white shadow-md rounded-lg p-4 relative border-2"
@@ -234,6 +233,30 @@ const StaffTickets: React.FC = () => {
           )}
         </div>
       )}
+       
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-gray-700 text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

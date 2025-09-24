@@ -6,6 +6,7 @@ import { AuthProvider } from './pages/Auth/AuthContext';
 import { TicketProvider } from './components/StudentTickets/TicketContext';
 import { TicketProvider as StaffTicketProvider } from './components/Staff Tickets/StaffTicketContext';
 import UpgradeContext from './context/UpgradeContext';
+import { LoadingProvider } from './context/LoadingContext/LoadingContext';
 // import store from './store/store'; // ✅ Correct for default export
 // import { Provider } from 'react-redux';
 
@@ -13,37 +14,39 @@ function App() {
 	return (
 		<BrowserRouter>
 			<AuthProvider>
-				<UpgradeContext>
-					<TicketProvider>
-						<StaffTicketProvider>
-							<AppRoutes />
-							<Toaster
-								position="top-right"
-								toastOptions={{
-									duration: 4000,
-									style: {
-										background: '#363636',
-										color: '#fff',
-									},
-									success: {
-										duration: 3000,
-										style: {
-											background: '#10B981',
-											color: '#fff',
-										},
-									},
-									error: {
+				<LoadingProvider>
+					<UpgradeContext>
+						<TicketProvider>
+							<StaffTicketProvider>
+								<AppRoutes />
+								<Toaster
+									position="top-right"
+									toastOptions={{
 										duration: 4000,
 										style: {
-											background: '#EF4444',
+											background: '#363636',
 											color: '#fff',
 										},
-									},
-								}}
-							/>
-						</StaffTicketProvider>
-					</TicketProvider>
-				</UpgradeContext>
+										success: {
+											duration: 3000,
+											style: {
+												background: '#10B981',
+												color: '#fff',
+											},
+										},
+										error: {
+											duration: 4000,
+											style: {
+												background: '#EF4444',
+												color: '#fff',
+											},
+										},
+									}}
+								/>
+							</StaffTicketProvider>
+						</TicketProvider>
+					</UpgradeContext>
+				</LoadingProvider>
 			</AuthProvider>
 		</BrowserRouter>
 	);

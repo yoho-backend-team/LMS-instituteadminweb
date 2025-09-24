@@ -5,10 +5,13 @@ import { useState } from 'react';
 import Navbar from '../components/shared/Navbar';
 import SideBar from '../components/shared/SideBar';
 import Client from '../apis/index'
+import { useLoader } from '../context/LoadingContext/Loader';
+import Loader from '../components/Loader/Loader';
 
 export const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const sidebarWidth = isSidebarOpen ? 250 : 87;
+  const { IsLoading } = useLoader()
 
   const publicVapidKey = import.meta.env.VITE_PUBLIC_VAPI_KEY;
 
@@ -55,6 +58,11 @@ export const MainLayout = () => {
 
   return (
     <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#1BBFCA]">
+      {IsLoading && (
+        <div className='w-full h-full absolute z-10 bg-transparent backdrop-blur-md transition-all duration-500 ease-in-out'>
+          <Loader />
+        </div>
+      )}
       <div className="flex flex-col flex-1">
         <Navbar />
       </div>

@@ -1,1 +1,1 @@
-export const selectCoursesData = (state: any) => state?.CoursesReducer?.data;
+export const selectCoursesData = (state: any) => state?.CoursesReducer1?.data;

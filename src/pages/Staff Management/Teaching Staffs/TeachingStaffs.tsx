@@ -22,8 +22,13 @@ import {
 } from "../../../features/staff/reducers/selector";
 import { getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { GetImageUrl } from "../../../utils/helper";
-import { createStaff } from "../../../features/staff/services";
+import { createStaff, updateStaff } from "../../../features/staff/services";
 import ContentLoader from "react-content-loader";
+import toast from "react-hot-toast";
+// import { GetCourseThunk } from "../../../features/Refund_management/Reducer/refundThunks";
+// import { GetLocalStorage } from "../../../utils/localStorage";
+import { GetAllCoursesThunk } from "../../../features/Courses_mangement/Reducers/CourseThunks";
+import { selectCoursesData } from "../../../features/Courses_mangement/Reducers/Selectors";
 
 const theme = {
   primary: {
@@ -91,6 +96,9 @@ const TeachingStaffs: React.FC = () => {
   ]);
 
   const [showFilter, setShowFilter] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+const [courseFilter, setCourseFilter] = useState<string>("all");
+
   const [showAddStaff, setShowAddStaff] = useState(false);
   const [newStaff, setNewStaff] = useState<Omit<Staff, "id" | "avatar">>({
     name: "",
@@ -186,24 +194,37 @@ const TeachingStaffs: React.FC = () => {
         });
 
         setShowAddStaff(false);
+         fetchClassData();
+           toast.success("Staff created successfully!");
       } catch (error) {
         console.error("❌ Failed to create staff:", error);
+          toast.success("failed for staff created data!");
       }
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setStaff(
-      staff.map((member) =>
-        member.id === id
-          ? {
-            ...member,
-            status: member.status === "Active" ? "Inactive" : "Active",
-          }
-          : member
-      )
-    );
+
+
+  const toggleStatus = async (staffId: number, status: boolean) => {
+    console.log(staffId, 'toggle')
+
+
+    try {
+
+      await updateStaff({ staffId }, { is_active: status });
+      fetchClassData();
+      toast.success('updated successfully.....!')
+      // setStaff((prev) =>
+      //   prev.map((m) =>
+      //     m.id === id ? { ...m, status: newStatus } : m
+      //   )
+      // );
+    } catch (error) {
+      console.error("❌ Failed to update staff status:", error);
+      toast.error(' failed to update')
+    }
   };
+
 
   const getStatusButtonStyle = (status: "Active" | "Inactive") => {
     if (status === "Active") {
@@ -221,23 +242,33 @@ const TeachingStaffs: React.FC = () => {
   const classData = useSelector(selectStaff)?.data || [];
   const fileInputRef = useRef(null);
   const loading = useSelector(selectLoading);
-
+  const courseData = useSelector(selectCoursesData)
+  
+  const fetchClassData = (page: number = 1) => {
+    dispatch(
+      getStaffDetailsData({
+        page: page,
+      })
+    );
+  };
 
   useEffect(() => {
-    const fetchClassData = (page: number = 1) => {
-      dispatch(
-        getStaffDetailsData({
-          page: page,
-        })
-      );
-    };
     fetchClassData();
   }, [dispatch]);
+  
+  
+  useEffect(() => {
+    
+    dispatch(GetAllCoursesThunk(''))
+
+  }, [])
+  
+  console.log(courseData,'course response api')
 
   const handleFileChange = () => { };
 
   const handleUploadClick = () => { };
-
+  console.log(classData, 'useSeletot')
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -268,12 +299,12 @@ const TeachingStaffs: React.FC = () => {
                 </p>
               </div>
             </div>
-            <Button
+            {/* <Button
               onClick={handleUploadClick}
               className="bg-green-500 hover:bg-green-600 text-white"
             >
               Upload Profile Picture
-            </Button>
+            </Button> */}
           </div>
 
           <div className="space-y-8">
@@ -344,29 +375,35 @@ const TeachingStaffs: React.FC = () => {
                 </Select>
               </label>
 
-              <label
-                style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
-              >
-                Courses
-                <Select
-                  value={newStaff.course}
-                  onValueChange={(value) =>
-                    setNewStaff({ ...newStaff, course: value })
-                  }
-                >
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
-                    <SelectValue placeholder="Select Course" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="MEAN STACK 2024">
-                      MEAN STACK 2024
-                    </SelectItem>
-                    <SelectItem value="React Development">
-                      React Development
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </label>
+             <label
+                    style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                  >
+                    Courses
+                    <Select
+                      value={newStaff.course}
+                      onValueChange={(value) =>
+                        setNewStaff({ ...newStaff, course: value })
+                      }
+                    >
+                      <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
+                        <SelectValue placeholder="Select Course" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        {courseData && courseData.length > 0 ? (
+                          courseData.map((course: any) => (
+                            <SelectItem key={course._id} value={course.course_name}>
+                              {course.course_name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-course" disabled>
+                            No Courses Found
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </label>
+
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
@@ -681,67 +718,41 @@ const TeachingStaffs: React.FC = () => {
 
           {showFilter && (
             <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-              <div className="space-y-2">
-                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
-                  Status
-                </Label>
-                <Select>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
-                    <SelectValue placeholder=" " />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white ">
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="all"
-                    >
-                      All
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Active"
-                    >
-                      Active
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Inactive"
-                    >
-                      Inactive
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+             <div className="space-y-2">
+                      <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
+                        Status
+                      </Label>
+                      <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                          <SelectValue placeholder=" " />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white ">
+                          <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All</SelectItem>
+                          <SelectItem value="Active" className="hover:bg-[#1BBFCA] cursor-pointer">Active</SelectItem>
+                          <SelectItem value="Inactive" className="hover:bg-[#1BBFCA] cursor-pointer">Inactive</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-              <div className="space-y-2">
-                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
-                  Course
-                </Label>
-                <Select>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
-                    <SelectValue placeholder=" " />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="all"
-                    >
-                      All Course
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Course 1"
-                    >
-                      Course 1
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Course 2"
-                    >
-                      Course 2
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                    <div className="space-y-2">
+                      <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
+                        Course
+                      </Label>
+                      <Select value={courseFilter} onValueChange={setCourseFilter}>
+                        <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                          <SelectValue placeholder=" " />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All Courses</SelectItem>
+                          {courseData?.map((course: any) => (
+                            <SelectItem key={course._id} value={course.course_name} className="hover:bg-[#1BBFCA] cursor-pointer">
+                              {course.course_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
             </Card>
           )}
 
@@ -845,7 +856,7 @@ const TeachingStaffs: React.FC = () => {
                         <Select
                           value={member?.is_active ? "Active" : "Inactive"}
                           onValueChange={() =>
-                            toggleStatus(member.id)
+                            toggleStatus(member.uuid, !member?.is_active)
                           }
                         >
                           <SelectTrigger

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 import { TbXboxXFilled } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
@@ -22,6 +23,10 @@ interface CertificateFilterProps {
   selectedStudent: string;
   setSelectedStudent: (student: string) => void;
   onAdd: () => void;
+  setBranchFilter: any
+  setCourseFilter: any
+  setSearchTerm: any
+  searchTerm: any
 }
 
 export const CertificateFilter: React.FC<CertificateFilterProps> = ({
@@ -31,27 +36,32 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   setSelectedCourse,
   selectedBranch,
   setSelectedBranch,
-  selectedBatch,
-  setSelectedBatch,
-  selectedStudent,
-  setSelectedStudent,
+  // selectedBatch,
+  // setSelectedBatch,
+  setBranchFilter,
+  setCourseFilter,
+  // selectedStudent,
+  // setSelectedStudent,
   onAdd,
+  setSearchTerm,
+  searchTerm
 }) => {
   const dispatch = useDispatch<any>();
   const [courses, setCourses] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
-  const [allBatches, setAllBatches] = useState<any[]>([]);
+  const [, setAllBatches] = useState<any[]>([]);
 
-  const fetchAllCourses = async () => {
+  const fetchAllCourses = useCallback(async () => {
     try {
-      const response = await getCourseService({});
+      const response = await getCourseService({ branch: selectedBranch });
+      console.log(response, 'course resp')
       if (response) {
         setCourses(response?.data);
       }
     } catch (error) {
       console.log("Error fetching course data:", error);
     }
-  };
+  }, [selectedBranch])
 
   const fetchAllBranches = async () => {
     try {
@@ -80,7 +90,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
     fetchAllBranches();
     fetchAllCourses();
     fetchAllBatches();
-  }, [dispatch]);
+  }, [dispatch, fetchAllBatches, fetchAllCourses, selectedBranch]);
 
   return (
     <>
@@ -110,27 +120,7 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
             <h2>Student Certificates</h2>
           </div>
           <div className=" grid md:grid-cols-2 gap-3">
-            <div>
-              <label
-                className="block text-lg font-medium text-[#716F6F] mb-1"
-                style={{ ...FONTS.heading_08 }}
-              >
-                Course
-              </label>
-              <select
-                className="w-full border h-13 px-3 py-2 rounded"
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-                style={{ ...FONTS.heading_08 }}
-              >
-                <option value="">All</option>
-                {courses?.map((course: any) => (
-                  <option key={course?.uuid} value={course?.uuid}>
-                    {course?.course_name}
-                  </option>
-                ))}
-              </select>
-            </div>
+
             <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
@@ -141,18 +131,53 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               <select
                 className="w-full border h-13 px-3 py-2 rounded"
                 value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={(e) => {
+                  const selected = branches.find(
+                    (branch: any) => branch?.uuid === e.target.value
+                  );
+                  setSelectedBranch(selected?.uuid || "");
+                  setBranchFilter(selected?._id || "");
+                }}
                 style={{ ...FONTS.heading_08 }}
               >
                 <option value="">All</option>
                 {branches?.map((branch: any) => (
-                  <option key={branch?._id} value={branch?.branch_identity}>
+                  <option key={branch?._id} value={branch?.uuid}>
                     {branch?.branch_identity}
                   </option>
                 ))}
               </select>
             </div>
+
             <div>
+              <label
+                className="block text-lg font-medium text-[#716F6F] mb-1"
+                style={{ ...FONTS.heading_08 }}
+              >
+                Course
+              </label>
+              <select
+                className="w-full border h-13 px-3 py-2 rounded"
+                value={selectedCourse}
+                onChange={(e) => {
+                  const selected = courses.find(
+                    (course: any) => course?.uuid === e.target.value
+                  );
+                  setSelectedCourse(selected?.uuid || "");
+                  setCourseFilter(selected?._id || "");
+                }}
+                style={{ ...FONTS.heading_08 }}
+              >
+                <option value="">All</option>
+                {courses?.map((course: any) => (
+                  <option key={course?.uuid} value={course?.uuid}>
+                    {course?.course_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* <div>
               <label
                 className="block text-lg font-medium text-[#716F6F] mb-1"
                 style={{ ...FONTS.heading_08 }}
@@ -172,20 +197,20 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
             <div>
               <input
                 type="text"
                 className="w-full text-lg border mt-8 h-13 px-3 py-2 rounded"
                 placeholder="Search Certificates"
-                value={selectedStudent}
-                onChange={(e) => setSelectedStudent(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex my-4">
+            <div className="flex my-4 pt-6 ml-28">
               <button
                 onClick={onAdd}
-                className="bg-[#1BBFCA] text-white px-4 py-2 w-2/5 flex rounded-lg"
+                className="bg-[#1BBFCA] text-white px-4 py-2 w-3.5/5 flex rounded-lg"
               >
                 <IoMdAdd
                   className="pr-2 h-6 w-7"

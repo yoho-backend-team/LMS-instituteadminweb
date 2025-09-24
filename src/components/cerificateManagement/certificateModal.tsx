@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { HiMiniXMark } from "react-icons/hi2";
 import { COLORS, FONTS } from "../../constants/uiConstants";
@@ -14,6 +15,7 @@ import {
 } from "../../features/certificateManagement/services";
 import { getStudentmanagement } from "../../features/StudentManagement/reducer/thunks";
 import { selectStudent } from "../../features/StudentManagement/reducer/selector";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 export interface Certificate {
   id: number;
@@ -28,8 +30,8 @@ export interface Certificate {
   uuid: string;
   batch_id: string;
   certificate_name: string;
-  branch_id: String;
-  institute_id: String;
+  branch_id: string;
+  institute_id: string;
 }
 
 interface CertificateModalProps {
@@ -57,12 +59,52 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   const [students, setStudents] = useState<any[]>([]);
   const studentData = useSelector(selectStudent)?.data;
 
+  // Formik setup
+  const formik = useFormik({
+    initialValues: {
+      title: editingCertificate?.title || "",
+      course: editingCertificate?.course || "",
+      branch: editingCertificate?.branch || "",
+      batch: editingCertificate?.batch || "",
+      student: editingCertificate?.student || "",
+    },
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        let payload: any;
+        if (isEditing) {
+          payload = {
+            certificate_name: values.title,
+            id: editingCertificate?.id,
+            certificateid: editingCertificate?.uuid,
+            description: editingCertificate?.description,
+          };
+          await updateCertificate(payload);
+          fetchgetStudentCertificate();
+        } else {
+          payload = {
+            batch_id: values.batch,
+            branch_id: values.branch,
+            course: values.course,
+            student: values.student,
+            institute_id: GetLocalStorage("instituteId"),
+          };
+          await createCertificate(payload);
+        }
+        onSave?.(payload);
+        onClose();
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    },
+  });
+
   // Fetch all required data
   useEffect(() => {
     (async () => {
       try {
         const [coursesRes, branchesRes, batchesRes] = await Promise.all([
-          getCourseService({}),
+          getCourseService({ branch: formik.values.branch }),
           getBranchService({}),
           getAllBatches({}),
         ]);
@@ -79,56 +121,16 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         page: 1,
       })
     );
-  }, [dispatch]);
+  }, [dispatch, formik.values.branch]);
 
   // Set students from redux
   useEffect(() => {
     if (Array.isArray(studentData)) setStudents(studentData);
   }, [studentData]);
 
-  // Formik setup
-  const formik = useFormik({
-    initialValues: {
-      title: editingCertificate?.title || "",
-      course: editingCertificate?.course || "",
-      branch: editingCertificate?.branch || "",
-      batch: editingCertificate?.batch || "",
-      student: editingCertificate?.student || "",
-    },
-    enableReinitialize: true,
-    onSubmit: async (values) => {
-      try {
-        let payload;
-        if (isEditing) {
-          payload = {
-            certificate_name: values.title,
-            id: editingCertificate?.id,
-            certificateid: editingCertificate?.uuid,
-            description: editingCertificate?.description,
-          };
-          await updateCertificate(payload);
-          fetchgetStudentCertificate();
-        } else {
-          payload = {
-            batch_id: values.batch,
-            branch_id: values.branch,
-            course: values.course,
-            student: values.student,
-            institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-          };
-          await createCertificate(payload);
-        }
-        onSave(payload);
-        onClose();
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-    },
-  });
-
   if (!isOpen) return null;
 
-  
+
 
   return (
     <div className="fixed inset-0 z-50 text-[#716F6F] flex items-center justify-end bg-black/30 backdrop-blur-md">
@@ -168,6 +170,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           ) : (
             <div>
+
+
               <label
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
               >

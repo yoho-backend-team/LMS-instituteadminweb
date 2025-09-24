@@ -53,7 +53,7 @@ export const GetAllfees = async (params: any) => {
 export const DeleteAll = async (params: any) => {
   try {
     const response = await Client.payment.student_fee.delete(params);
-   
+
     return response?.data;
   } catch (error) {
     console.error("Error in Delete:", error);
@@ -63,12 +63,11 @@ export const DeleteAll = async (params: any) => {
 
 export const EditStudent = async (params: any) => {
   try {
+    delete params?.is_active
     const response = await Client.payment.student_fee.update(params);
-   
     return response;
   } catch (error) {
-    console.error("aaaaaaaaaaaaaaaaaaaaaaaaa:", error);
-    throw error;
+    console.log(error)
   }
 };
 

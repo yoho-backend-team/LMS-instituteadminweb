@@ -79,8 +79,8 @@ const FaqCategory: React.FC = () => {
 
   useEffect(() => {
     const params = {
-      branchid: GetLocalStorage('selectedBranchId'),
-      instituteid: GetLocalStorage('instituteId'),
+      branchid: GetLocalStorage("selectedBranchId"),
+      instituteid: GetLocalStorage("instituteId"),
       page: 1,
       perPage: 10,
     };
@@ -97,10 +97,10 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
-  const overall_branch_id = GetLocalStorage("selectedBranchId")
-  const overall_istitute_id = GetLocalStorage("instituteId")
-  console.log(overall_branch_id, "branch id ")
-  console.log(overall_istitute_id, "institute id")
+  const overall_branch_id = GetLocalStorage("selectedBranchId");
+  const overall_istitute_id = GetLocalStorage("instituteId");
+  console.log(overall_branch_id, "branch id ");
+  console.log(overall_istitute_id, "institute id");
 
   const handleStatusChange = async (
     newStatus: "Active" | "Inactive",
@@ -169,8 +169,9 @@ const FaqCategory: React.FC = () => {
         category_name: newTitle,
         description: newDescription,
         branchid: overall_branch_id,
-        institute_id: "67f3a26df4b2c530acd16419",/*973195c0-66ed-47c2-b098-d8989d3e4529 institute
-         id in console --> but here different isntitute id that'y didn't replace*/
+        institute_id:
+          "67f3a26df4b2c530acd16419" /*973195c0-66ed-47c2-b098-d8989d3e4529 institute
+         id in console --> but here different isntitute id that'y didn't replace*/,
       };
       try {
         await createFaqCategories(payload);
@@ -292,7 +293,8 @@ const FaqCategory: React.FC = () => {
                 {/* Status Dropdown */}
                 <div className="relative">
                   <button
-                    className="flex items-center gap-1 text-sm"
+                    className={`flex items-center gap-1 text-sm ${cat.is_active ? "text-green-600" : "text-red-600"
+                      }`}
                     onClick={() => toggleStatus(index)}
                   >
                     {cat.is_active ? "Active" : "Inactive"}
@@ -302,6 +304,7 @@ const FaqCategory: React.FC = () => {
                       className="w-3 h-3"
                     />
                   </button>
+
                   {openStatusIndex === index && (
                     <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
                       <button
@@ -410,7 +413,7 @@ const FaqCategory: React.FC = () => {
 
       {/* Add Success Modal */}
       {isAddSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-end z-50 px-4">
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-[90%]">
             <img
               src={sucess}
@@ -432,7 +435,7 @@ const FaqCategory: React.FC = () => {
 
       {/* Edit Success Modal */}
       {isEditSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-end z-50 px-4">
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg mt-10">
             <img
               src={sucess}
@@ -454,7 +457,7 @@ const FaqCategory: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           {" "}
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
             <img

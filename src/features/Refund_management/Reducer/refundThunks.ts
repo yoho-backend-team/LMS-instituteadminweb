@@ -107,7 +107,7 @@ export const GetCourseThunk = (branchId: string) => async (dispatch: any) => {
 };
 
 //  Get Batch by Course ID
-export const GetBatchThunk = (courseId: string) => async (dispatch: any) => {
+export const GetBatchThunk = (courseId: any) => async (dispatch: any) => {
 	try {
 		dispatch(setRefundLoading(true));
 		const res = await GetBatch(courseId);

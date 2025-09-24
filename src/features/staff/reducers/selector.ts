@@ -4,3 +4,4 @@ export const selectClass = (state: any) => state.StaffSlice.classData;
 export const selectActivity = (state: any) => state.StaffSlice.activityData;
 export const selectBranch = (state: any) => state.StaffSlice.branchData;
 export const selectLoading = (state: any) => state.StaffSlice.loading;
+export const selectClassgetId =(state:any)=>state.StaffSlice.getWithIdClass

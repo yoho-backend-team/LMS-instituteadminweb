@@ -21,6 +21,7 @@ type TicketCardProps = {
   avatarUrl?: string;
   onView: () => void;
   message?: Message[];
+  lastPage:any
 };
 
 const TicketCard: React.FC<TicketCardProps> = ({
@@ -30,7 +31,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
   time,
   priority,
   email,
-  onView,
+  onView
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);

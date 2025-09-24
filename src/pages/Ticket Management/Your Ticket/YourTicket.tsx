@@ -15,6 +15,8 @@ import {
 } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 import { GetLocalStorage } from "../../../utils/localStorage";
+import { GetImageUrl } from "../../../utils/helper";
+import { uploadTicketService } from "../../../features/Ticket_Management/services";
 
 interface Message {
   id: string;
@@ -33,36 +35,45 @@ const TicketsPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
-  const [setSelectedTicketUser] = useState<any>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] =
     useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
- 
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
-
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
+  const totalPages = adminTickets?.last_page
  
 
    const overall_branch_id=GetLocalStorage("selectedBranchId")
       const overall_istitute_id=GetLocalStorage("instituteId")
-     console.log(overall_branch_id,"branch id ")
-     console.log(overall_istitute_id,"institute id")
+
 
   useEffect(() => {
     const params = {
       branch_id: overall_branch_id,
       status: activeTab === "open" ? "opened" : "closed",
-      page: 1,overall_istitute_id,
+      page: currentPage,
+      institute_id: overall_istitute_id,
     };
     dispatch(fetchAdminTicketsThunk(params));
-  }, [activeTab, dispatch]);
+  }, [dispatch, activeTab, currentPage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    let fileUrl;
+
+    if(selectedFile){
+      const formFile = new FormData()
+      formFile.append("file", selectedFile);
+      const response = await uploadTicketService(formFile)
+      if(response){
+        fileUrl = response?.data?.file
+      }
+    }
     const formData: any = {
       query,
       description,
@@ -70,25 +81,9 @@ const TicketsPage: React.FC = () => {
       branch: overall_branch_id,
       institute: overall_istitute_id,
       status: activeTab === "open" ? "opened" : "closed",
+      file: fileUrl
     };
 
-    if (selectedFile) {
-      const toBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-        });
-
-      try {
-        const base64String = await toBase64(selectedFile);
-        formData.file = base64String;
-      } catch (error) {
-        console.error("Failed to convert file to base64:", error);
-        return;
-      }
-    }
 
     try {
       if (isEditMode && editingTicketId) {
@@ -103,7 +98,7 @@ const TicketsPage: React.FC = () => {
       const params = {
         branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
         status: formData.status,
-        page: 1,
+        page: currentPage,
         institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
       };
       dispatch(fetchAdminTicketsThunk(params));
@@ -120,11 +115,11 @@ const TicketsPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (adminTickets?.messages) {
-      setMessages(adminTickets.messages);
-    }
-  }, [adminTickets]);
+  // useEffect(() => {
+  //   if (adminTickets?.messages) {
+  //     setMessages(adminTickets.messages);
+  //   }
+  // }, [adminTickets]);
 
   useEffect(() => {
     if (!socket) return;
@@ -150,7 +145,9 @@ const TicketsPage: React.FC = () => {
   //       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
   //     </div>
   //   </div>
+
   // );
+
 
   return (
     <div className="h-auto p-0">
@@ -222,10 +219,10 @@ const TicketsPage: React.FC = () => {
         </div>
       )}
 
-      {activeTab === "open" && !showChatWindow && (
+      { !showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
-          {Array.isArray(adminTickets) &&
-            adminTickets.map((ticket: any, index: number) => (
+          {
+            adminTickets?.data?.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
                 name={ticket?.user?.first_name + ticket?.user?.last_name}
@@ -240,8 +237,9 @@ const TicketsPage: React.FC = () => {
                 })}
                 priority={ticket.priority}
                 avatarUrl={ticket?.user?.image}
+                lastPage={adminTickets?.last_page}
                 onView={() => {
-                  setSelectedTicketUser(ticket.user);
+                  // setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
                   setShowChatWindow(true);
                   setShowbuttonWindow(false);
@@ -321,29 +319,32 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div>
-                <label
-                  className="block mb-1 text-sm font-medium text-[#716F6F]"
-                  style={{ ...FONTS.heading_09 }}
-                >
-                  Upload
-                </label>
-                <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="file"
-                    accept="*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setSelectedFile(e.target.files[0]);
-                      }
-                    }}
-                    className="hidden"
-                  />
-                  <span className="text-sm text-gray-500 flex items-center gap-2">
-                    <img className="w-5 h-5" src={fileimg} />
-                    Drop Files Here Or Click To Upload
-                  </span>
-                </label>
-              </div>
+  <label
+    className="block mb-1 text-sm font-medium text-[#716F6F]"
+    style={{ ...FONTS.heading_09 }}
+  >
+    Upload
+  </label>
+
+  <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
+    <input
+      type="file"
+      accept="*"
+      onChange={async (e:any) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          setSelectedFile(file);
+        }
+      }}
+      className="hidden"
+    />
+    <span className="text-sm text-gray-500 flex items-center gap-2">
+      <img className="w-5 h-5" src={fileimg} alt="file" />
+      {selectedFile ? selectedFile.name : "Drop Files Here Or Click To Upload"}
+    </span>
+  </label>
+</div>
+
 
               {/* Buttons */}
               <div className="flex justify-end gap-3 pt-5">
@@ -367,6 +368,30 @@ const TicketsPage: React.FC = () => {
           </div>
         </div>
       )}
+      
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-gray-700 text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

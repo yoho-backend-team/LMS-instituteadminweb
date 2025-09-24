@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import {  FiSend, FiArrowLeft } from "react-icons/fi";
+import { FiSend, FiArrowLeft } from "react-icons/fi";
 import chatbg from "../../../assets/navbar/chatbg.png";
 import userblue from "../../../assets/navbar/userblue.png";
 import { useTicketContext } from "../../../components/StudentTickets/TicketContext";
@@ -53,15 +54,17 @@ const TicketDetailsPage: React.FC = () => {
         user: ticketData?.user,
       };
       const response = await updateStudentTicketService(data);
-      
+
       if (response) {
         fetchstudentTicketsById();
         Object.assign(ticketData, { status: newStatus });
         toast.success(`Ticket marked as ${newStatus}!`);
+        navigate(-1)
       } else {
         toast.error("Failed to update ticket status.");
       }
     } catch (error) {
+      console.warn(error)
       toast.error("Error updating ticket status.");
     }
   };
@@ -75,8 +78,14 @@ const TicketDetailsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchstudentTicketsById();
-  }, [dispatch]);
+    (async () => {
+      try {
+        dispatch(StudentTicketByID({ uuid: id }));
+      } catch (error) {
+        console.log("Error fetching in tickets:", error);
+      }
+    })()
+  }, [dispatch, id]);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -170,16 +179,16 @@ const TicketDetailsPage: React.FC = () => {
               &{" "}
               {ticketData?.date
                 ? new Date(ticketData?.date).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
                 : "N/A"}
             </span>
           </p>
         </div>
         {ticketData?.status !== "closed" && (
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => updateStatus("closed")}
             className="flex items-center ml-4 justify-center w-42 gap-2 px-2 py-3 bg-white text-[#3ABE65] rounded-md border-2"
           >
             <IoIosCloseCircle className="text-xl" />
@@ -219,9 +228,8 @@ const TicketDetailsPage: React.FC = () => {
               {messages?.map((msg: any, idx: any) => (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2 ${
-                    msg.sender === adminProfile?._id ? "justify-end" : ""
-                  }`}
+                  className={`flex items-start gap-2 ${msg.sender === adminProfile?._id ? "justify-end" : ""
+                    }`}
                 >
                   {msg?.sender === "user" && (
                     <img
@@ -231,25 +239,23 @@ const TicketDetailsPage: React.FC = () => {
                     />
                   )}
                   <div
-                    className={`p-2 rounded shadow text-sm max-w-[75%] ${
-                      msg?.sender === adminProfile?._id
-                        ? "bg-[#14b8c6] text-white"
-                        : "bg-white text-gray-800"
-                    }`}
+                    className={`p-2 rounded shadow text-sm max-w-[75%] ${msg?.sender === adminProfile?._id
+                      ? "bg-[#14b8c6] text-white"
+                      : "bg-white text-gray-800"
+                      }`}
                   >
                     {msg.content}
                     <div
-                      className={`text-[10px] text-right mt-1 ${
-                        msg.sender === adminProfile?._id
-                          ? "text-white"
-                          : "text-gray-500"
-                      }`}
+                      className={`text-[10px] text-right mt-1 ${msg.sender === adminProfile?._id
+                        ? "text-white"
+                        : "text-gray-500"
+                        }`}
                     >
                       {msg?.date
                         ? new Date(msg?.date).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
                         : "N/A"}
                     </div>
                   </div>
@@ -327,11 +333,10 @@ const TicketDetailsPage: React.FC = () => {
           <div>
             <p className="font-semibold text-gray-800 mb-1">Status:</p>
             <span
-              className={`inline-block px-3 py-2 rounded text-sm ${
-                ticketData?.status === "opened"
-                  ? "text-white bg-[#1BBFCA]"
-                  : "text-white bg-[#be3a3a]"
-              }`}
+              className={`inline-block px-3 py-2 rounded text-sm ${ticketData?.status === "opened"
+                ? "text-white bg-[#1BBFCA]"
+                : "text-white bg-[#be3a3a]"
+                }`}
             >
               {ticketData?.status}
             </span>

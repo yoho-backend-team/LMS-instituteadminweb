@@ -29,16 +29,17 @@ const UsersDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const fetchUserProfile = async () => {
+    try {
+      const response = await getUserById({ id });
+     
+      setUserDetail(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await getUserById({ id });
-       
-        setUserDetail(response?.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchUserProfile();
   }, [id]);
 

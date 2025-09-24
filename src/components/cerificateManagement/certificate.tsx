@@ -26,86 +26,65 @@ export interface Certificate {
   image?: string;
 }
 
-const initialCertificates: Certificate[] = [
-  {
-    id: 1,
-    uuid: "",
-    title: "MERN STACK 2025",
-    description:
-      "The MERN Stack is a collection of Technologies for building web application",
-    branch: "OMR",
-    batch: "MERN 2025",
-    student: "Suruthiga",
-    email: "suruthi@gmail.com",
-  },
-  {
-    id: 2,
-    uuid: "",
-    title: "Python 2024",
-    description:
-      "The Python Full Stack is a collection of Technologies for building web application",
-    branch: "Padur",
-    batch: "Python 2024",
-    student: "Vigneshwari",
-    email: "vikky@gmail.com",
-  },
-  {
-    id: 3,
-    uuid: "",
-    title: "MEAN STACK 2025",
-    description:
-      "The MERN Stack is a collection of Technologies for building web application",
-    branch: "OMR",
-    batch: "MERN 2025",
-    student: "Sowmiya",
-    email: "somi@gmail.com",
-  },
-];
-
 export const CertificateManager: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
   const certificateData = useSelector(selectCertificate);
-  const [, setCertificates] = useState(initialCertificates);
+  const loading = useSelector(selectLoading);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [courseFilter, setCourseFilter] = useState('')
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [branchFilter, setBranchFilter] = useState('')
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingCertificate, setEditingCertificate] =
     useState<Certificate | null>(null);
-  const loading = useSelector(selectLoading);
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const fetchgetStudentCertificate = async () => {
+  // ✅ Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  // Fetch data
+  const fetchgetStudentCertificate = async (page = 1) => {
     try {
       const params_data = {
         branchid: GetLocalStorage("selectedBranchId"),
         InstituteId: GetLocalStorage("instituteId"),
-        page: 1,
+        page,
+        limit: pageSize,
       };
       dispatch(getStudentCertificate(params_data));
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    (async () => {
-      try {
-        const params_data = {
-          branchid: GetLocalStorage("selectedBranchId"),
-          InstituteId: GetLocalStorage("instituteId"),
-          page: 1,
-        };
-        dispatch(getStudentCertificate(params_data));
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [dispatch]);
 
+  useEffect(() => {
+    fetchgetStudentCertificate(currentPage);
+  }, [dispatch, currentPage]);
+
+  // ✅ Pagination functions
+  const totalRecords = certificateData?.count || 0;
+  const totalPages = Math.ceil(totalRecords / pageSize);
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // ============ Actions ===============
   const handleAdd = () => {
     setIsEditing(false);
     setEditingCertificate(null);
@@ -129,14 +108,10 @@ export const CertificateManager: React.FC = () => {
 
   const handleDelete = async (certificateid: any) => {
     try {
-      const data = {
-        certificateid,
-        // InstituteId: '973195c0-66ed-47c2-b098-d8989d3e4529',
-        // branchid: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-      };
+      const data = { certificateid };
       const result = await deleteCertificate(data);
       if (result) {
-        fetchgetStudentCertificate();
+        fetchgetStudentCertificate(currentPage);
       } else {
         console.error("Failed to delete certificate");
       }
@@ -145,37 +120,26 @@ export const CertificateManager: React.FC = () => {
     }
   };
 
-  const handleSave = (formData: Partial<Certificate>) => {
-    if (isEditing && editingCertificate) {
-      setCertificates((prev) =>
-        prev.map((item) =>
-          item.id === editingCertificate.id
-            ? { ...item, title: formData.title || item.title }
-            : item
-        )
-      );
-    } else {
-      const newCert: Certificate = {
-        id: Date.now(),
-        title: formData.title || "",
-        description:
-          (formData.title?.split(" ")[0] || "") +
-          " Stack is a collection of Technologies for building web application",
-        branch: formData.branch || "",
-        batch: formData.batch || "",
-        student: formData.student || "",
-        email:
-          formData.student?.toLowerCase().replace(" ", "") + "@example.com" ||
-          "",
-        uuid: "",
-      };
-      setCertificates((prev) => [...prev, newCert]);
-    }
+  const handleSave = () => {
     setIsModalOpen(false);
+    fetchgetStudentCertificate(currentPage);
   };
 
-  const filteredCertificates =
-    certificateData?.data?.flatMap((cert: any) => {
+ const filteredCertificates =
+  certificateData?.data
+    ?.filter((cert: any) => {
+      if (branchFilter && cert.branch_id !== branchFilter) return false;
+      if (courseFilter && cert.course !== courseFilter) return false;
+      if (
+        searchTerm &&
+        !cert.certificate_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+    ?.flatMap((cert: any) => {
       if (!cert.student || !Array.isArray(cert.student)) return [];
 
       return cert.student
@@ -185,60 +149,45 @@ export const CertificateManager: React.FC = () => {
             `${student.first_name || ""} ${student.last_name || ""}`.trim();
           const email = student.email || "N/A";
 
-          const mapped: Certificate = {
+          return {
             id: cert.id,
             uuid: cert.uuid,
             title: cert?.certificate_name,
             description: cert?.description,
             branch: cert?.branch_id,
+            course: cert?.course,
             batch: cert?.batch_id,
             student: fullName,
-            email: email,
-            image: cert?.student[0]?.image,
+            email,
+            image: student?.image,
           };
-
-          const matchesFilter =
-            (!selectedCourse ||
-              cert.description
-                ?.toLowerCase()
-                .includes(selectedCourse.toLowerCase())) &&
-            (!selectedBranch || cert.branch_id === selectedBranch) &&
-            (!selectedBatch || cert.batch_id === selectedBatch) &&
-            (!selectedStudent ||
-              fullName.toLowerCase().includes(selectedStudent.toLowerCase()));
-
-          return matchesFilter ? mapped : null;
         })
         .filter(Boolean);
     }) || [];
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".dropdown-action")) {
-        setOpenDropdownId(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <div className="p-3">
+     
       <CertificateFilter
         showFilter={showFilter}
         setShowFilter={setShowFilter}
         selectedCourse={selectedCourse}
         setSelectedCourse={setSelectedCourse}
         selectedBranch={selectedBranch}
+        setCourseFilter={setCourseFilter}
+        setBranchFilter={setBranchFilter}
         setSelectedBranch={setSelectedBranch}
         selectedBatch={selectedBatch}
         setSelectedBatch={setSelectedBatch}
         selectedStudent={selectedStudent}
         setSelectedStudent={setSelectedStudent}
+        setSearchTerm={setSearchTerm}
+        searchTerm={searchTerm}
         onAdd={handleAdd}
       />
 
+     
       <CertificateTable
         certificates={filteredCertificates || []}
         openDropdownId={openDropdownId}
@@ -250,13 +199,42 @@ export const CertificateManager: React.FC = () => {
         loading={loading}
       />
 
+      <div className="flex items-center justify-center gap-2 mt-4">
+        <button
+          className="px-3 py-1 border rounded disabled:opacity-50"
+          onClick={handlePrev}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            className={`px-3 py-1 border rounded ${
+              page === currentPage ? "bg-blue-500 text-white" : ""
+            }`}
+            onClick={() => handlePageClick(page)}
+          >
+            {page}
+          </button>
+        ))}
+
+        <button
+          className="px-3 py-1 border rounded disabled:opacity-50"
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Modal */}
       <CertificateModal
         isOpen={isModalOpen}
         isEditing={isEditing}
         editingCertificate={editingCertificate}
-        onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
-        fetchgetStudentCertificate={fetchgetStudentCertificate}
       />
     </div>
   );

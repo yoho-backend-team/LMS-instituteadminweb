@@ -435,7 +435,7 @@ const AccountProfile: React.FC = () => {
                     <div className=" border-l-4 border-green-500 h-35 w-0 ml-17 mb-20"></div>
                   </div>
                   <br></br>
-                  <div className="ml-38 mt-15 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
+                  <div className="ml-38 mt-9 mb-9 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
                     <h3
                       className="text-md font-semibold"
                       style={{ ...FONTS.heading_05_bold }}
