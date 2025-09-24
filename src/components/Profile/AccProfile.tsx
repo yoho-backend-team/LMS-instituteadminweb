@@ -118,8 +118,8 @@ const AccountProfile: React.FC = () => {
           <ul className="space-y-3">
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "first"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 } `}
               onClick={() => {
                 setActivePanel("first");
@@ -131,8 +131,8 @@ const AccountProfile: React.FC = () => {
             </button>
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "second"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 }`}
               onClick={() => {
                 setActivePanel("second");
@@ -148,8 +148,8 @@ const AccountProfile: React.FC = () => {
             </button>
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "third"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 }`}
               onClick={() => {
                 setActivePanel("third");
@@ -418,24 +418,24 @@ const AccountProfile: React.FC = () => {
             </div>
           </div>
         )}
-        {/* TimeLine Page Content */}
         {activePanel === "third" && (
-          <div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
-            <div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(90vh-180px)] scrollbar-hidden">
+        
+          <div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-lg p-6">
+            <div className="relative z-10 ml-5 overflow-y-auto px-3 py-2 h-full scrollbar-hidden ">
               {timeline?.map((item: any, index: any) => (
-                <div key={index} className="mb-1 ml-4 relative">
-                  <div className="absolute -left-[50px] top-0">
+                <div key={index} className="mb-7 ml-4 relative flex items-start">
+                  <div className="flex flex-col items-center">
                     <div
-                      className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-2 mt-0 shadow"
+                      className="flex bg-green-500 text-white text-xs font-semibold px-1 py-1 rounded-2xl mt-0 shadow"
                       style={{ ...FONTS.heading_07 }}
                     >
                       <img src={noteimg} className="h-[42px] w-[144px]" />
                     </div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full mt-3 ml-16"></div>
-                    <div className=" border-l-4 border-green-500 h-35 w-0 ml-17 mb-20"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full mt-3"></div>
+                    <div className="border-l-4 border-green-500 h-35 w-0 "></div>
                   </div>
-                  <br></br>
-                  <div className="ml-38 mt-9 mb-9 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
+
+                  <div className="ml-15 mt-17 h-[140px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
                     <h3
                       className="text-md font-semibold"
                       style={{ ...FONTS.heading_05_bold }}
@@ -461,9 +461,11 @@ const AccountProfile: React.FC = () => {
                     </p>
                   </div>
                 </div>
+
               ))}
             </div>
           </div>
+
         )}
       </div>
     </div>
