@@ -26,7 +26,7 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
   return (
     <div>
       <div
-        className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}
+        className={`flex justify-between w-full h-[70px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}
       >
         <h1
           className="flex gap-[10px] text-[#FFFFFF] !font-bold"
@@ -38,16 +38,16 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
         {!filterShow ? (
           <button
             onClick={() => setFilterShow(true)}
-            className={`bg-[#FFFFFF] text-[#3ABE65] w-[88px] h-[48px] rounded-[8px] flex items-center justify-center gap-1.5`}
+            className={`bg-[#FFFFFF] text-[#3ABE65] w-[62px] h-[38px] rounded-[8px] flex items-center justify-center gap-1.5`}
           >
-            SGO
+            Filter
           </button>
         ) : (
           <button
             onClick={() => setFilterShow(false)}
-            className={`pt-[8px] pb-[8px] pr-[16px] pl-[16px] bg-[#FFFFFF] text-[#3ABE65] w-[67px] h-[48px] rounded-[8px]`}
+            className={`flex items-center justify-center bg-[#FFFFFF] text-[#3ABE65] w-[62px] h-[38px] rounded-[8px]`}
           >
-            <IoClose className="w-[33px] h-[30px]" />
+            <IoClose className="w-[25px] h-[25px]" />
           </button>
         )}
       </div>
@@ -75,7 +75,6 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
               >
                 <SelectValue
                   placeholder="Select"
-                  className={`p-2 bg-[#FFFFF]`}
                 />
                 <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
               </SelectTrigger>
@@ -83,8 +82,8 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
                 {batches?.map((batch, index) => (
                   <SelectItem
                     key={index}
-                    value="batch"
-                    className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}]   my-1.5 focus:text-white cursor-pointer`}
+                    value={batch?._id}
+                    className={`hover:bg-[${COLORS.primary}] text-[#716F6F]  focus:bg-[${COLORS.primary}]   my-1.5 cursor-pointer`}
                     style={{ ...FONTS.heading_08 }}
                   >
                     {batch?.batch_name}

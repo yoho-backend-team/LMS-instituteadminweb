@@ -13,6 +13,8 @@ import warning from '../../../../assets/warning.png';
 import toast from 'react-hot-toast';
 import { ArrowLeft, ChevronDownIcon } from 'lucide-react';
 import { GetImageUrl } from '../../../../utils/helper';
+import Arrowleft from '../../../../assets/Vectorprev.png'
+import { IoIosArrowBack } from "react-icons/io";
 
 interface Attendance {
   student_class: {
@@ -100,11 +102,16 @@ const StudentDetails = () => {
 
   return (
     <div className='grid gap-[30px]'>
-      <div className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4' onClick={handleBack}>
-
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-      </div>
-      <div className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center`}>
+      
+      <div className={`flex gap-4 w-full h-[70px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center`}>
+        <div className="">
+              <button
+                onClick={handleBack}
+                className="w-[25px] h-[25px] shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white rounded-lg flex items-center justify-center"
+              >
+                <IoIosArrowBack className="w-[20px] h-[30px]" />
+              </button>
+            </div>
         <h1 className='flex gap-[10px] text-[#FFFFFF] !font-semibold items-center' style={{ ...FONTS.heading_05 }}>
           {attendance?.student_class?.class_name}
         </h1>
