@@ -389,6 +389,7 @@ class Client {
 		delete: (data: any) =>
 			HttpClient.delete(HTTP_END_POINTS.student.delete.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()) + data.uuid),
 		get: (data: any) => HttpClient.get(HTTP_END_POINTS.student.get.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()) + data.uuid),
+		getWithBranch: () => HttpClient.get(HTTP_END_POINTS.student.get.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId())),
 		getLiveClass: (query: any) =>
 			HttpClient.get(HTTP_END_POINTS.student.liveClasses.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), query),
 		getWithId: (params: any) =>
