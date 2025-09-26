@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -9,6 +10,7 @@ import {
   getBranchService,
   getCourseService,
   getStaffService,
+  getStudentBranchService,
   getStudentService,
 } from "../../features/batchManagement/services";
 import Select from "react-select";
@@ -28,7 +30,6 @@ export const CreateBatchModal = ({
   isOpen,
   setIsOpen,
 }: CreateBatchModalProps) => {
-  if (!isOpen) return null;
 
   const [courses, setCourses] = useState<any[]>([]);
   const [students, setStudents] = useState<OptionType[]>([]);
@@ -40,65 +41,6 @@ export const CreateBatchModal = ({
   const [courseUUID, setCourseUUID] = useState("");
   const [courseObjectId, setCourseObjectId] = useState("");
 
-  const fetchAllCourses = async () => {
-    try {
-      const response = await getCourseService({branch: formik.values.branch});
-      if (response) {
-        setCourses(response?.data);
-      }
-    } catch (error) {
-      console.log("Error fetching course data:", error);
-    }   
-  };
-
-  const fetchAllBranches = async () => {
-    try {
-      const response = await getBranchService({});
-      if (response) {
-        setBranches(response?.data);
-      }
-    } catch (error) {
-      console.log("Error fetching branch data:", error);
-    }
-  };
-
-  const fetchAllStudents = async () => {
-    if (!courseUUID) return;
-    try {
-      const response = await getStudentService({ uuid: courseUUID });
-      if (response && Array.isArray(response.data)) {
-        const mappedStudents = response.data.map((student: any) => ({
-          value: student.uuid,
-          label: student.full_name,
-        }));
-        setStudents(mappedStudents);
-      } else {
-        setStudents([]);
-      }
-    } catch (error) {
-      console.log("Error fetching student data:", error);
-    }
-  };
-
-  console.log(selectedBranch, 'branches')
-
-  const fetchAllStaff = async () => {
-    if (!courseObjectId) return;
-    try {
-      const response = await getStaffService({ uuid: formik.values.branch });
-      if (response && Array.isArray(response.data)) {
-        const mappedStaff = response.data.map((staff: any) => ({
-          value: staff.uuid,
-          label: staff.full_name,
-        }));
-        setStaffs(mappedStaff);
-      } else {
-        setStaffs([]);
-      }
-    } catch (error) {
-      console.log("Error fetching staff data:", error);
-    }
-  };
 
   const validationSchema = Yup.object({
     batchName: Yup.string().required("Batch name is required"),
@@ -167,17 +109,73 @@ export const CreateBatchModal = ({
     },
   });
 
-  
+
   useEffect(() => {
+
+    const fetchAllBranches = async () => {
+      try {
+        const response = await getBranchService({});
+        if (response) {
+          setBranches(response?.data);
+        }
+      } catch (error) {
+        console.log("Error fetching branch data:", error);
+      }
+    };
+    const fetchAllCourses = async () => {
+      try {
+        const response = await getCourseService({ branch: formik.values.branch });
+        if (response) {
+          setCourses(response?.data);
+        }
+      } catch (error) {
+        console.log("Error fetching course data:", error);
+      }
+    };
     fetchAllCourses();
     fetchAllBranches();
   }, [dispatch, formik.values.branch]);
 
   useEffect(() => {
+    const fetchAllStaff = async () => {
+      if (!courseObjectId) return;
+      try {
+        const response = await getStaffService({ uuid: formik.values.branch });
+        if (response && Array.isArray(response.data)) {
+          const mappedStaff = response.data.map((staff: any) => ({
+            value: staff.uuid,
+            label: staff.full_name,
+          }));
+          setStaffs(mappedStaff);
+        } else {
+          setStaffs([]);
+        }
+      } catch (error) {
+        console.log("Error fetching staff data:", error);
+      }
+    };
+    const fetchAllStudents = async () => {
+      if (!courseUUID) return;
+      try {
+        const response = await getStudentBranchService();
+        if (response && Array.isArray(response.data)) {
+          const mappedStudents = response.data.map((student: any) => ({
+            value: student.uuid,
+            label: student.full_name,
+          }));
+          setStudents(mappedStudents);
+        } else {
+          setStudents([]);
+        }
+      } catch (error) {
+        console.log("Error fetching student data:", error);
+      }
+    };
     fetchAllStudents();
     fetchAllStaff();
-  }, [courseUUID, courseObjectId]);
+  }, [courseUUID, courseObjectId, formik.values.branch]);
 
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Background overlay with blur */}

@@ -49,6 +49,18 @@ export const getStudentService = async (params: any) => {
 	}
 };
 
+export const getStudentBranchService = async () => {
+	try {
+		const response = await Client.student.getWithBranch();
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.error('Error in getstudentService:', error);
+		return null;
+	}
+};
+
 export const getStaffService = async (params: any) => {
 	try {
 		const response = await Client.staff.getall(params);
@@ -99,7 +111,7 @@ export const deleteBatches = async (params: any) => {
 
 //getBranch by id
 
-export const GetBranchById = async (params:any) => {
-  const response = await Client.branch.getByid(params);
-  return response;
+export const GetBranchById = async (params: any) => {
+	const response = await Client.branch.getByid(params);
+	return response;
 };
