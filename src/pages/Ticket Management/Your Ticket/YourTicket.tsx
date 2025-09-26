@@ -15,7 +15,7 @@ import {
 } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 import { GetLocalStorage } from "../../../utils/localStorage";
-import { GetImageUrl } from "../../../utils/helper";
+// import { GetImageUrl } from "../../../utils/helper";
 import { uploadTicketService } from "../../../features/Ticket_Management/services";
 
 interface Message {

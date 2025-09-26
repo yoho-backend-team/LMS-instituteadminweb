@@ -72,7 +72,7 @@ interface Staff {
 }
 
 const TeachingStaffs: React.FC = () => {
-  const [staff, setStaff] = useState<Staff[]>([
+  const [staff] = useState<Staff[]>([
     {
       id: 1,
       name: "Elon Musk",
@@ -267,8 +267,7 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
 
   const handleFileChange = () => { };
 
-  const handleUploadClick = () => { };
-  console.log(classData, 'useSeletot')
+  console.log(classData, 'useSelector')
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>

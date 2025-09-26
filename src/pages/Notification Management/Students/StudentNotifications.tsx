@@ -130,7 +130,6 @@ const StudentNotifications = () => {
 
   useEffect(() => {
     if (reponse && reponse.data) {
-      const totalNotifications = reponse.count;
       const readNotifications = reponse.data.filter(
         (n) => n.status === "read"
       ).length;

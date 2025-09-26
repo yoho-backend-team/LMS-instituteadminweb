@@ -146,14 +146,9 @@ export default function FAQPage() {
     })()
   }, [faqselect, searchInput, selectCat]);
   // Handler for when FAQ is added successfully
-  const handleFAQAdded = (newFAQ?: any) => {
-    setIsAddFAQDrawerOpen(false);
-    // Immediately refresh FAQ list to show new FAQ
-    refreshFAQList();
-  };
 
   // Handler for when FAQ is edited successfully
-  const handleFAQEdited = (updatedFAQ?: any) => {
+  const handleFAQEdited = () => {
     setIsEditFAQDrawerOpen(false);
     setCurrentFAQToEdit(null);
     // Immediately refresh FAQ list to show updated FAQ
@@ -266,8 +261,6 @@ export default function FAQPage() {
             }, 500);
           }
         }}
-        onSuccess={handleFAQAdded}
-        onFAQCreated={refreshFAQList}
       />
 
       {currentFAQToEdit && (
