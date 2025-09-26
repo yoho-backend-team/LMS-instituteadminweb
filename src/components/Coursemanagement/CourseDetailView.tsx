@@ -10,6 +10,8 @@ import {
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store/store";
 import { removeCourse } from "../../features/CourseManagement/Course/slice";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
 
 interface CourseFormData {
   uuid: string;
@@ -170,12 +172,14 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   return (
     <div className="p-4">
       <div className="w-full flex justify-between items-center mb-4">
-        <button
-          onClick={onBack}
-          className="  px-4 py-1 rounded text-sm inline-block text-[#1BBFCA]"
-        >
-          ← Back
-        </button>
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            onClick={onBack}
+            className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+          >
+            <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+          </Button>
+        </div>
         <button
           onClick={() => setIsEditMode(!isEditMode)}
           className="bg-[#1BBFCA] text-white px-6 py-2 rounded text-sm hover:bg-[#17a5b0] items-center gap-2 flex "

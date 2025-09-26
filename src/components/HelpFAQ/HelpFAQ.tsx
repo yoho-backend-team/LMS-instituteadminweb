@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import  { useEffect, useState } from "react";
 import { IoMdCall, IoMdMail } from "react-icons/io";
 import { FaChevronRight, FaChevronDown, FaChevronUp } from "react-icons/fa"; // icons
-import { useNavigate } from "react-router";
 import { getHelpCenterAll } from "../../features/HelpCenter/service";
 
 const HelpFAQ = () => {
-  const navigate = useNavigate();
   const [helpCenter, setHelpCenter] = useState<any[]>([]);
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);

@@ -15,14 +15,16 @@ interface Props {
     uuid: string;
     title: string;
     description?: string;
-    video: string;
+    video:any;
     file?: File | null;
   };
 }
 
 const EditmodulePage = ({ onClose, existingModule }: Props) => {
   const dispatch = useDispatch<any>();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  console.log(fileInputRef,"fileinputref")
+  console.log(existingModule,"ref");
 
   const [formData, setFormData] = useState({
     _id: "",
@@ -32,6 +34,7 @@ const EditmodulePage = ({ onClose, existingModule }: Props) => {
     video: "",
     file: null as File | null,
   });
+  console.log(formData,"formdata")
 
   useEffect(() => {
     if (existingModule) {

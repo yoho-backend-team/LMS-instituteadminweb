@@ -64,8 +64,8 @@ export const EditBranch = async (params: { branchuuid: string; data: any }) => {
 
 // Update branch status
 export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
-  const response = await Client.branch.updatestatus(params.uuid, {
-    status: params.status,
+  const response = await Client.branch.updatestatusNew(params.uuid, {
+    is_active: params.status,
   });
   return response.data;
 };

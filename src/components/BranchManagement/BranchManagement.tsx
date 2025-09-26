@@ -131,8 +131,9 @@ export function LocationCardsGrid() {
     }
   };
 
-  const handleStatusChange = (branch_id: string, newStatus: string) => {
-    dispatch(UpdateBranchStatusThunk({ branch_id, status: newStatus }));
+  const handleStatusChange = (uuid: string, newStatus: string) => {
+    console.log(uuid,newStatus,"uuid")
+    dispatch(UpdateBranchStatusThunk({ uuid, status: newStatus }));
   };
 
   const resetForm = () => {
@@ -246,9 +247,9 @@ export function LocationCardsGrid() {
                 onViewDetails={() => setViewingBranch(branch)}
                 onEdit={() => handleEditBranch(branch)}
                 onDelete={handleDeleteBranch}
-                onStatusChange={(newStatus) =>
-                  handleStatusChange(branch?._id, newStatus)
-                }
+                onStatusChange={() =>
+    handleStatusChange(branch?.uuid, branch?.is_active ? "false" : "true")
+  }
               />
             </div>
           ))

@@ -65,7 +65,6 @@ const StaffsNotification: React.FC = () => {
   const staffNotificationData = useSelector(selectStaffNotification);
   const notifications = staffNotificationData?.data || [];
 
-  const totalNotifications = staffNotificationData?.count || 0;
   const readNotifications = notifications.filter(
     (n: any) => n.status === "read"
   ).length;

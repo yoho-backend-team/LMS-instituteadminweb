@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { GetViewCard, UpdateGroup } from "../../../features/Users_Management/Group/reducers/service";
 import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "../../ui/button";
 
 const permissions = ["Read", "Create", "Update", "Delete"] as const;
 type Permission = (typeof permissions)[number];
@@ -93,12 +94,14 @@ function Edit() {
 
   return (
     <>
-      {/* Back Button */}
-      <div
-        onClick={() => navigate("/group")}
-        className="mb-4 cursor-pointer text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit"
-      >
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          onClick={() => navigate("/group")}
+          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+        >
+          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+        </Button>
       </div>
 
       {/* Header */}

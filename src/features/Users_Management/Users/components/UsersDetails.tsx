@@ -5,6 +5,8 @@ import { getUserById } from "../service";
 import { useNavigate, useParams } from "react-router-dom";
 import { GetImageUrl } from "../../../../utils/helper";
 import { IoIosArrowBack } from "react-icons/io";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "../../../../components/ui/button";
 
 interface UserDetail {
   image?: string;
@@ -50,12 +52,14 @@ const UsersDetails = () => {
   return (
     <div>
       <div className="pb-4">
-        <button
-          onClick={handleBack}
-          className="w-[30px] h-[30px] shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white rounded-lg flex items-center justify-center"
-        >
-          <IoIosArrowBack className="w-[25px] h-[35px]" />
-        </button>
+         <div className="flex items-center justify-between mb-8">
+          <Button
+             onClick={handleBack}
+            className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+          >
+            <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+          </Button>
+      </div>
       </div>
       <div className="p-4 border rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white">
         <div className="flex justify-between p-2 pb-8 border-b">
