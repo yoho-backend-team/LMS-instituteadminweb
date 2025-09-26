@@ -11,10 +11,10 @@ import {
   getCourseService,
   getStaffService,
   getStudentBranchService,
-  getStudentService,
 } from "../../features/batchManagement/services";
 import Select from "react-select";
 import toast from "react-hot-toast";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 interface CreateBatchModalProps {
   isOpen: boolean;
@@ -35,7 +35,6 @@ export const CreateBatchModal = ({
   const [students, setStudents] = useState<OptionType[]>([]);
   const [staffs, setStaffs] = useState<OptionType[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
-  const [selectedBranch, setSelectedBranch] = useState<any>('')
   const dispatch = useDispatch<any>();
 
   const [courseUUID, setCourseUUID] = useState("");
@@ -88,7 +87,7 @@ export const CreateBatchModal = ({
         course: values.course,
         instructor: values.staffs,
         student: values.students,
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute_id: GetLocalStorage("instituteId"),
       };
 
       try {
@@ -96,6 +95,13 @@ export const CreateBatchModal = ({
         if (response) {
           setIsOpen(false);
           toast.success("Batch created successfully!");
+          values.batchName = ''
+          values.branch = ''
+          values.course = ''
+          values.endDate = ''
+          values.startDate = ''
+          values.students = []
+          values.staffs = []
         } else {
           setIsOpen(false);
           toast.error(
@@ -103,6 +109,7 @@ export const CreateBatchModal = ({
           );
         }
       } catch (error) {
+        console.warn(error)
         setIsOpen(false);
         toast.error("Failed to create batch. Please try again.");
       }

@@ -95,7 +95,7 @@ const generateEndpoints = () => {
 			update_status: '/api/institutes/course/note/update/',
 		},
 		batch: {
-			create: `/api/institutes/:instituteid/branches/`,
+			create: `/api/institutes/:instituteid/branches/:branchid/courses/:courseid/batches/`,
 			getAll: `/api/institutes/:instituteid/branches/`,
 			getWithId: `/api/institutes/:instituteid/branches/:branchid/batches/all`,
 			update: `/api/institutes/:instituteid/branches/:branchid/update/:batchId`,

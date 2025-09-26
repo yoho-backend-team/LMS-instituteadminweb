@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from "react";
 import filter from "../../assets/icons/filter.png";
 import plus from "../../assets/Add.png";
@@ -13,6 +14,7 @@ import {
 } from "../../features/batchManagement/reducers/selectors";
 import { getCourseService } from "../../features/batchManagement/services";
 import ContentLoader from "react-content-loader";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 export default function BatchManagement() {
   const [showFilter, setShowFilter] = useState(false);
@@ -31,7 +33,7 @@ export default function BatchManagement() {
   const fetchBatchData = useCallback(async () => {
     try {
       const params_data = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch_id: GetLocalStorage("selectedBranchId"),
         page: 1,
       };
       dispatch(getwithIdBatches(params_data));
@@ -69,8 +71,8 @@ export default function BatchManagement() {
 
     const matchesCourse = searchterms.course
       ? batch.course?.course_name
-          .toLowerCase()
-          .includes(searchterms.course.toLowerCase())
+        .toLowerCase()
+        .includes(searchterms.course.toLowerCase())
       : true;
 
     const matchesBatch = searchterms.batch

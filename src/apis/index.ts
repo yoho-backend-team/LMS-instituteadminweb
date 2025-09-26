@@ -198,7 +198,7 @@ class Client {
 	};
 	batch = {
 		// create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create + `${data.branch_id}/courses/${data.course}/batches`, data),
-		create: (data: any) => HttpClient.post(HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()), data),
+		create: (params: any, data: any) => HttpClient.post(HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()).replace(':branchid', params?.branch_id).replace(":courseid", params?.course), data),
 		getInstructors: (data: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.batch.create.replace(":instituteid", getInstituteDetails()).replace(':branchid', getSelectedBranchId()) +

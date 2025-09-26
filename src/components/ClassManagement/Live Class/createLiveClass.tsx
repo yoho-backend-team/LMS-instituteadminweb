@@ -19,6 +19,7 @@ import {
 import { getStaffService } from "../../../features/batchManagement/services";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 interface CreateBatchModalProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ export const CreateLiveClassModal = ({
             start_date: startDateTime.toISOString(),
             start_time: startDateTime,
             end_time: endDateTime,
-            institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+            institute: GetLocalStorage("instituteId"),
             instructors: values.instructors,
             video_url: values.videoUrl,
             coordinators: [],

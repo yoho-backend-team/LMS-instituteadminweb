@@ -75,7 +75,13 @@ export const getStaffService = async (params: any) => {
 
 export const createBatches = async (params: any) => {
 	try {
-		const response = await Client.batch.create(params);
+		const response = await Client.batch.create(params, {
+			batch_name: params.batch_name,
+			start_date: params.start_date,
+			end_date: params.end_date,
+			instructor: params.instructor,
+			student: params.student,
+		});
 		if (response) {
 			return response;
 		}
