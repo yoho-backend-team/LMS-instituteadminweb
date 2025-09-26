@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useEffect, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
@@ -7,25 +8,26 @@ import { FeeDrawer } from "../../components/Fees/fee-drawer";
 import { ConfirmationModal } from "../../components/Fees/confirmation-modal";
 import { SuccessModal } from "../../components/Fees/success-modal";
 import type { Fee } from "../../components/Fees/types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GetAllFeesThunks } from "../../features/Payment_Managemant/salary/fees/reducers/thunks";
-import { useSelector } from "react-redux";
-import { selectLoading } from "../../features/Payment_Managemant/salary/fees/reducers/selectors";
+import { Fees1, selectLoading } from "../../features/Payment_Managemant/salary/fees/reducers/selectors";
 import ContentLoader from "react-content-loader";
 
 export const FeesTable: React.FC = () => {
   const dispatch = useDispatch();
   const [currentFeesData, setCurrentFeesData] = useState<any[]>([]);
   const loading = useSelector(selectLoading);
+  const feeSelector = useSelector(Fees1)
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   useEffect(() => {
     const fetchFeesData = async () => {
-      const result = await dispatch(GetAllFeesThunks({}) as any);
-      console.log("result fees", result);
-      setCurrentFeesData(result);
+      const result = await dispatch(GetAllFeesThunks({ page: currentPage }) as any);
+      setCurrentFeesData(result?.data);
     };
     fetchFeesData();
-  }, [dispatch]);
+  }, [dispatch, currentPage]);
 
   const [showFilter, setShowFilter] = useState(false);
   const [showEditAddDrawer, setShowEditAddDrawer] = useState(false);
@@ -33,10 +35,30 @@ export const FeesTable: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedFees, setSelectedFees] = useState<any | null>(null);
   const [actionToPerform, setActionToPerform] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+
+  const filteredFees = currentFeesData?.filter((fee) =>
+    fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
+  const totalPages = feeSelector?.last_page;
+
+  const paginatedFees = filteredFees;
+
+
 
   const handleAddFee = (newFee: Fee) => {
-    setCurrentFeesData((prevData) => [...prevData, newFee]);
+    setCurrentFeesData((prevData) => [newFee, ...prevData]);
+    setCurrentPage(1);
   };
+
 
   const handleUpdateFee = (updatedFee: Fee) => {
     setCurrentFeesData((prevData) =>
@@ -68,6 +90,8 @@ export const FeesTable: React.FC = () => {
     setSelectedFees(fee);
   };
 
+
+
   const handleConfirm = () => {
     setShowConfirmationModal(false);
     if (!selectedFees || !actionToPerform) return;
@@ -90,13 +114,11 @@ export const FeesTable: React.FC = () => {
       case "edit":
         return `Are you sure you want to edit fee ID ${selectedFees.id}?`;
       case "delete":
-        return `Are you sure you want to delete fee ID ${
-          selectedFees.id.split("-")[0]
-        }? This action cannot be undone.`;
+        return `Are you sure you want to delete fee ID ${selectedFees.id.split("-")[0]
+          }? This action cannot be undone.`;
       case "download":
-        return `Are you sure you want to download details for fee ID ${
-          selectedFees.id.split("-")[0]
-        }?`;
+        return `Are you sure you want to download details for fee ID ${selectedFees.id.split("-")[0]
+          }?`;
       default:
         return "Are you sure you want to proceed with this action?";
     }
@@ -130,11 +152,6 @@ export const FeesTable: React.FC = () => {
     }
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredFees = currentFeesData.filter((fee) =>
-    fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <>
@@ -162,12 +179,14 @@ export const FeesTable: React.FC = () => {
             + Add Fee
           </button>
         </div>
+
         {showFilter && (
           <FeesFilter
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
         )}
+
         <div className="overflow-x-auto rounded-xl border border-gray-200">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-100 text-gray-700">
@@ -181,150 +200,33 @@ export const FeesTable: React.FC = () => {
                 <th className="px-4 py-3 font-medium">Actions</th>
               </tr>
             </thead>
+
             {loading ? (
               <tbody>
                 {[...Array(6)].map((_, index) => (
                   <tr key={index} className="animate-pulse">
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={80}
-                        height={20}
-                        viewBox="0 0 80 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="80"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={120}
-                        height={20}
-                        viewBox="0 0 120 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="120"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={150}
-                        height={20}
-                        viewBox="0 0 150 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="150"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={100}
-                        height={20}
-                        viewBox="0 0 100 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="100"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={100}
-                        height={20}
-                        viewBox="0 0 100 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="100"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={80}
-                        height={20}
-                        viewBox="0 0 80 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="80"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
-                    <td className="px-4 py-3">
-                      <ContentLoader
-                        speed={2}
-                        width={120}
-                        height={20}
-                        viewBox="0 0 120 20"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="0"
-                          y="0"
-                          rx="4"
-                          ry="4"
-                          width="120"
-                          height="20"
-                        />
-                      </ContentLoader>
-                    </td>
+                    {[...Array(7)].map((__, i) => (
+                      <td key={i} className="px-4 py-3">
+                        <ContentLoader
+                          speed={2}
+                          width={100}
+                          height={20}
+                          viewBox="0 0 100 20"
+                          backgroundColor="#f3f3f3"
+                          foregroundColor="#ecebeb"
+                        >
+                          <rect x="0" y="0" rx="4" ry="4" width="100" height="20" />
+                        </ContentLoader>
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
-            ) : filteredFees.length ? (
-              filteredFees?.map((fee: any) => (
+            ) : filteredFees?.length ? (
+              paginatedFees?.map((fee: any, index: number) => (
                 <tbody key={fee.id}>
                   <FeesTableRow
+                    index={index}
                     fee={fee}
                     onView={handleView}
                     onEdit={handleEdit}
@@ -347,8 +249,36 @@ export const FeesTable: React.FC = () => {
             )}
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {(
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            <span className="text-gray-700 text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Modals & Drawers */}
       <FeeDrawer
         isOpen={showEditAddDrawer}
         onClose={() => setShowEditAddDrawer(false)}
@@ -357,6 +287,7 @@ export const FeesTable: React.FC = () => {
         onAddFee={handleAddFee}
         onUpdateFee={handleUpdateFee}
       />
+
       <ConfirmationModal
         isOpen={showConfirmationModal}
         onClose={() => setShowConfirmationModal(false)}
@@ -365,6 +296,7 @@ export const FeesTable: React.FC = () => {
         message={getConfirmationMessage()}
         confirmButtonText={getConfirmButtonText()}
       />
+
       <SuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}

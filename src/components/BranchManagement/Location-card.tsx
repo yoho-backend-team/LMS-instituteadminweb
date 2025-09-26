@@ -123,7 +123,7 @@ export function LocationCard({
 
   return (
     <>
-      <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
+      <div className="flex flex-col items-end  gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
         {/* Image with menu button */}
         <div className="w-full rounded-xl overflow-hidden relative h-48">
           <img

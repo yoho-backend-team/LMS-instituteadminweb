@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
@@ -20,6 +21,12 @@ import {
 } from "../../components/ui/select";
 import { X } from "lucide-react";
 import { CreateFaq } from "../../features/Faq/service";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../store/store";
+import { GetLocalStorage } from "../../utils/localStorage";
+import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
+
+
 
 export function AddFAQDrawer({
   open,
@@ -32,6 +39,21 @@ export function AddFAQDrawer({
   const [description, setDescription] = useState("");
   const [category1, setCategory1] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const category = useSelector((state: RootState) => state.faqCategory.data)
+  const dispatch = useDispatch<AppDispatch>()
+
+  console.log(category, "check all category")
+
+  useEffect(() => {
+    (async () => {
+      const params = {
+        branchid: GetLocalStorage("selectedBranchId"),
+        instituteid: GetLocalStorage("instituteId"),
+      };
+      dispatch(fetchFaqCategoryThunk(params))
+    })()
+  }, [dispatch]);
 
   useEffect(() => {
     if (!open) {
@@ -48,8 +70,8 @@ export function AddFAQDrawer({
     const payload = {
       title,
       description,
-      category_id: "6825d76c8245c52fee70cc27", 
-      accessby: ["Teaching Staff"], 
+      category_id: "6825d76c8245c52fee70cc27",
+      accessby: ["Teaching Staff"],
     };
 
     try {
@@ -69,7 +91,7 @@ export function AddFAQDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l h-[90%] mt-10 rounded-xl ">
+      <DrawerContent className=" w-full max-w-md ml-auto p-6 bg-white shadow-lg border-l h-[90%] mt-10 rounded-xl ">
         <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
           <DrawerTitle className="text-lg font-semibold">Add FAQ</DrawerTitle>
           <DrawerClose>
@@ -102,9 +124,11 @@ export function AddFAQDrawer({
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="general">General</SelectItem>
-                <SelectItem value="technical">Technical</SelectItem>
-                <SelectItem value="billing">Billing</SelectItem>
+                {
+                  category?.map((item: any, index) => (
+                    <SelectItem key={index} value={item?._id}>{item?.category_name}</SelectItem>
+                  ))
+                }
               </SelectContent>
             </Select>
           </div>

@@ -114,9 +114,8 @@ const Placements = () => {
       uuid: editingPlacement?.uuid,
       student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
+      
     };
-
- 
 
     try {
       await updatePlacement(payload);
@@ -245,7 +244,7 @@ const Placements = () => {
                       <FaEllipsisV className="h-4 w-4" />
                     </Button>
 
-                    <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
+                    <div className="hidden group-hover:block absolute right-10 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
                       <Button
                         variant="ghost"
                         onClick={(e: any) => {

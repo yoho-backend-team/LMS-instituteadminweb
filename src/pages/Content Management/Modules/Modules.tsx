@@ -92,6 +92,7 @@ const Modules = () => {
       setSelectedModule(null);
     }
     dispatch(DeletemoduleThunks({ id, uuid }));
+     setOpenCardId(null);
   };
 
   const handleToggle = (module: any) => {

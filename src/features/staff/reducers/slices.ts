@@ -9,6 +9,7 @@ const StaffSlice = createSlice({
 		activityData: [],
 		branchData: [],
 		loading: false,
+		classgetid:[],
 	},
 	reducers: {
 		getStaffDetails: (state, action) => {
@@ -29,6 +30,9 @@ const StaffSlice = createSlice({
 		setLoading: (state, action) => {
 			state.loading = action.payload;
 		},
+		getWithIdClass:(state,action)=>{
+			state.classgetid=action.payload;
+		}
 	},
 });
 
@@ -40,4 +44,5 @@ export const {
 	getActivity,
 	getBranch,
 	setLoading,
+	getWithIdClass
 } = StaffSlice.actions;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { BsSliders } from "react-icons/bs";
@@ -72,7 +71,7 @@ const StaffSalaries = () => {
 
   const fetchStaffNamesByBranch = async (branchId: string) => {
     try {
-      const res = await GetStaffName_Branch(branchId);
+      const res = await GetStaffName_Branch({branch: branchId});
       if (Array.isArray(res)) {
         setStaffList(res);
       } else {

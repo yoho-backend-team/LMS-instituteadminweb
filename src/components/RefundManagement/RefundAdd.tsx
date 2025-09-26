@@ -60,7 +60,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedFee, setSelectedFee] = useState("");
   const [amount, setAmount] = useState("");
-  const feeList = fees?.fees ?? [];
+  const feeList = fees ?? [];
+
 
   const [errors, setErrors] = useState({
     branchId: false,
@@ -89,7 +90,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
   useEffect(() => {
     if (selectedCourse) {
-      dispatch(GetBatchThunk(selectedCourse));
+      dispatch(GetBatchThunk({course: selectedCourse}));
     }
   }, [selectedCourse, dispatch, branchId, instituteId]);
 
@@ -103,6 +104,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       dispatch(GetStudentsWithBatchThunks(params));
     }
   }, [selectedBatch, branchId, instituteId, dispatch]);
+
+  
 
   useEffect(() => {
     if (editData) {
@@ -129,6 +132,8 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       amount: false,
     });
   }, [editData]);
+
+  console.log(editData,"editdata")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -196,6 +201,11 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     `h-10 border px-2 rounded w-full ${
       error ? "border-red-500" : "border-gray-300"
     }`;
+
+
+
+
+    
 
   return (
     <div className="relative text-[#716F6F] p-4 h-full">
@@ -306,51 +316,52 @@ const RefundAdd: React.FC<RefundAddProps> = ({
             )}
           </div>
 
-          {/* Fee Dropdown */}
-          <div className="flex flex-col p-1">
-            <label>Student Fee</label>
-            <select
-              value={selectedFee}
-              onChange={(e) => {
-                const selectedFeeId = e.target.value;
-                setSelectedFee(selectedFeeId);
-                const fee = feeList.find((f: any) => f._id === selectedFeeId);
-                if (fee) {
-                  setAmount(fee.paid_amount?.toString() || "0");
-                }
-              }}
-              className={getInputClass(errors.selectedFee)}
-              disabled={!selectedStudent}
-            >
-              <option value="">Select Fee</option>
-              {selectedStudent ? (
-                feeList && feeList.length > 0 ? (
-                  feeList
-                    .filter(
-                      (fee: any) =>
-                        fee.student === selectedStudent ||
-                        fee.student?.uuid === selectedStudent
-                    )
-                    .map((fee: any) => {
-                      const paidAmount = fee?.paid_amount ?? 0;
-                      return (
-                        <option key={fee._id} value={fee._id}>
-                          Paid: ₹{paidAmount.toLocaleString()}
-                        </option>
-                      );
-                    })
-                ) : (
-                  <option disabled>No fees found for this student</option>
-                )
-              ) : (
-                <option disabled>Please select a student first</option>
-              )}
-            </select>
+         
+<div className="flex flex-col p-1">
+  <label>Student Fee</label>
+  <select
+    value={selectedFee}
+    onChange={(e) => {
+      const selectedFeeId = e.target.value;
+      setSelectedFee(selectedFeeId);
+      const fee = feeList.find((f: any) => f._id === selectedFeeId);
+      if (fee) {
+        setAmount(fee.paid_amount?.toString() || "0");
+      }
+    }}
+    className={getInputClass(errors.selectedFee)}
+    disabled={!selectedStudent}
+  >
+    <option value="">Select Fee</option>
+    {selectedStudent ? (
+      (() => {
+        const studentFees = feeList.filter(
+          (fee: any) =>
+            fee.student === selectedStudent || fee.student?.uuid === selectedStudent
+        );
 
-            {errors.selectedFee && (
-              <p className="text-red-500 text-sm">Fee is required.</p>
-            )}
-          </div>
+        if (studentFees.length > 0) {
+          return studentFees.map((fee: any) => {
+            const paidAmount = fee?.paid_amount ?? 0;
+            return (
+              <option key={fee._id} value={fee._id}>
+                Paid: ₹{paidAmount.toLocaleString()}
+              </option>
+            );
+          });
+        }
+
+        return <option disabled>No available fees for this student</option>;
+      })()
+    ) : (
+      <option disabled>Please select a student first</option>
+    )}
+  </select>
+
+  {errors.selectedFee && (
+    <p className="text-red-500 text-sm">Fee is required.</p>
+  )}
+</div>
 
           {/* Amount Input */}
           <div className="flex flex-col p-1">

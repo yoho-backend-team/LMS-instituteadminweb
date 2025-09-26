@@ -11,6 +11,15 @@ export const getFaqQuestionsAll = async (params: any) => {
   }
 };
 
+export const getHelpCenterAll = async (data: any) => {
+  try {
+    const response = await Client.helpcenter.get(data);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
 
 export const createHelpCenter = async (data: any) => {
   try {

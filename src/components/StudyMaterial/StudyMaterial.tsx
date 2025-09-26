@@ -30,6 +30,7 @@ import { updateStudyMaterialStatus } from "../../features/StudyMaterials/service
 import ContentLoader from "react-content-loader";
 import { GetLocalStorage } from "../../utils/localStorage";
 import type { AppDispatch } from "../../store/store";
+import { UploadFile } from "../../features/Content_Management/services";
 
 interface Note {
   id: number;
@@ -144,22 +145,11 @@ const NotesManagement = () => {
   const uploadFile = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-    const url = import.meta.env.VITE_PUBLIC_API_URL
-    const response = await fetch(
-      url,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const response = await UploadFile(formData)
+    console.log(response, 'res')
 
-    if (!response.ok) {
-      throw new Error("File upload failed");
-    }
 
-    const result = await response.json();
-
-    return result?.data?.file || "";
+    return response?.file || "";
   };
 
   const handleSubmit = async () => {

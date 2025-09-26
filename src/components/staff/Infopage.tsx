@@ -13,6 +13,7 @@ import { getStaffDetailsDataId } from "../../features/staff/reducers/thunks"
 import { selectStaffId } from "../../features/staff/reducers/selector"
 import { GetImageUrl } from "../../utils/helper"
 import { deleteStaff, updateStaff } from "../../features/staff/services"
+import toast from "react-hot-toast"
 
 interface Staff {
   _id: any
@@ -51,7 +52,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
   const filcategory = course?.map((item: any) => item?.category?.category_name)
   const fildescription = course?.map((item: any) => item?.overview)
   const filthumbnail = course?.map((item: any) => item?.thumbnail)
-
+console.log(staffIdData,'staffiddata')
   const [formData, setFormData] = useState({
     fullName: staffIdData?.full_name || "",
     email: staffIdData?.email || "",
@@ -141,9 +142,12 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
     console.log("payload", payload)
     try {
       await updateStaff(staffId, payload)
+       toast.success("Staff updated successfully!");
+        fetchClassDataId()
     }
     catch (error) {
       console.log(error);
+      toast.error("Failed to update staff.");
     }
 
   }
@@ -161,9 +165,11 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       await deleteStaff({
         staffId: id
       });
-
+      toast.success("Staff deleted successfully!");
+   fetchClassDataId()
     } catch (error) {
       console.error("Delete failed:", error);
+      toast.error("Failed to delete staff.");
     }
   }
 

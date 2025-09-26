@@ -132,8 +132,8 @@ const generateEndpoints = () => {
 			getWithCourse: `/api/institutes/:instituteid/branches/`,
 			update: `/api/institutes/:instituteId/students/update/`,
 			delete: `/api/institutes/student/student/`,
-		    activitylog:'/api/institutes/user/activity/student/:studentId',
-			studentclass:'/api/institutes/class/student/:studentid',
+			activitylog: '/api/institutes/user/activity/student/:studentId',
+			studentclass: '/api/institutes/class/student/:studentid',
 			activity: `/api/institutes/:instituteid/students/student/activity/`,
 			liveClasses: `/api/institutes/class/online/all/`,
 			// classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8e e4/students/`,
@@ -144,7 +144,7 @@ const generateEndpoints = () => {
 				create: '/api/institutes/payments/student-fee/create',
 				getAllSalary: `/api/institutes/payments/student-fee/all/?branch_id=:branchid`,
 				delete: '/api/institutes/payments/student-fee/',
-				update: '/api/institutes/payments/student-fee/update',
+				update: '/api/institutes/payments/student-fee/update/:uuid',
 			},
 			salary: {
 				getall: '/api/institutes/payments/staff-salary/all',
@@ -165,7 +165,7 @@ const generateEndpoints = () => {
 			get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
 			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
 			getWithId: `/api/institutes/${instituteId}/staff/`,
-			getWithcourse: `/api/institutes/${instituteId}/branches/:branchid/courses/`,
+			getWithcourse: `/api/institutes/:instituteid/branches/:branchid/courses/`,
 			getWithBranch: `/api/institutes/${instituteId}/branches/:branchid/teaching-staff`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
 			getActivtiy:
@@ -263,6 +263,7 @@ const generateEndpoints = () => {
 			delete: '/api/certificate/delete/:certificateid',
 		},
 		helpcenter: {
+			get: '/api/help-center/all',
 			getall: '/api/helpcenter/',
 			delete: '/api/helpcenter/delete/',
 			update: '/api/helpcenter/update/',
