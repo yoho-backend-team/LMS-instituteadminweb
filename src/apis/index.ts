@@ -69,6 +69,11 @@ class Client {
 				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
 				data
 			),
+			updatestatusNew: (params: string, data?: any) =>
+			HttpClient.patch(
+				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
+				data
+			),
 		getByid: (params: string) =>
 			HttpClient.get(
 				HTTP_END_POINTS.branch.getByBranchId.replace(":instituteid", getInstituteDetails()).replace(':branchid', params)

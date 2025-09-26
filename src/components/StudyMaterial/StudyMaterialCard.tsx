@@ -9,7 +9,7 @@ interface NoteCardProps {
   onView: (note: Note) => void;
   onEdit: (note: Note) => void;
   onDelete: (id: number) => void;
-  onToggleStatus?: (uuid: string, status: "Active" | "Completed") => void;
+  onToggleStatus?: (uuid: string, status: boolean) => void;
   fileIcon: string;
   titleIcon: string;
 }
@@ -207,7 +207,7 @@ const ViewModal: React.FC<{
               : "bg-gray-500 text-white"
               }`}
           >
-            {note?.is_active ? "Active" : "Completed"}
+            {note?.is_active ? "Active" : "Inactive"}
           </span>
         </div>
 
@@ -238,14 +238,15 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   fileIcon,
   titleIcon,
 }) => {
-  const [status, setStatus] = useState<"Active" | "Completed">(note.status);
+  const [status, setStatus] = useState<boolean>(note.is_active);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const handleToggle = () => {
-    const newStatus = status === "Active" ? "Completed" : "Active";
+    const newStatus = status === true ? false : true;
     setStatus(newStatus);
     onToggleStatus?.(note.uuid, newStatus);
   };
+  
 
   const handleView = () => {
     setIsViewModalOpen(true);
@@ -293,7 +294,6 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           )}
         </div>
 
-        {/* Bottom section: Active / Completed + toggle button */}
         <div className="flex items-center mt-auto pt-3 border-t border-gray-200">
           {note?.is_active ? (
             <div className="flex items-center gap-1 text-green-600 font-medium text-lg">
@@ -302,7 +302,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             </div>
           ) : (
             <div className="flex items-center gap-1 text-gray-500 font-medium text-lg">
-              <span>Completed</span>
+              <span>Inactive</span>
               <span className="h-3 w-3 mt-1 rounded-full bg-gray-400 inline-block" />
             </div>
           )}

@@ -39,7 +39,7 @@ interface Note {
   description: string;
   course: string;
   branch: string;
-  status: "Active" | "Completed";
+  status: "Active" | "Inactive";
   file?: File;
   video?: string;
 }
@@ -108,7 +108,7 @@ const NotesManagement = () => {
     {
       label: "Status",
       value: "status",
-      options: ["", "Active", "Completed"],
+      options: ["all", "Active", "Inactive",],
     },
     {
       label: "Course",
@@ -254,34 +254,34 @@ const NotesManagement = () => {
   };
 
   const handleToggleStatus = async (
-    uuid: string,
-    currentStatus: "Active" | "Completed"
-  ) => {
-    try {
-      const toggledStatus = currentStatus === "Active" ? true : false;
+  uuid: string,
+  currentStatus: boolean
+) => {
+  try {
+    const toggledStatus = currentStatus === false ? false : true;
+    const payload = {
+      id: uuid,
+      is_active: toggledStatus,
+    };
 
-      const payload = {
-        id: uuid,
-        is_active: toggledStatus,
-      };
+    await updateStudyMaterialStatus(payload);
 
-      await updateStudyMaterialStatus(payload);
+    dispatch(
+      fetchStudyMaterialsThunk({
+        branch: GetLocalStorage("selectedBranchId"),
+        page: 1,
+      })
+    );
+  } catch (error) {
+    console.error("Status update failed:", error);
+  }
+};
 
-      dispatch(
-        fetchStudyMaterialsThunk({
-          branch: GetLocalStorage("selectedBranchId"),
-          page: 1,
-        })
-      );
-    } catch (error) {
-      console.error("Status update failed:", error);
-    }
-  };
 
   const filteredNotes = Array.isArray(studyMaterials)
     ? studyMaterials.filter((note: any) => {
       let statusMatch = true;
-      if (filterValues.status) {
+      if (filterValues.status && filterValues.status !== "all") {
         if (note.status) {
           statusMatch = note.status === filterValues.status;
         } else if (typeof note.is_active === "boolean") {
@@ -294,11 +294,13 @@ const NotesManagement = () => {
             filterValues.status === "Active"
               ? note.active === true
               : note.active === false;
-        } else if (note.status === "active" || note.status === "inactive") {
+        } else if (
+          note.status === "active" ||
+          note.status === "inactive"
+        ) {
           statusMatch =
             (filterValues.status === "Active" && note.status === "active") ||
-            (filterValues.status === "Completed" &&
-              note.status === "inactive");
+            (filterValues.status === "Inactive" && note.status === "inactive");
         }
       }
 
@@ -315,9 +317,18 @@ const NotesManagement = () => {
           courseMatch = note.courseName === filterValues.course;
         }
       }
+
       return statusMatch && courseMatch;
     })
     : [];
+
+  const resetFilters = () => {
+    setFilterValues({
+      status: "",
+      course: "",
+    });
+  };
+
 
   return (
     <div className="min-h-screen p-3 w-full bg-cover bg-center">
@@ -336,6 +347,7 @@ const NotesManagement = () => {
           filters={filterOptions}
           values={filterValues}
           onChange={handleFilterChange}
+          onReset={resetFilters}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4">
@@ -413,6 +425,7 @@ const NotesManagement = () => {
           }
           onFileChange={setUploadedFile}
           fields={formFields}
+          onReset={resetForm}
         />
       </div>
     </div>

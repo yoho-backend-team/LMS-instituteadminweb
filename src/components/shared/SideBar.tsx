@@ -379,10 +379,14 @@ const SidebarLink = ({ to, icon, label, isOpen, onClick }: { to: string; icon: R
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group flex items-center py-3 rounded-full  ${isActive ? "bg-white text-[#1BBFCA]" : isHovered ? "bg-[rgba(212,231,235,0.3)]" : ""} ${isOpen ? "justify-start gap-3 px-2" : "justify-center"}`}
+      className={`group flex items-center py-3  ${isActive ? " text-white" : isHovered ? "bg-[rgba(212,231,235,0.3)]" : ""} ${isOpen ? "justify-start gap-3 px-2" : "justify-center"}`}
     >
-      <div className="flex items-center justify-center w-6 h-6">{icon}</div>
-      {isOpen && <span className="font-medium text-sm">{label}</span>}
+      <div className="flex items-center justify-center gap-3">
+        {icon}
+
+         {isOpen && <span className="font-medium text-sm">{label}</span>}
+      </div>
+     
     </Link>
   );
 };
