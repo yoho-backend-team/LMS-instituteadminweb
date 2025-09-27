@@ -12,6 +12,7 @@ import {
 import { useSelector } from 'react-redux';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "../ui/button";
 
 const HistoryPage: React.FC = () => {
   const navigate = useNavigate()
@@ -22,11 +23,14 @@ const HistoryPage: React.FC = () => {
 
   return (
     <div className="bg-white h-full flex flex-col rounded-xl border-2 border-gray-100 shadow-md p-6 mb-8 ">
-      <div
-        onClick={() => navigate(-1)}
-        className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4'>
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-      </div>
+       <div className="flex items-center justify-between mb-8">
+                <Button
+                   onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+                >
+                  <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+                </Button>
+            </div>
       <div>
         <h1 style={FONTS.heading_04} className="text-center mb-4 text-gray-700">
           Subscription History
