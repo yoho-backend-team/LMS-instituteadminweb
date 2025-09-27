@@ -6,7 +6,7 @@ import { showSessionExpiredModal } from '../components/Session/sessionexpiremode
 import { showUpgradeWindow } from '../components/shared/upgradeWindow'
 
 const Axios = axios.create({
-	baseURL: import.meta.env.VITE_PUBLIC_API_URL,
+	baseURL: import.meta.env.VITE_PUBLIC_API_URL,	
 	timeout: 5000000,
 	headers: {
 		'Content-Type': 'application/json',
