@@ -82,28 +82,20 @@ const OfflineClasses = () => {
   useEffect(() => {
     if (offlineClassData?.data) {
       const filtered = offlineClassData.data.filter((liveClass: any) => {
-        if (searchTerms.status === "active" && !liveClass.is_active)
-          return false;
-        if (searchTerms.status === "inactive" && liveClass.is_active)
-          return false;
-
-        if (searchTerms.batch && liveClass.batch?._id !== searchTerms.batch)
-          return false;
-
         if (
           searchTerms.searchText &&
           !liveClass.class_name
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(searchTerms.searchText.toLowerCase())
         ) {
           return false;
         }
-
         return true;
       });
       setFilteredClasses(filtered);
     }
-  }, [searchTerms, offlineClassData]);
+  }, [searchTerms.searchText, offlineClassData]);
+
 
   useEffect(() => {
     if (offlineClassData?.data) {
@@ -164,47 +156,9 @@ const OfflineClasses = () => {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                className="block mb-1"
-                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-              >
-                Status
-              </label>
-              <select
-                name="status"
-                value={searchTerms.status}
-                onChange={handleFilterChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer"
-              >
-                <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-            <div>
-              <label
-                className="block mb-1"
-                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-              >
-                Batches
-              </label>
-              <select
-                name="batch"
-                value={searchTerms.batch}
-                onChange={handleFilterChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm cursor-pointer"
-              >
-                <option value="">Select Batch</option>
-                {allBatches?.map((batch: any) => (
-                  <option key={batch?._id} value={batch?._id}>
-                    {batch?.batch_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+           
+             
+          
             <div>
               <label
                 className="block mb-1"

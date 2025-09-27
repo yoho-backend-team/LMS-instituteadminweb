@@ -242,6 +242,21 @@ const TeachingStaffs: React.FC = () => {
 
   const handleFileChange = () => { };
 
+
+  const filteredStaff = classData.filter((member: any) => {
+    const statusMatch =
+      statusFilter === "all" ||
+      (statusFilter === "Active" && member.is_active) ||
+      (statusFilter === "Inactive" && !member.is_active);
+
+    const courseMatch =
+      courseFilter === "all" ||
+      member.course?.includes(courseFilter);
+
+    return statusMatch && courseMatch;
+  });
+
+
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -780,7 +795,7 @@ const TeachingStaffs: React.FC = () => {
                 ))}
               </div>
             ) : (
-              classData.map((member: any) => (
+              filteredStaff.map((member: any) => (
                 <Card
                   key={member?.id}
                   className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]"

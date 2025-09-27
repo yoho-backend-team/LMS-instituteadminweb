@@ -33,7 +33,7 @@ interface ModuleCardProps {
   course?: {
     course_name: string;
   };
-  video: string;
+  video: any;
   file?: File | null;
 }
 

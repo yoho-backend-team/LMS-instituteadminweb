@@ -177,7 +177,7 @@ export default function BatchManagement() {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label
                 className="block mb-1"
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
@@ -198,14 +198,14 @@ export default function BatchManagement() {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             <div>
               <label
                 className="block mb-1"
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
               >
-                Search Batch
+                 Batch Name
               </label>
               <input
                 type="text"

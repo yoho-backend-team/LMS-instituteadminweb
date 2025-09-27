@@ -220,7 +220,7 @@ const LiveClasses = () => {
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   className="block mb-1"
                   style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
@@ -262,7 +262,7 @@ const LiveClasses = () => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               <div className="flex gap-4 w-full">
                 <div className="flex-1">
