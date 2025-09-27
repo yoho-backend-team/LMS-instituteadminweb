@@ -38,6 +38,7 @@ const FaqCategory: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAddSuccessModalOpen, setIsAddSuccessModalOpen] = useState(false);
   const [isEditSuccessModalOpen, setIsEditSuccessModalOpen] = useState(false);
+  const [isDeleteSuccessModalOpen, setIsDeleteSuccessModalOpen] = useState(false); // New state for delete success
 
   const [isEditing, setIsEditing] = useState(false);
   const [editCategoryId, setEditCategoryId] = useState<number | null>(null);
@@ -61,7 +62,8 @@ const FaqCategory: React.FC = () => {
       isFormOpen ||
       isAddSuccessModalOpen ||
       isEditSuccessModalOpen ||
-      isDeleteConfirmOpen
+      isDeleteConfirmOpen ||
+      isDeleteSuccessModalOpen // Added delete success modal
     ) {
       document.body.style.overflow = "hidden";
     } else {
@@ -75,6 +77,7 @@ const FaqCategory: React.FC = () => {
     isAddSuccessModalOpen,
     isEditSuccessModalOpen,
     isDeleteConfirmOpen,
+    isDeleteSuccessModalOpen, // Added delete success modal
   ]);
 
   useEffect(() => {
@@ -169,9 +172,7 @@ const FaqCategory: React.FC = () => {
         category_name: newTitle,
         description: newDescription,
         branchid: overall_branch_id,
-        institute_id:
-          "67f3a26df4b2c530acd16419" /*973195c0-66ed-47c2-b098-d8989d3e4529 institute
-         id in console --> but here different isntitute id that'y didn't replace*/,
+        institute_id: "67f3a26df4b2c530acd16419",
       };
       try {
         await createFaqCategories(payload);
@@ -213,9 +214,10 @@ const FaqCategory: React.FC = () => {
           perPage: 10,
         })
       );
-      setIsAddSuccessModalOpen(true);
+      setIsDeleteSuccessModalOpen(true); // Changed to delete success modal
     } catch (error) {
       console.error("Delete failed:", error);
+      alert("Failed to delete FAQ category. Please try again.");
     }
     setIsDeleteConfirmOpen(false);
     setDeleteCategoryUuid(null);
@@ -228,8 +230,8 @@ const FaqCategory: React.FC = () => {
 
   const filtered = Array.isArray(category)
     ? category.filter((c: any) =>
-      c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
-    )
+        c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
+      )
     : [];
 
   return (
@@ -264,8 +266,8 @@ const FaqCategory: React.FC = () => {
           <div className="text-right">Actions</div>
         </div>
         <div className="flex flex-col gap-3 mt-3">
-          {loading
-            ? Array.from({ length: 5 }).map((_, idx) => (
+          {loading ? (
+            Array.from({ length: 5 }).map((_, idx) => (
               <div
                 key={idx}
                 className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
@@ -279,7 +281,12 @@ const FaqCategory: React.FC = () => {
                 <div className="h-4 w-16 bg-gray-200 rounded"></div>
               </div>
             ))
-            : filtered.map((cat: any, index: any) => (
+          ) : filtered.length === 0 ? (
+            <div className="text-center text-gray-500 py-6">
+              No Category Found
+            </div>
+          ) : (
+            filtered.map((cat: any, index: any) => (
               <div
                 key={cat.id}
                 className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
@@ -293,8 +300,9 @@ const FaqCategory: React.FC = () => {
                 {/* Status Dropdown */}
                 <div className="relative">
                   <button
-                    className={`flex items-center gap-1 text-sm ${cat.is_active ? "text-green-600" : "text-red-600"
-                      }`}
+                    className={`flex items-center gap-1 text-sm ${
+                      cat.is_active ? "text-green-600" : "text-red-600"
+                    }`}
                     onClick={() => toggleStatus(index)}
                   >
                     {cat.is_active ? "Active" : "Inactive"}
@@ -308,17 +316,13 @@ const FaqCategory: React.FC = () => {
                   {openStatusIndex === index && (
                     <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
                       <button
-                        onClick={() =>
-                          handleStatusChange("Active", cat?.uuid)
-                        }
+                        onClick={() => handleStatusChange("Active", cat?.uuid)}
                         className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
                       >
                         Active
                       </button>
                       <button
-                        onClick={() =>
-                          handleStatusChange("Inactive", cat.uuid)
-                        }
+                        onClick={() => handleStatusChange("Inactive", cat.uuid)}
                         className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
                       >
                         Inactive
@@ -363,7 +367,8 @@ const FaqCategory: React.FC = () => {
                   )}
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       </div>
 
@@ -414,7 +419,7 @@ const FaqCategory: React.FC = () => {
       {/* Add Success Modal */}
       {isAddSuccessModalOpen && (
         <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-[90%]">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
             <img
               src={sucess}
               alt="Success"
@@ -436,7 +441,7 @@ const FaqCategory: React.FC = () => {
       {/* Edit Success Modal */}
       {isEditSuccessModalOpen && (
         <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg mt-10">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
             <img
               src={sucess}
               alt="Success"
@@ -455,10 +460,31 @@ const FaqCategory: React.FC = () => {
         </div>
       )}
 
+      {/* Delete Success Modal */}
+      {isDeleteSuccessModalOpen && (
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+              FAQ Category Deleted!
+            </h2>
+            <button
+              onClick={() => setIsDeleteSuccessModalOpen(false)}
+              className="bg-green-500 text-white px-6 py-2 rounded"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && (
         <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          {" "}
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
             <img
               src={warning}
@@ -483,7 +509,7 @@ const FaqCategory: React.FC = () => {
                 className="border border-[#1BBFCA] text-[#1BBFCA] bg-[#E6FBFD] hover:bg-[#d1f5f8] font-semibold px-6 py-2 rounded-lg"
               >
                 Cancel
-              </button>
+            </button>
             </div>
           </div>
         </div>

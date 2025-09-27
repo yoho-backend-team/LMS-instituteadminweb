@@ -80,8 +80,6 @@ export const CreateBatchModal = ({
     }
   };
 
-  console.log(selectedBranch, 'branches')
-
   const fetchAllStaff = async () => {
     if (!courseObjectId) return;
     try {
