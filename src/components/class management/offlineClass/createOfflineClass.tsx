@@ -188,6 +188,7 @@ export const CreateOfflineClassModal = ({
         });
         if (responses) {
           setAvailableInstructors(responses.data);
+          console.log(responses.data,"staff")
         }
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -444,7 +445,6 @@ export const CreateOfflineClassModal = ({
                     Instructors
                   </label>
 
-                  {/* Selected instructors chips */}
                   <div className="flex flex-wrap gap-2 mb-2">
                     {formik.values.instructors.map((instructorId) => {
                       const instructor = availableInstructors.find(

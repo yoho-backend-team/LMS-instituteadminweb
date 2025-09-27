@@ -177,7 +177,7 @@ const Students = () => {
         type: "payment",
       };
 
-     
+
 
       await dispatch(createstudentdata(payload)).unwrap();
 
@@ -247,7 +247,7 @@ const Students = () => {
 
     return data.data.map((student: any) => ({
       id: student._id,
-  name: `${student.first_name || ""} ${student.last_name || ""}`.trim(), 
+      name: `${student.first_name || ""} ${student.last_name || ""}`.trim(),
       firstName: student.first_name,
       lastName: student.last_name,
       email: student.email,
@@ -286,10 +286,18 @@ const Students = () => {
   if (showAddStudent) {
     return (
       <div className='p-6'>
-        <div
+        {/* <div
           onClick={toggleAddStudent}
           className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
           <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+        </div> */}
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            onClick={toggleAddStudent}
+            className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+          >
+            <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+          </Button>
         </div>
         <Card className='mb-6 shadow-md mt-4'>
           <CardHeader>
@@ -630,6 +638,26 @@ const Students = () => {
     );
   }
 
+  const filteredStudents = formattedStudents.filter((student: any) => {
+  const matchesName = student.name
+    .toLowerCase()
+    .includes(searchInput.toLowerCase());
+
+  const matchesCourse = courseFilter
+    ? student.course === courseFilter
+    : true;
+
+  const matchesBatch = batchFilter
+    ? student.batch === batchFilter
+    : true;
+
+  const matchesStatus = statusFilter
+    ? student.status?.toLowerCase() === statusFilter.toLowerCase()
+    : true;
+
+  return matchesName && matchesCourse && matchesBatch && matchesStatus;
+});
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -657,7 +685,7 @@ const Students = () => {
 
       {showFilters && (
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-[16px] font-medium text-gray-700">
                 Filter by Course
@@ -688,9 +716,9 @@ const Students = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-[16px] font-medium text-gray-700">
                 Filter by Status
               </label>
@@ -704,10 +732,12 @@ const Students = () => {
                   <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-transparent select-none">
-                Hidden Label
+                 <label className="text-[16px] font-medium text-gray-700">
+                Filter by name
+              </label>
               </div>
               <Input
                 type="text"
@@ -748,8 +778,8 @@ const Students = () => {
               <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
             </ContentLoader>
           ))
-        ) : formattedStudents.length ? (
-          formattedStudents.map((student: any, index: number) => (
+        ) : filteredStudents.length ? (
+          filteredStudents?.map((student: any, index: number) => (
             <Card
               key={index}
               className="w-full shadow-md cursor-pointer hover:shadow-lg transition-shadow"

@@ -43,7 +43,6 @@ export const CreateLiveClassModal = ({
   setIsOpen,
   fetchAllLiveClasses,
 }: CreateBatchModalProps) => {
-  // const dispatch = useDispatch<any>();
   const [allCourses, setAllCourses] = useState<any[]>([]);
   const [allBatches, setAllBatches] = useState<any[]>([]);
   const [allBranches, setAllBranches] = useState<any[]>([]);
@@ -51,7 +50,6 @@ export const CreateLiveClassModal = ({
   const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
   const [courseId, setCourseId] = useState<string>("");
 
-  // Initial form values
   const initialValues: FormValues = {
     className: "",
     branch: "",
@@ -64,7 +62,6 @@ export const CreateLiveClassModal = ({
     videoUrl: "",
   };
 
-  // Validation schema
   const validationSchema = Yup.object().shape({
     className: Yup.string().required("Class name is required"),
     branch: Yup.string().required("Branch selection is required"),
@@ -93,7 +90,6 @@ export const CreateLiveClassModal = ({
     }
   }, []);
 
-  // Formik initialization
   const formik = useFormik<FormValues>({
     initialValues,
     validationSchema,
@@ -164,7 +160,6 @@ export const CreateLiveClassModal = ({
     })();
   }, [formik?.values?.branch]);
 
-  // Handler for removing an instructor
   const removeInstructor = useCallback(
     (instructorId: string) => {
       formik.setFieldValue(

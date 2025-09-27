@@ -46,6 +46,8 @@ const Notes = () => {
     };
     dispatch(fetchNotesThunk(params));
   }, [dispatch]);
+console.log(notes,"ful data")
+  console.log(viewNote,"view notes")
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
@@ -58,7 +60,7 @@ const Notes = () => {
     dispatch(
       UpdateModuleStatusThunk({
         id,
-        status: newStatus ? "active" : "inactive",
+        is_active: newStatus ? true : false
       })
     );
   };
@@ -263,7 +265,7 @@ const Notes = () => {
               id={note.uuid}
               title={note.title}
               course={note.course}
-              isActive={note.isActive}
+              isActive={note.is_active}
               index={index}
               openIndex={openIndex}
               setOpenIndex={setOpenIndex}
@@ -289,7 +291,7 @@ const Notes = () => {
                 typeof viewNote.fileName === "string"
                   ? viewNote.fileName
                   : undefined,
-              status: viewNote.isActive ? "Active" : "Inactive",
+              status: viewNote.is_active?"Active":"Inactive",
             }}
             onClose={() => setViewNote(null)}
           />

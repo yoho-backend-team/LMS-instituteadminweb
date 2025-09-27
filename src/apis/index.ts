@@ -344,38 +344,38 @@ class Client {
 	};
 	staff = {
 		get: (query: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithName, query),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithName.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), query),
 		getWithCourse: (params: any) =>
 			HttpClient.get(HTTP_END_POINTS.staff.getWithcourse.replace(":instituteid", getInstituteDetails()).replace(":branchid", params)),
 		getWithId: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.staff.getWithid.replace(':staffId', params?.staffId)
+				HTTP_END_POINTS.staff.getWithid.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()).replace(':staffId', params?.staffId)
 			),
 		getWithBranch: (data: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getWithBranch, data),
+			HttpClient.get(HTTP_END_POINTS.staff.getWithBranch.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), data),
 		// getclasses: (params: any) => HttpClient.get(HTTP_END_POINTS.staff.getClasses, params),
 		getclasses: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.staff.getClasses.replace(':id', params?.id),
+				HTTP_END_POINTS.staff.getClasses.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()).replace(':id', params?.id),
 				params
 			),
 		updatestatus: (params: any) =>
 			HttpClient.update(
-				HTTP_END_POINTS.staff.updateStatus.replace(':staff', params?.staff),
+				HTTP_END_POINTS.staff.updateStatus.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()).replace(':staff', params?.staff),
 				params
 			),
 		getactivity: (params: any) =>
-			HttpClient.get(HTTP_END_POINTS.staff.getActivtiy, params),
-		create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create, data),
+			HttpClient.get(HTTP_END_POINTS.staff.getActivtiy.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), params),
+		create: (data: any) => HttpClient.post(HTTP_END_POINTS.staff.create.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), data),
 		update: (params: any, data: any) =>
-			HttpClient.update(HTTP_END_POINTS.staff.update + params.staffId, data),
+			HttpClient.update(HTTP_END_POINTS.staff.update + params.staffId.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()), data),
 		delete: (query: any) =>
 			HttpClient.delete(
-				HTTP_END_POINTS.staff.delete + query?.staffId
+				HTTP_END_POINTS.staff.delete.replace(":instituteid", getInstituteDetails()).replace(":branchid", getSelectedBranchId()) + query?.staffId
 			),
 		getall: (params: any) =>
 			HttpClient.get(
-				HTTP_END_POINTS.staff.getWithBranch.replace(
+				HTTP_END_POINTS.staff.getWithBranch.replace(":instituteid", getInstituteDetails()).replace(
 					':branchid',
 					params?.uuid
 				),

@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { COLORS, FONTS } from "../../constants/uiConstants";
 import { Card } from "../ui/card";
 import { GetImageUrl } from "../../utils/helper";
+import { Button } from "../ui/button";
 
 
 export default function StudentDashboardMain() {
@@ -17,11 +18,19 @@ export default function StudentDashboardMain() {
 
   return (
     <div className="p-6  min-h-screen">
-       <div 
+       {/* <div 
        onClick={() => navigate(-1)}
       className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
 				<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-			</div>
+			</div> */}
+       <div className="flex items-center justify-between mb-8">
+                <Button
+                   onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+                >
+                  <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+                </Button>
+            </div>
 
       <h2 className="mb-4 mt-4" style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>MERN 2025</h2>
       <Card className="p-6 bg-white shadow-lg rounded-xl mb-8 space-y-4">
