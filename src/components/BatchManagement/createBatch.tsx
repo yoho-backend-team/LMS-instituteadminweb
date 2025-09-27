@@ -35,7 +35,6 @@ export const CreateBatchModal = ({
   const [students, setStudents] = useState<OptionType[]>([]);
   const [staffs, setStaffs] = useState<OptionType[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
-  const [selectedBranch] = useState<any>('')
   const dispatch = useDispatch<any>();
 
   const [courseUUID, setCourseUUID] = useState("");
