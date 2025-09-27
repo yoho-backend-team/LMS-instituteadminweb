@@ -11,12 +11,21 @@ export const createstudentnotificationdata = async (data: any) => {
         return response;
     }
 };
+
 export const getcoursedata = async (data: any) => {
     const response = await Client.course.get_course_data(data)
     if (response) {
         return response;
     }
 };
+
+export const getAllcoursedata = async (data: any) => {
+    const response = await Client.course.getAll(data)
+    if (response) {
+        return response;
+    }
+};
+
 export const resendstudentnotificationdata = async (params: any) => {
     const response = await Client.notification.student.resend_student_notification(params)
     if (response) {

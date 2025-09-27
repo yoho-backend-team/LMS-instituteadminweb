@@ -6,6 +6,7 @@ const StudentNotificationSlice = createSlice({
 		notificationdata: [],
 		coursedata: [],
 		loading: false,
+		allCourse: []
 	},
 	reducers: {
 		getstudentnotificationdetails: (state, action) => {
@@ -14,13 +15,16 @@ const StudentNotificationSlice = createSlice({
 		getcoursedetails: (state, action) => {
 			state.coursedata = action.payload;
 		},
+		getAllcoursedetails: (state, action) => {
+			state.allCourse = action.payload;
+		},
 		setLoading: (state, action) => {
 			state.loading = action.payload;
 		},
 	},
 });
 
-export const { getstudentnotificationdetails, getcoursedetails, setLoading } =
+export const { getstudentnotificationdetails, getcoursedetails, setLoading, getAllcoursedetails } =
 	StudentNotificationSlice.actions;
 
 export default StudentNotificationSlice.reducer;

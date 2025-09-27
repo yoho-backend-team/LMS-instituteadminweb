@@ -8,7 +8,8 @@ import {
   DialogDescription,
 } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
-import { TriangleAlert } from "lucide-react";
+import warning from "../../assets/navbar/warning.png";
+
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -31,9 +32,13 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+      <DialogContent className="w-full max-w-md p-6 ml-80 mt-40 bg-white rounded-lg shadow-lg">
         <DialogHeader className="flex flex-col items-center gap-4 text-center">
-          <TriangleAlert className="h-16 w-16 text-red-500 fill-red-500" />
+          <img
+              src={warning}
+              alt="Warning"
+              className="mx-auto w-20 h-20 mb-4"
+            />
           <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
           <DialogDescription className="text-gray-600">
             {message}

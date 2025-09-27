@@ -1,8 +1,10 @@
 import {
+	getAllcoursedata,
 	getcoursedata,
 	getstudentnotificationdata,
 } from '../services/Notification';
 import {
+	getAllcoursedetails,
 	getcoursedetails,
 	getstudentnotificationdetails,
 	setLoading,
@@ -26,6 +28,15 @@ export const getcourse = (data: any) => async (dispatch: any) => {
 	try {
 		const response = await getcoursedata(data);
 		dispatch(getcoursedetails(response));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const getAllcourse = (data: any) => async (dispatch: any) => {
+	try {
+		const response = await getAllcoursedata(data);
+		dispatch(getAllcoursedetails(response));
 	} catch (error) {
 		console.log(error);
 	}
