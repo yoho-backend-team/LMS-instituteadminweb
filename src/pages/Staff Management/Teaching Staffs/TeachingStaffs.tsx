@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 // import { GetLocalStorage } from "../../../utils/localStorage";
 import { GetAllCoursesThunk } from "../../../features/Courses_mangement/Reducers/CourseThunks";
 import { selectCoursesData } from "../../../features/Courses_mangement/Reducers/Selectors";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const theme = {
   primary: {
@@ -72,32 +73,10 @@ interface Staff {
 }
 
 const TeachingStaffs: React.FC = () => {
-  const [staff] = useState<Staff[]>([
-    {
-      id: 1,
-      name: "Elon Musk",
-      email: "Vecorp959@Guidex.Com",
-      status: "Active",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-      dateOfBirth: "06-08-2000",
-      gender: "Male",
-      course: "MEAN STACK 2024",
-      designation: "Senior Professor",
-      qualification: "Physics",
-      state: "Texas",
-      city: "Boca Chica",
-      pinCode: "78521",
-      addressLine1: "Texas: Near The SpaceX Starbase",
-      addressLine2: "Pretoria, Texas",
-      phoneNumber: "3804348004",
-      altPhoneNumber: "3903858390",
-    },
-  ]);
 
   const [showFilter, setShowFilter] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-const [courseFilter, setCourseFilter] = useState<string>("all");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
 
   const [showAddStaff, setShowAddStaff] = useState(false);
   const [newStaff, setNewStaff] = useState<Omit<Staff, "id" | "avatar">>({
@@ -132,7 +111,7 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
   const handleAddStaff = async () => {
     if (newStaff.name && newStaff.email) {
       const payload = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch_id: GetLocalStorage("selectedBranchId"),
         contact_info: {
           state: newStaff.state,
           city: newStaff.city,
@@ -142,14 +121,14 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
           phone_number: newStaff.phoneNumber,
           alternate_phone_number: newStaff.altPhoneNumber,
         },
-        course: ["1958e331-84ce-464b-8865-eb06c6189414"],
+        course: newStaff.course,
         designation: newStaff.designation,
         dob: newStaff.dateOfBirth,
         email: newStaff.email,
         full_name: newStaff.name,
         gender: newStaff.gender,
         image: "staticfiles/lms/default-image.png",
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute_id: GetLocalStorage("instituteId"),
         qualification: newStaff.qualification,
         staffId: "",
         user_details: "InstituteTeachingStaff",
@@ -165,7 +144,7 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
       };
 
       try {
-        await createStaff(payload);
+        const response = await createStaff(payload);
         setNewStaff({
           name: "",
           email: "",
@@ -192,13 +171,16 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
           Travel_allowance: "",
           Home_allowance: "",
         });
-
-        setShowAddStaff(false);
-         fetchClassData();
-           toast.success("Staff created successfully!");
+        if (response.status == 'success') {
+          toast.success("Staff created successfully!");
+          setShowAddStaff(false);
+          fetchClassData();
+        } else {
+          toast.success(response?.message);
+        }
       } catch (error) {
         console.error("❌ Failed to create staff:", error);
-          toast.success("failed for staff created data!");
+        toast.success("failed for staff created data!");
       }
     }
   };
@@ -214,11 +196,6 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
       await updateStaff({ staffId }, { is_active: status });
       fetchClassData();
       toast.success('updated successfully.....!')
-      // setStaff((prev) =>
-      //   prev.map((m) =>
-      //     m.id === id ? { ...m, status: newStatus } : m
-      //   )
-      // );
     } catch (error) {
       console.error("❌ Failed to update staff status:", error);
       toast.error(' failed to update')
@@ -243,7 +220,7 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
   const fileInputRef = useRef(null);
   const loading = useSelector(selectLoading);
   const courseData = useSelector(selectCoursesData)
-  
+
   const fetchClassData = (page: number = 1) => {
     dispatch(
       getStaffDetailsData({
@@ -255,19 +232,16 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
   useEffect(() => {
     fetchClassData();
   }, [dispatch]);
-  
-  
+
+
   useEffect(() => {
-    
+
     dispatch(GetAllCoursesThunk(''))
 
   }, [])
-  
-  console.log(courseData,'course response api')
 
   const handleFileChange = () => { };
 
-  console.log(classData, 'useSelector')
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
       <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
@@ -374,34 +348,34 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
                 </Select>
               </label>
 
-             <label
-                    style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
-                  >
-                    Courses
-                    <Select
-                      value={newStaff.course}
-                      onValueChange={(value) =>
-                        setNewStaff({ ...newStaff, course: value })
-                      }
-                    >
-                      <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
-                        <SelectValue placeholder="Select Course" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {courseData && courseData.length > 0 ? (
-                          courseData.map((course: any) => (
-                            <SelectItem key={course._id} value={course.course_name}>
-                              {course.course_name}
-                            </SelectItem>
-                          ))
-                        ) : (
-                          <SelectItem value="no-course" disabled>
-                            No Courses Found
-                          </SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </label>
+              <label
+                style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+              >
+                Courses
+                <Select
+                  value={newStaff.course}
+                  onValueChange={(value) =>
+                    setNewStaff({ ...newStaff, course: value })
+                  }
+                >
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
+                    <SelectValue placeholder="Select Course" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {courseData && courseData.length > 0 ? (
+                      courseData.map((course: any) => (
+                        <SelectItem key={course._id} value={course.uuid}>
+                          {course.course_name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-course" disabled>
+                        No Courses Found
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </label>
 
 
               <label
@@ -717,40 +691,40 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
 
           {showFilter && (
             <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-             <div className="space-y-2">
-                      <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
-                        Status
-                      </Label>
-                      <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-full h-10 border border-[#716F6F]">
-                          <SelectValue placeholder=" " />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white ">
-                          <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All</SelectItem>
-                          <SelectItem value="Active" className="hover:bg-[#1BBFCA] cursor-pointer">Active</SelectItem>
-                          <SelectItem value="Inactive" className="hover:bg-[#1BBFCA] cursor-pointer">Inactive</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+              <div className="space-y-2">
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
+                  Status
+                </Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                    <SelectValue placeholder=" " />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white ">
+                    <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All</SelectItem>
+                    <SelectItem value="Active" className="hover:bg-[#1BBFCA] cursor-pointer">Active</SelectItem>
+                    <SelectItem value="Inactive" className="hover:bg-[#1BBFCA] cursor-pointer">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                    <div className="space-y-2">
-                      <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
-                        Course
-                      </Label>
-                      <Select value={courseFilter} onValueChange={setCourseFilter}>
-                        <SelectTrigger className="w-full h-10 border border-[#716F6F]">
-                          <SelectValue placeholder=" " />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All Courses</SelectItem>
-                          {courseData?.map((course: any) => (
-                            <SelectItem key={course._id} value={course.course_name} className="hover:bg-[#1BBFCA] cursor-pointer">
-                              {course.course_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+              <div className="space-y-2">
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
+                  Course
+                </Label>
+                <Select value={courseFilter} onValueChange={setCourseFilter}>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                    <SelectValue placeholder=" " />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All Courses</SelectItem>
+                    {courseData?.map((course: any) => (
+                      <SelectItem key={course._id} value={course.course_name} className="hover:bg-[#1BBFCA] cursor-pointer">
+                        {course.course_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
             </Card>
           )}
@@ -891,14 +865,14 @@ const [courseFilter, setCourseFilter] = useState<string>("all");
                     </div>
                   </div>
 
-                  {staff.length === 0 && (
+                  {/* {staff.length === 0 && (
                     <div className="p-8 text-center text-muted-foreground">
                       <p>No staff members found.</p>
                       <p className="text-sm mt-1">
                         Click "Add New Staff" to get started.
                       </p>
                     </div>
-                  )}
+                  )} */}
                 </Card>
               ))
             )}

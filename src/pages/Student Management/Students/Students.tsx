@@ -42,6 +42,7 @@ import { ArrowLeft } from 'lucide-react';
 import { GetLocalStorage } from "../../../utils/localStorage";
 import { GetBranchCourseThunks, GetBranchThunks } from "../../../features/Content_Management/reducers/thunks";
 import { Branch, BranchCourse } from "../../../features/Content_Management/reducers/selectors";
+import PagenationCard from "../../../components/Pagenation/PagenationCard";
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -56,6 +57,7 @@ const Students = () => {
   const [branch, setBranch] = useState<string | undefined>(undefined);
   const branches = useSelector(Branch);
   const courses = useSelector(BranchCourse);
+  const [pages, setpages] = useState(1);
 
   const [newStudentForm, setNewStudentForm] = useState({
     first_name: "",
@@ -177,7 +179,7 @@ const Students = () => {
         type: "payment",
       };
 
-     
+
 
       await dispatch(createstudentdata(payload)).unwrap();
 
@@ -227,11 +229,11 @@ const Students = () => {
       dispatch(
         getStudentmanagement({
           branch_id: GetLocalStorage("selectedBranchId"),
-          page: 1,
+          page: pages,
         })
       );
     })();
-  }, [dispatch]);
+  }, [dispatch, pages]);
 
 
   useEffect(() => {
@@ -247,7 +249,7 @@ const Students = () => {
 
     return data.data.map((student: any) => ({
       id: student._id,
-  name: `${student.first_name || ""} ${student.last_name || ""}`.trim(), 
+      name: `${student.first_name || ""} ${student.last_name || ""}`.trim(),
       firstName: student.first_name,
       lastName: student.last_name,
       email: student.email,
@@ -795,6 +797,11 @@ const Students = () => {
           </Card>
         )}
       </div>
+
+
+      <PagenationCard page={pages} perpage={studentData?.pagination?.perPage} totalpage={studentData?.pagination?.totalPages} setpage={setpages} />
+
+
     </div>
   );
 };
