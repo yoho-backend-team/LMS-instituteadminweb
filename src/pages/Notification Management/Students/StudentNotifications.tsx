@@ -240,7 +240,6 @@ const StudentNotifications = () => {
     }
   };
 
-  console.log(students, 'students')
 
   return (
     <div className="p-6 min-h-screen">

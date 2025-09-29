@@ -34,7 +34,6 @@ const StaffIDCard = () => {
         page: 1,
       };
       const response = await dispatch(getStaffIdcardthunks(paramsData));
-      console.log(response, "Staff Idcard Details");
       if (response?.status === "success") {
         setIsLoading(false);
       }

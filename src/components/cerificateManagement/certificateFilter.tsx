@@ -54,7 +54,6 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
   const fetchAllCourses = useCallback(async () => {
     try {
       const response = await getCourseService({ branch: selectedBranch });
-      console.log(response, 'course resp')
       if (response) {
         setCourses(response?.data);
       }
