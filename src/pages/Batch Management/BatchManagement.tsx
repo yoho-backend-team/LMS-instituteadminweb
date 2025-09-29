@@ -21,7 +21,7 @@ export default function BatchManagement() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const batchData = useSelector(selectBatch);
-  const [courses, setCourses] = useState([]);
+  const [, setCourses] = useState([]);
   const [searchterms, setSearchTerms] = useState({
     status: "",
     date: "",
@@ -58,7 +58,7 @@ export default function BatchManagement() {
   useEffect(() => {
     fetchBatchData();
     fetchAllCourses();
-  }, [dispatch]);
+  }, [dispatch, fetchBatchData]);
 
   const filteredBatches = batchData?.data?.filter((batch: any) => {
     const matchesStatus = searchterms.status
@@ -205,7 +205,7 @@ export default function BatchManagement() {
                 className="block mb-1"
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
               >
-                 Batch Name
+                Batch Name
               </label>
               <input
                 type="text"

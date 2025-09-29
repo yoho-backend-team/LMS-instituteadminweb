@@ -4,10 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
-  MailOpen,
-  MessageSquare,
   MoreVertical,
-  Ticket,
   Users,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -285,7 +282,7 @@ export function BranchDetailsPage({
     dispatch(getBranchIdData(
       branchid
     ))
-  }, [dispatch]);
+  }, [branchid, dispatch]);
 
   //get dash report
   useEffect(() => {

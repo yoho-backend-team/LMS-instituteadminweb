@@ -4,7 +4,6 @@ import EditDetails from "./EditDetails";
 import { getUserById } from "../service";
 import { useNavigate, useParams } from "react-router-dom";
 import { GetImageUrl } from "../../../../utils/helper";
-import { IoIosArrowBack } from "react-icons/io";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
 
@@ -31,17 +30,16 @@ const UsersDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const fetchUserProfile = async () => {
-    try {
-      const response = await getUserById({ id });
-     
-      setUserDetail(response?.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await getUserById({ id });
+
+        setUserDetail(response?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchUserProfile();
   }, [id]);
 
@@ -52,14 +50,14 @@ const UsersDetails = () => {
   return (
     <div>
       <div className="pb-4">
-         <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8">
           <Button
-             onClick={handleBack}
+            onClick={handleBack}
             className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
           >
             <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
           </Button>
-      </div>
+        </div>
       </div>
       <div className="p-4 border rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.2)] bg-white">
         <div className="flex justify-between p-2 pb-8 border-b">
@@ -85,11 +83,10 @@ const UsersDetails = () => {
             </div>
           </div>
           <div
-            className={`w-[70px] h-[30px]  flex justify-center items-center rounded-md ${
-              userDetail?.is_active
-                ? `bg-[${COLORS.light_green}]`
-                : "bg-red-500"
-            }`}
+            className={`w-[70px] h-[30px]  flex justify-center items-center rounded-md ${userDetail?.is_active
+              ? `bg-[${COLORS.light_green}]`
+              : "bg-red-500"
+              }`}
             style={{ ...FONTS.heading_13 }}
           >
             <span className="text-white">
