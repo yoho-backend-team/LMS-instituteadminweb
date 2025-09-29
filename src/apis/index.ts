@@ -69,7 +69,7 @@ class Client {
 				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
 				data
 			),
-			updatestatusNew: (params: string, data?: any) =>
+		updatestatusNew: (params: string, data?: any) =>
 			HttpClient.patch(
 				HTTP_END_POINTS.branch.updatestatus.replace(":instituteid", getInstituteDetails()).replace(':branchid', params),
 				data
@@ -586,7 +586,7 @@ class Client {
 	};
 	reports = {
 		get: (query: any) =>
-			HttpClient.get(HTTP_END_POINTS.reports.get.replace(":instituteid", getInstituteDetails()) + getSelectedBranchId(), query),
+			HttpClient.get(HTTP_END_POINTS.reports.get.replace(":instituteid", getInstituteDetails()) + (query?.branchid ?? getSelectedBranchId()), query),
 	};
 	placements = {
 		getAll: (data: any) =>
