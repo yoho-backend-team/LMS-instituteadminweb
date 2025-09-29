@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   ArrowLeft,
@@ -145,15 +146,10 @@ export function BranchDetailsPage({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  //get branch details using Id
-
   const branchData = useSelector(selectBranchId);
-  console.log("branchId", branchData)
 
-  // dashboard graph data
   const dashData = useSelector(selectDashboardData);
-
-  // activity data
+  console.log(branchData, "check")
   const ActivityData = useSelector(selectActivityData);
 
   const chartData = [
@@ -243,8 +239,6 @@ export function BranchDetailsPage({
     },
   ];
 
-
-  // Replace the static statCards array with this dynamic version
   const statCards = [
     {
       title: "Payouts",
@@ -286,7 +280,6 @@ export function BranchDetailsPage({
   const dispatch = useDispatch<any>();
 
   const branchid = uuid;
-  console.log("select uuid", uuid);
   //get branch by id
   useEffect(() => {
     dispatch(getBranchIdData(
@@ -324,9 +317,6 @@ export function BranchDetailsPage({
       transition: { duration: 0.3 },
     },
   };
-
-  console.log("dashId", dashData)
-  console.log("activity data", ActivityData)
 
   const visibleCards = [
     statCards[startIndex % statCards.length],
@@ -671,9 +661,7 @@ export function BranchDetailsPage({
           </motion.div>
         </div>
 
-        {/* Full width section for Detailed Insights and Support Tickets */}
         <div className="lg:col-span-3 space-y-6">
-          {/* Detailed Insights Card */}
           <motion.div variants={itemVariants}>
             <motion.div
               whileHover="hover"
@@ -685,15 +673,13 @@ export function BranchDetailsPage({
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Courses Card (Active/Inactive) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="text-[#716F6F] text-xl font-semibold">Courses</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Month Ago</span>
+                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Month Ago</span> */}
                       </div>
 
                       <div className="space-y-4">
-                        {/* Active Courses */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
@@ -701,10 +687,9 @@ export function BranchDetailsPage({
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Active</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">22</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.courses?.[0]?.active}</span>
                         </div>
 
-                        {/* Inactive Courses */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
@@ -712,20 +697,18 @@ export function BranchDetailsPage({
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Inactive</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">03</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.courses?.[0]?.inactive}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Classes Card (Online/Offline) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="text-[#716F6F] text-xl font-semibold">Classes</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Week Ago</span>
+                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Week Ago</span> */}
                       </div>
 
                       <div className="space-y-4">
-                        {/* Online Classes */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
@@ -733,10 +716,9 @@ export function BranchDetailsPage({
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Online</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">230</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.onlineClass}</span>
                         </div>
 
-                        {/* Offline Classes */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
@@ -744,31 +726,28 @@ export function BranchDetailsPage({
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Offline</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">45</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.offlineClass}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Staff Card (Teaching/Non-Teaching) */}
                     <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="text-[#716F6F] text-xl font-semibold">Staff</h3>
-                        <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Day Ago</span>
+                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Day Ago</span> */}
                       </div>
 
                       <div className="space-y-4">
-                        {/* Teaching Staff */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
                               <Users className="w-5 h-5 text-[#4CAF50]" />
                             </div>
                           </div>
-                          <span className="text-[#716F6F] text-lg">Teaching</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">66</span>
+                          <span className="text-[#716F6F] text-lg">Staffs</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.instructors}</span>
                         </div>
 
-                        {/* Non-Teaching Staff */}
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
                             <div className="w-10 h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
@@ -776,7 +755,7 @@ export function BranchDetailsPage({
                             </div>
                           </div>
                           <span className="text-[#716F6F] text-lg">Non-Teaching</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">10</span>
+                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.students}</span>
                         </div>
                       </div>
                     </div>
@@ -785,15 +764,12 @@ export function BranchDetailsPage({
               </Card>
             </motion.div>
           </motion.div>
-
-          {/* Support Tickets Card */}
-          <motion.div variants={itemVariants}>
+          {/* <motion.div variants={itemVariants}>
             <motion.div
               whileHover="hover"
               variants={cardHoverVariants}
               className="w-full bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6 transition-all duration-300 hover:shadow-xl"
             >
-              {/* Header */}
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-[#716F6F] text-xl font-semibold">Support Tickets</h3>
                 <motion.span
@@ -804,9 +780,7 @@ export function BranchDetailsPage({
                   164
                 </motion.span>
               </div>
-              {/* Metrics Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* New Tickets */}
                 <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.1)] rounded-xl p-4 h-full">
                   <div className="flex flex-col h-full justify-between">
                     <div className="flex items-center gap-4">
@@ -821,7 +795,6 @@ export function BranchDetailsPage({
                   </div>
                 </div>
 
-                {/* Open Tickets */}
                 <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.1)] rounded-xl p-4 h-full">
                   <div className="flex flex-col h-full justify-between">
                     <div className="flex items-center gap-4">
@@ -836,7 +809,6 @@ export function BranchDetailsPage({
                   </div>
                 </div>
 
-                {/* Average Response Time */}
                 <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.1)] rounded-xl p-4 h-full">
                   <div className="flex flex-col h-full justify-between">
                     <div className="flex items-center gap-4">
@@ -852,7 +824,7 @@ export function BranchDetailsPage({
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div> */}
         </div>
       </motion.div>
     </motion.div>

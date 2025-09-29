@@ -8,6 +8,7 @@ const communitySlice = createSlice({
 		data: [],
 		community: [],
 		loading: false,
+		profileData: {}
 	},
 	reducers: {
 		getcommunity: (state, action) => {
@@ -19,8 +20,11 @@ const communitySlice = createSlice({
 		setLoading: (state, action) => {
 			state.loading = action.payload;
 		},
+		setCommunityProfile: (state, action) => {
+			state.profileData = action.payload
+		}
 	},
 });
 
-export const { getcommunity, getMessage, setLoading } = communitySlice.actions;
+export const { getcommunity, getMessage, setLoading, setCommunityProfile } = communitySlice.actions;
 export default communitySlice.reducer;

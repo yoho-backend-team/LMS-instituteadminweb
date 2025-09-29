@@ -422,6 +422,7 @@ class Client {
 			HttpClient.get(
 				HTTP_END_POINTS.community.get_all_messages + data.group
 			),
+		getByid: (params: string) => HttpClient.get(HTTP_END_POINTS.community.getById.replace(":batchId", params)),
 	};
 	ticket = {
 		student_tickets: (data: any) =>

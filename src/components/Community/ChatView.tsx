@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatbg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
 import attachIcon from "../../assets/navbar/attachIcon.png";
@@ -8,15 +8,14 @@ import image from "../../assets/navbar/image.png";
 import Button from "../../assets/navbar/Button.png";
 import circle from "../../assets/navbar/circle.png";
 import contact from "../../assets/navbar/contact.png";
-import box from "../../assets/navbar/box.png";
-import clock from "../../assets/navbar/clock.png";
-import phone from "../../assets/navbar/phone.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 // import { GetLocalStorage } from "../../utils/localStorage";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
+import type { AppDispatch, RootState } from "../../store/store";
+import { useDispatch } from "react-redux";
+import { fetchCommunityProfileThunk } from "../../features/Community/Reducers/thunks";
 
 interface Message {
   sender: string;
@@ -71,7 +70,6 @@ const ChatView: React.FC<Props> = ({
   onDeleteMessage,
   showProfile,
   setShowProfile,
-  profileData,
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
@@ -79,8 +77,18 @@ const ChatView: React.FC<Props> = ({
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     onChangeMessage(message + emojiData.emoji);
   };
+  const dispatch = useDispatch<AppDispatch>()
 
   const userIds: any = useSelector((state: RootState) => state.authuser.user)
+  const profile: any = useSelector((state: RootState) => state.community.profileData)
+
+  console.log(profile, "chekib")
+
+  useEffect(() => {
+    if (showProfile) {
+      dispatch(fetchCommunityProfileThunk(selectedBatch?.batch?._id))
+    }
+  }, [dispatch, selectedBatch?.batch?._id, showProfile]);
 
   return (
     <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl relative">
@@ -263,10 +271,10 @@ const ChatView: React.FC<Props> = ({
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold text-[#716F6F]">About</h3>
-                <p>{profileData.about}</p>
+                <p>{profile?.batch?.course?.description}</p>
               </div>
 
-              <div>
+              {/* <div>
                 <h3 className="font-semibold text-[#716F6F]">
                   Personal Information
                 </h3>
@@ -284,17 +292,24 @@ const ChatView: React.FC<Props> = ({
                     <span>{profileData.phone}</span>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
 
             <div className="mt-6">
-              <h3 className="font-semibold text-[#716F6F] mb-1">Staff</h3>
-              <p>No Staffs Found</p>
+              <h3 className="font-semibold text-[#716F6F] mb-1">Staffs</h3>
+              {
+                profile?.batch?.instructor?.map((data: any) => (
+                  <p>{data?.full_name}</p>
+                ))
+              }
             </div>
-
             <div className="mt-6">
-              <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
-              <p>No Students Found</p>
+              <h3 className="font-semibold text-[#716F6F] mb-1">Stuents</h3>
+              {
+                profile?.batch?.student?.map((data: any) => (
+                  <p>{data?.full_name}</p>
+                ))
+              }
             </div>
           </div>
         </div>
