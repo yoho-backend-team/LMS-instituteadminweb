@@ -43,7 +43,6 @@ const Placements = () => {
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
-  console.log(placements, "placements")
 
   useEffect(() => {
     const fetchData = async () => {

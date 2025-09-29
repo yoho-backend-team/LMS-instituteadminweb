@@ -27,7 +27,6 @@ const StudentsAttendance = () => {
   const branchId = getSelectedBranchId() ?? "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4";
 
   const studentAttendances: any = useSelector(selectStudentAttendances);
-  console.log("Stt", studentAttendances)
   const loading = useSelector(selectLoading);
   const dispatch: ThunkDispatch<any, any, AnyAction> = useDispatch();
   const [filterShow, setFilterShow] = useState<boolean>(false);

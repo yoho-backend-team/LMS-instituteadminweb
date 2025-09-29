@@ -102,8 +102,6 @@ const FaqCategory: React.FC = () => {
 
   const overall_branch_id = GetLocalStorage("selectedBranchId");
   const overall_istitute_id = GetLocalStorage("instituteId");
-  console.log(overall_branch_id, "branch id ");
-  console.log(overall_istitute_id, "institute id");
 
   const handleStatusChange = async (
     newStatus: "Active" | "Inactive",
