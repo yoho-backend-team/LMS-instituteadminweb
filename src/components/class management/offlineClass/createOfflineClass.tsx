@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   useEffect,
   useState,
@@ -53,6 +54,7 @@ export const CreateOfflineClassModal = ({
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
+  const [] = useState<string>("");
 
   // Initial form values
   const initialValues: FormValues = {

@@ -34,7 +34,6 @@ const StaffIDCard = () => {
         page: 1,
       };
       const response = await dispatch(getStaffIdcardthunks(paramsData));
-      console.log(response, "Staff Idcard Details");
       if (response?.status === "success") {
         setIsLoading(false);
       }
@@ -53,7 +52,7 @@ const StaffIDCard = () => {
     // @ts-ignore
     const canvas = await html2canvas(cardElement, {
       useCORS: true,
-      scale: 2,
+      // scale: 2,
     });
 
     // Restore the button
@@ -80,7 +79,7 @@ const StaffIDCard = () => {
             <div
               key={index}
               className="w-[370px] h-[560px] mx-auto perspective-1000"
-              ref={(el) => (cardRefs.current[index] = el)}
+              ref={(el: any) => (cardRefs.current[index] = el)}
             >
               <section
                 className="w-full h-full shadow-[0px_4px_24px_0px_#00000026] rounded-xl transition-transform duration-700 cursor-pointer relative"

@@ -41,7 +41,6 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  console.log(startDate, "start date")
   const openEditModal = () => setIsEditModalOpen(true);
   const closeEditModal = () => setIsEditModalOpen(false);
   const openDeleteModal = () => setIsDeleteModalOpen(true);

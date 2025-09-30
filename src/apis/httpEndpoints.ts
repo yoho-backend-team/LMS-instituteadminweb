@@ -183,6 +183,7 @@ const generateEndpoints = () => {
 		community: {
 			all: `/api/institutes/community/:instituteid/branches/:branchid`,
 			messages: `/api/institutes/community/messages/`,
+			getById: '/api/institutes/community/:batchId',
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},
 		ticket: {

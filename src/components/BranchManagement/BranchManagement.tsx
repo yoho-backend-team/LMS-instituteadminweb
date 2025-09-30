@@ -18,6 +18,8 @@ import { selectLoading } from "../../features/Branch_Management/reducers/selecto
 import type { RootState } from "../../store/store";
 import { GetLocalStorage } from "../../utils/localStorage";
 import toast from "react-hot-toast";
+import Client from "../../apis/index";
+
 
 export function LocationCardsGrid() {
   const dispatch = useDispatch<any>();
@@ -40,6 +42,7 @@ export function LocationCardsGrid() {
     city: "",
     state: "Tamil Nadu",
     branchuuid: "",
+      branch_image: "",
   });
 
   useEffect(() => {
@@ -73,6 +76,7 @@ export function LocationCardsGrid() {
       city: branch.branch_identity.split(",")[0],
       state: "Tamil Nadu",
       branchuuid: branch?.uuid,
+      branch_image: branch.branchImage,
     });
     setIsModalOpen(true);
   };
@@ -82,6 +86,7 @@ export function LocationCardsGrid() {
 
     const branchData = {
       branch_identity: formData.branchName,
+      branch_image: formData.branch_image,    
       contact_info: {
         phone_no: parseInt(formData.phoneNumber),
         address: formData.address,
@@ -132,7 +137,7 @@ export function LocationCardsGrid() {
   };
 
   const handleStatusChange = (uuid: string, newStatus: string) => {
-    console.log(uuid,newStatus,"uuid")
+    console.log(uuid, newStatus, "uuid")
     dispatch(UpdateBranchStatusThunk({ uuid, status: newStatus }));
   };
 
@@ -147,6 +152,7 @@ export function LocationCardsGrid() {
       city: "",
       state: "Tamil Nadu",
       branchuuid: "",
+      branch_image: "",
     });
     setEditingBranch(null);
   };
@@ -165,9 +171,10 @@ export function LocationCardsGrid() {
     );
   }
 
+  
+
   return (
     <div className="container mx-auto p-3 ">
-      {/* Search & Add Button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <form
           onSubmit={(e) => e.preventDefault()}
@@ -248,8 +255,8 @@ export function LocationCardsGrid() {
                 onEdit={() => handleEditBranch(branch)}
                 onDelete={handleDeleteBranch}
                 onStatusChange={() =>
-    handleStatusChange(branch?.uuid, branch?.is_active ? "false" : "true")
-  }
+                  handleStatusChange(branch?.uuid, branch?.is_active ? "false" : "true")
+                }
               />
             </div>
           ))
@@ -301,6 +308,32 @@ function BranchModal({
   onCancel,
   onSubmit,
 }: any) {
+  const [preview, setPreview] = useState<string | null>(null);
+
+const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+
+    const data = new FormData();
+    data.append("file", file);
+
+    try {
+      const upload = await Client.file.upload(data);
+      const uploadedUrl = upload?.data?.file; 
+
+      setPreview(uploadedUrl);
+      onChange({
+        target: { name: "branch_image", value: uploadedUrl },
+      });
+    } catch (err) {
+      console.error("File upload failed", err);
+    }
+  }
+};
+
+
+
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div
@@ -313,7 +346,6 @@ function BranchModal({
         }}
       >
         <div className="flex flex-col gap-[30px] h-full">
-          {/* Header */}
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-3">
               <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
@@ -333,10 +365,31 @@ function BranchModal({
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={onSubmit} className="flex-1 flex flex-col">
+
+            <div className="flex justify-center items-center my-6">
+              <div className="flex flex-col items-center gap-4">
+                <p>Upload Image</p>
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Branch Preview"
+                    className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                  />
+                ) : (
+                  <div className="w-32 h-32 flex items-center justify-center border border-dashed border-gray-400 rounded-lg text-gray-400">
+                    No Image
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="text-sm"
+                />
+              </div>
+            </div>
             <div className="grid grid-cols-2 gap-6">
-              {/* Left Column */}
               <div className="flex flex-col gap-6">
                 <FormField
                   label="Branch Name"
@@ -367,7 +420,6 @@ function BranchModal({
                 />
               </div>
 
-              {/* Right Column */}
               <div className="flex flex-col gap-6">
                 <FormField
                   label="Pin Code"
@@ -399,7 +451,6 @@ function BranchModal({
               </div>
             </div>
 
-            {/* Footer Buttons */}
             <div className="flex justify-end gap-4 mt-auto pt-6">
               <button
                 type="button"
@@ -422,7 +473,7 @@ function BranchModal({
   );
 }
 
-// Helper component for form fields
+
 function FormField({ label, name, value, onChange, required = false }: any) {
   return (
     <div className="flex flex-col gap-2">

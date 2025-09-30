@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useCallback } from "react";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
 import { Button } from "../../../components/ui/button";
@@ -16,14 +17,15 @@ import {
   getAllCourses,
 } from "../../../features/Class Management/Live Class/services";
 import ContentLoader from "react-content-loader";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const LiveClasses = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const liveClassData = useSelector(selectLiveClass);
-  const [ setAllCourses] = useState<any[]>([]);
-  const [ setAllBatches] = useState<any[]>([]);
+  const [, setAllCourses] = useState([]);
+  const [, setAllBatches] = useState([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [searchTerms, setSearchTerms] = useState({
     status: "",
@@ -38,8 +40,8 @@ const LiveClasses = () => {
   const fetchAllLiveClasses = useCallback(async () => {
     try {
       const params_data = {
-        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branch: GetLocalStorage("selectedBranchId"),
+        institute: GetLocalStorage("instituteId"),
         page: 1,
       };
       dispatch(getAllLiveClasses(params_data));

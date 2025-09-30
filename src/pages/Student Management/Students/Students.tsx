@@ -47,9 +47,9 @@ import PagenationCard from "../../../components/Pagenation/PagenationCard";
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [courseFilter, ] = useState<string | undefined>(undefined);
-  const [batchFilter, ] = useState<string | undefined>(undefined);
-  const [statusFilter, ] = useState("");
+  const [courseFilter,] = useState<string | undefined>(undefined);
+  const [batchFilter,] = useState<string | undefined>(undefined);
+  const [statusFilter,] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -641,24 +641,24 @@ const Students = () => {
   }
 
   const filteredStudents = formattedStudents.filter((student: any) => {
-  const matchesName = student.name
-    .toLowerCase()
-    .includes(searchInput.toLowerCase());
+    const matchesName = student.name
+      .toLowerCase()
+      .includes(searchInput.toLowerCase());
 
-  const matchesCourse = courseFilter
-    ? student.course === courseFilter
-    : true;
+    const matchesCourse = courseFilter
+      ? student.course === courseFilter
+      : true;
 
-  const matchesBatch = batchFilter
-    ? student.batch === batchFilter
-    : true;
+    const matchesBatch = batchFilter
+      ? student.batch === batchFilter
+      : true;
 
-  const matchesStatus = statusFilter
-    ? student.status?.toLowerCase() === statusFilter.toLowerCase()
-    : true;
+    const matchesStatus = statusFilter
+      ? student.status?.toLowerCase() === statusFilter.toLowerCase()
+      : true;
 
-  return matchesName && matchesCourse && matchesBatch && matchesStatus;
-});
+    return matchesName && matchesCourse && matchesBatch && matchesStatus;
+  });
 
   return (
     <div className="p-6">
@@ -737,9 +737,9 @@ const Students = () => {
             </div> */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-transparent select-none">
-                 <label className="text-[16px] font-medium text-gray-700">
-                Filter by name
-              </label>
+                <label className="text-[16px] font-medium text-gray-700">
+                  Filter by name
+                </label>
               </div>
               <Input
                 type="text"

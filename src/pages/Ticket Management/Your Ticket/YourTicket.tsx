@@ -45,10 +45,10 @@ const TicketsPage: React.FC = () => {
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
   const totalPages = adminTickets?.last_page
- 
 
-   const overall_branch_id=GetLocalStorage("selectedBranchId")
-      const overall_istitute_id=GetLocalStorage("instituteId")
+
+  const overall_branch_id = GetLocalStorage("selectedBranchId")
+  const overall_istitute_id = GetLocalStorage("instituteId")
 
 
   useEffect(() => {
@@ -66,11 +66,11 @@ const TicketsPage: React.FC = () => {
 
     let fileUrl;
 
-    if(selectedFile){
+    if (selectedFile) {
       const formFile = new FormData()
       formFile.append("file", selectedFile);
       const response = await uploadTicketService(formFile)
-      if(response){
+      if (response) {
         fileUrl = response?.data?.file
       }
     }
@@ -90,7 +90,7 @@ const TicketsPage: React.FC = () => {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
-       
+
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
       }
@@ -133,20 +133,46 @@ const TicketsPage: React.FC = () => {
     };
   }, []);
 
-  // const TicketSkeleton = () => (
-  //   <div className="animate-pulse bg-gray-200 rounded-lg p-4 shadow h-48 flex flex-col justify-between">
-  //     <div className="h-5 bg-gray-300 rounded w-3/4 mb-4"></div>
-  //     <div className="h-4 bg-gray-300 rounded w-1/2 mb-3"></div>
-  //     <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
-  //     <div className="h-3 bg-gray-300 rounded w-5/6 mb-2"></div>
-  //     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-  //     <div className="flex justify-between items-center mt-4">
-  //       <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-  //       <div className="h-3 bg-gray-300 rounded w-1/6"></div>
-  //     </div>
-  //   </div>
+const TicketSkeleton = () => (
+  <div className="animate-pulse bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+      <div className="flex-1">
+        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
 
-  // );
+    <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+
+    <div className="h-3 bg-gray-200 rounded w-full"></div>
+    <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+
+    <div className="flex justify-between items-center mt-3">
+      <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+      <div className="h-3 bg-gray-300 rounded w-1/6"></div>
+    </div>
+  </div>
+);
+
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      setLoading(true);
+      const params = {
+        branch_id: overall_branch_id,
+        status: activeTab === "open" ? "opened" : "closed",
+        page: currentPage,
+        institute_id: overall_istitute_id,
+      };
+      await dispatch(fetchAdminTicketsThunk(params));
+      setLoading(false);
+    };
+
+    fetchTickets();
+  }, [dispatch, activeTab, currentPage]);
 
 
   return (
@@ -195,11 +221,10 @@ const TicketsPage: React.FC = () => {
               setActiveTab("open");
               setShowChatWindow(false);
             }}
-            className={`mr-2 rounded-lg w-[157px] h-[35px] ${
-              activeTab === "open"
+            className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-teal-500 border border-teal-500"
-            }`}
+              }`}
           >
             Opened Tickets
           </button>
@@ -208,21 +233,20 @@ const TicketsPage: React.FC = () => {
               setActiveTab("closed");
               setShowChatWindow(false);
             }}
-            className={`rounded-lg w-[157px] h-[35px] items-center ${
-              activeTab === "closed"
+            className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-[#1BBFCA] border border-teal-500"
-            }`}
+              }`}
           >
             Closed Tickets
           </button>
         </div>
       )}
-
-      { !showChatWindow && (
+      {!showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
-          {
-            adminTickets?.data?.map((ticket: any, index: number) => (
+          {loading
+            ? Array.from({ length: 6 }).map((_, index) => <TicketSkeleton key={index} />)
+            : adminTickets?.data?.map((ticket: any, index: number) => (
               <TicketCard
                 key={index}
                 name={ticket?.user?.first_name + ticket?.user?.last_name}
@@ -239,7 +263,6 @@ const TicketsPage: React.FC = () => {
                 avatarUrl={ticket?.user?.image}
                 lastPage={adminTickets?.last_page}
                 onView={() => {
-                  // setSelectedTicketUser(ticket.user);
                   setSelectedTicketUserDetails(ticket);
                   setShowChatWindow(true);
                   setShowbuttonWindow(false);
@@ -251,6 +274,7 @@ const TicketsPage: React.FC = () => {
         </div>
       )}
 
+
       {showChatWindow && (
         <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
           <ChatWindow user={selectedTicketUserDetails} />
@@ -260,8 +284,8 @@ const TicketsPage: React.FC = () => {
 
       {viewShowModal && (
         <div className="fixed inset-0 z-30 flex justify-end items-center bg-black bg-opacity-25 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm min-w-[350px] h-auto h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
-            {/* Header */}
+          <div className="relative w-full max-w-sm min-w-[350px]  h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
+
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2
                 className="text-lg font-semibold text-[#716F6F]"
@@ -319,31 +343,31 @@ const TicketsPage: React.FC = () => {
               </div>
 
               <div>
-  <label
-    className="block mb-1 text-sm font-medium text-[#716F6F]"
-    style={{ ...FONTS.heading_09 }}
-  >
-    Upload
-  </label>
+                <label
+                  className="block mb-1 text-sm font-medium text-[#716F6F]"
+                  style={{ ...FONTS.heading_09 }}
+                >
+                  Upload
+                </label>
 
-  <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
-    <input
-      type="file"
-      accept="*"
-      onChange={async (e:any) => {
-        if (e.target.files && e.target.files[0]) {
-          const file = e.target.files[0];
-          setSelectedFile(file);
-        }
-      }}
-      className="hidden"
-    />
-    <span className="text-sm text-gray-500 flex items-center gap-2">
-      <img className="w-5 h-5" src={fileimg} alt="file" />
-      {selectedFile ? selectedFile.name : "Drop Files Here Or Click To Upload"}
-    </span>
-  </label>
-</div>
+                <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="file"
+                    accept="*"
+                    onChange={async (e: any) => {
+                      if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        setSelectedFile(file);
+                      }
+                    }}
+                    className="hidden"
+                  />
+                  <span className="text-sm text-gray-500 flex items-center gap-2">
+                    <img className="w-5 h-5" src={fileimg} alt="file" />
+                    {selectedFile ? selectedFile.name : "Drop Files Here Or Click To Upload"}
+                  </span>
+                </label>
+              </div>
 
 
               {/* Buttons */}
@@ -368,7 +392,7 @@ const TicketsPage: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <div className="flex justify-between items-center mt-4">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

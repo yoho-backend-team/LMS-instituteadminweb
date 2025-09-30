@@ -24,3 +24,15 @@ export const getcommunityById = async (data: any) => {
         return null;
     }
 }
+
+export const getcommunityProfile = async (data: string) => {
+    try {
+        const response = await Client.community.getByid(data);
+        if (response) {
+            return response;
+        }
+    } catch (error) {
+        console.error("Error fetching community by ID:", error);
+        return null;
+    }
+}

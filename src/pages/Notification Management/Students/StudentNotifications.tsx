@@ -75,7 +75,7 @@ interface ApiResponse {
 }
 
 const StudentNotifications = () => {
-  const [open, setOpen] = useState(false);  
+  const [open, setOpen] = useState(false);
   const [notificationsList, setNotificationsList] = useState<any[]>([]);
   const [notificationStats, setNotificationStats] = useState([
     {
@@ -126,40 +126,40 @@ const StudentNotifications = () => {
   }, [branchId, dispatch, instituteId]);
 
   useEffect(() => {
-      (async () => {
-        try {
-          const response = await getAllBatches({
-            branch: branchId,
-            course: selectedCourse?.uuid,
-          });
-          if (response?.data) {
-            setAllBatches(response.data);
-          }
-        } catch (error) {
-          console.error("Error fetching batches:", error);
-          toast.error("Failed to load batches");
+    (async () => {
+      try {
+        const response = await getAllBatches({
+          branch: branchId,
+          course: selectedCourse?.uuid,
+        });
+        if (response?.data) {
+          setAllBatches(response.data);
         }
-      })();
-    }, [branchId, selectedCourse?.uuid]);
+      } catch (error) {
+        console.error("Error fetching batches:", error);
+        toast.error("Failed to load batches");
+      }
+    })();
+  }, [branchId, selectedCourse?.uuid]);
 
-      useEffect(() => {
-      (async () => {
-        try {
-          const response = await getStudentService({ uuid: selectedCourse?.uuid });
-          if (response && Array.isArray(response.data)) {
-            const mappedStudents = response.data.map((student: any) => ({
-              value: student._id,
-              label: student.full_name,
-            }));
-            setStudents(mappedStudents);
-          } else {
-            setStudents([]);
-          }
-        } catch (error) {
-          console.log("Error fetching student data:", error);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getStudentService({ uuid: selectedCourse?.uuid });
+        if (response && Array.isArray(response.data)) {
+          const mappedStudents = response.data.map((student: any) => ({
+            value: student._id,
+            label: student.full_name,
+          }));
+          setStudents(mappedStudents);
+        } else {
+          setStudents([]);
         }
-      })();
-    }, [selectedCourse?.uuid]);
+      } catch (error) {
+        console.log("Error fetching student data:", error);
+      }
+    })();
+  }, [selectedCourse?.uuid]);
 
   useEffect(() => {
     if (reponse && reponse.data) {
@@ -206,7 +206,7 @@ const StudentNotifications = () => {
       );
       setNotificationsList(mappedNotifications);
     }
-  }, [reponse]);
+  }, [notificationsList.length, reponse]);
 
   const handleAddNotification = async () => {
     const payload = {
@@ -238,7 +238,6 @@ const StudentNotifications = () => {
     }
   };
 
-  console.log(students, 'students')
 
   return (
     <div className="p-6 min-h-screen">
@@ -264,7 +263,7 @@ const StudentNotifications = () => {
             </DrawerClose>
           </DrawerHeader>
           <form className="flex flex-col space-y-4">
-            
+
             {/* Course */}
             <Label>Course</Label>
             <Select
@@ -309,63 +308,63 @@ const StudentNotifications = () => {
 
             {/* Student */}
             <div className="flex flex-col">
-  <Label>Student</Label>
-  <Select
-    value=""
-    onValueChange={(value) => {
-      if (selectedStudent.includes(value)) {
-        setSelectedStudent(selectedStudent.filter((v) => v !== value));
-      } else {
-        setSelectedStudent([...selectedStudent, value]);
-      }
-    }}
-  >
-    <SelectTrigger className="mt-1 w-full flex flex-wrap gap-2 min-h-[42px] items-center border border-gray-300 rounded-md px-2 py-1">
-      {selectedStudent.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {selectedStudent.map((studentId) => {
-            const student = students.find((s: any) => s.value === studentId);
-            return (
-              <span
-                key={studentId}
-                className="bg-white border border-gray-300 text-gray-800 px-2 py-1 rounded-md text-sm flex items-center"
+              <Label>Student</Label>
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (selectedStudent.includes(value)) {
+                    setSelectedStudent(selectedStudent.filter((v) => v !== value));
+                  } else {
+                    setSelectedStudent([...selectedStudent, value]);
+                  }
+                }}
               >
-                {student?.label}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedStudent(
-                      selectedStudent.filter((id) => id !== studentId)
-                    );
-                  }}
-                  className="ml-1 text-gray-500 hover:text-red-500"
-                >
-                  ✕
-                </button>
-              </span>
-            );
-          })}
-        </div>
-      ) : (
-        <SelectValue placeholder="Select Student" />
-      )}
-    </SelectTrigger>
+                <SelectTrigger className="mt-1 w-full flex flex-wrap gap-2 min-h-[42px] items-center border border-gray-300 rounded-md px-2 py-1">
+                  {selectedStudent.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedStudent.map((studentId) => {
+                        const student = students.find((s: any) => s.value === studentId);
+                        return (
+                          <span
+                            key={studentId}
+                            className="bg-white border border-gray-300 text-gray-800 px-2 py-1 rounded-md text-sm flex items-center"
+                          >
+                            {student?.label}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedStudent(
+                                  selectedStudent.filter((id) => id !== studentId)
+                                );
+                              }}
+                              className="ml-1 text-gray-500 hover:text-red-500"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <SelectValue placeholder="Select Student" />
+                  )}
+                </SelectTrigger>
 
-    <SelectContent className="bg-white">
-      {students?.map((item: any) => (
-        <SelectItem key={item.value} value={item.value}>
-          <div className="flex items-center justify-between">
-            <span>{item.label}</span>
-            {selectedStudent.includes(item.value) && (
-              <span className="text-cyan-500 font-bold">✔</span>
-            )}
-          </div>
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
+                <SelectContent className="bg-white">
+                  {students?.map((item: any) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      <div className="flex items-center justify-between">
+                        <span>{item.label}</span>
+                        {selectedStudent.includes(item.value) && (
+                          <span className="text-cyan-500 font-bold">✔</span>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Notification Type */}
             <div className="flex flex-col w-full">

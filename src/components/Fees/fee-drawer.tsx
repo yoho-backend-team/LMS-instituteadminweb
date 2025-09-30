@@ -151,7 +151,6 @@ export const FeeDrawer: React.FC<FeeDrawerProps> = ({
     }
   }, [isOpen, selectedFee]);
 
-  console.log(selectedFee, "sf");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

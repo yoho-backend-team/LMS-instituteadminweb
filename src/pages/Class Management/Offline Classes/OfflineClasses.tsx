@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
@@ -13,13 +14,14 @@ import {
 } from "../../../features/Class Management/offlineClass/redures/selectors";
 import { getAllBatches } from "../../../features/Class Management/offlineClass/services";
 import ContentLoader from "react-content-loader";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const OfflineClasses = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const offlineClassData = useSelector(selectOfflineClass);
-  const [allBatches, setAllBatches] = useState<any[]>([]);
+  const [, setAllBatches] = useState([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [searchTerms, setSearchTerms] = useState({
     status: "",
@@ -31,8 +33,8 @@ const OfflineClasses = () => {
   const fetchAllofflineClasses = async () => {
     try {
       const params_data = {
-        branch: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-        institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        branch: GetLocalStorage("selectedBranchId"),
+        institute: GetLocalStorage("instituteId"),
         page: 1,
       };
       dispatch(getAllOffline(params_data));
@@ -104,9 +106,21 @@ const OfflineClasses = () => {
   }, [offlineClassData]);
 
   useEffect(() => {
+    const fetchAllofflineClasses = async () => {
+      try {
+        const params_data = {
+          branch: GetLocalStorage("selectedBranchId"),
+          institute: GetLocalStorage("instituteId"),
+          page: 1,
+        };
+        dispatch(getAllOffline(params_data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAllofflineClasses();
     fetchAllBatches();
-  }, [dispatch]);
+  }, [dispatch, fetchAllBatches]);
 
   return (
     <div className="min-h-screen bg-cover bg-no-repeat bg-center p-4">
@@ -156,9 +170,9 @@ const OfflineClasses = () => {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           
-             
-          
+
+
+
             <div>
               <label
                 className="block mb-1"

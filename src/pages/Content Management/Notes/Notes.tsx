@@ -46,8 +46,7 @@ const Notes = () => {
     };
     dispatch(fetchNotesThunk(params));
   }, [dispatch]);
-console.log(notes,"ful data")
-  console.log(viewNote,"view notes")
+
 
   const handleToggleStatus = (id: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;

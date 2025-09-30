@@ -42,9 +42,6 @@ export function AddFAQDrawer({
 
   const category = useSelector((state: RootState) => state.faqCategory.data)
   const dispatch = useDispatch<AppDispatch>()
-
-  console.log(category, "check all category")
-
   useEffect(() => {
     (async () => {
       const params = {
