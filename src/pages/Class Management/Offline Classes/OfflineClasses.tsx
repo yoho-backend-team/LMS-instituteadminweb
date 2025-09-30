@@ -19,7 +19,7 @@ const OfflineClasses = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const offlineClassData = useSelector(selectOfflineClass);
-  const [allBatches, setAllBatches] = useState([]);
+  const [allBatches, setAllBatches] = useState<any[]>([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [searchTerms, setSearchTerms] = useState({
     status: "",

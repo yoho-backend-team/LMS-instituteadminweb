@@ -31,7 +31,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllcourse,
-  getcourse,
   getStudentnotification,
 } from "../../../features/StudentNotification/reducer/thunks";
 import {
@@ -40,7 +39,6 @@ import {
 } from "../../../apis/httpEndpoints";
 import {
   selectAllCourse,
-  selectCoursedata,
   selectLoading,
   selectStudentNotification,
 } from "../../../features/StudentNotification/reducer/selector";

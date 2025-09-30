@@ -22,8 +22,8 @@ const LiveClasses = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const liveClassData = useSelector(selectLiveClass);
-  const [allCourses, setAllCourses] = useState([]);
-  const [allBatches, setAllBatches] = useState([]);
+  const [ setAllCourses] = useState<any[]>([]);
+  const [ setAllBatches] = useState<any[]>([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [searchTerms, setSearchTerms] = useState({
     status: "",

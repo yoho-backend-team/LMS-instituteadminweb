@@ -53,7 +53,6 @@ export const CreateOfflineClassModal = ({
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
-  const [courseId, setCourseId] = useState<string>("");
 
   // Initial form values
   const initialValues: FormValues = {
@@ -286,10 +285,7 @@ export const CreateOfflineClassModal = ({
                   name="course"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 mt-2"
                   value={formik.values.course}
-                  onChange={(e) => {
-                    formik.handleChange(e);
-                    setCourseId(e.target.value);
-                  }}
+                  onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   disabled={!formik.values.branch}
                 >

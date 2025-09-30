@@ -50,6 +50,7 @@ const StaffIDCard = () => {
     const button = cardElement.querySelector("button");
     if (button) (button as HTMLElement).style.display = "none";
 
+    // @ts-ignore
     const canvas = await html2canvas(cardElement, {
       useCORS: true,
       scale: 2,

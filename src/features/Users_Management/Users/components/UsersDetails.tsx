@@ -4,7 +4,7 @@ import EditDetails from "./EditDetails";
 import { getUserById } from "../service";
 import { useNavigate, useParams } from "react-router-dom";
 import { GetImageUrl } from "../../../../utils/helper";
-import { IoIosArrowBack } from "react-icons/io";
+// import { IoIosArrowBack } from "react-icons/io";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
 

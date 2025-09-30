@@ -47,9 +47,9 @@ import PagenationCard from "../../../components/Pagenation/PagenationCard";
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [courseFilter, setCourseFilter] = useState<string | undefined>(undefined);
-  const [batchFilter, setBatchFilter] = useState<string | undefined>(undefined);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [courseFilter, ] = useState<string | undefined>(undefined);
+  const [batchFilter, ] = useState<string | undefined>(undefined);
+  const [statusFilter, ] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
