@@ -175,15 +175,15 @@ const StaffSalaries = () => {
 
 			<p className='font-semibold text-2xl'>Salaries</p>
 
-			<div className='w-full flex justify-between gap-4 items-center text-lg font-semibold py-3'>
-				<div className='bg-[#1BBFCA] text-white p-1.5 rounded-xl flex gap-4 items-center'>
+			<div className='w-full flex-col justify-between sm:flex-row gap-4 items-center text-lg font-semibold py-3'>
+				<div className='bg-[#1BBFCA] text-white p-1.5 rounded-xl flex gap-4 items-center sm:mb-0 mb-2'>
 					<BsSliders size={20} />
 					<button onClick={() => setShowFilter((prev) => !prev)}>
 						{showFilter ? 'Hide Filter' : 'Show Filter'}
 					</button>
 				</div>
 
-				<div className='bg-[#1BBFCA] text-white flex items-center p-1.5 rounded-xl'>
+				<div className='bg-[#1BBFCA] text-white flex items-center p-1.5 rounded-xl '>
 					<button
 						className='flex items-center gap-3'
 						onClick={() => setAddsalary(true)}

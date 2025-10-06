@@ -32,21 +32,21 @@ interface CertificateTableProps {
 const SkeletonRow: React.FC = () => {
 	return (
 		<tr className='text-[#716F6F] animate-pulse'>
-			<td className='px-6 py-4'>
+			<td className='px-3 sm:px-4 md:px-6 py-4'>
 				<div className='h-4 bg-gray-200 rounded w-1/2'></div>
 			</td>
-			<td className='px-6 py-4 flex items-center gap-3'>
-				<div className='w-10 h-10 rounded-full bg-gray-200'></div>
+			<td className='px-3 sm:px-4 md:px-6 py-4 flex items-center gap-2 sm:gap-3'>
+				<div className='w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200'></div>
 				<div className='flex-1'>
-					<div className='h-5 bg-gray-200 rounded mb-2 w-3/4'></div>
-					<div className='h-4 bg-gray-200 rounded w-1/2'></div>
+					<div className='h-4 sm:h-5 bg-gray-200 rounded mb-2 w-3/4'></div>
+					<div className='h-3 sm:h-4 bg-gray-200 rounded w-1/2'></div>
 				</div>
 			</td>
-			<td className='px-6 py-4'>
+			<td className='px-3 sm:px-4 md:px-6 py-4 hidden md:table-cell'>
 				<div className='h-5 bg-gray-200 rounded mb-2 w-2/3'></div>
 				<div className='h-4 bg-gray-200 rounded w-4/5'></div>
 			</td>
-			<td className='px-6 py-4 text-right'>
+			<td className='px-3 sm:px-4 md:px-6 py-4 text-right'>
 				<div className='inline-block p-2 text-gray-200'>
 					<BsThreeDotsVertical />
 				</div>
@@ -66,31 +66,31 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
 	loading,
 }) => {
 	return (
-		<div className='bg-white shadow-2xl p-4 mt-5 rounded-2xl'>
-			<div className='bg-white rounded-xl overflow-hidden'>
-				<table className='w-full text-sm'>
-					<thead className='bg-[#F8F8F8] text-[#716F6F] text-lg h-15'>
+		<div className='bg-white shadow-2xl p-2 sm:p-3 md:p-4 mt-5 rounded-xl md:rounded-2xl'>
+			<div className='bg-white rounded-lg md:rounded-xl overflow-x-auto'>
+				<table className='w-full text-xs sm:text-sm min-w-[600px] md:min-w-full'>
+					<thead className='bg-[#F8F8F8] text-[#716F6F] text-sm sm:text-base md:text-lg h-12 md:h-15'>
 						<tr>
 							<th
-								className='px-6 py-4 text-left'
+								className='px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left'
 								style={{ ...FONTS.heading_05_bold }}
 							>
 								ID
 							</th>
 							<th
-								className='px-6 py-4 text-left'
+								className='px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left'
 								style={{ ...FONTS.heading_05_bold }}
 							>
 								User
 							</th>
 							<th
-								className='px-6 py-4 text-left'
+								className='px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left hidden md:table-cell'
 								style={{ ...FONTS.heading_05_bold }}
 							>
 								Title
 							</th>
 							<th
-								className='px-6 py-4 text-right'
+								className='px-3 sm:px-4 md:px-6 py-3 md:py-4 text-right'
 								style={{ ...FONTS.heading_05_bold }}
 							>
 								Actions
@@ -105,35 +105,49 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
 							))
 						) : certificates.length === 0 ? (
 							<tr>
-								<td colSpan={4} className='px-6 py-8 text-center text-gray-800'>
+								<td colSpan={4} className='px-3 sm:px-4 md:px-6 py-8 text-center text-gray-800'>
 									No certificates available
 								</td>
 							</tr>
 						) : (
 							certificates.map((cert: any) => (
-								<tr key={cert.id} className='text-[#716F6F]'>
-									<td className='px-6 py-4' style={{ ...FONTS.heading_08 }}>
+								<tr key={cert.id} className='text-[#716F6F] border-b last:border-b-0'>
+									<td className='px-3 sm:px-4 md:px-6 py-3 md:py-4' style={{ ...FONTS.heading_08 }}>
 										{cert.id}
 									</td>
-									<td className='px-6 py-4 flex items-center gap-3'>
-										<img
-											src={GetImageUrl(cert.image) ?? undefined}
-											alt={cert.student}
-											className='w-10 h-10 rounded-full object-cover'
-										/>
-										<div>
-											<div
-												className='font-bold text-lg'
-												style={{ ...FONTS.heading_07_bold }}
-											>
-												{cert.student}
-											</div>
-											<div className='text-sm' style={{ ...FONTS.heading_08 }}>
-												{cert.email}
+									<td className='px-3 sm:px-4 md:px-6 py-3 md:py-4'>
+										<div className='flex items-center gap-2 sm:gap-3'>
+											<img
+												src={GetImageUrl(cert.image) ?? undefined}
+												alt={cert.student}
+												className='w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0'
+											/>
+											<div className='min-w-0 flex-1'>
+												<div
+													className='font-bold text-sm sm:text-base md:text-lg truncate'
+													style={{ ...FONTS.heading_07_bold }}
+												>
+													{cert.student}
+												</div>
+												<div className='text-xs sm:text-sm truncate' style={{ ...FONTS.heading_08 }}>
+													{cert.email}
+												</div>
+												{/* Show title on mobile below user info */}
+												<div className='md:hidden mt-1'>
+													<div
+														className='font-semibold text-sm truncate'
+														style={{ ...FONTS.heading_07_bold }}
+													>
+														{cert.title}
+													</div>
+													<div className='text-xs truncate' style={{ ...FONTS.heading_08 }}>
+														{cert.description}
+													</div>
+												</div>
 											</div>
 										</div>
 									</td>
-									<td className='px-6 py-4'>
+									<td className='px-3 sm:px-4 md:px-6 py-3 md:py-4 hidden md:table-cell'>
 										<div
 											className='font-semibold text-lg'
 											style={{ ...FONTS.heading_07_bold }}
@@ -144,51 +158,51 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
 											{cert.description}
 										</div>
 									</td>
-									<td className='px-6 py-4 text-right relative dropdown-action'>
+									<td className='px-3 sm:px-4 md:px-6 py-3 md:py-4 text-right relative dropdown-action'>
 										<button
 											onClick={() =>
 												setOpenDropdownId(
 													openDropdownId === cert.id ? null : cert.id
 												)
 											}
-											className='p-2 text-[#1BBFCA] text-xl'
+											className='p-2 text-[#1BBFCA] text-lg sm:text-xl'
 										>
 											<BsThreeDotsVertical />
 										</button>
 										{openDropdownId === cert.id && (
-											<div className='fixed right-0 mt-2 w-40 gap-2 grid p-3 bg-white border rounded-lg shadow-lg z-10'>
+											<div className='absolute right-0 mt-2 w-36 sm:w-40 gap-2 grid p-2 sm:p-3 bg-white border rounded-lg shadow-lg z-10'>
 												<button
-													className='w-full flex text-left hover:bg-[#1BBFCA] hover:text-white px-4 py-2 border rounded-md'
+													className='w-full flex text-left hover:bg-[#1BBFCA] hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 border rounded-md text-xs sm:text-sm'
 													onClick={() => {
 														onEdit(cert);
 														setOpenDropdownId(null);
 													}}
 												>
-													<MdEditDocument className='mt-1 mr-2' />
+													<MdEditDocument className='mt-0.5 sm:mt-1 mr-2' />
 													Edit
 												</button>
 												<button
-													className='w-full flex text-left px-4 py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white'
+													className='w-full flex text-left px-3 sm:px-4 py-1.5 sm:py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white text-xs sm:text-sm'
 													onClick={() => onView(cert)}
 												>
-													<FaEye className='mt-1 mr-2' />
+													<FaEye className='mt-0.5 sm:mt-1 mr-2' />
 													View
 												</button>
 												<button
-													className='w-full flex text-left px-4 py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white'
+													className='w-full flex text-left px-3 sm:px-4 py-1.5 sm:py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white text-xs sm:text-sm'
 													onClick={() => {
 														onDelete(cert.uuid);
 														setOpenDropdownId(null);
 													}}
 												>
-													<MdDelete className='mt-1 mr-2' />
+													<MdDelete className='mt-0.5 sm:mt-1 mr-2' />
 													Delete
 												</button>
 												<button
-													className='w-full flex text-left px-4 py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white'
+													className='w-full flex text-left px-3 sm:px-4 py-1.5 sm:py-2 rounded-md border hover:bg-[#1BBFCA] hover:text-white text-xs sm:text-sm'
 													onClick={() => onDownload(cert)}
 												>
-													<IoMdDownload className='mt-1 mr-2' />
+													<IoMdDownload className='mt-0.5 sm:mt-1 mr-2' />
 													Download
 												</button>
 											</div>

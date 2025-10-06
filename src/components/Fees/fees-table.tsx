@@ -133,7 +133,7 @@ export const FeesTable: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredFees = currentFeesData.filter((fee) =>
+  const filteredFees = currentFeesData?.filter((fee) =>
     fee.student?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -141,34 +141,34 @@ export const FeesTable: React.FC = () => {
     <>
       <div className="rounded-2xl p-4 sm:p-6">
         <h2 className="text-lg md:text-xl font-semibold text-pretty">Fees</h2>
-        <div className="flex flex-col items-stretch gap-3 mt-6 mb-6 sm:mt-7 sm:mb-7 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              className="bg-cyan-500 text-white px-3 py-2 sm:px-4 rounded-md flex items-center justify-center gap-2 text-sm md:text-base"
-              onClick={() => setShowFilter(!showFilter)}
-              aria-label={showFilter ? "Hide filters" : "Show filters"}
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              <span className="max-[424px]:sr-only">
-                {showFilter ? "Hide Filter" : "Show Filter"}
-              </span>
-            </button>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedFees(null);
-              setShowEditAddDrawer(true);
-              setShowConfirmationModal(false);
-              setShowSuccessModal(false);
-            }}
-            className="w-full sm:w-auto bg-cyan-500 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center gap-2 text-sm md:text-base"
-          >
-            <span aria-hidden className="text-lg leading-none">
-              +
-            </span>
-            <span className="max-[424px]:sr-only">Add Fee</span>
-          </button>
-        </div>
+       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-6 mb-6 sm:mt-7 sm:mb-7">
+  {/* Left: Filter Button */}
+  <button
+    className="bg-cyan-500 text-white px-3 py-2 sm:px-4 rounded-md flex items-center justify-center gap-2 text-sm md:text-base w-full sm:w-auto"
+    onClick={() => setShowFilter(!showFilter)}
+    aria-label={showFilter ? 'Hide filters' : 'Show filters'}
+  >
+    <SlidersHorizontal className="h-4 w-4" />
+    <span className="max-[424px]:sr-only">
+      {showFilter ? 'Hide Filter' : 'Show Filter'}
+    </span>
+  </button>
+
+  {/* Right: Add Fee Button */}
+  <button
+    onClick={() => {
+      setSelectedFees(null);
+      setShowEditAddDrawer(true);
+      setShowConfirmationModal(false);
+      setShowSuccessModal(false);
+    }}
+    className="bg-cyan-500 text-white px-3 py-2 sm:px-4 rounded-lg flex items-center justify-center gap-2 text-sm md:text-base w-full sm:w-auto"
+  >
+    <span aria-hidden className="text-lg leading-none">+</span>
+    <span className="max-[424px]:sr-only">Add Fee</span>
+  </button>
+</div>
+
         {showFilter && (
           <FeesFilter
             searchQuery={searchQuery}
@@ -344,7 +344,7 @@ export const FeesTable: React.FC = () => {
               </tbody>
             ) : (
               <tbody>
-                {filteredFees.map((fee) => (
+                {filteredFees?.map((fee) => (
                   <FeesTableRow
                     key={fee.id}
                     fee={fee}
