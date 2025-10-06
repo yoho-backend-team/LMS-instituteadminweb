@@ -177,7 +177,7 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             onClick={onBack}
             className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
           >
-            <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+            <ArrowLeft size={50} style={{ width: "25px", height: "25px" }} />
           </Button>
         </div>
         <button
