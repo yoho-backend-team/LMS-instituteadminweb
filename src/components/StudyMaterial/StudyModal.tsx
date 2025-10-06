@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react";
 import cancel from "../../assets/icons/Cancel.png";
 
@@ -24,6 +25,7 @@ interface NoteModalProps {
   onFormChange: (key: string, value: string) => void;
   onFileChange: (file: File | null) => void;
   fields: FormField[];
+  onReset: () => void;
 }
 
 export const NoteModal: React.FC<NoteModalProps> = ({
@@ -42,8 +44,8 @@ export const NoteModal: React.FC<NoteModalProps> = ({
 
   const filteredFields = isEditing
     ? fields.filter(
-        (field) => field.key === "title" || field.key === "description"
-      )
+      (field) => field.key === "title" || field.key === "description"
+    )
     : fields;
 
   return (

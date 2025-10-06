@@ -1,10 +1,11 @@
-
-import HelpFAQ from '../../../components/HelpFAQ/HelpFAQ';
+import HelpFAQ from "../../../components/HelpFAQ/HelpFAQ";
 
 const HelpFAQs = () => {
-	return <div>
-		<HelpFAQ />
-	</div>;
+  return (
+    <div>
+      <HelpFAQ />
+    </div>
+  );
 };
 
 export default HelpFAQs;

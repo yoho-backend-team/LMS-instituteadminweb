@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import { Plus, Filter, Mail } from "lucide-react";
 import { Input } from "../../../components/ui/input";
@@ -21,8 +22,14 @@ import {
 } from "../../../features/staff/reducers/selector";
 import { getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { GetImageUrl } from "../../../utils/helper";
-import { createStaff } from "../../../features/staff/services";
+import { createStaff, updateStaff } from "../../../features/staff/services";
 import ContentLoader from "react-content-loader";
+import toast from "react-hot-toast";
+// import { GetCourseThunk } from "../../../features/Refund_management/Reducer/refundThunks";
+// import { GetLocalStorage } from "../../../utils/localStorage";
+import { GetAllCoursesThunk } from "../../../features/Courses_mangement/Reducers/CourseThunks";
+import { selectCoursesData } from "../../../features/Courses_mangement/Reducers/Selectors";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 const theme = {
   primary: {
@@ -66,30 +73,11 @@ interface Staff {
 }
 
 const TeachingStaffs: React.FC = () => {
-  const [staff, setStaff] = useState<Staff[]>([
-    {
-      id: 1,
-      name: "Elon Musk",
-      email: "Vecorp959@Guidex.Com",
-      status: "Active",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-      dateOfBirth: "06-08-2000",
-      gender: "Male",
-      course: "MEAN STACK 2024",
-      designation: "Senior Professor",
-      qualification: "Physics",
-      state: "Texas",
-      city: "Boca Chica",
-      pinCode: "78521",
-      addressLine1: "Texas: Near The SpaceX Starbase",
-      addressLine2: "Pretoria, Texas",
-      phoneNumber: "3804348004",
-      altPhoneNumber: "3903858390",
-    },
-  ]);
 
   const [showFilter, setShowFilter] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
+
   const [showAddStaff, setShowAddStaff] = useState(false);
   const [newStaff, setNewStaff] = useState<Omit<Staff, "id" | "avatar">>({
     name: "",
@@ -175,7 +163,7 @@ const TeachingStaffs: React.FC = () => {
   const handleAddStaff = async () => {
     if (newStaff.name && newStaff.email) {
       const payload = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch_id: GetLocalStorage("selectedBranchId"),
         contact_info: {
           state: newStaff.state,
           city: newStaff.city,
@@ -185,14 +173,14 @@ const TeachingStaffs: React.FC = () => {
           phone_number: newStaff.phoneNumber,
           alternate_phone_number: newStaff.altPhoneNumber,
         },
-        course: ["1958e331-84ce-464b-8865-eb06c6189414"],
+        course: newStaff.course,
         designation: newStaff.designation,
         dob: newStaff.dateOfBirth,
         email: newStaff.email,
         full_name: newStaff.name,
         gender: newStaff.gender,
         image: "staticfiles/lms/default-image.png",
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute_id: GetLocalStorage("instituteId"),
         qualification: newStaff.qualification,
         staffId: "",
         user_details: "InstituteTeachingStaff",
@@ -208,7 +196,7 @@ const TeachingStaffs: React.FC = () => {
       };
 
       try {
-        await createStaff(payload);
+        const response = await createStaff(payload);
         setNewStaff({
           name: "",
           email: "",
@@ -235,26 +223,37 @@ const TeachingStaffs: React.FC = () => {
           Travel_allowance: "",
           Home_allowance: "",
         });
-
-        setShowAddStaff(false);
+        if (response.status == 'success') {
+          toast.success("Staff created successfully!");
+          setShowAddStaff(false);
+          fetchClassData();
+        } else {
+          toast.success(response?.message);
+        }
       } catch (error) {
         console.error("❌ Failed to create staff:", error);
+        toast.success("failed for staff created data!");
       }
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setStaff(
-      staff.map((member) =>
-        member.id === id
-          ? {
-              ...member,
-              status: member.status === "Active" ? "Inactive" : "Active",
-            }
-          : member
-      )
-    );
+
+
+  const toggleStatus = async (staffId: number, status: boolean) => {
+    console.log(staffId, 'toggle')
+
+
+    try {
+
+      await updateStaff({ staffId }, { is_active: status });
+      fetchClassData();
+      toast.success('updated successfully.....!')
+    } catch (error) {
+      console.error("❌ Failed to update staff status:", error);
+      toast.error(' failed to update')
+    }
   };
+
 
   const getStatusButtonStyle = (status: "Active" | "Inactive") => {
     if (status === "Active") {
@@ -272,6 +271,7 @@ const TeachingStaffs: React.FC = () => {
   const classData = useSelector(selectStaff)?.data || [];
   const fileInputRef = useRef(null);
   const loading = useSelector(selectLoading);
+  const courseData = useSelector(selectCoursesData)
 
   const fetchClassData = (page: number = 1) => {
     dispatch(
@@ -283,11 +283,31 @@ const TeachingStaffs: React.FC = () => {
 
   useEffect(() => {
     fetchClassData();
-  }, []);
+  }, [dispatch]);
 
-  const handleFileChange = () => {};
 
-  const handleUploadClick = () => {};
+  useEffect(() => {
+
+    dispatch(GetAllCoursesThunk(''))
+
+  }, [])
+
+  const handleFileChange = () => { };
+
+
+  const filteredStaff = classData.filter((member: any) => {
+    const statusMatch =
+      statusFilter === "all" ||
+      (statusFilter === "Active" && member.is_active) ||
+      (statusFilter === "Inactive" && !member.is_active);
+
+    const courseMatch =
+      courseFilter === "all" ||
+      member.course?.includes(courseFilter);
+
+    return statusMatch && courseMatch;
+  });
+
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
@@ -319,19 +339,12 @@ const TeachingStaffs: React.FC = () => {
                 </p>
               </div>
             </div>
-            <Button
+            {/* <Button
               onClick={handleUploadClick}
               className="bg-green-500 hover:bg-green-600 text-white"
             >
               Upload Profile Picture
-            </Button>
-            <input
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            </Button> */}
           </div>
 
           <div className="space-y-8">
@@ -416,15 +429,21 @@ const TeachingStaffs: React.FC = () => {
                     <SelectValue placeholder="Select Course" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
-                    <SelectItem value="MEAN STACK 2024">
-                      MEAN STACK 2024
-                    </SelectItem>
-                    <SelectItem value="React Development">
-                      React Development
-                    </SelectItem>
+                    {courseData && courseData.length > 0 ? (
+                      courseData.map((course: any) => (
+                        <SelectItem key={course._id} value={course.uuid}>
+                          {course.course_name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-course" disabled>
+                        No Courses Found
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </label>
+
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
@@ -750,29 +769,14 @@ const TeachingStaffs: React.FC = () => {
                 <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
                   Status
                 </Label>
-                <Select>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
-                    <SelectValue placeholder=" "  />
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                    <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent className="bg-white ">
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="all"
-                    >
-                      All
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Active"
-                    >
-                      Active
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Inactive"
-                    >
-                      Inactive
-                    </SelectItem>
+                    <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All</SelectItem>
+                    <SelectItem value="Active" className="hover:bg-[#1BBFCA] cursor-pointer">Active</SelectItem>
+                    <SelectItem value="Inactive" className="hover:bg-[#1BBFCA] cursor-pointer">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -781,32 +785,21 @@ const TeachingStaffs: React.FC = () => {
                 <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
                   Course
                 </Label>
-                <Select>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] hover:border-[#716F6F] focus:border-[#716F6F] focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-[#716F6F]">
+                <Select value={courseFilter} onValueChange={setCourseFilter}>
+                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
                     <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="all"
-                    >
-                      All Course
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Course 1"
-                    >
-                      Course 1
-                    </SelectItem>
-                    <SelectItem
-                      className="hover:bg-[#1BBFCA] cursor-pointer"
-                      value="Course 2"
-                    >
-                      Course 2
-                    </SelectItem>
+                    <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All Courses</SelectItem>
+                    {courseData?.map((course: any) => (
+                      <SelectItem key={course._id} value={course.course_name} className="hover:bg-[#1BBFCA] cursor-pointer">
+                        {course.course_name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
+
             </Card>
           )}
 
@@ -861,7 +854,7 @@ const TeachingStaffs: React.FC = () => {
                 ))}
               </div>
             ) : (
-              classData.map((member: any) => (
+              filteredStaff.map((member: any) => (
                 <Card
                   key={member?.id}
                   className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]"
@@ -909,8 +902,8 @@ const TeachingStaffs: React.FC = () => {
                         </span>
                         <Select
                           value={member?.is_active ? "Active" : "Inactive"}
-                          onValueChange={(_value: "Active" | "Inactive") =>
-                            toggleStatus(member.id)
+                          onValueChange={() =>
+                            toggleStatus(member.uuid, !member?.is_active)
                           }
                         >
                           <SelectTrigger
@@ -946,14 +939,14 @@ const TeachingStaffs: React.FC = () => {
                     </div>
                   </div>
 
-                  {staff.length === 0 && (
+                  {/* {staff.length === 0 && (
                     <div className="p-8 text-center text-muted-foreground">
                       <p>No staff members found.</p>
                       <p className="text-sm mt-1">
                         Click "Add New Staff" to get started.
                       </p>
                     </div>
-                  )}
+                  )} */}
                 </Card>
               ))
             )}

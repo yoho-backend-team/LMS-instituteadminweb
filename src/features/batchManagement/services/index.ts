@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../apis/index';
 
 export const getWithIdBatchService = async (params: any) => {
@@ -48,6 +49,18 @@ export const getStudentService = async (params: any) => {
 	}
 };
 
+export const getStudentBranchService = async () => {
+	try {
+		const response = await Client.student.getWithBranch();
+		if (response) {
+			return response;
+		}
+	} catch (error) {
+		console.error('Error in getstudentService:', error);
+		return null;
+	}
+};
+
 export const getStaffService = async (params: any) => {
 	try {
 		const response = await Client.staff.getall(params);
@@ -62,7 +75,13 @@ export const getStaffService = async (params: any) => {
 
 export const createBatches = async (params: any) => {
 	try {
-		const response = await Client.batch.create(params);
+		const response = await Client.batch.create(params, {
+			batch_name: params.batch_name,
+			start_date: params.start_date,
+			end_date: params.end_date,
+			instructor: params.instructor,
+			student: params.student,
+		});
 		if (response) {
 			return response;
 		}
@@ -94,4 +113,11 @@ export const deleteBatches = async (params: any) => {
 		console.error('Error in deletebatches:', error);
 		return null;
 	}
+};
+
+//getBranch by id
+
+export const GetBranchById = async (params: any) => {
+	const response = await Client.branch.getByid(params);
+	return response;
 };

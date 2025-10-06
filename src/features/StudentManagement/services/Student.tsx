@@ -3,6 +3,7 @@ import Client from '../../../apis/index.js';
 
 export const getstudentdata = async (data: any) => {
 	const response = await Client.student.class(data)
+	
 	if (response) {
 		return response;
 	}
@@ -39,9 +40,24 @@ export const getLiveClassData = async (query: any) => {
 	}
 };
 
-export const getActivityStudentdata = async (data: any) => {
-	const response = await Client.student.activity(data)
-	if (response) {
+// export const getActivityStudentdata = async (data: any) => {
+// 	const response = await Client.student.activity(data)
+// 	if (response) {
+// 		return response;
+// 	}
+// };
+
+export const getActivityStudentdata = async(params:any)=>{
+	const response = await Client.student.activitylog(params)
+	if(response){
 		return response;
 	}
-};
+}
+
+export const getStudentClass = async (params:any)=>{
+	const response = await Client.student.studentclass(params)
+	console.log("pro res",response);
+	if(response){
+		return response;
+	}
+}

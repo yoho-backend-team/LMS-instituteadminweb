@@ -6,7 +6,7 @@ export interface Note {
   description: string;
   course: string;
   branch: string;
-  status: "Active" | "Completed";
+  status: "Active" | "Inactive";
   file?: File;
   video?: string;
 }

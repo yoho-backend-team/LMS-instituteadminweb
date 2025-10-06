@@ -49,10 +49,11 @@ type Props = {
   onConfirm: () => void;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 const SessionExpiredModal: React.FC<Props> = ({ onConfirm }) => {
   return (
     <Dialog open>
-      <DialogContent className="sm:max-w-[400px] text-center ml-48 mt-20">
+      <DialogContent className="sm:max-w-[400px] text-center ml-48 mt-20 bg-white">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-black">
             Session Expired

@@ -116,7 +116,7 @@ function StatsCard() {
 									</button>
 									<button
 										className='flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition'
-										onClick={() => handledelete(card.uuid)} // ✅ use uuid here
+										onClick={() => handledelete(card.uuid)} 
 									>
 										<AiOutlineDelete className='w-5 h-5' />
 										<span>Delete</span>

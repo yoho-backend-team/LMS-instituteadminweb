@@ -4,8 +4,8 @@ import { setTickets } from "./slice";
 export const fetchAdminTicketsThunk = (params: any) => async (dispatch: any) => {
   try {
     const response = await getAllAdminTickets(params);
-    dispatch(setTickets(response.data.data));
-    console.log("Fetched Admin Tickets:", response.data.data);
+    dispatch(setTickets(response.data));
+   
   } catch (error) {
     console.error("Failed to fetch admin tickets:", error);
   }

@@ -1,9 +1,11 @@
-// CourseCard.tsx
 import React, { useState } from "react";
 
 import arr from "../../assets/navbar/arrow.png";
 import dots from "../../assets/navbar/dots.png";
 import { updateCourse } from "../../features/CourseManagement/Course/service";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { editCourse } from "../../features/CourseManagement/Course/slice";
 
 interface CourseCardProps {
   course_name: string;
@@ -32,8 +34,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
+  const dispatch = useDispatch<AppDispatch>()
 
-  console.log('is active', courseStatus)
+
 
   const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
     try {
@@ -46,16 +49,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
         is_active: newStatus === "Active",
       };
 
+      dispatch(editCourse({ uuid: courseuuid, is_active: newStatus === "Active", }))
       await updateCourse(payload);
     } catch (error) {
       console.error("Failed to update status", error);
     }
   };
 
-
   return (
     <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
-
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
           {category_name}
@@ -65,14 +67,13 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </span>
       </div>
 
-
-      <img
-        src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
-        alt="Course"
-        className="rounded-md w-full h-30 object-cover"
-      />
-
-
+      <div className="h-40 flex">
+        <img
+          src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
+          alt="Course"
+          className="rounded-md w-full h-30 object-cover"
+        />
+      </div>
 
       <div className="flex flex-col gap-y-1">
         <h2 className="text-lg font-semibold text-[#1BBFCA]">{course_name}</h2>
@@ -85,7 +86,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </div>
       </div>
 
-
       <div className="flex justify-between items-center relative">
         <div className="relative">
           <button
@@ -95,7 +95,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               : "bg-white text-black border border-gray-300"
               }`}
           >
-            <span>{courseStatus ? 'Active' : 'InActive'}</span>
+            <span>{courseStatus ? "Active" : "InActive"}</span>
             <img
               src={arr}
               alt="arrow"

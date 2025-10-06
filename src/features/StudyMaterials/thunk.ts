@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	createStudyMaterial,
 	deleteStudyMaterial,
@@ -23,7 +24,7 @@ export const fetchStudyMaterialsThunk =
 			dispatch(getStudyMaterial(response.data.data));
 			dispatch(setLoading(false));
 		} catch (error) {
-			console.error('Failed to fetch study materials:', error);
+			console.log('Failed to fetch study materials:', error);
 		} finally {
 			dispatch(setLoading(false));
 		}
@@ -35,7 +36,7 @@ export const updateStudyMaterialThunk =
 			const updated = await updateStudyMaterial(data);
 			dispatch(editStudyMaterial(updated.data));
 		} catch (error) {
-			console.error('Error updating study material:', error);
+			console.log('Error updating study material:', error);
 		}
 	};
 
@@ -43,12 +44,9 @@ export const GetBranchThunks = (params: any) => async (dispatch: any) => {
 	try {
 		const result = await getBranch(params);
 		dispatch(getBranches(result));
-		return result.data;
+		return result?.data;
 	} catch (error: any) {
-		console.error('Error fetching branches:', error.message || error);
-		throw new Error(
-			error.response?.data?.message || 'Failed to fetch branches'
-		);
+		console.log('Error fetching branches:', error.message || error);
 	}
 };
 
@@ -56,10 +54,9 @@ export const GetCourseThunks = (params: any) => async (dispatch: any) => {
 	try {
 		const result = await getCourse(params); // should hit /{branch_id}/courses
 		dispatch(getAllCourses(result));
-		return result.data;
+		return result?.data;
 	} catch (error: any) {
 		console.error('Error fetching courses:', error.message || error);
-		throw new Error(error.response?.data?.message || 'Failed to fetch courses');
 	}
 };
 
@@ -69,7 +66,7 @@ export const createStudyMaterialThunk =
 			const response = await createStudyMaterial(data);
 			dispatch(addStudyMaterials([response.data]));
 		} catch (error) {
-			console.error('Error creating study material:', error);
+			console.log('Error creating study material:', error);
 		}
 	};
 
@@ -85,7 +82,6 @@ export const deleteStudyMaterialThunk =
 				})
 			);
 		} catch (error: any) {
-			console.error('Delete failed:', error.message);
-			throw error;
+			console.log('Delete failed:', error.message);
 		}
 	};

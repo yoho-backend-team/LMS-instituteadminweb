@@ -1,0 +1,124 @@
+.loader-wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socket {
+  width: 100px;              /* Smaller width */
+  height: 100px;             /* Smaller height */
+  position: relative;        /* Changed from absolute for better layout */
+}
+
+.hex-brick {
+  background: violet;
+  width: 15px;               /* Reduced width */
+  height: 8.5px;             /* Reduced height */
+  position: absolute;
+  top: 2.5px;                /* Adjusted */
+  animation-name: fade00;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+.h2 {
+  transform: rotate(60deg);
+}
+
+.h3 {
+  transform: rotate(-60deg);
+}
+
+.gel {
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.center-gel {
+  margin-left: -7.5px;
+  margin-top: -7.5px;
+  animation: pulse00 2s infinite;
+}
+
+/* Use same positions for c1-c37 (as before) */
+.c1 { margin-left: -23.5px; margin-top: -7.5px; }
+.c2 { margin-left: -15.5px; margin-top: -21.5px; }
+.c3 { margin-left: 0.5px; margin-top: -21.5px; }
+.c4 { margin-left: 8.5px; margin-top: -7.5px; }
+.c5 { margin-left: -15.5px; margin-top: 6.5px; }
+.c6 { margin-left: 0.5px; margin-top: 6.5px; }
+.c7 { margin-left: -31.5px; margin-top: -21.5px; }
+.c8 { margin-left: 16.5px; margin-top: -21.5px; }
+.c9 { margin-left: -7.5px; margin-top: 20.5px; }
+.c10 { margin-left: -31.5px; margin-top: 6.5px; }
+.c11 { margin-left: 16.5px; margin-top: 6.5px; }
+.c12 { margin-left: -7.5px; margin-top: -35.5px; }
+.c13 { margin-left: -23.5px; margin-top: -35.5px; }
+.c14 { margin-left: 8.5px; margin-top: -35.5px; }
+.c15 { margin-left: -23.5px; margin-top: 20.5px; }
+.c16 { margin-left: 8.5px; margin-top: 20.5px; }
+.c17 { margin-left: -39.5px; margin-top: -7.5px; }
+.c18 { margin-left: 24.5px; margin-top: -7.5px; }
+.c19 { margin-left: -31.5px; margin-top: -49.5px; }
+.c20 { margin-left: 16.5px; margin-top: -49.5px; }
+.c21 { margin-left: 0.5px; margin-top: -49.5px; }
+.c22 { margin-left: -15.5px; margin-top: -49.5px; }
+.c23 { margin-left: -31.5px; margin-top: 34.5px; }
+.c24 { margin-left: 16.5px; margin-top: 34.5px; }
+.c25 { margin-left: 0.5px; margin-top: 34.5px; }
+.c26 { margin-left: -15.5px; margin-top: 34.5px; }
+.c28 { margin-left: -47.5px; margin-top: -21.5px; }
+.c29 { margin-left: -47.5px; margin-top: 6.5px; }
+.c30 { margin-left: 24.5px; margin-top: 20.5px; }
+.c31 { margin-left: -39.5px; margin-top: -35.5px; }
+.c32 { margin-left: -55.5px; margin-top: -7.5px; }
+.c33 { margin-left: 32.5px; margin-top: -21.5px; }
+.c34 { margin-left: 32.5px; margin-top: 6.5px; }
+.c35 { margin-left: -39.5px; margin-top: 20.5px; }
+.c36 { margin-left: 24.5px; margin-top: -35.5px; }
+.c37 { margin-left: 40.5px; margin-top: -7.5px; }
+
+/* Animation delays for rings */
+.r1 {
+  animation: pulse00 2s infinite;
+  animation-delay: 0.2s;
+}
+.r2 {
+  animation: pulse00 2s infinite;
+  animation-delay: 0.4s;
+}
+.r3 {
+  animation: pulse00 2s infinite;
+  animation-delay: 0.6s;
+}
+
+.r1 > .hex-brick {
+  animation: fade00 2s infinite;
+  animation-delay: 0.2s;
+}
+.r2 > .hex-brick {
+  animation: fade00 2s infinite;
+  animation-delay: 0.4s;
+}
+.r3 > .hex-brick {
+  animation: fade00 2s infinite;
+  animation-delay: 0.6s;
+}
+
+/* Animations */
+@keyframes pulse00 {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.01); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fade00 {
+  0% { background: rgb(228, 0, 228); }
+  50% { background: red; }
+  100% { background: violet; }
+}

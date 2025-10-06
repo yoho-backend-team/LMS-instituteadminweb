@@ -16,7 +16,7 @@ const ChangePassword = () => {
 		e.preventDefault()
 		const email = inputEmail.current?.value
 		const response = await ForgetPassword({ email })
-		console.log(response, "forget pass")
+		
 		StoreLocalStorage('otp', response?.otp)
 		StoreLocalStorage('OtpToken', response?.token)
 		StoreLocalStorage('email', response?.email)

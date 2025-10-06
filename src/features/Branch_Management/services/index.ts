@@ -10,13 +10,8 @@ import Client from "../../../apis/index";
 interface GetBranchByIdParams {
   uuid: string;
 }
-interface DeleteBranchParams {
-  institute_id: string;
-  uuid: string;
-}
-
 interface CreateBranchParams {
-  branch_name: string;
+  branch_identity: string;
   phone_number: string;
   alternate_number?: string;
   address: string;
@@ -25,7 +20,7 @@ interface CreateBranchParams {
   city: string;
   state: string;
   status?: "active" | "inactive";
-  institute_id: string;
+  institute_id?: string;
 }
 
 // interface UpdateBranchParams {
@@ -37,8 +32,6 @@ interface UpdateStatusParams {
   uuid: string;
   status: "active" | "inactive";
 }
-
-
 
 // Get all branches
 export const GetAllBranches = async () => {
@@ -69,14 +62,15 @@ export const EditBranch = async (params: { branchuuid: string; data: any }) => {
   return response.data;
 };
 
-
 // Update branch status
 export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
-  const response = await Client.branch.updatestatus(params.uuid, { status: params.status });
+  const response = await Client.branch.updatestatusNew(params.uuid, {
+    is_active: params.status,
+  });
   return response.data;
 };
 
-export const DeleteBranch = async (params: DeleteBranchParams) => {
+export const DeleteBranch = async (params: any) => {
   const response = await Client.branch.delete(
     params.uuid,
     params.institute_id

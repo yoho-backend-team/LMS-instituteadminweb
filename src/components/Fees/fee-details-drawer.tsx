@@ -1,11 +1,8 @@
-
-
-import { useState } from "react"
-import { X } from "lucide-react"
+import { useState } from "react";
+import { X } from "lucide-react";
 
 export const FeeDetailsDrawer = () => {
-  const [isOpen, setIsOpen] = useState(true)
-
+  const [isOpen, setIsOpen] = useState(true);
 
   const fee = {
     id: "student-001-abc",
@@ -14,24 +11,27 @@ export const FeeDetailsDrawer = () => {
     transactionId: "TXN123456",
     amount: "₹5000",
     date: "2025-08-01",
-  }
+  };
 
-  if (!isOpen || !fee) return null
+  if (!isOpen || !fee) return null;
 
-  const handleClose = () => setIsOpen(false)
+  const handleClose = () => setIsOpen(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("View form submitted (no actual data change)")
-    setIsOpen(false)
-  }
+    e.preventDefault();
+    console.log("View form submitted (no actual data change)");
+    setIsOpen(false);
+  };
 
   return (
     <div className="fixed top-0 right-0 h-full w-full md:w-[400px] bg-white shadow-xl z-50 overflow-y-auto transition-all duration-300">
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-800">Fees Details</h2>
-          <button onClick={handleClose} className="text-gray-600 hover:text-gray-800">
+          <button
+            onClick={handleClose}
+            className="text-gray-600 hover:text-gray-800"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -42,10 +42,14 @@ export const FeeDetailsDrawer = () => {
           <p className="font-semibold text-lg text-gray-800">{fee.name}</p>
           <p className="text-sm text-gray-500">{fee.email}</p>
         </div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Student Details:</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          Student Details:
+        </h3>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm text-gray-700">Transaction ID</label>
+            <label className="block text-sm text-gray-700">
+              Transaction ID
+            </label>
             <input
               type="text"
               value={fee.transactionId}
@@ -115,12 +119,15 @@ export const FeeDetailsDrawer = () => {
             >
               Cancel
             </button>
-            <button type="submit" className="px-4 py-2 rounded-md bg-cyan-500 text-white hover:bg-cyan-600">
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-md bg-cyan-500 text-white hover:bg-cyan-600"
+            >
               Submit
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};

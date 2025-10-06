@@ -17,6 +17,7 @@ import {
   deleteFaqCategories,
   updateFaqCategories,
 } from "../../features/Faq_Category/service";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 type Category = {
   id: number;
@@ -29,7 +30,6 @@ type Category = {
   status?: "Active" | "Inactive";
 };
 
-
 const FaqCategory: React.FC = () => {
   const [openStatusIndex, setOpenStatusIndex] = useState<number | null>(null);
   const [openActionIndex, setOpenActionIndex] = useState<number | null>(null);
@@ -38,6 +38,7 @@ const FaqCategory: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAddSuccessModalOpen, setIsAddSuccessModalOpen] = useState(false);
   const [isEditSuccessModalOpen, setIsEditSuccessModalOpen] = useState(false);
+  const [isDeleteSuccessModalOpen, setIsDeleteSuccessModalOpen] = useState(false); // New state for delete success
 
   const [isEditing, setIsEditing] = useState(false);
   const [editCategoryId, setEditCategoryId] = useState<number | null>(null);
@@ -53,12 +54,16 @@ const FaqCategory: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const dispatch = useDispatch<any>();
+  const category = useSelector(faqCategory);
+
   useEffect(() => {
     if (
       isFormOpen ||
       isAddSuccessModalOpen ||
       isEditSuccessModalOpen ||
-      isDeleteConfirmOpen
+      isDeleteConfirmOpen ||
+      isDeleteSuccessModalOpen // Added delete success modal
     ) {
       document.body.style.overflow = "hidden";
     } else {
@@ -72,7 +77,20 @@ const FaqCategory: React.FC = () => {
     isAddSuccessModalOpen,
     isEditSuccessModalOpen,
     isDeleteConfirmOpen,
+    isDeleteSuccessModalOpen, // Added delete success modal
   ]);
+
+  useEffect(() => {
+    const params = {
+      branchid: GetLocalStorage("selectedBranchId"),
+      instituteid: GetLocalStorage("instituteId"),
+      page: 1,
+      perPage: 10,
+    };
+
+    setLoading(true);
+    dispatch(fetchFaqCategoryThunk(params)).finally(() => setLoading(false));
+  }, [dispatch]);
 
   const toggleStatus = (index: number) => {
     setOpenStatusIndex(openStatusIndex === index ? null : index);
@@ -82,23 +100,20 @@ const FaqCategory: React.FC = () => {
     setOpenActionIndex(openActionIndex === index ? null : index);
   };
 
+  const overall_branch_id = GetLocalStorage("selectedBranchId");
+  const overall_istitute_id = GetLocalStorage("instituteId");
+
   const handleStatusChange = async (
-    // index: number,
     newStatus: "Active" | "Inactive",
     uuid: string
   ) => {
-    const Uuid = uuid;
-
-    const payload = {
-      is_active: newStatus === "Active",
-    };
-
+    const payload = { is_active: newStatus === "Active" };
     try {
-      await updateFaqCategories(Uuid, payload);
+      await updateFaqCategories(uuid, payload);
       dispatch(
         fetchFaqCategoryThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -107,7 +122,6 @@ const FaqCategory: React.FC = () => {
       console.error("Failed to update status:", error);
       alert("Failed to update status. Please try again.");
     }
-
     setOpenStatusIndex(null);
   };
 
@@ -128,50 +142,42 @@ const FaqCategory: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const dispatch = useDispatch<any>();
-  const category = useSelector(faqCategory);
-
-  console.log("category", category);
-
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
 
     setLoading(true);
     dispatch(fetchFaqCategoryThunk(params)).finally(() => setLoading(false));
-  }, [dispatch]);
+  }, [dispatch, overall_branch_id, overall_istitute_id]);
 
   const handleSubmit = async () => {
     if (newTitle.trim() === "") return;
 
     if (isEditing && editCategoryId !== null) {
       const uuid = selectedUUid;
-      const payload = {
+      await updateFaqCategories(uuid, {
         category_name: newTitle,
         description: newDescription,
-      };
-
-      updateFaqCategories(uuid, payload);
+      });
       setIsEditSuccessModalOpen(true);
       setSelectedUUId(null);
     } else {
       const payload = {
         category_name: newTitle,
         description: newDescription,
-        branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branchid: overall_branch_id,
         institute_id: "67f3a26df4b2c530acd16419",
       };
-
       try {
         await createFaqCategories(payload);
         dispatch(
           fetchFaqCategoryThunk({
-            branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-            instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+            branchid: overall_branch_id,
+            instituteid: overall_istitute_id,
             page: 1,
             perPage: 10,
           })
@@ -196,22 +202,21 @@ const FaqCategory: React.FC = () => {
 
   const confirmDelete = async () => {
     if (!deleteCategoryUuid) return;
-
     try {
       await deleteFaqCategories(deleteCategoryUuid);
       dispatch(
         fetchFaqCategoryThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
       );
-      setIsAddSuccessModalOpen(true);
+      setIsDeleteSuccessModalOpen(true); // Changed to delete success modal
     } catch (error) {
       console.error("Delete failed:", error);
+      alert("Failed to delete FAQ category. Please try again.");
     }
-
     setIsDeleteConfirmOpen(false);
     setDeleteCategoryUuid(null);
   };
@@ -223,8 +228,8 @@ const FaqCategory: React.FC = () => {
 
   const filtered = Array.isArray(category)
     ? category.filter((c: any) =>
-      c?.category_name?.toLowerCase?.().includes(search.toLowerCase())
-    )
+        c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
+      )
     : [];
 
   return (
@@ -254,13 +259,13 @@ const FaqCategory: React.FC = () => {
       <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]">
         <div className="grid grid-cols-4 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md">
           <div>ID</div>
-          <div>Category Name</div>
-          <div>Status</div>
-          <div>Actions</div>
+          <div className="">Category Name</div>
+          <div className=""> Status</div>
+          <div className="text-right">Actions</div>
         </div>
         <div className="flex flex-col gap-3 mt-3">
-          {loading
-            ? Array.from({ length: 5 }).map((_, idx) => (
+          {loading ? (
+            Array.from({ length: 5 }).map((_, idx) => (
               <div
                 key={idx}
                 className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-sm rounded-md animate-pulse"
@@ -274,10 +279,15 @@ const FaqCategory: React.FC = () => {
                 <div className="h-4 w-16 bg-gray-200 rounded"></div>
               </div>
             ))
-            : filtered.map((cat: any, index: any) => (
+          ) : filtered.length === 0 ? (
+            <div className="text-center text-gray-500 py-6">
+              No Category Found
+            </div>
+          ) : (
+            filtered.map((cat: any, index: any) => (
               <div
                 key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]  text-[#7D7D7D]  text-sm rounded-md relative"
+                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
               >
                 <div>{cat.id}</div>
                 <div>
@@ -288,7 +298,9 @@ const FaqCategory: React.FC = () => {
                 {/* Status Dropdown */}
                 <div className="relative">
                   <button
-                    className="flex items-center gap-1 text-sm"
+                    className={`flex items-center gap-1 text-sm ${
+                      cat.is_active ? "text-green-600" : "text-red-600"
+                    }`}
                     onClick={() => toggleStatus(index)}
                   >
                     {cat.is_active ? "Active" : "Inactive"}
@@ -302,17 +314,13 @@ const FaqCategory: React.FC = () => {
                   {openStatusIndex === index && (
                     <div className="absolute mt-2 bg-white rounded-lg shadow-md p-2 z-50 w-[120px]">
                       <button
-                        onClick={() =>
-                          handleStatusChange("Active", cat?.uuid)
-                        }
+                        onClick={() => handleStatusChange("Active", cat?.uuid)}
                         className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg mb-2"
                       >
                         Active
                       </button>
                       <button
-                        onClick={() =>
-                          handleStatusChange("Inactive", cat.uuid)
-                        }
+                        onClick={() => handleStatusChange("Inactive", cat.uuid)}
                         className="bg-[#1BBFCA] text-white w-full py-2 rounded-lg"
                       >
                         Inactive
@@ -322,7 +330,7 @@ const FaqCategory: React.FC = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="text-left relative">
+                <div className="text-right relative ">
                   <img
                     src={button1}
                     alt="options"
@@ -357,14 +365,15 @@ const FaqCategory: React.FC = () => {
                   )}
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       </div>
 
       {/* Form Modal */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-[#7D7D7D] bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow_0px_4px_24px_0px_#00000026 relative  ">
+        <div className="fixed inset-0 bg-[#7D7D7D] bg-opacity-40 flex items-center justify-end z-50 px-4 ">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow relative  h-[90%]">
             <h2 className="text-xl text-[#716F6F] font-bold mb-4">
               {isEditing ? "Edit FAQ Category" : "Add FAQ Category"}
             </h2>
@@ -374,8 +383,7 @@ const FaqCategory: React.FC = () => {
             >
               <img src={cancel} alt="Cancel" className="h-4 w-4" />
             </button>
-
-            <label className="block mb-2 text-sm  text-[#7D7D7D] font-medium">
+            <label className="block mb-2 text-sm text-[#7D7D7D] font-medium">
               Category
             </label>
             <input
@@ -384,7 +392,6 @@ const FaqCategory: React.FC = () => {
               onChange={(e) => setNewTitle(e.target.value)}
               className="border border-gray-400 w-full px-4 py-2 rounded mb-4"
             />
-
             <label className="block mb-2 text-sm text-[#7D7D7D] font-medium">
               Description
             </label>
@@ -394,7 +401,6 @@ const FaqCategory: React.FC = () => {
               onChange={(e) => setNewDescription(e.target.value)}
               className="border border-gray-400 w-full px-4 py-2 rounded mb-6"
             />
-
             <div className="flex justify-end gap-4">
               <button onClick={() => setIsFormOpen(false)}></button>
               <button
@@ -410,9 +416,13 @@ const FaqCategory: React.FC = () => {
 
       {/* Add Success Modal */}
       {isAddSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Added!
             </h2>
@@ -428,9 +438,13 @@ const FaqCategory: React.FC = () => {
 
       {/* Edit Success Modal */}
       {isEditSuccessModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg h-auto overflow-hidden">
-            <img src={sucess} alt="Success" className="mx-auto w-20 h-20 mb-4" />
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               FAQ Category Updated!
             </h2>
@@ -444,9 +458,31 @@ const FaqCategory: React.FC = () => {
         </div>
       )}
 
+      {/* Delete Success Modal */}
+      {isDeleteSuccessModalOpen && (
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-lg">
+            <img
+              src={sucess}
+              alt="Success"
+              className="mx-auto w-20 h-20 mb-4"
+            />
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+              FAQ Category Deleted!
+            </h2>
+            <button
+              onClick={() => setIsDeleteSuccessModalOpen(false)}
+              className="bg-green-500 text-white px-6 py-2 rounded"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl relative">
             <img
               src={warning}
@@ -461,8 +497,7 @@ const FaqCategory: React.FC = () => {
             </p>
             <div className="flex justify-center gap-4">
               <button
-                onClick={confirmDelete
-                }
+                onClick={confirmDelete}
                 className="bg-red-500 hover:bg-[#3ABE65] text-white font-semibold px-6 py-2 rounded-lg"
               >
                 Yes, Delete
@@ -472,7 +507,7 @@ const FaqCategory: React.FC = () => {
                 className="border border-[#1BBFCA] text-[#1BBFCA] bg-[#E6FBFD] hover:bg-[#d1f5f8] font-semibold px-6 py-2 rounded-lg"
               >
                 Cancel
-              </button>
+            </button>
             </div>
           </div>
         </div>

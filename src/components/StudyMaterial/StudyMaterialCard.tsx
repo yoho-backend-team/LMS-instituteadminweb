@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { DropdownMenu } from "./DropdownMenu";
 import { MdToggleOn, MdToggleOff, MdClose } from "react-icons/md";
 import type { Note } from "../../components/StudyMaterial/Note";
+import { GetImageUrl } from "../../utils/helper";
 
 interface NoteCardProps {
   note: Note;
   onView: (note: Note) => void;
   onEdit: (note: Note) => void;
   onDelete: (id: number) => void;
-  onToggleStatus?: (uuid: string, status: "Active" | "Completed") => void;
+  onToggleStatus?: (uuid: string, status: boolean) => void;
   fileIcon: string;
   titleIcon: string;
 }
@@ -83,7 +84,6 @@ const ViewModal: React.FC<{
     const pdfCheck = isPDF();
     const imageCheck = isImage();
 
-
     if (pdfCheck) {
       return (
         <div className="w-full h-96 bg-gray-100 rounded mb-4 border-2 border-gray-300">
@@ -91,8 +91,8 @@ const ViewModal: React.FC<{
             PDF File: {fileName}
           </div>
           <iframe
-            src={fileUrl}
-            className="w-full h-full rounded"
+            src={GetImageUrl(fileName) ?? undefined}
+            className="w-full h-full rounded overflow-scroll"
             title="PDF Preview"
             style={{
               border: "none",
@@ -207,7 +207,7 @@ const ViewModal: React.FC<{
               : "bg-gray-500 text-white"
               }`}
           >
-            {note?.is_active ? "Active" : "Completed"}
+            {note?.is_active ? "Active" : "Inactive"}
           </span>
         </div>
 
@@ -238,14 +238,15 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   fileIcon,
   titleIcon,
 }) => {
-  const [status, setStatus] = useState<"Active" | "Completed">(note.status);
+  const [status, setStatus] = useState<boolean>(note.is_active);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const handleToggle = () => {
-    const newStatus = status === "Active" ? "Completed" : "Active";
+    const newStatus = status === true ? false : true;
     setStatus(newStatus);
     onToggleStatus?.(note.uuid, newStatus);
   };
+  
 
   const handleView = () => {
     setIsViewModalOpen(true);
@@ -259,6 +260,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   return (
     <>
       <div className="bg-white text-[#716F6F] rounded-2xl p-4 shadow-2xl relative min-h-[200px] flex flex-col">
+        {/* Top-right dropdown */}
         <div className="ml-auto mt-3 text-2xl right-3 top-3">
           <DropdownMenu
             onView={handleView}
@@ -267,6 +269,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           />
         </div>
 
+        {/* File preview section */}
         {note.file && (
           <div className="flex gap-2 mt-2 bg-[#F7F7F7] h-12 text-xl items-center cursor-pointer rounded px-2">
             <img
@@ -278,12 +281,20 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           </div>
         )}
 
+        {/* Title */}
         <h2 className="text-xl font-semibold mt-3 flex items-center">
           <img src={titleIcon} alt="icon" className="mr-2 w-5 h-5" />
           {note.title}
         </h2>
 
-        <div className="flex items-center mt-4">
+        {/* Description or other content */}
+        <div className="mt-2 flex-1">
+          {note.description && (
+            <p className="whitespace-pre-wrap text-sm">{note.description}</p>
+          )}
+        </div>
+
+        <div className="flex items-center mt-auto pt-3 border-t border-gray-200">
           {note?.is_active ? (
             <div className="flex items-center gap-1 text-green-600 font-medium text-lg">
               <span>Active</span>
@@ -291,7 +302,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             </div>
           ) : (
             <div className="flex items-center gap-1 text-gray-500 font-medium text-lg">
-              <span>Completed</span>
+              <span>Inactive</span>
               <span className="h-3 w-3 mt-1 rounded-full bg-gray-400 inline-block" />
             </div>
           )}

@@ -22,7 +22,7 @@ export const getAllRefunds = async (params: any) => {
 export const updateRefund = async (data: any) => {
   try {
     const res = await Client.refund.update(data);
-    console.log("update", res);
+   
     return res;
   } catch (error) {
     console.log("Update Servier", error)
@@ -42,7 +42,7 @@ export const deleteRefund = async (refundId: string) => {
 
 export const getRefundByID = async (data: any) => {
   const res = await Client.refund.getByID(data);
-  console.log("BYID", res)
+ 
   return res
 };
 
@@ -61,7 +61,7 @@ export const GetBranchCourse = async (data: any) => {
 
 export const GetBatch = async (courseId: any) => {
   const response = await Client.batch.getWithCourseId(courseId);
-  console.log("Batch data getting", response);
+ 
   if (response) {
     return response;
   }
@@ -74,13 +74,13 @@ export const StudentsWithBatch = async (params: any) => {
   }
 
   const response = await Client.users.getStudentsWithBatch(params);
-  console.log("Student with batch-check services", response);
+ 
   return response;
 };
 
 export const StudentWithFee = async (id: string) => {
   const res = await Client.payment.student_fee.get({ id });
-  console.log("Refund fee", res);
+ 
   return res;
 };
 

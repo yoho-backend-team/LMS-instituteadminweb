@@ -12,35 +12,37 @@ import {
 } from "../../components/ui/drawer";
 import { X } from "lucide-react";
 import type { FAQItem } from "../../types/faq";
-import { UpdateFaq } from"../../features/Faq/service";
+import { UpdateFaq } from "../../features/Faq/service";
 import { toast } from "react-toastify";
 
 interface EditFAQDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   faqToEdit: FAQItem | null;
+  onSuccess?: (updatedFAQ?: FAQItem) => void; // ✅ callback for parent
+  onFAQUpdated?: () => void;                  // ✅ optional for immediate refresh
 }
-
 
 export function EditFAQDrawer({
   open,
   onOpenChange,
   faqToEdit,
+  onSuccess,
+  onFAQUpdated,
 }: EditFAQDrawerProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  if (faqToEdit) {
-    setTitle(faqToEdit.title || "");
-    setDescription(faqToEdit.description || "");
-  } else {
-    setTitle("");
-    setDescription("");
-  }
-}, [faqToEdit]);
-
+    if (faqToEdit) {
+      setTitle(faqToEdit.title || "");
+      setDescription(faqToEdit.description || "");
+    } else {
+      setTitle("");
+      setDescription("");
+    }
+  }, [faqToEdit]);
 
   const handleSubmit = async () => {
     if (!faqToEdit) return;
@@ -48,8 +50,14 @@ export function EditFAQDrawer({
     try {
       setLoading(true);
       const updatedData = { title, description };
-      await UpdateFaq(faqToEdit.uuid, updatedData);
+      const updatedFAQ = await UpdateFaq(faqToEdit.uuid, updatedData);
+
       toast.success("FAQ updated successfully!");
+      
+      // Call parent callbacks to refresh list
+      if (onSuccess) onSuccess(updatedFAQ);
+      if (onFAQUpdated) onFAQUpdated();
+
       onOpenChange(false);
     } catch (error) {
       toast.error("Failed to update FAQ.");
@@ -64,13 +72,14 @@ export function EditFAQDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l">
+      <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white rounded-none shadow-lg border-l h-[90%] mt-10 rounded-xl ">
         <DrawerHeader className="flex items-left justify-between p-0 mb-6 relative">
           <DrawerTitle className="text-lg font-semibold">Edit FAQ</DrawerTitle>
           <DrawerClose>
             <X className="w-5 h-5 bg-gray-500 text-white rounded-full p-0.5 hover:text-black absolute top-0 right-0" />
           </DrawerClose>
         </DrawerHeader>
+
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="edit-title">Title</Label>
@@ -91,6 +100,7 @@ export function EditFAQDrawer({
             />
           </div>
         </div>
+
         <div className="flex justify-end gap-2 mt-4">
           <Button
             variant="outline"
