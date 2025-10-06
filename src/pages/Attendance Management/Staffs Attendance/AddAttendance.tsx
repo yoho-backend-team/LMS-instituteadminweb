@@ -34,7 +34,7 @@ const AddAttendance = () => {
     (state: any) => state.staffAttendace.attendance
   );
 
- 
+
 
   useEffect(() => {
     if (!staff.staff) {
@@ -108,62 +108,68 @@ const AddAttendance = () => {
       <StaffAddBar data={staff} setOpen={setopenModal} setMonth={setCurrentMonth} setYear={setCurrentYear} />
       <StaffFormModal data={staff} setOpen={setopenModal} isOpen={openModal} />
 
-      <div className="w-full grid grid-cols-2 mt-2">
-        <p className="col-span-1 text-center text-[#716F6F] font-semibold text-[22px]">
+      <div className="w-full grid grid-cols-2 mt-2 max-[420px]:grid-cols-1 max-[420px]:gap-2">
+        <p className="col-span-1 text-center text-[#716F6F] font-semibold text-[22px] mb-2 max-[420px]:mb-0">
           {months[currentMonth] + " " + currentYear}
         </p>
-        <div className="w-full grid grid-cols-4 gap-5 **:w-full **:h-[47px] **:justify-center **:flex **:items-center **:border **:rounded-md **:cursor-pointer">
-          <div className="border-[#1BBFCA] bg-[#1BBFCA1A] text-[#1BBFCA]">
+        <div className="w-full grid grid-cols-4 gap-5 max-[420px]:grid-cols-1 max-[420px]:gap-2">
+          <div className="border-[#1BBFCA] bg-[#1BBFCA1A] text-[#1BBFCA] text-center py-2 rounded-md">
             Monthly
           </div>
-          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">
+          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-center py-2 rounded-md">
             Week
           </div>
-          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">
+          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-center py-2 rounded-md">
             Day
           </div>
-          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">
+          <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-center py-2 rounded-md">
             List
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 h-[47px] w-full gap-5 mt-5 **:cursor-context-menu">
-        {days.map((items, index) => (
-          <div
-            key={index}
-            className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]"
-          >
-            {items}
-          </div>
-        ))}
+
+      <div className="overflow-x-auto mt-5">
+        <div className="min-w-[700px] grid grid-cols-7 gap-5 max-[420px]:min-w-full max-[420px]:grid-cols-7 max-[420px]:gap-2">
+          {days.map((items, index) => (
+            <div
+              key={index}
+              className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg text-[#716F6F] max-[420px]:text-sm max-[420px]:py-2"
+            >
+              {items}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-7 h-[47px] w-full gap-5 mt-5 **:w-full **:h-[80px] **:cursor-context-menu">
-        {calendarData.map((items, index) => (
-          <div
-            key={index}
-            className={
-              items.status
-                ? `border pt-2 border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]`
-                : `border border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]`
-            }
-          >
-            {items.date}
-            {items.status ? (
-              <span
-                className={
-                  items.status == "present"
-                    ? "text-green-600 text-center"
-                    : "text-red-600 text-center"
-                }
-              >
-                {items.status}
-              </span>
-            ) : null}
-          </div>
-        ))}
+      <div className="overflow-x-auto mt-5">
+        <div className="min-w-[700px] grid grid-cols-7 gap-5 max-[420px]:min-w-full max-[420px]:gap-2">
+          {calendarData.map((items, index) => (
+            <div
+              key={index}
+              className={
+                items.status
+                  ? `border pt-2 border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F] max-[420px]:text-sm max-[420px]:py-2 max-[420px]:h-auto`
+                  : `border border-[#BDC2C7BF] flex flex-col justify-center items-center rounded-md font-semibold text-lg text-[#716F6F] max-[420px]:text-sm max-[420px]:py-2 max-[420px]:h-auto`
+              }
+            >
+              {items.date}
+              {items.status && (
+                <span
+                  className={
+                    items.status === "present"
+                      ? "text-green-600 text-center text-sm max-[420px]:text-xs"
+                      : "text-red-600 text-center text-sm max-[420px]:text-xs"
+                  }
+                >
+                  {items.status}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
+
     </div>
   );
 };

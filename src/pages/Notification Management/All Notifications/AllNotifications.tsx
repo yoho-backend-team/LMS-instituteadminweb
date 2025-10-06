@@ -94,19 +94,18 @@ export default function AllNotifications() {
 
   return (
     <div className="p-6 w-full">
-      {/* Add Notification Button */}
-      <div className="flex justify-between mb-4">
-                <p className="text-lg font-bold">All Notification</p>
-
+      {/* Header Responsive */}
+      <div className="flex justify-between mb-4 max-[420px]:flex-col max-[420px]:items-center max-[420px]:gap-2">
+        <p className="text-lg font-bold">All Notification</p>
         <AddNotificationDrawer fetchAllNotifications={fetchAllNotifications} />
       </div>
 
       {/* Stats Cards */}
-      <div className="flex gap-6 flex-wrap">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`w-[250px] h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}
+            className={`w-full h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}
           >
             <div className="absolute -top-3 left-3">
               <img
@@ -139,12 +138,11 @@ export default function AllNotifications() {
       </div>
 
       {/* Notifications Heading + Search */}
-      <div className="flex justify-between items-center my-5">
+      <div className="flex justify-between items-center my-5 max-[420px]:flex-col max-[420px]:items-center max-[420px]:gap-2">
         <h2 style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}>
           Notifications
         </h2>
-        <div className="relative w-72">
-          {/* Search Icon */}
+        <div className="relative w-72 max-[420px]:w-full">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
             <svg
               className="w-4 h-4"
@@ -160,8 +158,6 @@ export default function AllNotifications() {
               />
             </svg>
           </span>
-
-          {/* Input Field */}
           <input
             type="text"
             placeholder="Search by title"
@@ -169,7 +165,6 @@ export default function AllNotifications() {
             onChange={(e) => setSearchText(e.target.value)}
             className="w-full border border-gray-300 rounded-md pl-9 pr-8 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
-
           {searchText && (
             <button
               onClick={() => setSearchText("")}
@@ -193,9 +188,10 @@ export default function AllNotifications() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Notifications List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5 col-span-full">
             {[...Array(6)].map((_, index) => (
               <ContentLoader
                 speed={1}
@@ -208,111 +204,94 @@ export default function AllNotifications() {
               >
                 <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
                 <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
-
                 <rect x="0" y="36" rx="10" ry="10" width="100%" height="120" />
-
                 <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
-
                 <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
                 <rect x="280" y="200" rx="4" ry="4" width="60" height="20" />
-
                 <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
-
                 <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
               </ContentLoader>
             ))}
           </div>
         ) : notifications.length ? (
-          notifications?.filter((n: any) =>
-            n.title?.toLowerCase().includes(searchText.toLowerCase())
-          ).length > 0 ? (
-            notifications
-              .filter((n: any) =>
-                n.title?.toLowerCase().includes(searchText.toLowerCase())
-              )
-              .map((n: any, index: any) => (
-                <Card key={index} className="p-4 rounded-2xl shadow-md">
-                  <CardContent className="p-0 flex flex-col items-start">
-                    <div className="flex items-center w-full mb-2">
-                      <img
-                        src={
-                          n.role === "Instructor" ? instructorImg : studentImg
-                        }
-                        alt=""
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div className="w-full ml-3">
-                        <span
-                          style={{
-                            ...FONTS.heading_08_bold,
-                            color: COLORS.gray_dark_02,
-                          }}
-                        >
-                          {n.name}
-                        </span>
-                        <p
-                          style={{
-                            ...FONTS.heading_09,
-                            color: COLORS.gray_dark_03,
-                          }}
-                        >
-                          {n.role}
-                        </p>
-                      </div>
-                      <div className="flex justify-end w-full">
-                        <span
-                          style={{
-                            ...FONTS.heading_09,
-                            color: COLORS.gray_dark_03,
-                          }}
-                          className="border-2 px-1 py-0.5 rounded-md border-gray-400"
-                        >
-                          ID : {n.id}
-                        </span>
-                      </div>
-                    </div>
-                    <h3
-                      style={{
-                        ...FONTS.heading_08_bold,
-                        color: COLORS.gray_dark_02,
-                      }}
-                    >
-                      {n.title}
-                    </h3>
-                    <p
-                      style={{ ...FONTS.heading_09, color: COLORS.black }}
-                      className="mb-2"
-                    >
-                      {n.body}
-                    </p>
-                    <div className="flex justify-between text-sm w-full mb-2">
+          notifications
+            .filter((n: any) =>
+              n.title?.toLowerCase().includes(searchText.toLowerCase())
+            )
+            .map((n: any, index: any) => (
+              <Card key={index} className="p-4 rounded-2xl shadow-md">
+                <CardContent className="p-0 flex flex-col items-start">
+                  <div className="flex items-center w-full mb-2">
+                    <img
+                      src={n.role === "Instructor" ? instructorImg : studentImg}
+                      alt=""
+                      className="w-12 h-12 rounded-full"
+                    />
+                    <div className="w-full ml-3">
                       <span
-                        className={`${
-                          n.status === "read" ? "bg-green-600" : "bg-red-600"
-                        } text-white px-2 py-0.5 rounded-md`}
-                        style={{ ...FONTS.heading_09 }}
+                        style={{
+                          ...FONTS.heading_08_bold,
+                          color: COLORS.gray_dark_02,
+                        }}
                       >
-                        Status : {n.status}
+                        {n.name}
+                      </span>
+                      <p
+                        style={{
+                          ...FONTS.heading_09,
+                          color: COLORS.gray_dark_03,
+                        }}
+                      >
+                        {n.role}
+                      </p>
+                    </div>
+                    <div className="flex justify-end w-full">
+                      <span
+                        style={{
+                          ...FONTS.heading_09,
+                          color: COLORS.gray_dark_03,
+                        }}
+                        className="border-2 px-1 py-0.5 rounded-md border-gray-400"
+                      >
+                        ID : {n.id}
                       </span>
                     </div>
-                    <Button
-                      className="bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end"
-                      onClick={() => handleResend(n)}
+                  </div>
+                  <h3
+                    style={{
+                      ...FONTS.heading_08_bold,
+                      color: COLORS.gray_dark_02,
+                    }}
+                  >
+                    {n.title}
+                  </h3>
+                  <p
+                    style={{ ...FONTS.heading_09, color: COLORS.black }}
+                    className="mb-2"
+                  >
+                    {n.body}
+                  </p>
+                  <div className="flex justify-between text-sm w-full mb-2">
+                    <span
+                      className={`${
+                        n.status === "read" ? "bg-green-600" : "bg-red-600"
+                      } text-white px-2 py-0.5 rounded-md`}
+                      style={{ ...FONTS.heading_09 }}
                     >
-                      Resend
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
-          ) : (
-            <div className="flex items-center justify-center col-span-full py-10">
-              <p className="text-gray-500 text-center">
-                "No notifications found"
-              </p>
-            </div>
-          )
+                      Status : {n.status}
+                    </span>
+                  </div>
+                  <Button
+                    className="bg-[#1BBFCA] hover:bg-cyan-600 text-white rounded px-3 py-0.5 self-end"
+                    onClick={() => handleResend(n)}
+                  >
+                    Resend
+                  </Button>
+                </CardContent>
+              </Card>
+            ))
         ) : (
-          <Card className="col-span-3 mt-8">
+          <Card className="col-span-full mt-8">
             <p className="font-lg text-gray-900 text-center">
               No Notifications available
             </p>
@@ -322,3 +301,4 @@ export default function AllNotifications() {
     </div>
   );
 }
+

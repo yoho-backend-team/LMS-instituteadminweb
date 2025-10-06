@@ -29,10 +29,11 @@ const StaffAddBar: React.FC<formtype> = ({
 
   return (
     <div className="flex flex-col w-full gap-4 p-2">
-      <div className="flex flex-row w-full justify-between items-center p-4 bg-white rounded-lg shadow-[0px_4px_24px_0px_#00000026]">
-        <div className="flex flex-row items-center w-full h-max gap-5">
+      {/* Top card with staff info and Add Attendance */}
+      <div className="flex flex-col sm:flex-col md:flex-row w-full justify-between items-center p-4 bg-white rounded-lg shadow-[0px_4px_24px_0px_#00000026]">
+        <div className="flex flex-row flex-wrap md:flex-nowrap items-center w-full h-max gap-5">
           <button
-            onClick={()=>navigate('/staffs-attendance')}
+            onClick={() => navigate('/staffs-attendance')}
             className="p-2 rounded-full hover:bg-gray-100 transition"
           >
             <ArrowLeft size={24} className="text-[#3ABE65]" />
@@ -52,8 +53,7 @@ const StaffAddBar: React.FC<formtype> = ({
           </div>
         </div>
 
-        <div
-          className="flex flex-row bg-[#3ABE65] w-[199px] h-min p-2 text-white rounded-md items-center gap-1 cursor-pointer"
+        <div className="mt-4 md:mt-0 flex justify-start md:justify-end w-[200px] md:w-[199px] bg-[#3ABE65] h-min p-2 text-white rounded-md items-center gap-1 cursor-pointer"
           onClick={() => setOpen(true)}
         >
           <img src={plus} alt="" className="w-5 h-5" />
@@ -99,6 +99,7 @@ const StaffAddBar: React.FC<formtype> = ({
         )}
       </div>
     </div>
+
   );
 };
 

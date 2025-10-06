@@ -88,7 +88,7 @@ export function AddNotificationDrawer({
       </Button>
 
       <Drawer open={open} onOpenChange={setOpen} direction="right">
-        <DrawerContent className="h-full bg-white w-full max-w-md ml-auto rounded-none p-6 shadow-lg border-l rounded-xl">
+        <DrawerContent className="h-full bg-white w-full max-w-md ml-auto  p-6 shadow-lg border-l rounded-xl">
           <DrawerHeader className="flex items-center justify-between p-0 mb-6 relative">
             <DrawerTitle
               style={{ ...FONTS.heading_06_bold, color: COLORS.gray_dark_02 }}
