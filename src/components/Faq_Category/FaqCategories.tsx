@@ -287,7 +287,7 @@ const FaqCategory: React.FC = () => {
             filtered.map((cat: any, index: any) => (
               <div
                 key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-5 items-center shadow text-[#7D7D7D] text-sm rounded-md relative w-screen md:w-full overflow-scroll"
+                className="bg-white px-4 py-3 grid grid-cols-5 items-center shadow text-[#7D7D7D] text-sm rounded-md relative w-screen md:w-full overflow-visible"
               >
                 <div>{cat.id}</div>
                 <div className="col-span-2">
