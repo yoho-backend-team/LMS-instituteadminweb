@@ -75,11 +75,11 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 	)} - ${getFormattedTime(data?.end_time)}`;
 
 	return (
-		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-full bg-white md:h-[440px] xs:h-[390px] flex flex-col'>
+		<Card className='rounded-xl shadow-[0px_0px_12px_rgba(0,0,0,0.08)] w-full bg-white lg:h-[480px] md:h-[440px] xs:h-[390px] flex flex-col'>
 			<CardContent className='p-4 xs:p-3 sm:p-4 pb-2 relative flex flex-col flex-1'>
 				{/* Header Section - Responsive Height */}
-				<div className='flex flex-col xs:flex-row justify-between items-start xs:items-center gap-3 xs:gap-2 border-b border-gray-200 pb-2 md:h-[150px] xs:h-[70px]'>
-					<div className='flex flex-col sm:flex-col xs:flex-row justify-between gap-3 xs:gap-4 w-full xs:w-auto h-full'>
+				<div className='flex flex-col xs:flex-row justify-between items-start xs:items-center gap-3 xs:gap-2 border-b border-gray-200 pb-2 sm:h-[150px] md:h-[90px] xs:h-[70px]'>
+					<div className='flex flex-col sm:flex-col md:flex-row xs:flex-row justify-between gap-3 xs:gap-4 w-full xs:w-auto h-full'>
 						<div className='flex flex-col items-left gap-2 min-w-[120px] xs:min-w-[100px] h-full justify-between'>
 							<p style={{ ...FONTS.heading_09 }} className='text-sm xs:text-xs'>
 								{data?.batch?.student?.length}{' '}
@@ -163,10 +163,10 @@ export const LiveClassCard: React.FC<BatchCardProps> = ({
 				</div>
 
 				{/* Content Section - Responsive Height */}
-				<div className='pr-0 xs:pr-8 sm:pr-10 md:pr-1 flex-1 flex flex-col justify-between min-h-[240px] xs:min-h-[230px] sm:min-h-[250px] md:min-h-[240px] lg:min-h-[250px] xl:min-h-[260px] 2xl:min-h-[280px]'>
+				<div className='pr-0 xs:pr-8 sm:pr-10 md:pr-1 flex-1 flex flex-col justify-between min-h-[210px] xs:min-h-[230px] sm:min-h-[250px] md:min-h-[240px] lg:min-h-[250px] xl:min-h-[260px] 2xl:min-h-[280px]'>
 					<div className='space-y-2 xs:space-y-2 sm:space-y-3 md:space-y-3 lg:space-y-4'>
 						{/* Title */}
-						<div className='h-[56px] xs:h-[52px] sm:h-[60px] md:h-[56px] lg:h-[64px] xl:h-[68px] 2xl:h-[72px] flex items-start'>
+						<div className='h-[32px] xs:h-[32px] sm:h-[32px] md:h-[56px] lg:h-[42px] xl:h-[68px] 2xl:h-[72px] flex items-start mt-3'>
 							<p
 								className='text-base xs:text-base sm:text-lg md:text-lg lg:text-xl xl:text-xl font-semibold line-clamp-2 xs:line-clamp-2 sm:line-clamp-3'
 								style={{ color: COLORS.gray_dark_02 }}
