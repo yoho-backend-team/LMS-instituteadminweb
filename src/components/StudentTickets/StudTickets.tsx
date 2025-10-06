@@ -12,10 +12,10 @@ const StudTickets: React.FC = () => {
   const dispatch = useDispatch<any>();
   const studentTicketData = useSelector(selectStudentTicket);
 
- 
 
-   const overall_branch_id=GetLocalStorage("selectedBranchId")
-    const overall_istitute_id=GetLocalStorage("instituteId")
+
+  const overall_branch_id = GetLocalStorage("selectedBranchId")
+  const overall_istitute_id = GetLocalStorage("instituteId")
 
   const fetchstudentTickets = async () => {
     try {
@@ -50,11 +50,10 @@ const StudTickets: React.FC = () => {
         {["opened", "closed"].map((type) => (
           <button
             key={type}
-            className={`px-4 py-2 rounded-md font-semibold capitalize ${
-              filter === type
-                ? "bg-[#14b8c6] text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
+            className={`px-4 py-2 rounded-md font-semibold capitalize ${filter === type
+              ? "bg-[#14b8c6] text-white"
+              : "bg-gray-200 text-gray-700"
+              }`}
             onClick={() => setFilter(type as "opened" | "closed")}
           >
             {type} Tickets
@@ -62,7 +61,7 @@ const StudTickets: React.FC = () => {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 sm:gap-2 md:gap-2 lg:gap-4 ">
         {loading ? (
           Array.from({ length: 6 }).map((_, index) => (
             <div

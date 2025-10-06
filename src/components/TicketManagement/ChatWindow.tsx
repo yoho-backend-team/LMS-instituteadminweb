@@ -54,7 +54,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
   }, [user])
 
   return (
-    <div className="flex flex-col justify-between w-[70%] border border-[#E2E8F0] rounded-xl bg-white ">
+    <div className="flex flex-col justify-between w-full h-[75vh] border border-[#E2E8F0] rounded-xl bg-white ">
       {/* Top Bar */}
       <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl m-2 items-center gap-4">
         <img

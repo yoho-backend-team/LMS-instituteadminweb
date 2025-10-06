@@ -60,3 +60,13 @@ body {
 
 
 } */
+
+.media {
+  width: 100%;
+}
+
+@media (max-width: 420px) {
+  .media {
+    width: 260px;
+  }
+}
