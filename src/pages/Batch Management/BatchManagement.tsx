@@ -21,7 +21,7 @@ export default function BatchManagement() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch<any>();
   const batchData = useSelector(selectBatch);
-  const [, setCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [searchterms, setSearchTerms] = useState({
     status: "",
     date: "",
@@ -177,7 +177,7 @@ export default function BatchManagement() {
               />
             </div>
 
-            {/* <div>
+            <div>
               <label
                 className="block mb-1"
                 style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
@@ -198,8 +198,7 @@ export default function BatchManagement() {
                   </option>
                 ))}
               </select>
-            </div> */}
-
+            </div>
             <div>
               <label
                 className="block mb-1"
