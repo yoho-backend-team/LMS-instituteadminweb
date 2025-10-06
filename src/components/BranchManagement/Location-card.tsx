@@ -195,8 +195,8 @@ export function LocationCard({
         )}
 
         {/* Branch Info */}
-        <div className="flex flex-col items-start gap-4 w-full">
-          <div className="flex flex-col items-start gap-3 w-full">
+        <div className="flex flex-col items-start gap-4 w-full ">
+          <div className="flex flex-col items-start gap-3 w-full ml-5 mb-3 ">
             <h3 className="text-lg font-semibold capitalize text-[#716F6F]">
               {cityName}
             </h3>
@@ -206,7 +206,7 @@ export function LocationCard({
           </div>
 
           {/* Status Dropdown */}
-          <div className="relative" ref={statusRef}>
+          <div className="relative left-5 bottom-3" ref={statusRef}>
             <button
               onClick={toggleStatusDropdown}
               className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${currentStatus === "Active" ? "bg-[#1BBFCA]" : "bg-gray-200"
