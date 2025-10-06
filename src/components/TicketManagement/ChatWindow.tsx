@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { LuSend } from "react-icons/lu";
 
-import { FiPlus } from "react-icons/fi";
-import { MdOutlineEmojiEmotions } from "react-icons/md";
+// import { FiPlus } from "react-icons/fi";
+// import { MdOutlineEmojiEmotions } from "react-icons/md";
 import chatimg from '../../assets/navbar/chatbackgroundimg.png'
 import { GetProfileDetail } from "../../features/Auth/service";
 import socket from "../../utils/socket";
@@ -54,7 +54,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
   }, [user])
 
   return (
-    <div className="flex flex-col justify-between w-full h-[75vh] border border-[#E2E8F0] rounded-xl bg-white ">
+    <div className="flex flex-col justify-between w-full h-[75vh] border border-[#E2E8F0] rounded-xl bg-white chatwindow">
       {/* Top Bar */}
       <div className="flex p-4 bg-white border shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-2xl m-2 items-center gap-4">
         <img
@@ -84,8 +84,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ user }) => {
 
       {/* Input Bar */}
       <div className="flex items-center border-t px-4 py-3 gap-3">
-        <FiPlus className="text-gray-500 text-xl cursor-pointer" />
-        <MdOutlineEmojiEmotions className="text-gray-500 text-xl cursor-pointer" />
+        {/* <FiPlus className="text-gray-500 text-xl cursor-pointer" />
+        <MdOutlineEmojiEmotions className="text-gray-500 text-xl cursor-pointer" /> */}
         <input
           value={inputValue}
           onChange={(e: any) => setInputValue(e.target.value)}

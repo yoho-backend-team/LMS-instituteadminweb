@@ -162,7 +162,7 @@ const TicketDetailsPage: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-wrap items-center justify-between w-full">
           <p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_01 }} className="sm:text-sm">
             TICKET ID :{" "}
             <span className="text-[#14b8c6]">#{ticketData?.ticket_id}</span>

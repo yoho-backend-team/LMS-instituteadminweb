@@ -257,7 +257,7 @@ const FaqCategory: React.FC = () => {
 
       {/* Table */}
       <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)] overflow-x-scroll">
-        <div className="grid grid-cols-5 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md">
+        <div className="grid grid-cols-5 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md w-screen md:w-full">
           <div>ID</div>
           <div className="col-span-2">Category Name</div>
           <div className="ml-4"> Status</div>
@@ -287,7 +287,7 @@ const FaqCategory: React.FC = () => {
             filtered.map((cat: any, index: any) => (
               <div
                 key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-5 items-center shadow text-[#7D7D7D] text-sm rounded-md relative w-full overflow-scroll"
+                className="bg-white px-4 py-3 grid grid-cols-5 items-center shadow text-[#7D7D7D] text-sm rounded-md relative w-screen md:w-full overflow-scroll"
               >
                 <div>{cat.id}</div>
                 <div className="col-span-2">

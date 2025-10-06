@@ -69,4 +69,10 @@ body {
   .media {
     width: 260px;
   }
+  .layout{
+    margin-left: 0;
+  }
+  .chatwindow{
+    width: 300px;
+  }
 }

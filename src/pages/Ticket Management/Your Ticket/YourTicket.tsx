@@ -176,8 +176,8 @@ const TicketsPage: React.FC = () => {
 
 
   return (
-    <div className="h-auto p-0">
-      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
+    <div className="h-auto p-0 w-full">
+      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px] chatwindow">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
           style={{ ...FONTS.heading_07_bold }}
@@ -215,7 +215,7 @@ const TicketsPage: React.FC = () => {
       </div>
 
       {showbuttonWindow && (
-        <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
+        <div className="mb-6 mt-2 flex flex-row" style={{ ...FONTS.heading_08 }}>
           <button
             onClick={() => {
               setActiveTab("open");

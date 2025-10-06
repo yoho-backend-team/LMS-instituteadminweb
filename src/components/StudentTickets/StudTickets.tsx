@@ -61,7 +61,7 @@ const StudTickets: React.FC = () => {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 sm:gap-2 md:gap-2 lg:gap-4 ">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-2 lg:gap-4 ">
         {loading ? (
           Array.from({ length: 6 }).map((_, index) => (
             <div
