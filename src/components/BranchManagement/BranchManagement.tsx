@@ -345,7 +345,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           padding: "16px",
         }}
       >
-        <div className="flex flex-col gap-[30px] h-full">
+        <div className="flex flex-col gap-[30px] h-full ">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-3">
               <h2 className="text-2xl font-semibold text-[#1BBFCA] font-poppins">
@@ -451,7 +451,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-4 mt-auto pt-6">
+            <div className="flex justify-end gap-4 mt-auto mb-4 pt-6">
               <button
                 type="button"
                 onClick={onCancel}

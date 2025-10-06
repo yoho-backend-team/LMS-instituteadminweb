@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import { ResponsiveContainer } from "recharts";
 import {
   ArrowLeft,
   ArrowRight,
@@ -399,8 +399,8 @@ export function BranchDetailsPage({
                         exit={{ opacity: 0, y: -30, scale: 0.9 }}
                         transition={{ duration: 0.3 }}
                         className={`flex-shrink-0 ${index === 1
-                          ? "w-[220px] h-[280px] rounded-3xl"
-                          : "w-[200px] h-[250px] rounded-2xl"
+                          ? "xl:w-[220px] lg:w-[170px] xl:h-[280px] lg:h-[230px] md:w-[150px] md:h-[200px] rounded-3xl"
+                          : "xl:w-[200px] lg:w-[140px] xl:h-[250px] lg:h-[220px] md:w-[130px] md:h-[190px] sm:h-[0px] sm:w-[0px] rounded-2xl"
                           } text-white shadow-lg flex items-center justify-between px-6 py-6 relative`}
                         style={{ backgroundColor: card.color }}
                         whileHover={{
@@ -422,7 +422,7 @@ export function BranchDetailsPage({
                             </p>
                           </div>
                           <div>
-                            <p className="text-2xl font-bold">{card.value}</p>
+                            <p className="xl:text-2xl lg:text-lg  font-bold">{card.value}</p>
                           </div>
                         </div>
                       </motion.div>
@@ -500,114 +500,133 @@ export function BranchDetailsPage({
                   </div>
 
                   {/* Combined Earning Reports and Tabs section - now properly aligned */}
-                  <div className="flex flex-row justify-between items-center w-full">
-                    <div className="flex flex-col">
-                      <h3 className="text-xl font-semibold text-[#716F6F]">Earning Reports</h3>
-                      <p className="text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
-                    </div>
+<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
+  <div className="flex flex-col">
+    <h3 className="text-lg sm:text-xl font-semibold text-[#716F6F]">Earning Reports</h3>
+    <p className="text-sm sm:text-base font-light text-[#7D7D7D] capitalize">Yearly Earnings Overview</p>
+  </div>
 
-                    <Tabs
-                      defaultValue="revenue"
-                      onValueChange={(value) =>
-                        setActiveTab(value as "revenue" | "expense")
-                      }
-                    >
-                      <TabsList className="bg-transparent p-0 gap-4 h-auto">
-                        <TabsTrigger
-                          value="revenue"
-                          className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
-                        >
-                          <span className=" text-[#23AF62] font-semibold text-lg relative">
-                            Revenue
-                            <span
-                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full"
-                              data-state={
-                                activeTab === "revenue" ? "active" : "inactive"
-                              }
-                            ></span>
-                          </span>
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="expense"
-                          className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
-                        >
-                          <span className="text-[#FF8400] font-semibold text-lg relative">
-                            Expense
-                            <span
-                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full"
-                              data-state={
-                                activeTab === "expense" ? "active" : "inactive"
-                              }
-                            ></span>
-                          </span>
-                        </TabsTrigger>
-                        {/* <TabsTrigger
-                          value="pendings"
-                          className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
-                        >
-                          {/* <span className="text-[#CA2858] font-semibold text-lg relative">
-                            Pendings
-                            <span
-                              className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#CA2858] transition-all duration-300 data-[state=active]:w-full"
-                              data-state={
-                                activeTab === "pendings" ? "active" : "inactive"
-                              }
-                            ></span>
-                          </span> */}
-                        {/* </TabsTrigger> */}
-                        {/* <TabsTrigger
-                          value="totalIncome"
-                          className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
-                        >
-                          <span className="text-[#FFCC00] font-semibold text-lg relative">
-                            Total Income
-                            <span className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FFCC00] transition-all duration-300 data-[state=active]:w-full" data-state={activeTab === "totalIncome" ? "active" : "inactive"}></span>
-                          </span>
-                        </TabsTrigger> */}
-                      </TabsList>
-                    </Tabs>
-                  </div>
+  <Tabs
+    defaultValue="revenue"
+    onValueChange={(value) =>
+      setActiveTab(value as "revenue" | "expense")
+    }
+  >
+    <TabsList className="bg-transparent p-0 gap-2 sm:gap-4 h-auto flex-wrap">
+      <TabsTrigger
+        value="revenue"
+        className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+      >
+        <span className="text-[#23AF62] font-semibold text-sm sm:text-lg relative">
+          Revenue
+          <span
+            className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#23AF62] transition-all duration-300 data-[state=active]:w-full"
+            data-state={
+              activeTab === "revenue" ? "active" : "inactive"
+            }
+          ></span>
+        </span>
+      </TabsTrigger>
+      <TabsTrigger
+        value="expense"
+        className="data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-1 relative"
+      >
+        <span className="text-[#FF8400] font-semibold text-sm sm:text-lg relative">
+          Expense
+          <span
+            className="absolute bottom-0 left-0 w-0 h-[3px] bg-[#FF8400] transition-all duration-300 data-[state=active]:w-full"
+            data-state={
+              activeTab === "expense" ? "active" : "inactive"
+            }
+          ></span>
+        </span>
+      </TabsTrigger>
+    </TabsList>
+  </Tabs>
+</div>
                 </CardHeader>
 
                 <CardContent>
-                  <div className="h-[350px]">
-                    <BarChart
-                      width={780}
-                      height={350}
-                      data={chartData}
-                      margin={{ top: 40, right: 10, left: 5, bottom: 5 }}
-                      barCategoryGap="20%"
-                    >
-                      <CartesianGrid vertical={false} strokeDasharray="4 4" />
-                      <XAxis
-                        dataKey="month"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                        padding={{ left: 10, right: 10 }}
-                      />
-                      <YAxis
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={10}
-                        tickFormatter={(value: number) => `₹${value / 1000}K`}
-                      />
-                      <Bar
-                        dataKey={activeTab}
-                        shape={(props: any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
-                        barSize={30}
-                      >
-                        <LabelList
-                          dataKey={activeTab}
-                          position="top"
-                          formatter={(value: any) => `₹${value / 1000}K`}
-                          fill="#716F6F"
-                          offset={10}
-                        />
-                      </Bar>
-                    </BarChart>
-                  </div>
-                </CardContent>
+  {/* Scrollable container for mobile */}
+  <div className="sm:hidden overflow-x-auto scrollbar-hide">
+    <div className="min-w-[600px] h-[350px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={chartData}
+          margin={{ top: 40, right: 10, left: 5, bottom: 5 }}
+          barCategoryGap="20%"
+        >
+          <CartesianGrid vertical={false} strokeDasharray="4 4" />
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            padding={{ left: 10, right: 10 }}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={10}
+            tickFormatter={(value: number) => `₹${value / 1000}K`}
+          />
+          <Bar
+            dataKey={activeTab}
+            shape={(props: any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+            barSize={30}
+          >
+            <LabelList
+              dataKey={activeTab}
+              position="top"
+              formatter={(value: any) => `₹${value / 1000}K`}
+              fill="#716F6F"
+              offset={10}
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+  
+  {/* Default view for larger screens */}
+  <div className="hidden sm:block h-[350px] w-full">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={chartData}
+        margin={{ top: 40, right: 10, left: 5, bottom: 5 }}
+        barCategoryGap="20%"
+      >
+        <CartesianGrid vertical={false} strokeDasharray="4 4" />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          padding={{ left: 10, right: 10 }}
+        />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickMargin={10}
+          tickFormatter={(value: number) => `₹${value / 1000}K`}
+        />
+        <Bar
+          dataKey={activeTab}
+          shape={(props: any) => <CylinderBar {...props} data={chartData} dataKey={activeTab} />}
+          barSize={30}
+        >
+          <LabelList
+            dataKey={activeTab}
+            position="top"
+            formatter={(value: any) => `₹${value / 1000}K`}
+            fill="#716F6F"
+            offset={10}
+          />
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+</CardContent>
               </Card>
             </motion.div>
           </motion.div>
@@ -665,100 +684,100 @@ export function BranchDetailsPage({
               variants={cardHoverVariants}
             >
               <Card className="shadow-lg rounded-2xl w-full transition-all duration-300 hover:shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-[#716F6F]">Detailed Insights</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
-                      <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Courses</h3>
-                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Month Ago</span> */}
-                      </div>
+  <CardHeader className="p-4 sm:p-6">
+    <CardTitle className="text-base sm:text-lg md:text-xl font-semibold text-[#716F6F]">Detailed Insights</CardTitle>
+  </CardHeader>
+  <CardContent className="p-4 sm:p-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      {/* Courses Card */}
+      <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-4 sm:p-6">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <h3 className="text-[#716F6F] text-lg sm:text-xl font-semibold">Courses</h3>
+        </div>
 
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
-                              <BookOpen className="w-5 h-5 text-[#8A2BE2]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Active</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.courses?.[0]?.active}</span>
-                        </div>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
+                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#8A2BE2]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Active</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.courses?.[0]?.active}</span>
+          </div>
 
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
-                              <BookOpen className="w-5 h-5 text-[#8A2BE2]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Inactive</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.courses?.[0]?.inactive}</span>
-                        </div>
-                      </div>
-                    </div>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#E0BFFF] rounded-full flex items-center justify-center">
+                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#8A2BE2]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Inactive</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.courses?.[0]?.inactive}</span>
+          </div>
+        </div>
+      </div>
 
-                    <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
-                      <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Classes</h3>
-                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Week Ago</span> */}
-                      </div>
+      {/* Classes Card */}
+      <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-4 sm:p-6">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <h3 className="text-[#716F6F] text-lg sm:text-xl font-semibold">Classes</h3>
+        </div>
 
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
-                              <Users className="w-5 h-5 text-[#00BCD4]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Online</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.onlineClass}</span>
-                        </div>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#00BCD4]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Online</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.onlineClass}</span>
+          </div>
 
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
-                              <Users className="w-5 h-5 text-[#00BCD4]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Offline</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.offlineClass}</span>
-                        </div>
-                      </div>
-                    </div>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#B2EBF2] rounded-full flex items-center justify-center">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#00BCD4]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Offline</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.offlineClass}</span>
+          </div>
+        </div>
+      </div>
 
-                    <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-6">
-                      <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-[#716F6F] text-xl font-semibold">Staff</h3>
-                        {/* <span className="text-[#7D7D7D] text-sm font-light">Updates 1 Day Ago</span> */}
-                      </div>
+      {/* Staff Card */}
+      <div className="bg-white shadow-[0px_4px_24px_rgba(0,0,0,0.15)] rounded-xl p-4 sm:p-6">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <h3 className="text-[#716F6F] text-lg sm:text-xl font-semibold">Staff</h3>
+        </div>
 
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
-                              <Users className="w-5 h-5 text-[#4CAF50]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Staffs</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.instructors}</span>
-                        </div>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#4CAF50]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Staffs</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.instructors}</span>
+          </div>
 
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
-                            <div className="w-10 h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
-                              <Users className="w-5 h-5 text-[#4CAF50]" />
-                            </div>
-                          </div>
-                          <span className="text-[#716F6F] text-lg">Non-Teaching</span>
-                          <span className="ml-auto text-[#716F6F] text-2xl font-bold">{branchData?.students}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-white shadow-[2px_2px_4px_rgba(114,142,171,0.1),-6px_-6px_20px_#FFFFFF,4px_4px_20px_rgba(111,140,176,0.41),inset_-4px_-4px_9px_rgba(255,255,255,0.88)] rounded-xl">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-[#C8E6C9] rounded-full flex items-center justify-center">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#4CAF50]" />
+              </div>
+            </div>
+            <span className="text-[#716F6F] text-sm sm:text-base md:text-lg">Non-Teach</span>
+            <span className="ml-auto text-[#716F6F] text-xl sm:text-2xl font-bold">{branchData?.students}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </CardContent>
+</Card>
             </motion.div>
           </motion.div>
           {/* <motion.div variants={itemVariants}>

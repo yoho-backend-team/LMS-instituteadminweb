@@ -729,9 +729,8 @@ const TeachingStaffs: React.FC = () => {
             <Button
               className="bg-[#1BBFCA] hover:bg-teal-600 text-white w-full sm:w-auto h-9 sm:h-10 text-sm sm:text-base"
               onClick={handleAddStaff}
-              disabled={isLoading}
             >
-              {isLoading ? 'Submitting...' : 'Submit'}
+              Submit
             </Button>
           </div>
         </Card>
@@ -745,8 +744,8 @@ const TeachingStaffs: React.FC = () => {
               <Filter size={16} />
               Show Filter
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => setShowAddStaff(true)}
               className={`gap-2 w-full sm:w-auto ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border} h-9 sm:h-10 text-sm sm:text-base`}
             >

@@ -91,10 +91,8 @@ export default function Component() {
 				setSelectedBranch(foundBranch?.branch_identity);
 			}
 		})();
-		// setTimeout(() => {
-		// 	hideLoader()
-		// }, 10000);
 	}, [BranchData, dispatch, hideLoader, localBranch, showLoader]);
+	
 	const monthMap: { [key: string]: number } = {
 		January: 1,
 		February: 2,
@@ -109,6 +107,7 @@ export default function Component() {
 		November: 11,
 		December: 12,
 	};
+	
 	const handleApply = async () => {
 		try {
 			const monthNumber = monthMap[selectedMonth];
@@ -128,18 +127,17 @@ export default function Component() {
 		}
 	};
 
-
 	return (
-		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
+		<div className='h-[86vh] p-2 sm:p-4 overflow-y-scroll overflow-x-hidden scrollbar-hide'>
 			{/* SearchBAr */}
-			<div className=' mx-auto space-y-6'>
+			<div className='mx-auto space-y-4 sm:space-y-6'>
 				{/* Header */}
-				<div className='flex justify-between items-center'>
+				<div className='grid grid-rows-2 gap-3 sm:flex sm:justify-between sm:items-center'>
 					<div className='relative'>
 						{/* Trigger Button */}
 						<button
 							onClick={() => setBranchMenuOpen(!branchMenuOpen)}
-							className='flex items-center justify-between w-96 px-4 py-2 rounded-full'
+							className='flex items-center justify-between w-full sm:w-96 px-3 sm:px-4 py-2 rounded-full'
 							style={{
 								background: 'white',
 								border: `2px solid ${COLORS.primary}`,
@@ -147,13 +145,13 @@ export default function Component() {
 								color: '#716F6F',
 							}}
 						>
-							<span>{selectedBranch}</span>
-							<ChevronDown className='h-4 w-4 ml-2 text-[#716F6F]' />
+							<span className='truncate mr-2'>{selectedBranch}</span>
+							<ChevronDown className='h-4 w-4 flex-shrink-0 text-[#716F6F]' />
 						</button>
 
 						{/* Dropdown Options */}
 						{branchMenuOpen && (
-							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-96'>
+							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-full sm:w-96 max-h-60 overflow-y-auto'>
 								<div className='space-y-2 p-2'>
 									{branchList.map((branch: any) => (
 										<button
@@ -180,15 +178,15 @@ export default function Component() {
 					<div className='relative'>
 						<button
 							onClick={() => setPeriodOpen(!periodOpen)}
-							className='flex items-center justify-between w-44 px-4 py-2 text-white rounded-full'
+							className='flex items-center justify-between w-full sm:w-44 px-3 sm:px-4 py-2 text-white rounded-full'
 							style={{ background: COLORS.button }}
 						>
-							<span>Choose Period</span>
-							<ChevronDown className='h-4 w-4 ml-2' />
+							<span className='text-sm sm:text-base'>Choose Period</span>
+							<ChevronDown className='h-4 w-4 ml-2 flex-shrink-0' />
 						</button>
 						{periodOpen && (
-							<div className='absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-4 w-64'>
-								<div className='space-y-4'>
+							<div className='absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-3 sm:p-4 w-full sm:w-64'>
+								<div className='space-y-3 sm:space-y-4'>
 									{/* Month Selector */}
 									<div>
 										<label className='block text-sm font-medium text-[#716F6F] mb-1'>
@@ -197,7 +195,7 @@ export default function Component() {
 										<div className='relative'>
 											<select
 												title='Months'
-												className='w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F]'
+												className='w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-sm sm:text-base'
 												value={selectedMonth}
 												onChange={(e) => setSelectedMonth(e.target.value)}
 												style={{ ...FONTS.heading_08 }}
@@ -221,7 +219,7 @@ export default function Component() {
 													</option>
 												))}
 											</select>
-											<ChevronDown className='h-4 w-4 absolute right-3 top-7 transform -translate-y-1/2 text-[#716F6F]' />
+											<ChevronDown className='h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-[#716F6F]' />
 										</div>
 									</div>
 
@@ -233,7 +231,7 @@ export default function Component() {
 										<div className='relative'>
 											<select
 												title='Years'
-												className='w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F]'
+												className='w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-sm sm:text-base'
 												value={selectedYear}
 												onChange={(e) => setSelectedYear(e.target.value)}
 												style={{ ...FONTS.heading_08 }}
@@ -244,13 +242,12 @@ export default function Component() {
 													</option>
 												))}
 											</select>
-											<ChevronDown className='h-4 w-4 absolute right-3 top-7 transform -translate-y-1/2 text-[#716F6F]' />
+											<ChevronDown className='h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-[#716F6F]' />
 										</div>
 									</div>
 
-
 									<button
-										className='w-full py-2 px-4 text-white rounded-md border-0'
+										className='w-full py-2 px-4 text-white rounded-md border-0 text-sm sm:text-base'
 										onClick={handleApply}
 										style={{ background: COLORS.primary, ...FONTS.heading_08 }}
 									>
@@ -264,190 +261,153 @@ export default function Component() {
 			</div>
 
 			{/* content section */}
-
-			<div className='lg:flex mt-8 gap-5 lg:flex-row '>
+			<div className='mt-6 sm:mt-8 gap-4 sm:gap-5 flex flex-col lg:flex-row'>
 				{/* Left section  */}
-				<section className=' lg:w-[25%] md:w-full lg:flex lg:flex-col lg:gap-8 md:gap-4 md:grid md:grid-cols-3 md:mb-6'>
-					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6 '>
-							{/* Icon */}
-
-							<div className=' rounded-lg text-white'>
+				<section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4 lg:gap-6 lg:w-[25%]'>
+					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
+						<div className='flex items-center gap-3 sm:gap-4'>
+							<div className='rounded-lg text-white'>
 								<img
 									src={Earnings}
-									alt=''
-									className='lg:w-[70px] md:w-[50px]'
+									alt='Earnings'
+									className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]'
 								/>
 							</div>
-
-							{/* Text Info */}
-							<div className='flex flex-col gap-2 '>
-								<span
-									className='text-[#716F6F]'
-									style={{ ...FONTS.heading_08 }}
-								>
+							<div className='flex flex-col gap-1 sm:gap-2'>
+								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
 									Total Earnings
 								</span>
-								<span className='text-xl font-semibold text-[#7D7D7D]'>
+								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
 									{DashboardData?.totalBalance}
 								</span>
-								{/* Progress bar */}
 							</div>
 						</div>
-
-						<div className=' w-full bg-gray-200 h-[4px] rounded-full'>
-							<div className='bg-[#6150E9] h-[4px] w-[60%] rounded-full'></div>
+						<div className='w-full bg-gray-200 h-[3px] sm:h-[4px] rounded-full'>
+							<div className='bg-[#6150E9] h-full w-[60%] rounded-full'></div>
 						</div>
 					</div>
 
-					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6'>
-							{/* Icon */}
-
-							<div className=' rounded-lg text-white'>
-								<img src={Projects} alt='' className='w-[70px]' />
+					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
+						<div className='flex items-center gap-3 sm:gap-4'>
+							<div className='rounded-lg text-white'>
+								<img src={Projects} alt='Projects' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
 							</div>
-
-							{/* Text Info */}
-							<div className='flex flex-col gap-2 '>
-								<span
-									className='text-[#716F6F]'
-									style={{ ...FONTS.heading_08 }}
-								>
+							<div className='flex flex-col gap-1 sm:gap-2'>
+								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
 									Payouts
 								</span>
-								<span className='text-xl font-semibold text-[#7D7D7D]'>
+								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
 									{DashboardData?.totalPaidAmount}
 								</span>
-								{/* Progress bar */}
 							</div>
 						</div>
-
-						<div className=' w-full bg-gray-200 h-[4px] rounded-full'>
-							<div className='bg-[#18BABA] h-[4px] w-[60%] rounded-full'></div>
+						<div className='w-full bg-gray-200 h-[3px] sm:h-[4px] rounded-full'>
+							<div className='bg-[#18BABA] h-full w-[60%] rounded-full'></div>
 						</div>
 					</div>
 
-					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6'>
-							{/* Icon */}
-
-							<div className=' rounded-lg text-white'>
-								<img src={Instructor} alt='' className='w-[70px]' />
+					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
+						<div className='flex items-center gap-3 sm:gap-4'>
+							<div className='rounded-lg text-white'>
+								<img src={Instructor} alt='Instructor' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
 							</div>
-
-							{/* Text Info */}
-							<div className='flex flex-col gap-2 '>
-								<span
-									className='text-[#716F6F]'
-									style={{ ...FONTS.heading_08 }}
-								>
+							<div className='flex flex-col gap-1 sm:gap-2'>
+								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
 									Instructor
 								</span>
-								<span className='text-xl font-semibold text-[#7D7D7D]'>
+								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
 									{DashboardData?.TeachingstaffCount}
 								</span>
-								{/* Progress bar */}
 							</div>
 						</div>
-
-						<div className=' w-full bg-gray-200 h-[4px] rounded-full'>
-							<div className='bg-[#E67123] h-[4px] w-[60%] rounded-full'></div>
+						<div className='w-full bg-gray-200 h-[3px] sm:h-[4px] rounded-full'>
+							<div className='bg-[#E67123] h-full w-[60%] rounded-full'></div>
 						</div>
 					</div>
 
-					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6'>
-							{/* Icon */}
-
-							<div className=' rounded-lg text-white'>
-								<img src={Students} alt='' className='w-[70px]' />
+					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
+						<div className='flex items-center gap-3 sm:gap-4'>
+							<div className='rounded-lg text-white'>
+								<img src={Students} alt='Students' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
 							</div>
-
-							{/* Text Info */}
-							<div className='flex flex-col gap-2 '>
-								<span
-									className='text-[#716F6F]'
-									style={{ ...FONTS.heading_08 }}
-								>
-									students
+							<div className='flex flex-col gap-1 sm:gap-2'>
+								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+									Students
 								</span>
-								<span className='text-xl font-semibold text-[#7D7D7D]'>
+								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
 									{DashboardData?.studentCount}
 								</span>
-								{/* Progress bar */}
 							</div>
 						</div>
-
-						<div className=' w-full bg-gray-200 h-[4px] rounded-full'>
-							<div className='bg-[#B200FF] h-[4px] w-[60%] rounded-full'></div>
+						<div className='w-full bg-gray-200 h-[3px] sm:h-[4px] rounded-full'>
+							<div className='bg-[#B200FF] h-full w-[60%] rounded-full'></div>
 						</div>
 					</div>
 
-					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-4 px-5 grid gap-5'>
-						<div className='flex items-center gap-6'>
-							{/* Icon */}
-
-							<div className=' rounded-lg text-white'>
-								<img src={Course} alt='' className='w-[70px]' />
+					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
+						<div className='flex items-center gap-3 sm:gap-4'>
+							<div className='rounded-lg text-white'>
+								<img src={Course} alt='Course' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
 							</div>
-
-							{/* Text Info */}
-							<div className='flex flex-col gap-2 '>
-								<span
-									className='text-[#716F6F]'
-									style={{ ...FONTS.heading_08 }}
-								>
+							<div className='flex flex-col gap-1 sm:gap-2'>
+								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
 									Course
 								</span>
-								<span className='text-xl font-semibold text-[#7D7D7D]'>
+								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
 									{DashboardData?.courseCount}
 								</span>
-								{/* Progress bar */}
 							</div>
 						</div>
-
-						<div className=' w-full bg-gray-200 h-[4px] rounded-full'>
-							<div className='bg-[#DD0031] h-[4px] w-[60%] rounded-full'></div>
+						<div className='w-full bg-gray-200 h-[3px] sm:h-[4px] rounded-full'>
+							<div className='bg-[#DD0031] h-full w-[60%] rounded-full'></div>
 						</div>
 					</div>
 				</section>
 
 				{/* Right Section  */}
-				<section className='lg:w-[75%] md:w-full'>
+				<section className='lg:w-[75%]'>
 					{/* Bar Chart  */}
-
-					<div className='flex w-full gap-6 bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A]'>
-						<Barchart />
-					</div>
+					{/* Bar Chart  */}
+<div className='w-full bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
+  {/* Scrollable container for mobile */}
+  <div className='sm:hidden overflow-x-auto'>
+    <div className='min-w-[600px]'> {/* Minimum width to ensure content doesn't get too squeezed */}
+      <Barchart />
+    </div>
+  </div>
+  
+  {/* Default view for larger screens */}
+  <div className='hidden sm:block'>
+    <Barchart />
+  </div>
+</div>
 
 					{/* Popular Course  */}
-
-					<div className=' bg-white rounded-xl mt-6 shadow-[4px_4px_24px_0px_#0000001A] p-4'>
+					<div className='bg-white rounded-xl mt-4 sm:mt-6 shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
 						{/* Header  */}
-						<div className='flex  justify-between items-center w-full'>
-							<h1 style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
+						<div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 w-full'>
+							<h1 className='text-lg sm:text-xl' style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
 								Popular Course
 							</h1>
 
-							<div className='relative'>
+							<div className='relative w-full sm:w-auto'>
 								<button
 									onClick={() => setTrendingOpen(!trendingOpen)}
-									className='flex items-center justify-between w-fit px-4 py-2 text-white rounded-full'
+									className='flex items-center justify-between w-full sm:w-fit px-3 sm:px-4 py-2 text-white rounded-full text-sm sm:text-base'
 									style={{ background: COLORS.button }}
 								>
-									<span>{selectedOption}</span>
-									<ChevronDown className='h-4 w-4 ml-2' />
+									<span className='truncate'>{selectedOption}</span>
+									<ChevronDown className='h-4 w-4 ml-2 flex-shrink-0' />
 								</button>
 
 								{trendingOpen && (
-									<div className='absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-4 w-64'>
-										<div className='space-y-4'>
+									<div className='absolute top-full left-0 sm:right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-3 w-full sm:w-64'>
+										<div className='space-y-2 sm:space-y-3'>
 											{options.map((option) => (
 												<button
 													key={option}
 													onClick={() => handleSelect(option)}
-													className={`w-full p-2 border border-gray-300 rounded-md appearance-none pr-8 text-[#716F6F] text-left`}
+													className={`w-full p-2 border border-gray-300 rounded-md text-left text-sm sm:text-base`}
 													style={{
 														...FONTS.heading_08,
 														background:
@@ -468,42 +428,41 @@ export default function Component() {
 						</div>
 
 						{/* Courses  */}
-
-						<div className='mt-4 w-full py-4'>
+						<div className='mt-3 sm:mt-4 w-full py-3 sm:py-4'>
 							{DashboardData?.popularCourses?.length > 0 ? (
-								<div className='flex gap-4 overflow-x-scroll scrollbar-hide'>
+								<div className='flex gap-3 sm:gap-4 overflow-x-scroll scrollbar-hide pb-2'>
 									{DashboardData.popularCourses.map(
 										(item: any, index: number) => (
 											<section
 												key={index}
-												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${index === 0
+												className={`min-w-[280px] sm:w-[330px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 sm:space-x-3 ${index === 0
 													? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
 													: 'bg-white'
 													}`}
 											>
 												<img
 													src={GetImageUrl(item?.image) ?? undefined}
-													className='w-[70px] h-[70px] bg-white rounded-full object-cover'
+													className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px] bg-white rounded-full object-cover flex-shrink-0'
 													alt='course img'
 												/>
-												<div className='flex-grow'>
+												<div className='flex-grow min-w-0'>
 													<h2
 														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
-															} mb-1`}
+															} mb-1 text-sm sm:text-base line-clamp-2`}
 														style={{ ...FONTS.bold_heading }}
 													>
 														{item?.course_name}
 													</h2>
 													<p
 														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
-															} text-sm mb-4 leading-tight line-clamp-3`}
+															} text-xs sm:text-sm mb-3 sm:mb-4 leading-tight line-clamp-2`}
 														style={{ ...FONTS.description }}
 													>
 														{item?.description}
 													</p>
 													<p
-														className={`w-fit rounded-lg px-4 py-2 ${index === 0
-															? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
+														className={`w-fit rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm ${index === 0
+															? 'bg-white text-[#6C6C6C]'
 															: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
 															}`}
 														style={{ ...FONTS.heading_08 }}
@@ -517,7 +476,7 @@ export default function Component() {
 								</div>
 							) : (
 								<div
-									className='text-center text-[#999] text-base'
+									className='text-center text-[#999] text-sm sm:text-base py-4'
 									style={{ ...FONTS.heading_08 }}
 								>
 									No Courses Found
@@ -527,37 +486,37 @@ export default function Component() {
 					</div>
 				</section>
 			</div>
-			{/* Recent Activities  */}
 
-			<div className='my-8 p-4 bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A]'>
-				<h1 style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
+			{/* Recent Activities  */}
+			<div className='my-6 sm:my-8 p-3 sm:p-4 bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A]'>
+				<h1 className='text-lg sm:text-xl mb-3 sm:mb-4' style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
 					Recent Activities
 				</h1>
 				{ActivityData?.length != 0 ? (
-					<div className='py-4 px-2 flex gap-4 w-full overflow-x-scroll scrollbar-hide'>
+					<div className='py-3 sm:py-4 px-1 sm:px-2 flex gap-3 sm:gap-4 w-full overflow-x-scroll scrollbar-hide pb-2'>
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${index === 0
+								className={`min-w-[260px] sm:min-w-[300px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-3 sm:space-x-4 ${index === 0
 									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
 									: 'bg-white'
 									}`}
 							>
 								<img
 									src={item?.image ?? undefined}
-									className='w-12 h-12 bg-white rounded-full'
+									className='w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex-shrink-0'
 									alt='Notes Image'
 								/>
-								<div className='flex-grow'>
+								<div className='flex-grow min-w-0'>
 									<h2
-										className={`mb-1 ${index === 0 ? 'text-white' : ''}`}
+										className={`mb-1 text-sm sm:text-base ${index === 0 ? 'text-white' : ''}`}
 										style={{ ...FONTS.notes_head }}
 									>
 										{item?.title}
 									</h2>
 									<p
-										className={` ${index === 0 ? 'text-white' : ''
-											}  leading-tight line-clamp-3`}
+										className={`${index === 0 ? 'text-white' : ''
+											} text-xs sm:text-sm leading-tight line-clamp-2`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}
@@ -568,7 +527,7 @@ export default function Component() {
 					</div>
 				) : (
 					<div
-						className='text-center text-[#999] text-base'
+						className='text-center text-[#999] text-sm sm:text-base py-4'
 						style={{ ...FONTS.heading_08 }}
 					>
 						No Activities Found
