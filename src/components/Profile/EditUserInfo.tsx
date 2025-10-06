@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store/store';
 import { UpdateProfileThunks } from '../../features/Auth/reducer/thunks';
+import toast from 'react-hot-toast';
 
 interface UserInfo {
   first_name: string;
@@ -52,7 +53,10 @@ const EditUserInfo: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(userInfo, "profile data");
+    const phoneRegex = /^\+91\d{10}$/;
+    if (!phoneRegex.test(userInfo.phone_number)) {
+      return toast.error("please enter the phone number with +91")
+    }
     dispatch(UpdateProfileThunks(profile?.uuid, userInfo));
   };
 
@@ -149,6 +153,8 @@ const EditUserInfo: React.FC = () => {
             value={userInfo.phone_number}
             onChange={handleChange}
             className="mt-1 w-full rounded-md p-2 border-t border border-[#A9A7A7]"
+            placeholder='eg: +91xxxxxxxxxx'
+            pattern="^\+91\d{10}$"
           />
         </div>
 

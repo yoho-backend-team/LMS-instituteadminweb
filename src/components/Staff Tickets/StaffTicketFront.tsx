@@ -34,7 +34,7 @@ const StaffTickets: React.FC = () => {
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [showOpenTickets, setShowOpenTickets] = useState<boolean>(true);
   const [showClosedTickets, setShowClosedTickets] = useState<boolean>(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -107,8 +107,8 @@ const StaffTickets: React.FC = () => {
             setShowClosedTickets(false);
           }}
           className={`px-4 py-2 rounded-md font-semibold text-sm ${showOpenTickets
-              ? "bg-[#14b8c6] text-white"
-              : "bg-gray-200 text-gray-700"
+            ? "bg-[#14b8c6] text-white"
+            : "bg-gray-200 text-gray-700"
             }`}
         >
           Open Tickets
@@ -120,8 +120,8 @@ const StaffTickets: React.FC = () => {
             setShowClosedTickets(true);
           }}
           className={`px-4 py-2 rounded-md font-semibold text-sm ${showClosedTickets
-              ? "bg-[#14b8c6] text-white"
-              : "bg-gray-200 text-gray-700"
+            ? "bg-[#14b8c6] text-white"
+            : "bg-gray-200 text-gray-700"
             }`}
         >
           Closed Tickets
@@ -143,7 +143,7 @@ const StaffTickets: React.FC = () => {
           ) : error ? (
             <p className="text-red-500">Error loading tickets.</p>
           ) : staffTickets?.data?.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {staffTickets?.data?.map((ticket: any) => (
                 <div
                   key={ticket.id}
@@ -216,8 +216,8 @@ const StaffTickets: React.FC = () => {
 
                   <button
                     className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${ticket.priority === "High"
-                        ? "bg-[#14b8c6]"
-                        : "bg-[#14b8c6]"
+                      ? "bg-[#14b8c6]"
+                      : "bg-[#14b8c6]"
                       }`}
                   >
                     <FiCalendar />
@@ -233,7 +233,7 @@ const StaffTickets: React.FC = () => {
           )}
         </div>
       )}
-       
+
       <div className="flex justify-between items-center mt-4">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

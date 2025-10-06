@@ -133,27 +133,27 @@ const TicketsPage: React.FC = () => {
     };
   }, []);
 
-const TicketSkeleton = () => (
-  <div className="animate-pulse bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-      <div className="flex-1">
-        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+  const TicketSkeleton = () => (
+    <div className="animate-pulse bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+        <div className="flex-1">
+          <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+
+      <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+
+      <div className="h-3 bg-gray-200 rounded w-full"></div>
+      <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+
+      <div className="flex justify-between items-center mt-3">
+        <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+        <div className="h-3 bg-gray-300 rounded w-1/6"></div>
       </div>
     </div>
-
-    <div className="h-4 bg-gray-300 rounded w-5/6"></div>
-
-    <div className="h-3 bg-gray-200 rounded w-full"></div>
-    <div className="h-3 bg-gray-200 rounded w-4/5"></div>
-
-    <div className="flex justify-between items-center mt-3">
-      <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-      <div className="h-3 bg-gray-300 rounded w-1/6"></div>
-    </div>
-  </div>
-);
+  );
 
 
   const [loading, setLoading] = useState(false);
@@ -176,8 +176,8 @@ const TicketSkeleton = () => (
 
 
   return (
-    <div className="h-auto p-0">
-      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
+    <div className="h-auto p-0 w-full">
+      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px] chatwindow">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
           style={{ ...FONTS.heading_07_bold }}
@@ -215,15 +215,15 @@ const TicketSkeleton = () => (
       </div>
 
       {showbuttonWindow && (
-        <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
+        <div className="mb-6 mt-2 flex flex-row" style={{ ...FONTS.heading_08 }}>
           <button
             onClick={() => {
               setActiveTab("open");
               setShowChatWindow(false);
             }}
             className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
-                ? "bg-[#1BBFCA] text-white"
-                : "bg-white text-teal-500 border border-teal-500"
+              ? "bg-[#1BBFCA] text-white"
+              : "bg-white text-teal-500 border border-teal-500"
               }`}
           >
             Opened Tickets
@@ -234,8 +234,8 @@ const TicketSkeleton = () => (
               setShowChatWindow(false);
             }}
             className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
-                ? "bg-[#1BBFCA] text-white"
-                : "bg-white text-[#1BBFCA] border border-teal-500"
+              ? "bg-[#1BBFCA] text-white"
+              : "bg-white text-[#1BBFCA] border border-teal-500"
               }`}
           >
             Closed Tickets
@@ -276,8 +276,10 @@ const TicketSkeleton = () => (
 
 
       {showChatWindow && (
-        <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
-          <ChatWindow user={selectedTicketUserDetails} />
+        <div className="h-full gap-4 w-full grid sm:grid-cols-1 lg:grid-cols-4 font-sans">
+          <div className="md:col-span-1 lg:col-span-3">
+            <ChatWindow user={selectedTicketUserDetails} />
+          </div>
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}
@@ -393,29 +395,6 @@ const TicketSkeleton = () => (
         </div>
       )}
 
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-
-        <span className="text-gray-700 text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 };

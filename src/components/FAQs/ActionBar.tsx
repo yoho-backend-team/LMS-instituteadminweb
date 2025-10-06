@@ -14,7 +14,7 @@ export function FAQActionBar({
   onAddFAQClick,
 }: FAQActionBarProps): ReactNode {
   return (
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex justify-between gap-2 items-center mb-6">
       <Button
         onClick={onToggleFilter}
         className="bg-cyan-500 text-white hover:bg-cyan-600 px-4 py-2 rounded-md flex items-center space-x-2"

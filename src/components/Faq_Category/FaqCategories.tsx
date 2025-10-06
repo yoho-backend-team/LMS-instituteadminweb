@@ -228,8 +228,8 @@ const FaqCategory: React.FC = () => {
 
   const filtered = Array.isArray(category)
     ? category.filter((c: any) =>
-        c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
-      )
+      c?.category_name?.toLowerCase()?.includes(search.toLowerCase())
+    )
     : [];
 
   return (
@@ -256,11 +256,11 @@ const FaqCategory: React.FC = () => {
       />
 
       {/* Table */}
-      <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)]">
-        <div className="grid grid-cols-4 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md">
+      <div className="bg-[#FDFDFD] rounded-xl p-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.08),0px_-4px_24px_0px_rgba(0,0,0,0.08)] overflow-x-scroll">
+        <div className="grid grid-cols-5 font-semibold px-4 py-4 text-[#716F6F] bg-gray-100 text-sm rounded-md w-screen md:w-full">
           <div>ID</div>
-          <div className="">Category Name</div>
-          <div className=""> Status</div>
+          <div className="col-span-2">Category Name</div>
+          <div className="ml-4"> Status</div>
           <div className="text-right">Actions</div>
         </div>
         <div className="flex flex-col gap-3 mt-3">
@@ -287,10 +287,10 @@ const FaqCategory: React.FC = () => {
             filtered.map((cat: any, index: any) => (
               <div
                 key={cat.id}
-                className="bg-white px-4 py-3 grid grid-cols-4 items-center shadow text-[#7D7D7D] text-sm rounded-md relative"
+                className="bg-white px-4 py-3 grid grid-cols-5 items-center shadow text-[#7D7D7D] text-sm rounded-md relative w-screen md:w-full overflow-scroll"
               >
                 <div>{cat.id}</div>
-                <div>
+                <div className="col-span-2">
                   <p className="font-semibold">{cat.category_name}</p>
                   <p className="text-[#7D7D7D]">{cat.description}</p>
                 </div>
@@ -298,9 +298,8 @@ const FaqCategory: React.FC = () => {
                 {/* Status Dropdown */}
                 <div className="relative">
                   <button
-                    className={`flex items-center gap-1 text-sm ${
-                      cat.is_active ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`flex items-center gap-1 ml-6 text-sm ${cat.is_active ? "text-green-600" : "text-red-600"
+                      }`}
                     onClick={() => toggleStatus(index)}
                   >
                     {cat.is_active ? "Active" : "Inactive"}
@@ -507,7 +506,7 @@ const FaqCategory: React.FC = () => {
                 className="border border-[#1BBFCA] text-[#1BBFCA] bg-[#E6FBFD] hover:bg-[#d1f5f8] font-semibold px-6 py-2 rounded-lg"
               >
                 Cancel
-            </button>
+              </button>
             </div>
           </div>
         </div>
