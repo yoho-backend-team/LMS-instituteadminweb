@@ -106,6 +106,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   }, [selectedBatch, branchId, instituteId, dispatch]);
 
   
+  
 
   useEffect(() => {
     if (editData) {
@@ -114,7 +115,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       setSelectedBatch(editData.batchId || "");
       setSelectedStudent(editData.studentId);
       setSelectedFee(editData.feeId || "");
-      setAmount(editData.payment.replace(/,/g, "") || "");
+      setAmount(editData.paid || "");
     } else {
       setBranchId("");
       setSelectedCourse("");

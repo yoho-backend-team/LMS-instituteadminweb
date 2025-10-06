@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState, useRef } from "react";
 import { COLORS, FONTS } from "../../../constants/uiConstants";
 import bgImage from "../../../assets/IDcardManagement/Group 1000000936.png";
@@ -65,19 +64,19 @@ const StudentIDCard = () => {
   };
 
   return (
-    <div>
-      <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>
+    <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-8">
+      <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }} className="mb-10">
         Student ID Card
       </h1>
 
       {isLoading ? (
         <Shimmer />
       ) : (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  gap-8  r">
           {studentID?.map((data: any, index: number) => (
             <div
               key={index}
-              className="w-[370px] h-[560px] perspective-1000"
+              className="w-[370px] h-[560px] perspective-1000 "
               ref={(el: any) => (cardRefs.current[index] = el)}
             >
               <section
@@ -85,7 +84,9 @@ const StudentIDCard = () => {
                 onClick={() => handleCardClick(index)}
                 style={{
                   transformStyle: "preserve-3d",
-                  transform: flippedCards[index] ? "rotateY(180deg)" : "rotateY(0deg)",
+                  transform: flippedCards[index]
+                    ? "rotateY(180deg)"
+                    : "rotateY(0deg)",
                 }}
               >
                 {/* Front Side */}
@@ -105,26 +106,61 @@ const StudentIDCard = () => {
                   </div>
 
                   <div className="text-center">
-                    <h4 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_02 }}>
+                    <h4
+                      style={{
+                        ...FONTS.heading_04_bold,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
                       {data?.name}
                     </h4>
-                    <p style={{ ...FONTS.heading_12, color: COLORS.gray_light }}>
+                    <p
+                      style={{ ...FONTS.heading_12, color: COLORS.gray_light }}
+                    >
                       {data?.role?.identity}
                     </p>
                   </div>
 
                   <div className="px-8 py-5 grid gap-2">
-                    <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-                      ID NO : <span style={{ ...FONTS.heading_13 }}>{data?.student_id}</span>
+                    <p
+                      style={{
+                        ...FONTS.heading_06,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
+                      ID NO :{" "}
+                      <span style={{ ...FONTS.heading_13 }}>
+                        {data?.student_id}
+                      </span>
                     </p>
-                    <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-                      User Name : <span style={{ ...FONTS.heading_13 }}>{data?.name}</span>
+                    <p
+                      style={{
+                        ...FONTS.heading_06,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
+                      User Name :{" "}
+                      <span style={{ ...FONTS.heading_13 }}>{data?.name}</span>
                     </p>
-                    <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-                      Email : <span style={{ ...FONTS.heading_13 }}>{data?.email}</span>
+                    <p
+                      style={{
+                        ...FONTS.heading_06,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
+                      Email :{" "}
+                      <span style={{ ...FONTS.heading_13 }}>{data?.email}</span>
                     </p>
-                    <p style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
-                      Phone : <span style={{ ...FONTS.heading_13 }}>{data?.contact}</span>
+                    <p
+                      style={{
+                        ...FONTS.heading_06,
+                        color: COLORS.gray_dark_02,
+                      }}
+                    >
+                      Phone :{" "}
+                      <span style={{ ...FONTS.heading_13 }}>
+                        {data?.contact}
+                      </span>
                     </p>
                   </div>
 
@@ -136,77 +172,185 @@ const StudentIDCard = () => {
                 {/* Back Side */}
                 <div
                   className={`absolute w-full h-full bg-white rounded-xl overflow-hidden border-t-[15px] border-[${COLORS.primary}]`}
-                  style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    transform: "rotateY(180deg)",
+                  }}
                 >
                   <div className="h-full relative flex flex-col justify-between p-6">
                     <div className="py-5 grid gap-4">
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
                             User Name
                           </span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6">
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6"
+                        >
                           {data?.name}
                         </span>
                       </div>
 
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Email</span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            Email
+                          </span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6 break-words">
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6 break-words"
+                        >
                           {data?.email}
                         </span>
                       </div>
 
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Role</span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            Role
+                          </span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6">
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6"
+                        >
                           {data?.role?.identity}
                         </span>
                       </div>
 
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>ID NO</span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            ID NO
+                          </span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6">
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6"
+                        >
                           {data?.student_id}
                         </span>
                       </div>
 
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Phone</span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            Phone
+                          </span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6">
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6"
+                        >
                           {data?.contact}
                         </span>
                       </div>
 
                       <div className="flex">
                         <div className="w-1/3 flex justify-between">
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>Address</span>
-                          <span style={{ ...FONTS.heading_06, color: COLORS.gray_dark_02 }}>:</span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            Address
+                          </span>
+                          <span
+                            style={{
+                              ...FONTS.heading_06,
+                              color: COLORS.gray_dark_02,
+                            }}
+                          >
+                            :
+                          </span>
                         </div>
-                        <span style={{ ...FONTS.heading_13 }} className="w-2/3 pl-6">
-                          {data?.address?.address_line_one}, {data?.address?.address_line_two}, {data?.address?.city},{" "}
-                          {data?.address?.state} - {data?.address?.pin_code}
+                        <span
+                          style={{ ...FONTS.heading_13 }}
+                          className="w-2/3 pl-6"
+                        >
+                          {data?.address?.address_line_one},{" "}
+                          {data?.address?.address_line_two},{" "}
+                          {data?.address?.city}, {data?.address?.state} -{" "}
+                          {data?.address?.pin_code}
                         </span>
                       </div>
                     </div>
 
                     <button
                       className="mb-4 py-1 text-white rounded-[8px]"
-                      style={{ background: COLORS.light_green, ...FONTS.heading_07_bold }}
+                      style={{
+                        background: COLORS.light_green,
+                        ...FONTS.heading_07_bold,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDownload(index, data?.name);

@@ -11,7 +11,7 @@ import Shimmer from "../../../components/IdcardShimmer/Shimmer";
 import { GetLocalStorage } from "../../../utils/localStorage";
 import html2canvas from "html2canvas";
 
-const StaffIDCard = () => {
+const StaffIDCard = () => { 
   const [flippedCards, setFlippedCards] = useState<Record<number, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -66,15 +66,15 @@ const StaffIDCard = () => {
   };
 
   return (
-    <div>
-      <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}>
+    <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-8">
+      <h1 style={{ ...FONTS.heading_04_bold, color: COLORS.gray_dark_01 }}  className="mb-10">
         Staff ID Card
       </h1>
 
       {isLoading ? (
         <Shimmer />
       ) : (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center">
           {staffIdCard?.map((data: any, index: number) => (
             <div
               key={index}

@@ -83,39 +83,40 @@ const RefundTable: React.FC<Props> = ({ data, onDelete, onEdit, loading }) => {
   ];
 
   return (
-    <div className="p-4 bg-white shadow-lg overflow-x-auto max-h-[75vh]">
-      <table className="w-full text-left border-collapse table-auto">
-        <thead className="bg-[#F8F8F8] text-[#716F6F] font-semibold text-sm">
-          <tr>
-            {sortableColumns.map(({ label, key }) => (
-              <th
-                key={key}
-                className={`py-3 px-4 cursor-pointer select-none ${
-                  key === "studentInfo"
-                    ? "w-[250px]"
-                    : key === "refundId" || key === "studentId"
-                    ? "w-[120px]"
-                    : "w-[150px]"
-                }`}
-                onClick={() => handleSort(key)}
-              >
-                <div className="flex items-center gap-1">
-                  {label}
-                  {sortKey === key ? (
-                    sortOrder === "asc" ? (
-                      <IoIosArrowRoundUp size={20} />
-                    ) : (
-                      <IoIosArrowRoundDown size={20} />
-                    )
-                  ) : (
-                    <IoIosArrowRoundUp size={20} className="opacity-20" />
-                  )}
-                </div>
-              </th>
-            ))}
-            <th className="px-4 py-3 w-[100px]">Actions</th>
-          </tr>
-        </thead>
+   <div className="p-2 sm:p-4 bg-white shadow-lg overflow-x-auto max-h-[75vh] rounded-xl">
+  <table className="w-full text-left border-collapse text-xs sm:text-sm md:text-base">
+    <thead className="bg-[#F8F8F8] text-[#716F6F] font-semibold">
+      <tr>
+        {sortableColumns.map(({ label, key }) => (
+          <th
+            key={key}
+            className={`py-2 px-3 sm:py-3 sm:px-4 cursor-pointer ${
+              key === "studentInfo"
+                ? "min-w-[180px] sm:min-w-[250px]"
+                : "min-w-[100px] sm:min-w-[120px]"
+            }`}
+            onClick={() => handleSort(key)}
+          >
+            <div className="flex items-center gap-1">
+              {label}
+              {sortKey === key ? (
+                sortOrder === "asc" ? (
+                  <IoIosArrowRoundUp size={16} className="sm:size-20" />
+                ) : (
+                  <IoIosArrowRoundDown size={16} className="sm:size-20" />
+                )
+              ) : (
+                <IoIosArrowRoundUp size={16} className="opacity-20" />
+              )}
+            </div>
+          </th>
+        ))}
+        <th className="px-3 sm:px-4 py-2 sm:py-3 min-w-[80px] sm:min-w-[100px]">
+          Actions
+        </th>
+      </tr>
+    </thead>
+
 
         <tbody className="text-[#716F6F] text-sm">
           {loading ? (
