@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { COLORS, FONTS } from '../../../constants/uiConstants';
+import { FONTS } from '../../../constants/uiConstants';
 import { Card } from '../../ui/card';
 import { GetImageUrl } from '../../../utils/helper';
 import { Button } from '../../ui/button';
