@@ -19,6 +19,7 @@ import {
 import { getStaffService } from "../../../features/batchManagement/services";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
+import { GetLocalStorage } from "../../../utils/localStorage";
 
 interface CreateBatchModalProps {
   isOpen: boolean;
@@ -43,7 +44,6 @@ export const CreateLiveClassModal = ({
   setIsOpen,
   fetchAllLiveClasses,
 }: CreateBatchModalProps) => {
-  // const dispatch = useDispatch<any>();
   const [allCourses, setAllCourses] = useState<any[]>([]);
   const [allBatches, setAllBatches] = useState<any[]>([]);
   const [allBranches, setAllBranches] = useState<any[]>([]);
@@ -51,7 +51,6 @@ export const CreateLiveClassModal = ({
   const [availableInstructors, setAvailableInstructors] = useState<any[]>([]);
   const [courseId, setCourseId] = useState<string>("");
 
-  // Initial form values
   const initialValues: FormValues = {
     className: "",
     branch: "",
@@ -64,7 +63,6 @@ export const CreateLiveClassModal = ({
     videoUrl: "",
   };
 
-  // Validation schema
   const validationSchema = Yup.object().shape({
     className: Yup.string().required("Class name is required"),
     branch: Yup.string().required("Branch selection is required"),
@@ -93,7 +91,6 @@ export const CreateLiveClassModal = ({
     }
   }, []);
 
-  // Formik initialization
   const formik = useFormik<FormValues>({
     initialValues,
     validationSchema,
@@ -116,7 +113,7 @@ export const CreateLiveClassModal = ({
             start_date: startDateTime.toISOString(),
             start_time: startDateTime,
             end_time: endDateTime,
-            institute: "973195c0-66ed-47c2-b098-d8989d3e4529",
+            institute: GetLocalStorage("instituteId"),
             instructors: values.instructors,
             video_url: values.videoUrl,
             coordinators: [],
@@ -164,7 +161,6 @@ export const CreateLiveClassModal = ({
     })();
   }, [formik?.values?.branch]);
 
-  // Handler for removing an instructor
   const removeInstructor = useCallback(
     (instructorId: string) => {
       formik.setFieldValue(

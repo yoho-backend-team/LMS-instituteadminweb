@@ -13,6 +13,7 @@ import warning from '../../../../assets/warning.png';
 import toast from 'react-hot-toast';
 import { ArrowLeft, ChevronDownIcon } from 'lucide-react';
 import { GetImageUrl } from '../../../../utils/helper';
+import { Button } from "../../../../components/ui/button";
 
 interface Attendance {
   student_class: {
@@ -100,9 +101,13 @@ const StudentDetails = () => {
 
   return (
     <div className='grid gap-[30px]'>
-      <div className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit mb-4' onClick={handleBack}>
-
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+        >
+          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+        </Button>
       </div>
       <div className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center`}>
         <h1 className='flex gap-[10px] text-[#FFFFFF] !font-semibold items-center' style={{ ...FONTS.heading_05 }}>

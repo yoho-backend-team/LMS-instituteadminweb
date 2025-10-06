@@ -62,15 +62,15 @@ export const getStudentActivityData = (data: any) => async (dispatch: any) => {
 };
 
 
-export const getclassstudentData =(params:any)=>async(dispatch:any)=>{
-	try{
-		const response =await getStudentClass(params);
-		if(response){
+export const getclassstudentData = (params: any) => async (dispatch: any) => {
+	try {
+		const response = await getStudentClass(params);
+		if (response) {
 			dispatch(setClassdetails(response?.data))
 		}
 		return response?.data?.data
 	}
-	catch(err){
+	catch (err) {
 		console.log(err)
 	}
 }

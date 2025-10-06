@@ -25,6 +25,7 @@ interface NoteModalProps {
   onFormChange: (key: string, value: string) => void;
   onFileChange: (file: File | null) => void;
   fields: FormField[];
+  onReset: () => void;
 }
 
 export const NoteModal: React.FC<NoteModalProps> = ({

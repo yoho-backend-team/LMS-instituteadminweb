@@ -16,6 +16,7 @@ import paymentmanagement from "../../assets/Dashboard/payment management.png";
 import branchmanagement from "../../assets/Dashboard/Branch Management (1).png"
 import dashboardnew from "../../assets/Dashboard/dashboardfigmanew normal.png"
 import community from "../../assets/Dashboard/communityfigmanew normal.png"
+import dashboardhighlited from "../../assets/Dashboard/Frame 6100.png"
 
 import communityhighlited from "../../assets/Dashboard/communityhighlited.png"
 import dashboardnewhighlited from "../../assets/Dashboard/dashboardfigmanew.png"
@@ -46,7 +47,7 @@ import idcardhighlited from "../../assets/Dashboard/idcard image highlited.webp"
 import placementhighlited from "../../assets/Dashboard/placement image highlited.webp";
 import helpcenterhighlited from "../../assets/Dashboard/helpcenter image highlited.webp";
 import tickethighlited from "../../assets/Dashboard/ticket image highlited.webp";
-import faqhighlited from "../../assets/Dashboard/faq image highlited.webp";
+import faqhighlited from "../../assets/Dashboard/Frame 6114.png";
 import React from "react";
 
 const SideBar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
@@ -92,8 +93,6 @@ const SideBar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
           onClick={handleLinkClick}
         />
 
-        {/* <SidebarLink to="/community" icon={<Home />} label="Community" isOpen={isOpen} onClick={handleLinkClick} /> */}
-
         <SidebarDropdown
           icon={<DynamicIcon defaultIcon={branchmanagement} highlightedIcon={branchmanagementhighlited} childRoutes={["/branch"]} />}
           label="Branch Management"
@@ -105,7 +104,6 @@ const SideBar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         >
           {[<SidebarLink1 to="/branch" label="Branch" isOpen={isOpen} onClick={handleLinkClick} icon={<Building2 size={16} />} />]}
         </SidebarDropdown>
-
 
         <SidebarDropdown
           icon={<DynamicIcon defaultIcon={usermanagement} highlightedIcon={usermanagementhighlited} childRoutes={["/group", "/users"]} />}
@@ -139,8 +137,7 @@ const SideBar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         </SidebarDropdown>
 
         <SidebarDropdown
-          // icon={<img src={dashboard} alt="Dashboard" className="w-7 h-7" />}
-          icon={<DynamicIcon defaultIcon={dashboard} highlightedIcon={courseshighlited} childRoutes={["/categories", "/courses"]} />}
+          icon={<DynamicIcon defaultIcon={dashboard} highlightedIcon={dashboardhighlited} childRoutes={["/study-materials", "/modules", "/notes"]} />}
 
           label="Content Management"
           isOpen={isOpen}
@@ -312,7 +309,8 @@ const SideBar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         </SidebarDropdown>
 
         <SidebarDropdown
-          icon={<FaqIcon childRoutes={["/faq-category", "/faqs"]} />}
+          icon={<DynamicIcon defaultIcon={faq} highlightedIcon={faqhighlited } childRoutes={["/faq-category", "/faqs"]} />}
+
           label="FAQ Management"
           isOpen={isOpen}
           childRoutes={["/faq-category", "/faqs"]}
@@ -335,14 +333,7 @@ const DynamicIcon = ({ defaultIcon, highlightedIcon, childRoutes = [] as string[
   return <img src={isActive ? highlightedIcon : defaultIcon} alt="icon"  className={`${isActive ? "w-[50px] h-[50px]" : "w-[24px] h-[24px]"}`} />;
 };
 
-const FaqIcon = ({ childRoutes }: { childRoutes: string[] }) => {
-  const location = useLocation();
-  const currentPathname = location.pathname;
-  const isChildActive = childRoutes.some((route) => currentPathname === route);
-  return <img src={isChildActive ? faqhighlited : faq} alt="FAQ Management" className="w-[24px] h-[24px]"  />;
-};
-
-const SidebarLink1 = ({ to, label, isOpen, onClick, icon }: { to: string; label: string; isOpen: boolean; onClick: () => void; icon?: ReactElement }) => {
+const SidebarLink1 = ({ to, label, isOpen, onClick, }: { to: string; label: string; isOpen: boolean; onClick: () => void; icon?: ReactElement }) => {
   const location = useLocation();
   const currentPathname = location.pathname;
   const [isHovered, setIsHovered] = useState(false);
@@ -356,7 +347,6 @@ const SidebarLink1 = ({ to, label, isOpen, onClick, icon }: { to: string; label:
       onMouseLeave={() => setIsHovered(false)}
       className={`group flex items-center py-3 rounded-full ${isActive ? "bg-[#1BBFCA] text-white" : isHovered ? "bg-[rgba(202,64,111,0.1)]" : "hover:bg-white/10"} ${isOpen ? "justify-start gap-3 px-2" : "justify-center"}`}
     >
-      <div className="flex items-center justify-center w-6 h-6">{icon}</div>
       {isOpen && <span className={`font-medium text-sm ${isActive ? "text-white" : "text-black"}`}>{label}</span>}
       {!isOpen && (
         <span className="absolute top-1/2 left-16 -translate-y-1/2 whitespace-nowrap rounded-3xl bg-[#1BBFCA] text-white text-sm px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 z-50">
@@ -379,10 +369,14 @@ const SidebarLink = ({ to, icon, label, isOpen, onClick }: { to: string; icon: R
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group flex items-center py-3 rounded-full  ${isActive ? "bg-white text-[#1BBFCA]" : isHovered ? "bg-[rgba(212,231,235,0.3)]" : ""} ${isOpen ? "justify-start gap-3 px-2" : "justify-center"}`}
+      className={`group flex items-center py-3  ${isActive ? " text-white" : isHovered ? "bg-[rgba(212,231,235,0.3)]" : ""} ${isOpen ? "justify-start gap-3 px-2" : "justify-center"}`}
     >
-      <div className="flex items-center justify-center w-6 h-6">{icon}</div>
-      {isOpen && <span className="font-medium text-sm">{label}</span>}
+      <div className="flex items-center justify-center gap-3">
+        {icon}
+
+         {isOpen && <span className="font-medium text-sm">{label}</span>}
+      </div>
+     
     </Link>
   );
 };

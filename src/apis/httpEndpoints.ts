@@ -95,7 +95,7 @@ const generateEndpoints = () => {
 			update_status: '/api/institutes/course/note/update/',
 		},
 		batch: {
-			create: `/api/institutes/:instituteid/branches/`,
+			create: `/api/institutes/:instituteid/branches/:branchid/courses/:courseid/batches/`,
 			getAll: `/api/institutes/:instituteid/branches/`,
 			getWithId: `/api/institutes/:instituteid/branches/:branchid/batches/all`,
 			update: `/api/institutes/:instituteid/branches/:branchid/update/:batchId`,
@@ -162,17 +162,17 @@ const generateEndpoints = () => {
 			},
 		},
 		staff: {
-			get: `/api/institutes/${instituteId}/Non-teaching-staff/`,
+			get: `/api/institutes/:instituteid/Non-teaching-staff/`,
 			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
-			getWithId: `/api/institutes/${instituteId}/staff/`,
+			getWithId: `/api/institutes/:instituteid/staff/`,
 			getWithcourse: `/api/institutes/:instituteid/branches/:branchid/courses/`,
-			getWithBranch: `/api/institutes/${instituteId}/branches/:branchid/teaching-staff`,
+			getWithBranch: `/api/institutes/:instituteid/branches/:branchid/teaching-staff`,
 			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
 			getActivtiy:
 				'/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec',
 			getClasses: '/api/institutes/class/staff/:id',
-			update: `/api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/`,
-			updateStatus: `api/institutes/${instituteId}/branches/${branchId}/teaching-staff/update/:staff`,
+			update: `/api/institutes/:instituteid/branches/:branchid/teaching-staff/update/`,
+			updateStatus: `api/institutes/:instituteid/branches/:branchid/teaching-staff/update/:staff`,
 			create: 'api/institutes/auth/teaching-staff/register',
 			delete:
 				'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff/',
@@ -183,6 +183,7 @@ const generateEndpoints = () => {
 		community: {
 			all: `/api/institutes/community/:instituteid/branches/:branchid`,
 			messages: `/api/institutes/community/messages/`,
+			getById: '/api/institutes/community/:batchId',
 			get_all_messages: `/api/institutes/community/messages/all/`,
 		},
 		ticket: {

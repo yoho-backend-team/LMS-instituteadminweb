@@ -29,12 +29,14 @@ const StudentClassBatch: React.FC = () => {
 
   return (
     <div className='p-6 bg-white min-h-screen'>
-      <button
-        onClick={() => navigate(-1)}
-        className='flex items-center gap-2text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit transition-all mb-4'
-      >
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-      </button>
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+        >
+          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+        </Button>
+      </div>
       <Button
         type='button'
         className='!bg-[#1BBFCA] !text-white'

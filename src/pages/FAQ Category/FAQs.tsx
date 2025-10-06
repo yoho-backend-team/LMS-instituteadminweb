@@ -132,7 +132,7 @@ export default function FAQPage() {
   useEffect(() => {
     (() => {
       if (selectCat !== "" && searchInput !== "") {
-        const data = faqselect?.filter((item) => item?.category_id === selectCat && (item?.description?.includes(searchInput) || item?.title?.includes(searchInput)) ? item : null)
+        const data = faqselect?.filter((item) => item?.category_id?._id === selectCat && (item?.description?.includes(searchInput) || item?.title?.includes(searchInput)) ? item : null)
         setFilterData(data)
       } else if (selectCat !== "" && searchInput === "") {
         const data = faqselect?.filter((item) => item?.category_id?._id === selectCat ? item : null)
@@ -146,14 +146,9 @@ export default function FAQPage() {
     })()
   }, [faqselect, searchInput, selectCat]);
   // Handler for when FAQ is added successfully
-  const handleFAQAdded = (newFAQ?: any) => {
-    setIsAddFAQDrawerOpen(false);
-    // Immediately refresh FAQ list to show new FAQ
-    refreshFAQList();
-  };
 
   // Handler for when FAQ is edited successfully
-  const handleFAQEdited = (updatedFAQ?: any) => {
+  const handleFAQEdited = () => {
     setIsEditFAQDrawerOpen(false);
     setCurrentFAQToEdit(null);
     // Immediately refresh FAQ list to show updated FAQ
@@ -202,7 +197,7 @@ export default function FAQPage() {
                     <div className="font-semibold text-gray-800">{faq.title}</div>
                     <div className="text-sm text-gray-500">{faq.description}</div>
                   </div>
-                  <div className="text-gray-700 ">{faq.category}</div>
+                  <div className="text-gray-700">{faq.category_id?.category_name || 'N/A'}</div>
 
                   {/* Status Centered */}
                   <div className="flex items-center justify-center">
@@ -266,8 +261,6 @@ export default function FAQPage() {
             }, 500);
           }
         }}
-        onSuccess={handleFAQAdded}
-        onFAQCreated={refreshFAQList}
       />
 
       {currentFAQToEdit && (

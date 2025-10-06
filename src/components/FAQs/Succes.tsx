@@ -19,7 +19,7 @@ interface SuccessDialogProps {
 export function SuccessDialog({ open, onOpenChange, title, onOk }: SuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg text-center">
+      <DialogContent className="w-full max-w-md p-6 mt-40 ml-80 bg-white rounded-lg shadow-lg text-center">
         <DialogHeader className="flex flex-col items-center gap-4">
           <div className="flex items-center justify-center h-20 w-20 rounded-full bg-green-500">
             <CheckCircle className="h-12 w-12 text-white" />

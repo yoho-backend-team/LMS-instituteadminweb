@@ -41,7 +41,6 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
   const openEditModal = () => setIsEditModalOpen(true);
   const closeEditModal = () => setIsEditModalOpen(false);
   const openDeleteModal = () => setIsDeleteModalOpen(true);
@@ -74,9 +73,8 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
 
   // Format date as DD/MM/YYYY
   const formattedDate = new Date(startDate);
-  const displayDate = `${formattedDate.getDate()}/${
-    formattedDate.getMonth() + 1
-  }/${formattedDate.getFullYear()}`;
+  const displayDate = `${formattedDate.getDate()}/${formattedDate.getMonth() + 1
+    }/${formattedDate.getFullYear()}`;
 
   // Function to format time as 1.00 AM/PM
   const getFormattedTime = (timeString: string) => {
@@ -97,46 +95,41 @@ const offlineClassCard: React.FC<BatchCardProps> = ({
       <CardContent className="p-4 pb-2 relative">
         <div className="flex justify-between items-start border-b border-gray-200 pb-2">
           <div className="flex justify-between gap-35">
-            <div className="flex flex-col items-center gap-2">
-              <p style={{ ...FONTS.heading_09 }}>
-                {classData?.batch?.student?.length}{" "}
-                {classData?.batch?.student?.length === 1
-                  ? "student"
-                  : "students"}
-              </p>
-              <div className="flex">
-                {classData?.batch?.student
-                  ?.slice(0, 3)
-                  ?.map((studentImg: any) => (
+           
+            <div className="flex flex-wrap justify-between gap-6">
+              <div className="flex flex-col items-left gap-2 min-w-[120px]">
+                <p style={{ ...FONTS.heading_09 }}>
+                  {classData?.batch?.student?.length}{" "}
+                  {classData?.batch?.student?.length === 1 ? "student" : "students"}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {classData?.batch?.student?.slice(0, 3)?.map((studentImg: any) => (
                     <img
                       key={studentImg?._id}
                       src={GetImageUrl(studentImg?.image) ?? undefined}
-                      alt={studentImg?.full_name}
-                      title={studentImg?.full_name}
-                      className="w-12 h-12 rounded-full "
+                      className="w-10 h-10 rounded-full object-cover"
                     />
                   ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-left gap-2 min-w-[120px]">
+                <p style={{ ...FONTS.heading_09 }}>
+                  {classData?.instructors?.length}{" "}
+                  {classData?.instructors?.length === 1 ? "instructor" : "instructors"}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {classData?.instructors?.slice(0, 3)?.map((instructorImg: any) => (
+                    <img
+                      key={instructorImg?._id}
+                      src={GetImageUrl(instructorImg?.image) ?? undefined}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <p style={{ ...FONTS.heading_09 }}>
-                {classData?.instructors?.length}{" "}
-                {classData?.instructors?.length === 1
-                  ? "instructor"
-                  : "instructors"}
-              </p>
-              <div className="flex">
-                {classData?.instructors?.slice(0, 3)?.map((studentImg: any) => (
-                  <img
-                    key={studentImg?._id}
-                    src={GetImageUrl(studentImg?.image) ?? undefined}
-                    alt={studentImg?.full_name}
-                    title={studentImg?.full_name}
-                    className="w-12 h-12 rounded-full "
-                  />
-                ))}
-              </div>
-            </div>
+
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

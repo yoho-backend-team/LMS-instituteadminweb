@@ -89,7 +89,6 @@ const StudentCard: React.FC<props> = ({ studentAttendances }) => {
           </div>
 
           <div className="flex w-full justify-between gap-0.5">
-            {/* ✅ Fixed: using card instead of attendance */}
             <p
               className={`text-[${COLORS.gray_light}] font-semibold flex gap-[7px] items-center`}
               style={{ ...FONTS.heading_08 }}

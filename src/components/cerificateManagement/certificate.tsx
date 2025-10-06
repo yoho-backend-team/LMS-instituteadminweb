@@ -234,8 +234,11 @@ export const CertificateManager: React.FC = () => {
         isOpen={isModalOpen}
         isEditing={isEditing}
         editingCertificate={editingCertificate}
-        onSave={handleSave}
-      />
+        onSave={handleSave} fetchgetStudentCertificate={function (): void {
+          throw new Error("Function not implemented.");
+        } } onClose={function (): void {
+          throw new Error("Function not implemented.");
+        } }      />
     </div>
   );
 };

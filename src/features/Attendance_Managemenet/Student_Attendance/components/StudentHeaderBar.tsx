@@ -7,9 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { Input } from "../../../../components/ui/input";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { selectStudentAttendances } from "../redux/selector";
 
 type batch = {
   batch_name: string;
@@ -20,13 +21,14 @@ type props = {
   batches: batch[];
 };
 
-const StudentHeaderBar: React.FC<props> = ({ batches }) => {
+const StudentHeaderBar: React.FC<props> = () => {
   const [filterShow, setFilterShow] = useState<boolean>(false);
-
+  const studentAttendances = useSelector(selectStudentAttendances)?.data;
+  console.log(studentAttendances, "attendence")
   return (
     <div>
       <div
-        className={`flex justify-between w-full h-[80px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}
+        className={`flex justify-between w-full h-[70px] bg-[${COLORS.primary}] pr-[16px] rounded-[8px] pl-[16px] items-center `}
       >
         <h1
           className="flex gap-[10px] text-[#FFFFFF] !font-bold"
@@ -38,16 +40,16 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
         {!filterShow ? (
           <button
             onClick={() => setFilterShow(true)}
-            className={`bg-[#FFFFFF] text-[#3ABE65] w-[88px] h-[48px] rounded-[8px] flex items-center justify-center gap-1.5`}
+            className={`bg-[#FFFFFF] text-[#3ABE65] w-[62px] h-[38px] rounded-[8px] flex items-center justify-center gap-1.5`}
           >
-            SGO
+            Filter
           </button>
         ) : (
           <button
             onClick={() => setFilterShow(false)}
-            className={`pt-[8px] pb-[8px] pr-[16px] pl-[16px] bg-[#FFFFFF] text-[#3ABE65] w-[67px] h-[48px] rounded-[8px]`}
+            className={`flex items-center justify-center bg-[#FFFFFF] text-[#3ABE65] w-[62px] h-[38px] rounded-[8px]`}
           >
-            <IoClose className="w-[33px] h-[30px]" />
+            <IoClose className="w-[25px] h-[25px]" />
           </button>
         )}
       </div>
@@ -67,37 +69,34 @@ const StudentHeaderBar: React.FC<props> = ({ batches }) => {
           >
             Batches
           </label>
-          <div className="flex justify-between  pl-4 pr-4 pb-4 mt-2 gap-[30px]">
-            <Select>
-              <SelectTrigger
-                style={{ height: "45px" }}
-                className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
-              >
-                <SelectValue
-                  placeholder="Select"
-                  className={`p-2 bg-[#FFFFF]`}
-                />
-                <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
-              </SelectTrigger>
-              <SelectContent className="bg-white text-white border w-full rounded-[8px] p-1">
-                {batches?.map((batch, index) => (
+
+          <Select>
+            <SelectTrigger
+              style={{ height: "45px" }}
+              className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
+            >
+              <SelectValue placeholder="Select" className={`p-2 bg-[#FFFFF]`} />
+              <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
+            </SelectTrigger>
+
+            <SelectContent className="bg-white text-white border w-full rounded-[8px] p-1">
+              {studentAttendances?.map((attendance: any, index: any) => {
+                const batchName = attendance?.student_class?.class_name;
+                if (!batchName) return null;
+                return (
                   <SelectItem
                     key={index}
-                    value="batch"
-                    className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}]   my-1.5 focus:text-white cursor-pointer`}
+                    value={batchName}
+                    className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] my-1.5 focus:text-white cursor-pointer`}
                     style={{ ...FONTS.heading_08 }}
                   >
-                    {batch?.batch_name}
+                    {batchName}
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                );
+              })}
+            </SelectContent>
+          </Select>
 
-            <Input
-              placeholder="Search"
-              className={`w-full  h-[45px] border border-[#716F6F] rounded-[8px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] hover:border-[${COLORS.primary}] focus:border-[${COLORS.primary}] focus: outline-none`}
-            ></Input>
-          </div>
         </div>
       )}
       {/* <StudentCard /> */}

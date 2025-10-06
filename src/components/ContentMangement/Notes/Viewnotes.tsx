@@ -6,7 +6,7 @@ interface Note {
   title: string;
   course: string;
   description: string;
-  status: "Active" | "Inactive";
+  status: any;
   file?: File;
   fileName?: string;
   videoUrl?: string;
@@ -44,6 +44,8 @@ const ViewNoteModal: React.FC<NoteDetailModalProps> = ({ isOpen, onClose, note }
       setFileType("unknown");
     }
   }, [note]);
+
+  console.log('status notes',note)
 
   if (!isOpen) return null;
 

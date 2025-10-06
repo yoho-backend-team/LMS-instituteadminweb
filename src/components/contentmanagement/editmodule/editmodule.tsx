@@ -15,24 +15,28 @@ interface Props {
     uuid: string;
     title: string;
     description?: string;
-    video: string;
+    video?:any;
     file?: File | null;
   };
 }
 
 const EditmodulePage = ({ onClose, existingModule }: Props) => {
   const dispatch = useDispatch<any>();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  console.log(fileInputRef,"fileinputref")
+  console.log(existingModule,"ref");
+  
 
   const [formData, setFormData] = useState({
     _id: "",
     uuid: "",
     title: "",
     description: "",
-    video: "",
+    video: existingModule.video ?? "",
     file: null as File | null,
   });
-
+  console.log(formData,"formdata")
+  
   useEffect(() => {
     if (existingModule) {
       setFormData({
@@ -44,18 +48,6 @@ const EditmodulePage = ({ onClose, existingModule }: Props) => {
         file: null,
       });
     }
-
-    const payload = {
-      v: "BSJa1UytM8w",
-      list: "RDBSJa1UytM8w",
-      start_radio: "1",
-    };
-
-    const youtubeURL = `https://www.youtube.com/embed/${payload.v}?list=${payload.list}&index=${payload.start_radio}`;
-    setFormData((prev) => ({
-      ...prev,
-      video: youtubeURL,
-    }));
   }, [existingModule]);
 
   const handleUploadClick = () => {
@@ -137,16 +129,16 @@ const EditmodulePage = ({ onClose, existingModule }: Props) => {
           onClick={handleUploadClick}
           className="flex items-center gap-2 border p-5 rounded-lg flex-col justify-center cursor-pointer hover:bg-gray-100 transition"
         >
-          {formData.video.includes("youtube.com") ? (
+          {existingModule?.video.includes("youtube.com") ? (
             <iframe
-              src={formData.video}
+              src={existingModule?.video}
               className="w-full h-60 rounded shadow"
               allow="autoplay; encrypted-media"
               allowFullScreen
             ></iframe>
-          ) : formData.video ? (
+          ) : existingModule?.video ? (
             <video
-              src={formData.video}
+              src={existingModule?.video}
               controls
               className="w-full rounded shadow"
             />

@@ -30,7 +30,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getcourse,
+  getAllcourse,
   getStudentnotification,
 } from "../../../features/StudentNotification/reducer/thunks";
 import {
@@ -38,7 +38,7 @@ import {
   getSelectedBranchId,
 } from "../../../apis/httpEndpoints";
 import {
-  selectCoursedata,
+  selectAllCourse,
   selectLoading,
   selectStudentNotification,
 } from "../../../features/StudentNotification/reducer/selector";
@@ -48,6 +48,9 @@ import {
 } from "../../../features/StudentNotification/services/Notification";
 import ContentLoader from "react-content-loader";
 import bell from "../../../assets/bell.png";
+import toast from "react-hot-toast";
+import { getAllBatches } from "../../../features/Class Management/Live Class/services";
+import { getStudentService } from "../../../features/batchManagement/services";
 
 interface StudentNotificationData {
   _id: string;
@@ -73,10 +76,8 @@ interface ApiResponse {
 
 const StudentNotifications = () => {
   const [open, setOpen] = useState(false);
-
-  
   const [notificationsList, setNotificationsList] = useState<any[]>([]);
-    const [notificationStats, setNotificationStats] = useState([
+  const [notificationStats, setNotificationStats] = useState([
     {
       title: "Total Notifications",
       count: notificationsList.length,
@@ -97,28 +98,24 @@ const StudentNotifications = () => {
     },
   ]);
 
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState<any>("");
+  const [selectedBatch, setSelectedBatch] = useState<any>("");
   const [selectedStudent, setSelectedStudent] = useState<string[]>([]);
   const [notificationType, setNotificationType] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [link, setLink] = useState("");
   const loading = useSelector(selectLoading);
-
   const instituteId = getInstituteDetails();
   const branchId = getSelectedBranchId();
-
-  const reponse: ApiResponse | undefined = useSelector(
-    selectStudentNotification
-  );
-
+  const [allBatches, setAllBatches] = useState<any[]>([]);
+  const reponse: ApiResponse | undefined = useSelector(selectStudentNotification);
   const dispatch = useDispatch<any>();
-
-  const coursedata = useSelector(selectCoursedata)?.data;
+  const coursedata = useSelector(selectAllCourse)?.data;
+  const [students, setStudents] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(getcourse({}));
+    dispatch(getAllcourse({}));
     dispatch(
       getStudentnotification({
         branch: branchId,
@@ -129,8 +126,43 @@ const StudentNotifications = () => {
   }, [branchId, dispatch, instituteId]);
 
   useEffect(() => {
+    (async () => {
+      try {
+        const response = await getAllBatches({
+          branch: branchId,
+          course: selectedCourse?.uuid,
+        });
+        if (response?.data) {
+          setAllBatches(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching batches:", error);
+        toast.error("Failed to load batches");
+      }
+    })();
+  }, [branchId, selectedCourse?.uuid]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getStudentService({ uuid: selectedCourse?.uuid });
+        if (response && Array.isArray(response.data)) {
+          const mappedStudents = response.data.map((student: any) => ({
+            value: student._id,
+            label: student.full_name,
+          }));
+          setStudents(mappedStudents);
+        } else {
+          setStudents([]);
+        }
+      } catch (error) {
+        console.log("Error fetching student data:", error);
+      }
+    })();
+  }, [selectedCourse?.uuid]);
+
+  useEffect(() => {
     if (reponse && reponse.data) {
-      const totalNotifications = reponse.count;
       const readNotifications = reponse.data.filter(
         (n) => n.status === "read"
       ).length;
@@ -174,15 +206,15 @@ const StudentNotifications = () => {
       );
       setNotificationsList(mappedNotifications);
     }
-  }, [reponse]);
+  }, [notificationsList.length, reponse]);
 
   const handleAddNotification = async () => {
     const payload = {
       institute: instituteId,
       branch: branchId,
-      course: selectedCourse,
-      batch: "688deb796f788de6b9237c44",
-      student: ["67f3b8feb8d2634300cc8810"],
+      course: selectedCourse?._id,
+      batch: selectedBatch?._id,
+      student: selectedStudent,
       type: notificationType,
       title,
       body,
@@ -205,22 +237,7 @@ const StudentNotifications = () => {
       console.log(error);
     }
   };
-  // const [branches, setBranches] = useState<any[]>([]);
 
-  // const fetchAllBranches = async () => {
-  // 	try {
-  // 		const response = await getBranchService({});
-  // 		if (response) {
-  // 			setBranches(response?.data);
-  // 		}
-  // 	} catch (error) {
-  // 		console.log('Error fetching branch data:', error);
-  // 	}
-  // };
-
-  // useEffect(() => {
-  // 	fetchAllBranches();
-  // }, []);
 
   return (
     <div className="p-6 min-h-screen">
@@ -246,55 +263,109 @@ const StudentNotifications = () => {
             </DrawerClose>
           </DrawerHeader>
           <form className="flex flex-col space-y-4">
-            {/* Select Course */}
+
+            {/* Course */}
+            <Label>Course</Label>
+            <Select
+              value={selectedCourse?._id || ""}
+              onValueChange={(value) => {
+                const courseObj = coursedata.find((c: any) => c._id === value);
+                setSelectedCourse(courseObj || null);
+              }}
+            >
+              <SelectTrigger className="mt-1 w-full">
+                <SelectValue placeholder="Select Course" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {coursedata?.map((item: any) => (
+                  <SelectItem key={item._id} value={item._id}>
+                    {item.course_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Batch */}
+            <Label>Batch</Label>
+            <Select
+              value={selectedBatch?._id || ""}
+              onValueChange={(value) => {
+                const batchObj = allBatches.find((b: any) => b._id === value);
+                setSelectedBatch(batchObj || null);
+              }}
+            >
+              <SelectTrigger className="mt-1 w-full">
+                <SelectValue placeholder="Select Batch" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {allBatches?.map((item: any) => (
+                  <SelectItem key={item._id} value={item._id}>
+                    {item.batch_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Student */}
             <div className="flex flex-col">
-              <Label>Select Course</Label>
-              <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Select Course" />
+              <Label>Student</Label>
+              <Select
+                value=""
+                onValueChange={(value) => {
+                  if (selectedStudent.includes(value)) {
+                    setSelectedStudent(selectedStudent.filter((v) => v !== value));
+                  } else {
+                    setSelectedStudent([...selectedStudent, value]);
+                  }
+                }}
+              >
+                <SelectTrigger className="mt-1 w-full flex flex-wrap gap-2 min-h-[42px] items-center border border-gray-300 rounded-md px-2 py-1">
+                  {selectedStudent.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedStudent.map((studentId) => {
+                        const student = students.find((s: any) => s.value === studentId);
+                        return (
+                          <span
+                            key={studentId}
+                            className="bg-white border border-gray-300 text-gray-800 px-2 py-1 rounded-md text-sm flex items-center"
+                          >
+                            {student?.label}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedStudent(
+                                  selectedStudent.filter((id) => id !== studentId)
+                                );
+                              }}
+                              className="ml-1 text-gray-500 hover:text-red-500"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <SelectValue placeholder="Select Student" />
+                  )}
                 </SelectTrigger>
+
                 <SelectContent className="bg-white">
-                  {coursedata?.map((item: any) => (
-                    <SelectItem key={item._id} value="67f3b7fcb8d2634300cc87b6">
-                      {item.slug}
+                  {students?.map((item: any) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      <div className="flex items-center justify-between">
+                        <span>{item.label}</span>
+                        {selectedStudent.includes(item.value) && (
+                          <span className="text-cyan-500 font-bold">✔</span>
+                        )}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {/* Batch */}
-            <div className="flex flex-col">
-              <Label>Batch</Label>
-              <Select value={selectedBatch} onValueChange={setSelectedBatch}>
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Select Batch" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="688deb796f788de6b9237c44">
-                    Batch 1
-                  </SelectItem>
-                  <SelectItem value="batch2">Batch 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {/* Student */}
-            <div className="flex flex-col">
-              <Label>Student</Label>
-              <Select
-                value={selectedStudent[0] || ""}
-                onValueChange={(value) => setSelectedStudent([value])}
-              >
-                <SelectTrigger className="mt-1 w-full">
-                  <SelectValue placeholder="Select Student" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="67f3b8feb8d2634300cc8819">
-                    Student 1
-                  </SelectItem>
-                  <SelectItem value="student2">Student 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
             {/* Notification Type */}
             <div className="flex flex-col w-full">
               <Label>Notification Type</Label>
@@ -306,8 +377,7 @@ const StudentNotifications = () => {
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
-                  <SelectItem value="Alert">Alert</SelectItem>
-                  <SelectItem value="Reminder">Reminder</SelectItem>
+                  <SelectItem value="Notification">Notification</SelectItem>
                 </SelectContent>
               </Select>
             </div>

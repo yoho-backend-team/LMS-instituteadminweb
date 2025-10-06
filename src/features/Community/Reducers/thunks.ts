@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getCommunity, getcommunityById } from '../services/index';
-import { getcommunity, getMessage, setLoading } from './CommunitySlice'; // Avoid same name for action and function
+import { getCommunity, getcommunityById, getcommunityProfile } from '../services/index';
+import { getcommunity, getMessage, setCommunityProfile, setLoading } from './CommunitySlice'; // Avoid same name for action and function
 
 // Async thunk for fetching community
 export const fetchCommunity = (params: any) => async (dispatch: any) => {
@@ -24,6 +24,15 @@ export const fetchCommunityById = (data: any) => async (dispatch: any) => {
 	try {
 		const response = await getcommunityById(data);
 		dispatch(getMessage(response));
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const fetchCommunityProfileThunk = (data: string) => async (dispatch: any) => {
+	try {
+		const response = await getcommunityProfile(data);
+		dispatch(setCommunityProfile(response?.data));
 	} catch (error) {
 		console.error(error);
 	}

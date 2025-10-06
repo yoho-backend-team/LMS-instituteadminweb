@@ -148,6 +148,8 @@ export const DashboardCards: React.FC = () => {
   const [selecteduuid, setSelecteduuid] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("");
+
 
   const dispatch = useDispatch();
   const instituteId = GetLocalStorage("instituteId");
@@ -155,7 +157,7 @@ export const DashboardCards: React.FC = () => {
   const page = 1;
 
   const categoriess = useSelector(selectCategories);
- 
+
 
   useEffect(() => {
     dispatch(
@@ -281,7 +283,7 @@ export const DashboardCards: React.FC = () => {
         image: selectedImage,
       };
 
-      
+
 
       const createdCategory = await CreateCategories(payload);
 
@@ -352,21 +354,33 @@ export const DashboardCards: React.FC = () => {
   };
 
   const handleDeleteCategory = async (uuid: string) => {
- 
+
     try {
       await deleteCategories(instituteId, uuid);
       setCategories((prev: any) =>
         prev.filter((cat: any) => cat.uuid !== uuid)
       );
-     
+
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
 
-  const filteredCategories = categories?.filter((cat: any) =>
-    cat.category_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const filteredCategories = categories?.filter((cat: any) => {
+  const matchesSearch = cat.category_name
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === ""
+      ? true
+      : statusFilter === "Active"
+      ? cat.is_active === true
+      : cat.is_active === false;
+
+  return matchesSearch && matchesStatus;
+});
+
 
   useEffect(() => {
     setCategories(categoriess);
@@ -414,6 +428,8 @@ export const DashboardCards: React.FC = () => {
       </div>
     </div>
   );
+
+  
 
   return (
     <div className="p-6">
@@ -573,11 +589,16 @@ export const DashboardCards: React.FC = () => {
                 <label className="block text-sm font-semibold text-gray-700">
                   Status
                 </label>
-                <select className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                >
                   <option value="">Filter by status</option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
+
               </div>
               <div className="flex-1">
                 <label className="block text-sm font-semibold text-gray-700">

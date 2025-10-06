@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import CourseCard from "../../../components/Coursemanagement/CourseCard";
-import FilterPanel from "../../../components/Coursemanagement/FilterPanel";
 import AddNewCourseForm from "../../../components/Coursemanagement/AddNewCourseForm";
 import CourseDetailView from "../../../components/Coursemanagement/CourseDetailView";
 import showfilter from "../../../assets/navbar/showfilter.png";
@@ -25,6 +23,9 @@ const Courses: React.FC = () => {
   const [addingCourse, setAddingCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
   const [isLoad, setisLoad] = useState(true);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const dispatch = useDispatch<any>();
   const course = useSelector(selectCoursesData);
@@ -52,9 +53,10 @@ const Courses: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setInterval(() => {
+    const timer = setTimeout(() => {
       setisLoad(false);
     }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleToggleFilter = () => setShowFilter((prev) => !prev);
@@ -89,14 +91,27 @@ const Courses: React.FC = () => {
 
     try {
       const response = await createCourse(payload);
-      dispatch(addCourse(response?.data))
-      // const createdCourse:any = response?.data || payload;
-      // setCourses((prev:any) => [...prev, createdCourse]);
+      dispatch(addCourse(response?.data));
       setAddingCourse(false);
     } catch (error: any) {
       console.error("Error creating course:", error.message);
     }
   };
+
+  const filteredCourses = course.filter((c: any) => {
+    const matchesName = c.course_name
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === ""
+        ? true
+        : statusFilter === "active"
+        ? c.is_active === true
+        : c.is_active === false;
+
+    return matchesName && matchesStatus;
+  });
 
   if (addingCourse)
     return (
@@ -148,7 +163,41 @@ const Courses: React.FC = () => {
         </button>
       </div>
 
-      {showFilter && <FilterPanel />}
+      {showFilter && (
+        <div className="w-full flex flex-col gap-4">
+          <div className="bg-white p-4 rounded-lg shadow-md border-2 w-full">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex flex-col w-full md:flex-1">
+                <label className="pb-2 font-medium text-gray-700">
+                  Course
+                </label>
+                <input
+                  type="text"
+                  placeholder="Search Course"
+                  className="border border-[#1BBFCA] px-4 py-2 w-full rounded-md"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col w-full md:flex-1">
+                <label className="pb-2 font-medium text-gray-700">
+                  Status
+                </label>
+                <select
+                  className="border border-gray-300 px-4 py-2 rounded-md hover:border-[#1BBFCA]"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="">All</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5">
         {isLoad &&
@@ -179,8 +228,8 @@ const Courses: React.FC = () => {
                 <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
               </ContentLoader>
             ))}
-        {course.length ? (
-          course?.map((course: any, index: any) => (
+        {filteredCourses.length ? (
+          filteredCourses.map((course: any, index: any) => (
             <CourseCard
               key={index}
               {...course}
@@ -203,5 +252,6 @@ const Courses: React.FC = () => {
     </div>
   );
 };
+
 
 export default Courses;

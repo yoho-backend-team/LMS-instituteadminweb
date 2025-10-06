@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useState } from "react";
 import cloud from "../../assets/cloud.png";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "../ui/button";
+import Client from "../../apis/index";
 
 interface AddNewCourseFormProps {
   onBack: () => void;
@@ -15,7 +16,6 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
   onBack,
   onSubmit,
   branches,
-
   categories = [],
 }) => {
   const courseImageInputRef = useRef<HTMLInputElement | null>(null);
@@ -35,7 +35,10 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
     description: "",
     thumbnail: "",
     image: "",
+    status: "", // 🔹 Added status field
   });
+
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -52,13 +55,28 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
     }
   };
 
-  const handleFileChange = (
+  // 🔹 Upload file to backend when selected
+  const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: string
+    field: "thumbnail" | "image"
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({ ...prev, [field]: file.name }));
+      const data = new FormData();
+      data.append("file", file);
+
+      try {
+        setUploading(true);
+        const upload = await Client.file.upload(data);
+        const uploadedUrl = upload?.data?.file;
+
+        setFormData((prev) => ({ ...prev, [field]: uploadedUrl }));
+      } catch (err) {
+        console.error("File upload failed", err);
+        alert("File upload failed");
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -72,27 +90,32 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
 
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
-      <div
-        onClick={onBack}
-        className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          onClick={onBack}
+          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+        >
+          <ArrowLeft size={40} />
+        </Button>
       </div>
       <h2 className="text-[#1BBFCA] text-lg font-semibold mb-6 mt-4">
         Add New Course
       </h2>
 
+      {/* Inputs (kept same) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Course Name */}
         <div>
           <label className="text-sm text-gray-600">Course Name</label>
           <input
             name="title"
             value={formData.title}
             onChange={handleChange}
-
             className="border rounded-md p-2 w-full"
           />
         </div>
 
+        {/* Course Duration */}
         <div>
           <label className="text-sm text-gray-600">Course Duration</label>
           <select
@@ -108,6 +131,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
+        {/* Actual Price */}
         <div>
           <label className="text-sm text-gray-600">Actual Price</label>
           <input
@@ -116,7 +140,6 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.actualPrice}
             onChange={(e) => {
               const value = e.target.value;
-              // Allow only digits (no letters, no special chars)
               if (/^\d*$/.test(value)) {
                 setFormData({ ...formData, actualPrice: value });
               }
@@ -126,6 +149,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           />
         </div>
 
+        {/* Current Price */}
         <div>
           <label className="text-sm text-gray-600">Current Price</label>
           <input
@@ -143,6 +167,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           />
         </div>
 
+        {/* Star Rating */}
         <div>
           <label className="text-sm text-gray-600">Star Rating</label>
           <select
@@ -160,6 +185,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
+        {/* Reviews */}
         <div>
           <label className="text-sm text-gray-600">Total Review</label>
           <input
@@ -168,7 +194,6 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.review}
             onChange={(e) => {
               const value = e.target.value;
-              // allow only digits
               if (/^\d*$/.test(value)) {
                 setFormData({ ...formData, review: value });
               }
@@ -178,9 +203,9 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           />
         </div>
 
-
+        {/* Branch */}
         <div>
-          <label className="text-sm text-gray-600">Select Branches</label>
+          <label className="text-sm text-gray-600">Select Branch</label>
           <select
             name="branch"
             value={formData.branch}
@@ -196,6 +221,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
+        {/* Category */}
         <div>
           <label className="text-sm text-gray-600">Select Category</label>
           <select
@@ -214,6 +240,7 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
+        {/* Format */}
         <div>
           <label className="text-sm text-gray-600">Learning Format</label>
           <select
@@ -228,8 +255,22 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </select>
         </div>
 
-        <div></div>
+        {/* 🔹 Status Field */}
+        <div>
+          <label className="text-sm text-gray-600">Status</label>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            className="border rounded-md p-2 w-full"
+          >
+            <option value="">Select Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
 
+        {/* Overview */}
         <div>
           <label className="text-sm text-gray-600">Course Overview</label>
           <textarea
@@ -237,10 +278,10 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.overview}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-
           />
         </div>
 
+        {/* Description */}
         <div>
           <label className="text-sm text-gray-600">Course Description</label>
           <textarea
@@ -248,18 +289,25 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
             value={formData.description}
             onChange={handleChange}
             className="border rounded-md p-2 w-full"
-
           />
         </div>
 
+        {/* Thumbnail Upload */}
         <div>
           <label className="text-sm text-gray-600 mb-2 block">Thumbnail</label>
           <div
             className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer"
-            onClick={() => handleCloudClick(courseImageInputRef as React.RefObject<HTMLInputElement>)}          >
+            onClick={() =>
+              handleCloudClick(courseImageInputRef as React.RefObject<HTMLInputElement>)
+            }
+          >
             <img src={cloud} alt="cloud" className="mx-auto w-8 mb-2" />
             <p className="text-sm text-gray-500">
-              {formData.thumbnail || "Choose File"}
+              {uploading
+                ? "Uploading..."
+                : formData.thumbnail
+                ? "Uploaded"
+                : "Choose File"}
             </p>
             <input
               ref={courseImageInputRef}
@@ -270,16 +318,22 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
           </div>
         </div>
 
+        {/* Main Image Upload */}
         <div>
           <label className="text-sm text-gray-600 mb-2 block">Main Image</label>
           <div
             className="border-2 border-dashed rounded-md p-4 text-center cursor-pointer"
-            onClick={() => handleCloudClick(bannerImageInputRef as React.RefObject<HTMLInputElement>)}
-
+            onClick={() =>
+              handleCloudClick(bannerImageInputRef as React.RefObject<HTMLInputElement>)
+            }
           >
             <img src={cloud} alt="cloud" className="mx-auto w-8 mb-2" />
             <p className="text-sm text-gray-500">
-              {formData.image || "Choose File"}
+              {uploading
+                ? "Uploading..."
+                : formData.image
+                ? "Uploaded"
+                : "Choose File"}
             </p>
             <input
               ref={bannerImageInputRef}
@@ -291,7 +345,6 @@ const AddNewCourseForm: React.FC<AddNewCourseFormProps> = ({
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <button
           className="bg-[#E8F8FA] text-[#1BBFCA] px-4 py-2 rounded-md text-sm"
