@@ -39,14 +39,14 @@ const Card: React.FC<CardProps> = ({
       <img
         src={GetImageUrl(image) ?? undefined}
         alt={category_name}
-        className="w-full h-40 object-cover"
+        className="w-full h-32 sm:h-36 md:h-40 lg:h-44 xl:h-48 object-cover rounded-t-lg"
       />
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold text-[#1BBFCA]">
+          <h3 className="text-base sm:text-lg font-semibold text-[#1BBFCA] break-words pr-2">
             {category_name}
           </h3>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowMenu(!showMenu)}
               className="p-1 text-[#1BBFCA] hover:text-[#1BBFCA]"
@@ -115,16 +115,19 @@ const Card: React.FC<CardProps> = ({
             )}
           </div>
         </div>
-        <select
-          value={is_active ? "Active" : "Inactive"}
-          onChange={(e) =>
-            onStatusChange(uuid, e.target.value as "Active" | "Inactive")
-          }
-          className="mt-2 border border-gray-300 rounded px-4 py-2"
-        >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
+       <select
+  value={is_active ? "Active" : "Inactive"}
+  onChange={(e) =>
+    onStatusChange(uuid, e.target.value as "Active" | "Inactive")
+  }
+  className="mt-2 w-full sm:w-[140px] md:w-[160px] lg:w-[180px] xl:w-[200px] 
+             border border-gray-300 rounded px-3 py-2 text-sm 
+             sm:text-sm md:text-base lg:text-base xl:text-lg"
+>
+  <option value="Active">Active</option>
+  <option value="Inactive">Inactive</option>
+</select>
+
       </div>
     </div>
   );
@@ -150,14 +153,12 @@ export const DashboardCards: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
 
-
   const dispatch = useDispatch();
   const instituteId = GetLocalStorage("instituteId");
   const branchId = GetLocalStorage("selectedBranchId");
   const page = 1;
 
   const categoriess = useSelector(selectCategories);
-
 
   useEffect(() => {
     dispatch(
@@ -185,8 +186,6 @@ export const DashboardCards: React.FC = () => {
         id: uuid,
         is_active: newStatus === "Active",
       };
-
-
 
       await UpdateCategories(payload);
 
@@ -267,13 +266,6 @@ export const DashboardCards: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  // const removeImage = () => {
-  //   setSelectedImage(null);
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.value = "";
-  //   }
-  // };
-
   const handleAddCategory = async () => {
     if (!categoryName.trim()) return;
 
@@ -282,8 +274,6 @@ export const DashboardCards: React.FC = () => {
         category_name: categoryName,
         image: selectedImage,
       };
-
-
 
       const createdCategory = await CreateCategories(payload);
 
@@ -335,10 +325,10 @@ export const DashboardCards: React.FC = () => {
         prevCategories.map((cat) =>
           cat.uuid === selecteduuid
             ? {
-              ...cat,
-              category_name: updatedCategory.category_name,
-              image: updatedCategory.image,
-            }
+                ...cat,
+                category_name: updatedCategory.category_name,
+                image: updatedCategory.image,
+              }
             : cat
         )
       );
@@ -354,39 +344,35 @@ export const DashboardCards: React.FC = () => {
   };
 
   const handleDeleteCategory = async (uuid: string) => {
-
     try {
       await deleteCategories(instituteId, uuid);
       setCategories((prev: any) =>
         prev.filter((cat: any) => cat.uuid !== uuid)
       );
-
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
 
-const filteredCategories = categories?.filter((cat: any) => {
-  const matchesSearch = cat.category_name
-    .toLowerCase()
-    .includes(searchTerm.toLowerCase());
+  const filteredCategories = categories?.filter((cat: any) => {
+    const matchesSearch = cat.category_name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
-  const matchesStatus =
-    statusFilter === ""
-      ? true
-      : statusFilter === "Active"
-      ? cat.is_active === true
-      : cat.is_active === false;
+    const matchesStatus =
+      statusFilter === ""
+        ? true
+        : statusFilter === "Active"
+        ? cat.is_active === true
+        : cat.is_active === false;
 
-  return matchesSearch && matchesStatus;
-});
-
+    return matchesSearch && matchesStatus;
+  });
 
   useEffect(() => {
     setCategories(categoriess);
   }, [categoriess]);
 
-  // Enhanced Image Upload Component
   const ImageUploadComponent = ({
     currentImage,
   }: {
@@ -401,46 +387,49 @@ const filteredCategories = categories?.filter((cat: any) => {
         className="hidden"
       />
       <div
-        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
-          }`}
+        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${
+          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
+        }`}
         onClick={triggerFileInput}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
         {isUploading ? (
-          <p>Uploading...</p>
+          <p className="text-sm sm:text-base">Uploading...</p>
         ) : selectedImage ? (
           <img
             src={selectedImage}
             alt="Preview"
-            className="h-32 w-32 mx-auto object-cover rounded-lg shadow-md"
+            className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md"
           />
         ) : currentImage ? (
           <img
             src={currentImage}
             alt="Current"
-            className="h-32 w-32 mx-auto object-cover rounded-lg shadow-md"
+            className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md"
           />
         ) : (
-          <p>Drag & drop your image or click to browse</p>
+          <p className="text-sm sm:text-base">
+            Drag & drop your image or click to browse
+          </p>
         )}
       </div>
     </div>
   );
 
-  
-
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-4 md:p-6">
       {showAddCategoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-6">Add Category</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">
+              Add Category
+            </h2>
 
             <ImageUploadComponent />
 
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category Name
               </label>
@@ -448,25 +437,25 @@ const filteredCategories = categories?.filter((cat: any) => {
                 type="text"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm sm:text-base"
                 placeholder="Enter category name"
               />
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 onClick={() => {
                   setShowAddCategoryModal(false);
                   setSelectedImage(null);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddCategory}
                 disabled={isUploading}
-                className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isUploading ? "Uploading..." : "Save Changes"}
               </button>
@@ -476,10 +465,14 @@ const filteredCategories = categories?.filter((cat: any) => {
       )}
 
       {showEditModal && editingCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Edit Category</h2>
-            <p className="text-gray-600 mb-6">Edit Course Category Details</p>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-4">
+              Edit Category
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+              Edit Course Category Details
+            </p>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -489,7 +482,7 @@ const filteredCategories = categories?.filter((cat: any) => {
                 type="text"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm sm:text-base"
                 placeholder="Enter category name"
               />
             </div>
@@ -502,21 +495,21 @@ const filteredCategories = categories?.filter((cat: any) => {
               Accepted Formats: PNG, JPG, JPEG
             </p>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
               <button
                 onClick={() => {
                   setShowEditModal(false);
                   setSelectedImage(null);
                   setSelecteduuid(null);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateCategory}
                 disabled={isUploading}
-                className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isUploading ? "Uploading..." : "Update Category"}
               </button>
@@ -525,18 +518,19 @@ const filteredCategories = categories?.filter((cat: any) => {
         </div>
       )}
 
-      {/* Header section */}
-      <div className="flex flex-col mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Course Category</h2>
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
+          Course Category
+        </h2>
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
           <button
-            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA]"
+            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] text-sm sm:text-base min-w-[120px]"
             onClick={() => setShowFilter(!showFilter)}
           >
             {showFilter ? "Hide" : "Show Filter"}
           </button>
           <button
-            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] flex items-center"
+            className="px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] flex items-center justify-center text-sm sm:text-base min-w-[160px]"
             onClick={() => setShowAddCategoryModal(true)}
           >
             <svg
@@ -565,7 +559,7 @@ const filteredCategories = categories?.filter((cat: any) => {
                 placeholder="Search Categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className=" p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1BBFCA] text-sm"
+                className="w-full p-2 pl-10 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#1BBFCA] text-sm"
               />
               <svg
                 className="absolute left-3 top-3 h-4 w-4 text-gray-400"
@@ -583,47 +577,41 @@ const filteredCategories = categories?.filter((cat: any) => {
               </svg>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Status
-                </label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                >
-                  <option value="">Filter by status</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Filter by Course
-                </label>
-                <select className="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
-                  <option value="">Filter by course</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="MERN Stack Development">
-                    MERN Stack Development
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
+         <div className="bg-white p-3 sm:p-4 rounded-lg shadow-md mb-4 sm:mb-6">
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6">
+    <div className="flex-1 min-w-0"> {/* Added min-w-0 to prevent overflow */}
+      <label className="block text-sm font-semibold text-gray-700 mb-1">
+        Status
+      </label>
+      <select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+      >
+        <option value="">Filter by status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+    <div className="flex-1 min-w-0"> {/* Added min-w-0 to prevent overflow */}
+      <label className="block text-sm font-semibold text-gray-700 mb-1">
+        Filter by Course
+      </label>
+      <select className="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+        <option value="">Filter by course</option>
+        <option value="Web Development">Web Development</option>
+        <option value="MERN Stack Development">
+          MERN Stack Development
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
         </div>
       )}
 
       {isLoad && (
-        <div
-          className="grid gap-6 justify-start"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 md:gap-6">
           {Array(8)
             .fill(null)
             .map((_, index) => (
@@ -634,7 +622,7 @@ const filteredCategories = categories?.filter((cat: any) => {
                 viewBox="0 0 390 330"
                 backgroundColor="#f3f3f3"
                 foregroundColor="#ecebeb"
-                className="w-full h-[310px] rounded-lg"
+                className="w-full h-[280px] sm:h-[300px] md:h-[310px] rounded-lg"
                 key={index}
               >
                 <rect x="0" y="0" rx="10" ry="10" width="400" height="200" />
@@ -646,11 +634,7 @@ const filteredCategories = categories?.filter((cat: any) => {
         </div>
       )}
 
-      {/* Categories grid */}
-      <div
-        className="grid !grid-cols-3 gap-6 justify-start"
-        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
         {!isLoad &&
           filteredCategories?.map((cat: any, index: any) => (
             <Card

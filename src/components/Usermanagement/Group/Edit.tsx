@@ -21,7 +21,6 @@ function Edit() {
   const [state, setState] = useState<Record<string, Record<Permission, boolean>>>({});
 
   // Load group details from API
-
   useEffect(() => {
     const fetchGroup = async () => {
       if (!id) return;
@@ -93,61 +92,74 @@ function Edit() {
   };
 
   return (
-    <>
-
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* Back Button */}
+      <div className="flex items-center mb-6 sm:mb-8">
         <Button
           onClick={() => navigate("/group")}
-          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+          className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300 p-2 sm:p-3"
         >
-          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+          <ArrowLeft className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
         </Button>
       </div>
 
       {/* Header */}
-      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">Edit Group</h1>
-      <p className="text-[#7D7D7D] mb-6">Set Group Permissions</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#1BBFCA] mb-2">
+          Edit Group
+        </h1>
+        <p className="text-sm sm:text-base text-[#7D7D7D]">
+          Set Group Permissions
+        </p>
+      </div>
 
       {/* Group Name */}
-      <label className="block mb-2 text-sm font-medium text-[#7D7D7D]">
-        Group Name
-      </label>
-      <input
-        type="text"
-        placeholder="Group Name"
-        value={groupName}
-        onChange={(e) => setGroupName(e.target.value)}
-        className="border border-gray-300 rounded-lg p-2 w-96 mb-6 hover:border-[#1BBFCA] outline-none"
-      />
+      <div className="mb-6 sm:mb-8">
+        <label className="block mb-2 text-sm sm:text-base font-medium text-[#7D7D7D]">
+          Group Name
+        </label>
+        <input
+          type="text"
+          placeholder="Group Name"
+          value={groupName}
+          onChange={(e) => setGroupName(e.target.value)}
+          className="w-full sm:w-96 border border-gray-300 rounded-lg p-3 hover:border-[#1BBFCA] focus:border-[#1BBFCA] outline-none transition-colors"
+        />
+      </div>
 
       {/* Permissions Table */}
-      <h2 className="text-lg font-medium text-[#7D7D7D] mb-4">Group Permissions</h2>
-      <hr className="mb-6" />
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-medium text-[#7D7D7D] mb-4">
+          Group Permissions
+        </h2>
+        <hr className="mb-4 sm:mb-6" />
+      </div>
 
-      <div className="space-y-3">
+      {/* Permissions Grid */}
+      <div className="space-y-3 sm:space-y-4 mb-8">
         {groupView.map((module, index) => (
           <div
             key={index}
-            className="flex items-center justify-between py-6 px-6 text-[#7D7D7D] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
+            className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 text-[#7D7D7D] bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-shadow"
           >
             {/* Module Name */}
-            <div className="text-sm font-medium text-[#7D7D7D] w-48">
+            <div className="text-sm sm:text-base font-medium text-[#7D7D7D] mb-3 sm:mb-0 sm:w-48 lg:w-64 xl:w-80 break-words">
               {module.identity}
             </div>
 
             {/* Permission Checkboxes */}
-            <div className="flex flex-1 justify-evenly">
+            <div className="grid grid-cols-2 sm:flex sm:flex-1 sm:justify-evenly gap-3 sm:gap-4">
               {permissions.map((permission) => (
-                <div key={permission} className="flex items-center gap-2">
+                <div key={permission} className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="checkbox"
                     checked={state[module.identity]?.[permission] || false}
                     onChange={() => toggleCheckbox(module.identity, permission)}
-                    className="w-5 h-5 appearance-none rounded-md border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 checked:before:content-['✓'] checked:before:block checked:before:text-white checked:before:text-center checked:before:font-bold checked:before:leading-[1.1rem]"
+                    className="w-4 h-4 sm:w-5 sm:h-5 appearance-none rounded-md border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 checked:before:content-['✓'] checked:before:block checked:before:text-white checked:before:text-center checked:before:font-bold checked:before:leading-[1rem] sm:checked:before:leading-[1.1rem] cursor-pointer"
                   />
                   <label
                     htmlFor={`${module.identity}-${permission}`}
-                    className="text-sm text-gray-600 cursor-pointer"
+                    className="text-xs sm:text-sm text-gray-600 cursor-pointer whitespace-nowrap"
                   >
                     {permission}
                   </label>
@@ -159,16 +171,15 @@ function Edit() {
       </div>
 
       {/* Save Button */}
-      <div className="mt-6">
+      <div className="flex justify-start">
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-[#1BBFCA] text-white rounded-lg hover:bg-[#17a8b4] transition"
+          className="w-full sm:w-auto px-6 py-3 bg-[#1BBFCA] text-white rounded-lg hover:bg-[#17a8b4] transition-colors text-sm sm:text-base font-medium"
         >
           Save Changes
         </button>
-
       </div>
-    </>
+    </div>
   );
 }
 

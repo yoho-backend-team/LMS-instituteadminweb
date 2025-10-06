@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { FaEye } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
@@ -19,6 +19,8 @@ import ContentLoader from 'react-content-loader';
 
 function StatsCard() {
 	const [openMenu, setOpenMenu] = useState<number | null>(null);
+	const menuRef = useRef<HTMLDivElement>(null);
+	
 	const toggleMenu = (index: number) => {
 		setOpenMenu(openMenu === index ? null : index);
 	};
@@ -39,9 +41,23 @@ function StatsCard() {
 		dispatch(GetGroupCardthunks(ParamsData));
 	}, [dispatch, currentPage]);
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+				setOpenMenu(null);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
+
 	const handledelete = async (id: any) => {
 		try {
 			await dispatch(deleteGroupThunk({ id }));
+			setOpenMenu(null);
 		} catch (error) {
 			console.error('failed to delete', error);
 		}
@@ -49,7 +65,7 @@ function StatsCard() {
 
 	if (loading) {
 		return (
-			<div className='grid grid-cols-1 md:grid-cols-3 mt-4 gap-5'>
+			<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6 px-3 sm:px-4 md:px-0'>
 				{[...Array(6)].map((_, index) => (
 					<ContentLoader
 						speed={1}
@@ -57,22 +73,17 @@ function StatsCard() {
 						height='100%'
 						backgroundColor='#f3f3f3'
 						foregroundColor='#ecebeb'
-						className='w-full h-[160px] p-4 rounded-2xl border shadow-md'
+						className='w-full h-[180px] sm:h-[190px] md:h-[200px] p-4 sm:p-5 rounded-2xl border shadow-md'
 						key={index}
 					>
 						<rect x='0' y='0' rx='6' ry='6' width='100' height='24' />
-						<rect x='270' y='0' rx='6' ry='6' width='80' height='24' />
+						<rect x='220' y='0' rx='6' ry='6' width='80' height='24' />
 
-						<rect x='0' y='36' rx='10' ry='10' width='100%' height='120' />
+						<rect x='0' y='36' rx='10' ry='10' width='100%' height='80' />
 
-						<rect x='0' y='170' rx='6' ry='6' width='60%' height='20' />
+						<rect x='0' y='130' rx='6' ry='6' width='60%' height='18' />
 
-						<rect x='0' y='200' rx='4' ry='4' width='80' height='16' />
-						<rect x='280' y='200' rx='4' ry='4' width='60' height='20' />
-
-						<rect x='0' y='240' rx='6' ry='6' width='100' height='32' />
-
-						<rect x='260' y='240' rx='6' ry='6' width='80' height='32' />
+						<rect x='0' y='160' rx='4' ry='4' width='100' height='20' />
 					</ContentLoader>
 				))}
 			</div>
@@ -80,45 +91,55 @@ function StatsCard() {
 	}
 
 	return (
-		<div>
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+		<div className='px-3 sm:px-4 md:px-0'>
+			<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6'>
 				{groupCard.map((card: any, idx: any) => (
 					<div
 						key={idx}
-						className='relative rounded-lg bg-white shadow-md p-4 pt-6'
+						className='relative rounded-lg bg-white shadow-md p-4 sm:p-5 md:p-6 pt-5 sm:pt-6'
 					>
 						{/* Three Dots Menu */}
-						<div className='absolute top-3 right-3 z-20'>
-							<button onClick={() => toggleMenu(idx)}>
-								<FiMoreVertical className='h-5 w-5 text-[#1BBFCA]' />
+						<div className='absolute top-3 sm:top-4 right-3 sm:right-4 z-20'>
+							<button 
+								onClick={() => toggleMenu(idx)}
+								className='p-1 hover:bg-gray-100 rounded transition-colors'
+							>
+								<FiMoreVertical className='h-5 w-5 sm:h-6 sm:w-6 text-[#1BBFCA]' />
 							</button>
 							{openMenu === idx && (
-								<div className='absolute right-0 mt-2 w-36 bg-white shadow-lg border rounded-lg text-sm p-2 space-y-2 z-30'>
+								<div 
+									ref={menuRef}
+									className='absolute right-0 mt-2 w-[140px] sm:w-[150px] md:w-[160px] bg-white shadow-lg border rounded-lg text-sm p-2 space-y-2 z-30'
+								>
 									<button
-										className='flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition'
-										onClick={() => navigate(`/group/view/${card.id}`)}
+										className='flex items-center gap-2 sm:gap-2.5 w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition text-sm sm:text-base'
+										onClick={() => {
+											navigate(`/group/view/${card.id}`);
+											setOpenMenu(null);
+										}}
 									>
-										<FaEye className='w-5 h-5' />
+										<FaEye className='w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0' />
 										<span>View</span>
 									</button>
 									<button
-										className='flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition'
-										onClick={() =>
+										className='flex items-center gap-2 sm:gap-2.5 w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition text-sm sm:text-base'
+										onClick={() => {
 											navigate(`/group/edit/${card.id}`, {
 												state: {
 													grpName: card?.identity,
 												},
-											})
-										}
+											});
+											setOpenMenu(null);
+										}}
 									>
-										<LuNotebookPen className='w-5 h-5' />
+										<LuNotebookPen className='w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0' />
 										<span>Edit</span>
 									</button>
 									<button
-										className='flex items-center gap-2 w-full px-3 py-2 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition'
+										className='flex items-center gap-2 sm:gap-2.5 w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition text-sm sm:text-base'
 										onClick={() => handledelete(card.uuid)} 
 									>
-										<AiOutlineDelete className='w-5 h-5' />
+										<AiOutlineDelete className='w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0' />
 										<span>Delete</span>
 									</button>
 								</div>
@@ -126,20 +147,22 @@ function StatsCard() {
 						</div>
 
 						{/* Card Content */}
-						<h2 className='text-lg text-[#716F6F] font-semibold mb-1 mt-4 bg-[#F7F7F7] px-3 py-2'>
+						<h2 className='text-base sm:text-lg md:text-xl text-[#716F6F] font-semibold mb-2 sm:mb-2.5 mt-3 sm:mt-4 bg-[#F7F7F7] px-3 sm:px-4 py-2 sm:py-2.5 rounded break-words'>
 							{card.identity}
 						</h2>
-						<p className='text-sm text-[#716F6F] mb-4'>
+						<p className='text-xs sm:text-sm md:text-base text-[#716F6F] mb-4 sm:mb-5 px-1'>
 							Total {card.users.length} Users
 						</p>
 
 						{/* Status Dropdown */}
-						<StatusDropdown
-							idx={idx}
-							initialStatus={card.is_active ? 'Active' : 'Inactive'}
-							options={['Active', 'Inactive']}
-							itemId={card.id}
-						/>
+						<div className='mt-auto'>
+							<StatusDropdown
+								idx={idx}
+								initialStatus={card.is_active ? 'Active' : 'Inactive'}
+								options={['Active', 'Inactive']}
+								itemId={card.id}
+							/>
+						</div>
 					</div>
 				))}
 			</div>
