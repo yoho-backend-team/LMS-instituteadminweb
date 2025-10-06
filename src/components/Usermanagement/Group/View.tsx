@@ -115,7 +115,7 @@ export default function View() {
           onClick={() => navigate("/group")}
           className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300 p-2 sm:p-3"
         >
-          <ArrowLeft className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
+<ArrowLeft style={{ width: "28px", height: "28px" }} />
         </Button>
       </div>
 

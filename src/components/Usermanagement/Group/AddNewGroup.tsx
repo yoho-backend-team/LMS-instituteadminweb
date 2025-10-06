@@ -247,8 +247,8 @@ function AddNewGroup({
         onClick={() => navigate("/group")}
         className="mb-2 sm:mb-4 text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white"
       >
-        <ArrowLeft className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
-      </Button>
+<ArrowLeft style={{ width: "28px", height: "28px" }} />      
+</Button>
 
       {/* Header */}
       <div className="space-y-1 sm:space-y-2">
