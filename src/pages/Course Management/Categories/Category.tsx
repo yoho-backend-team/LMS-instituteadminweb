@@ -259,6 +259,7 @@ export const DashboardCards: React.FC = () => {
     setSelectedImage(cat?.image);
     setSelecteduuid(cat?.uuid);
     setShowEditModal(true);
+    console.log("✏️ Category Edited:", editingCategory);
   };
 
   const handleUpdateCategory = async () => {
