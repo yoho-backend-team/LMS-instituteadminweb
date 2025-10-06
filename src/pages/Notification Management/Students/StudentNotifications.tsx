@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import {
@@ -241,11 +241,13 @@ const StudentNotifications = () => {
 
   return (
     <div className="p-6 min-h-screen">
-      <div className="flex justify-between mb-6">
-        <p className="text-lg font-bold">Student Notification</p>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+        <p className="text-lg font-bold text-center sm:text-left">
+          Student Notification
+        </p>
         <Button
           onClick={() => setOpen(true)}
-          className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
+          className="w-full sm:w-auto flex justify-center items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
         >
           <img src={bell} alt="bell" className="w-6 h-6" />
           Add Notification
@@ -253,7 +255,7 @@ const StudentNotifications = () => {
       </div>
 
       <Drawer open={open} onOpenChange={setOpen} direction="right">
-        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white shadow-lg border-l rounded-xl">
+        <DrawerContent className="h-full w-full max-w-md ml-auto p-6 bg-white shadow-lg border-l rounded-xl max-[420px]:max-w-full max-[420px]:p-4">
           <DrawerHeader className="flex  justify-between p-0 mb-6 relative">
             <DrawerTitle className="text-lg font-semibold">
               Add Notification
@@ -263,8 +265,6 @@ const StudentNotifications = () => {
             </DrawerClose>
           </DrawerHeader>
           <form className="flex flex-col space-y-4">
-
-            {/* Course */}
             <Label>Course</Label>
             <Select
               value={selectedCourse?._id || ""}
@@ -285,7 +285,6 @@ const StudentNotifications = () => {
               </SelectContent>
             </Select>
 
-            {/* Batch */}
             <Label>Batch</Label>
             <Select
               value={selectedBatch?._id || ""}
@@ -306,7 +305,6 @@ const StudentNotifications = () => {
               </SelectContent>
             </Select>
 
-            {/* Student */}
             <div className="flex flex-col">
               <Label>Student</Label>
               <Select
@@ -366,7 +364,6 @@ const StudentNotifications = () => {
               </Select>
             </div>
 
-            {/* Notification Type */}
             <div className="flex flex-col w-full">
               <Label>Notification Type</Label>
               <Select
@@ -381,7 +378,6 @@ const StudentNotifications = () => {
                 </SelectContent>
               </Select>
             </div>
-            {/* Title */}
             <div className="flex flex-col">
               <Label>Title</Label>
               <Input
@@ -390,7 +386,6 @@ const StudentNotifications = () => {
                 className="mt-1"
               />
             </div>
-            {/* Body */}
             <div className="flex flex-col">
               <Label>Body</Label>
               <Textarea
@@ -399,7 +394,6 @@ const StudentNotifications = () => {
                 className="mt-1"
               />
             </div>
-            {/* Link */}
             <div className="flex flex-col">
               <Label>Link</Label>
               <Input
@@ -408,20 +402,19 @@ const StudentNotifications = () => {
                 className="mt-1"
               />
             </div>
-            {/* Buttons */}
-            <div className="flex justify-between mt-6">
+            <div className="flex flex-col sm:flex-row justify-between mt-6 gap-3">
               <Button
                 type="button"
                 onClick={() => setOpen(false)}
                 variant="outline"
-                className="border-cyan-500 text-cyan-500 hover:bg-cyan-50 "
+                className="w-full sm:w-auto border-cyan-500 text-cyan-500 hover:bg-cyan-50 "
               >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={handleAddNotification}
-                className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-white"
               >
                 Add Notification
               </Button>
@@ -435,7 +428,7 @@ const StudentNotifications = () => {
         {notificationStats.map((stat, index) => (
           <Card
             key={index}
-            className={`w-[250px] h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}
+            className={`w-full sm:w-[250px] h-[160px] p-4 rounded-xl shadow-md ${stat.color} relative transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl`}
           >
             <div className="absolute -top-3 left-3">
               <img
@@ -456,12 +449,11 @@ const StudentNotifications = () => {
         ))}
       </div>
 
-      {/* Notifications Section */}
       <div>
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           Notifications
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3">
               {[...Array(6)].map((_, index) => (
@@ -476,23 +468,11 @@ const StudentNotifications = () => {
                 >
                   <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
                   <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
-
-                  <rect
-                    x="0"
-                    y="36"
-                    rx="10"
-                    ry="10"
-                    width="100%"
-                    height="120"
-                  />
-
+                  <rect x="0" y="36" rx="10" ry="10" width="100%" height="120" />
                   <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
-
                   <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
                   <rect x="280" y="200" rx="4" ry="4" width="60" height="20" />
-
                   <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
-
                   <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
                 </ContentLoader>
               ))}
@@ -501,12 +481,13 @@ const StudentNotifications = () => {
             notificationsList?.map((notification, index) => (
               <Card
                 key={index}
-                className="bg-white shadow-lg hover:shadow-md transition-shadow flex flex-col h-[255px] border"
+                className="bg-white shadow-lg hover:shadow-md transition-shadow flex flex-col border w-full min-h-[255px] max-[420px]:min-h-[auto]"
               >
                 <CardContent className="p-6 flex flex-col flex-grow">
+
                   {/* User Info */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
+                  <div className="flex flex-col max-[420px]:items-start max-[420px]:gap-1 sm:flex-row sm:items-center justify-between mb-4">
+                    <div className="flex flex-col max-[420px]:items-start max-[420px]:gap-1 sm:flex-row sm:items-center sm:space-x-3">
                       <Avatar className="w-10 h-10">
                         <AvatarImage
                           src={notification.user.avatar || "/placeholder.svg"}
@@ -519,19 +500,21 @@ const StudentNotifications = () => {
                             ?.join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {notification.user.name}
+                      <div className="flex flex-col max-[420px]:items-start">
+                        <p className="font-medium text-gray-900 max-[420px]:text-sm">
+                          Name: {notification.user.name}
                         </p>
-                        <p className="text-sm text-gray-500">
-                          {notification.user.email}
+                        <p className="text-sm text-gray-500 max-[420px]:text-xs">
+                          Email: {notification.user.email}
                         </p>
                       </div>
                     </div>
-                    <span className="text-sm text-gray-500">
-                      ID : {notification.id}
+                    <span className="text-sm text-gray-500  sm:mt-0">
+                      ID: {notification.id}
                     </span>
                   </div>
+
+
                   {/* Course Info */}
                   <div className="mb-4 flex-grow">
                     <h3 className="font-semibold text-gray-900 mb-2">
@@ -541,7 +524,7 @@ const StudentNotifications = () => {
                       {notification.description}
                     </p>
                   </div>
-                  {/* Resend Button - Bottom Left */}
+                  {/* Resend Button - Bottom Right */}
                   <div className="mt-auto flex justify-end">
                     <Button
                       onClick={() => handleResend(notification.uuid)}
