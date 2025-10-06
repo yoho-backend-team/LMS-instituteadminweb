@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
@@ -28,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 const SkeletonRow = () => (
   <TableRow>
     {[...Array(5)].map((_, i) => (
-      <TableCell key={i} className="px-6 py-4">
+      <TableCell key={i} className="px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-4">
         <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
       </TableCell>
     ))}
@@ -38,11 +37,21 @@ const SkeletonRow = () => (
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true); // 👈 loading state
+  const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,7 +122,6 @@ const Placements = () => {
       uuid: editingPlacement?.uuid,
       student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
-      
     };
 
     try {
@@ -135,25 +143,129 @@ const Placements = () => {
     }
   };
 
+  // Mobile Card View
+  const MobilePlacementCard = ({ placement }: { placement: any }) => (
+    <div
+      className="bg-white rounded-lg shadow-sm border p-4 mb-3"
+      onClick={() => navigate("/placementview", { state: { placement } })}
+    >
+      <div className="space-y-2">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-semibold text-gray-900">
+              {placement?.company?.name ?? "N/A"}
+            </h3>
+            <p className="text-sm text-gray-600">
+              {placement?.company?.email ?? "N/A"}
+            </p>
+          </div>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-1 rounded-full hover:bg-gray-100"
+              onClick={(e?: any) => {
+                e.stopPropagation();
+                // Toggle actions menu
+                const menu = document.getElementById(`menu-${placement._id}`);
+                menu?.classList.toggle("hidden");
+              }}
+            >
+              <FaEllipsisV className="h-4 w-4" />
+            </Button>
+            <div
+              id={`menu-${placement._id}`}
+              className="hidden absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10"
+            >
+              {/* VIEW */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  navigate("/placementview", { state: { placement } });
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
+              >
+                <FaEdit className="mr-2 h-4 w-4" />
+                <span>View</span>
+              </Button>
+
+              {/* EDIT */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  setEditingPlacement(placement);
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+              >
+                <FaEdit className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </Button>
+
+              {/* DELETE */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  handleDelete(placement.uuid);
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+              >
+                <FaTrash className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div>
+            <span className="font-medium">Interview:</span>
+            <p>
+              {placement?.schedule?.interviewDate
+                ? new Date(
+                    placement.schedule.interviewDate
+                  ).toLocaleDateString()
+                : "N/A"}
+            </p>
+          </div>
+          <div>
+            <span className="font-medium">Role:</span>
+            <p>{placement?.job?.name ?? "N/A"}</p>
+          </div>
+          <div className="col-span-2">
+            <span className="font-medium">Venue:</span>
+            <p>{placement?.schedule?.venue ?? "N/A"}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 p-3 sm:p-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Placements</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+          Placements
+        </h2>
         <button
           onClick={() => {
             setIsFormOpen(true);
             setEditingPlacement(null);
           }}
-          className="bg-blue-500 text-white px-4 py-2 rounded flex flex-row gap-3"
+          className="bg-blue-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded flex flex-row gap-2 text-sm sm:text-base"
         >
-          <Plus />
-          Add Placement
+          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="hidden sm:inline">Add Placement</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
       {isFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-5xl max-h-[90vh] overflow-y-auto relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg w-full max-w-5xl max-h-[95vh] overflow-y-auto relative">
             <Button
               type="button"
               onClick={() => {
@@ -162,10 +274,10 @@ const Placements = () => {
               }}
               variant="ghost"
               size="icon"
-              className="h-8 w-8 absolute top-10 right-12 text-gray-600 hover:text-gray-900 text-xl font-bold"
+              className="h-6 w-6 sm:h-8 sm:w-8 absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900"
               aria-label="Close"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
 
             <PlacementForm
@@ -187,95 +299,147 @@ const Placements = () => {
         </div>
       )}
 
-      <div className="border border-gray-400 shadow-2xl rounded-2xl p-2">
-        <Table className="overflow-auto">
-          <TableHeader className="bg-gray-200">
-            <TableRow>
-              <TableHead className="px-6 py-3 font-medium">
-                Company Name
-              </TableHead>
-              <TableHead className="px-6 py-3 font-medium">
-                Interview Date
-              </TableHead>
-              <TableHead className="px-6 py-3 font-medium">Role</TableHead>
-              <TableHead className="px-6 py-3 font-medium">Venue</TableHead>
-              <TableHead className="px-6 py-3 font-medium text-right">
-                Actions
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      <div className="border border-gray-300 sm:border-gray-400 shadow-sm sm:shadow-2xl rounded-lg sm:rounded-2xl p-2 sm:p-4">
+        {isMobile ? (
+          // Mobile Card View
+          <div className="space-y-3">
             {loading
-              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
+              ? [...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-sm border p-4 mb-3"
+                  >
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-300 animate-pulse rounded w-1/2 mb-2"></div>
+                      <div className="h-3 bg-gray-300 animate-pulse rounded w-3/4 mb-1"></div>
+                      <div className="h-3 bg-gray-300 animate-pulse rounded w-2/3"></div>
+                    </div>
+                  </div>
+                ))
               : placements.map((placement: any) => (
-                <TableRow
-                  key={placement?._id}
-                  className="hover:bg-gray-50"
-                  onClick={() => navigate("/placementview", { state: { placement } })}
-                >
-                  <TableCell className="px-6 py-4">
-                    <div className="flex flex-col">
-                      <span>{placement?.company?.name ?? "N/A"}</span>
-                      <span>{placement?.company?.email ?? "N/A"}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    {placement?.schedule?.interviewDate
-                      ? new Date(
-                        placement.schedule.interviewDate
-                      ).toLocaleDateString()
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    {placement?.job?.name ?? "N/A"}
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    {placement?.schedule?.venue ?? "N/A"}
-                  </TableCell>
-                  <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative group">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
-                      title="Actions"
-                      aria-label="Actions menu"
+                  <MobilePlacementCard
+                    key={placement?._id}
+                    placement={placement}
+                  />
+                ))}
+          </div>
+        ) : (
+          // Desktop Table View
+          <Table className="w-full">
+            <TableHeader className="bg-gray-100 sm:bg-gray-200">
+              <TableRow>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Company Name
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Interview Date
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Role
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Venue
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm text-right">
+                  Actions
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading
+                ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
+                : placements.map((placement: any) => (
+                    <TableRow
+                      key={placement?._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() =>
+                        navigate("/placementview", { state: { placement } })
+                      }
                     >
-                      <FaEllipsisV className="h-4 w-4" />
-                    </Button>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {placement?.company?.name ?? "N/A"}
+                          </span>
+                          <span className="text-xs text-gray-600">
+                            {placement?.company?.email ?? "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.interviewDate
+                          ? new Date(
+                              placement.schedule.interviewDate
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.job?.name ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.venue ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                          title="Actions"
+                          aria-label="Actions menu"
+                          onClick={(e: any) => e.stopPropagation()} // prevent row click
+                        >
+                          <FaEllipsisV className="h-4 w-4" />
+                        </Button>
 
-                    <div className="hidden group-hover:block absolute right-10 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 focus:outline-none overflow-hidden">
-                      <Button
-                        variant="ghost"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          setEditingPlacement(placement);
-                          setIsFormOpen(true);
-                        }}
-                        className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                        aria-label="Edit"
-                      >
-                        <FaEdit className="mr-2 h-4 w-4" />
-                        <span>Edit</span>
-                      </Button>
+                        <div className="hidden group-hover:block absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
+                          {/* VIEW */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              navigate("/placementview", {
+                                state: { placement },
+                              });
+                            }}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                          >
+                            <FaEdit className="mr-2 h-4 w-4" />
+                            <span>View</span>
+                          </Button>
 
-                      <Button
-                        variant="ghost"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          handleDelete(placement.uuid);
-                        }}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
-                        aria-label="Delete"
-                      >
-                        <FaTrash className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+                          {/* EDIT */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              setEditingPlacement(placement);
+                              setIsFormOpen(true);
+                            }}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                          >
+                            <FaEdit className="mr-2 h-4 w-4" />
+                            <span>Edit</span>
+                          </Button>
+
+                          {/* DELETE */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              handleDelete(placement.uuid);
+                            }}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                          >
+                            <FaTrash className="mr-2 h-4 w-4" />
+                            <span>Delete</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

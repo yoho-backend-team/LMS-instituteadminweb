@@ -157,28 +157,30 @@ export const FeesTable: React.FC = () => {
     <>
       <div className="rounded-2xl p-6">
         <h2 className="text-xl font-semibold">Fees</h2>
-        <div className="flex justify-between items-center mb-7 mt-7">
-          <div className="flex items-center gap-4">
-            <button
-              className="bg-cyan-500 text-white px-4 py-2 rounded-md flex items-center gap-2"
-              onClick={() => setShowFilter(!showFilter)}
-            >
-              <SlidersHorizontal className="text-lg" />
-              {showFilter ? "Hide" : "Show Filter"}
-            </button>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedFees(null);
-              setShowEditAddDrawer(true);
-              setShowConfirmationModal(false);
-              setShowSuccessModal(false);
-            }}
-            className="bg-cyan-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-          >
-            + Add Fee
-          </button>
-        </div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-7 mt-7 gap-4">
+  <div className="flex items-center gap-4 w-full sm:w-auto">
+    <button
+      className="bg-cyan-500 text-white px-4 py-2 rounded-md flex items-center gap-2 w-full sm:w-auto justify-center"
+      onClick={() => setShowFilter(!showFilter)}
+    >
+      <SlidersHorizontal className="text-lg" />
+      {showFilter ? "Hide" : "Show Filter"}
+    </button>
+  </div>
+
+  <button
+    onClick={() => {
+      setSelectedFees(null);
+      setShowEditAddDrawer(true);
+      setShowConfirmationModal(false);
+      setShowSuccessModal(false);
+    }}
+    className="bg-cyan-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 w-full sm:w-auto justify-center"
+  >
+    + Add Fee
+  </button>
+</div>
+
 
         {showFilter && (
           <FeesFilter

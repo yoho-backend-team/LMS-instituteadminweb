@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { downloadCertificate } from "../../components/cerificateManagement/certificateGenerator";
@@ -34,16 +33,16 @@ export const CertificateManager: React.FC = () => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
-  const [courseFilter, setCourseFilter] = useState('')
+  const [courseFilter, setCourseFilter] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
-  const [branchFilter, setBranchFilter] = useState('')
+  const [branchFilter, setBranchFilter] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingCertificate, setEditingCertificate] =
     useState<Certificate | null>(null);
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("");
 
   // ✅ Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -125,50 +124,50 @@ export const CertificateManager: React.FC = () => {
     fetchgetStudentCertificate(currentPage);
   };
 
- const filteredCertificates =
-  certificateData?.data
-    ?.filter((cert: any) => {
-      if (branchFilter && cert.branch_id !== branchFilter) return false;
-      if (courseFilter && cert.course !== courseFilter) return false;
-      if (
-        searchTerm &&
-        !cert.certificate_name?.toLowerCase().includes(searchTerm.toLowerCase())
-      ) {
-        return false;
-      }
+  const filteredCertificates =
+    certificateData?.data
+      ?.filter((cert: any) => {
+        if (branchFilter && cert.branch_id !== branchFilter) return false;
+        if (courseFilter && cert.course !== courseFilter) return false;
+        if (
+          searchTerm &&
+          !cert.certificate_name
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        ) {
+          return false;
+        }
 
-      return true;
-    })
-    ?.flatMap((cert: any) => {
-      if (!cert.student || !Array.isArray(cert.student)) return [];
+        return true;
+      })
+      ?.flatMap((cert: any) => {
+        if (!cert.student || !Array.isArray(cert.student)) return [];
 
-      return cert.student
-        .map((student: any) => {
-          const fullName =
-            student.full_name ||
-            `${student.first_name || ""} ${student.last_name || ""}`.trim();
-          const email = student.email || "N/A";
+        return cert.student
+          .map((student: any) => {
+            const fullName =
+              student.full_name ||
+              `${student.first_name || ""} ${student.last_name || ""}`.trim();
+            const email = student.email || "N/A";
 
-          return {
-            id: cert.id,
-            uuid: cert.uuid,
-            title: cert?.certificate_name,
-            description: cert?.description,
-            branch: cert?.branch_id,
-            course: cert?.course,
-            batch: cert?.batch_id,
-            student: fullName,
-            email,
-            image: student?.image,
-          };
-        })
-        .filter(Boolean);
-    }) || [];
-
+            return {
+              id: cert.id,
+              uuid: cert.uuid,
+              title: cert?.certificate_name,
+              description: cert?.description,
+              branch: cert?.branch_id,
+              course: cert?.course,
+              batch: cert?.batch_id,
+              student: fullName,
+              email,
+              image: student?.image,
+            };
+          })
+          .filter(Boolean);
+      }) || [];
 
   return (
     <div className="p-3">
-     
       <CertificateFilter
         showFilter={showFilter}
         setShowFilter={setShowFilter}
@@ -187,7 +186,6 @@ export const CertificateManager: React.FC = () => {
         onAdd={handleAdd}
       />
 
-     
       <CertificateTable
         certificates={filteredCertificates || []}
         openDropdownId={openDropdownId}
@@ -234,11 +232,16 @@ export const CertificateManager: React.FC = () => {
         isOpen={isModalOpen}
         isEditing={isEditing}
         editingCertificate={editingCertificate}
-        onSave={handleSave} fetchgetStudentCertificate={function (): void {
-          throw new Error("Function not implemented.");
-        } } onClose={function (): void {
-          throw new Error("Function not implemented.");
-        } }      />
+        fetchgetStudentCertificate={() =>
+          fetchgetStudentCertificate(currentPage)
+        }
+        onSave={handleSave}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingCertificate(null);
+          setIsEditing(false);
+        }}
+      />
     </div>
   );
 };

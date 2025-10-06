@@ -731,6 +731,7 @@ const TeachingStaffs: React.FC = () => {
               onClick={handleAddStaff}
             >
               Submit
+              Submit
             </Button>
           </div>
         </Card>

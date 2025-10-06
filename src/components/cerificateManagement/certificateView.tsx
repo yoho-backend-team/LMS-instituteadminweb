@@ -286,7 +286,6 @@ export default function CertificateView() {
             font-size: 20px;
             color: #716F6F;
             font-weight: 400;
-
             font-family: "Montserrat", sans-serif;
           }
 
@@ -352,30 +351,129 @@ export default function CertificateView() {
             font-family: "Montserrat", sans-serif;
           }
           
-          /* Responsive adjustments */
-          @media (max-width: 1024px) {
+          /* Enhanced Responsive adjustments */
+          @media (max-width: 1536px) {
             .certificate-content {
-              padding: 40px;
-              margin: 20px;
+              padding: 70px 100px;
+            }
+          }
+          
+          @media (max-width: 1280px) {
+            .certificate-content {
+              padding: 60px 80px;
             }
             
             .certificate-title {
-              font-size: 60px;
+              font-size: 90px;
             }
             
             .recipient-name {
-              font-size: 50px;
+              font-size: 90px;
+            }
+            
+            .recipient-name::after {
+              width: 500px;
+            }
+          }
+          
+          @media (max-width: 1024px) {
+            .certificate-content {
+              padding: 50px 60px;
+              margin: 15px;
+            }
+            
+            .certificate-title {
+              font-size: 70px;
+            }
+            
+            .recipient-name {
+              font-size: 70px;
+            }
+            
+            .completion-text {
+              font-size: 24px;
+            }
+            
+            .recipient-name::after {
+              width: 400px;
+              bottom: 15px;
             }
           }
           
           @media (max-width: 768px) {
             .certificate-content {
-              padding: 30px;
-              margin: 15px;
+              padding: 40px 30px;
+              margin: 10px;
             }
             
             .certificate-title {
-              font-size: 48px;
+              font-size: 50px;
+            }
+            
+            .recipient-name {
+              font-size: 50px;
+            }
+            
+            .completion-text {
+              font-size: 18px;
+              letter-spacing: 2px;
+            }
+            
+            .completion-subtitle {
+              gap: 10px;
+            }
+            
+            .recipient-name::after {
+              width: 300px;
+              bottom: 10px;
+            }
+            
+            .certify-text {
+              font-size: 18px;
+            }
+            
+            .completion-text-main {
+              font-size: 16px;
+            }
+            
+            .duration-text,
+            .duration-text1 {
+              font-size: 16px;
+            }
+            
+            .signature-section {
+              flex-direction: column;
+              gap: 30px;
+            }
+            
+            .signature-name {
+              font-size: 20px;
+            }
+            
+            .signature-title,
+            .instructor-title {
+              font-size: 16px;
+            }
+            
+            .course-badge {
+              width: 150px;
+              height: 70px;
+            }
+            
+            .course-title {
+              font-size: 10px;
+              left: 25px;
+            }
+          }
+          
+          @media (max-width: 640px) {
+            .certificate-content {
+              padding: 30px 20px;
+              margin: 5px;
+            }
+            
+            .certificate-title {
+              font-size: 40px;
             }
             
             .recipient-name {
@@ -383,13 +481,135 @@ export default function CertificateView() {
             }
             
             .completion-text {
-              font-size: 18px;
-              letter-spacing: 4px;
+              font-size: 16px;
+              letter-spacing: 1px;
             }
             
-            .signature-section {
-              flex-direction: column;
-              gap: 30px;
+            .recipient-name::after {
+              width: 250px;
+              bottom: 8px;
+            }
+            
+            .certify-text {
+              font-size: 16px;
+            }
+            
+            .completion-text-main {
+              font-size: 14px;
+            }
+            
+            .duration-text,
+            .duration-text1 {
+              font-size: 14px;
+            }
+            
+            .signature-name {
+              font-size: 18px;
+            }
+            
+            .signature-title,
+            .instructor-title {
+              font-size: 14px;
+            }
+            
+            .signature-line {
+              width: 120px;
+            }
+            
+            .course-badge {
+              width: 130px;
+              height: 60px;
+            }
+            
+            .course-title {
+              font-size: 9px;
+              left: 20px;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .certificate-content {
+              padding: 20px 15px;
+            }
+            
+            .certificate-title {
+              font-size: 32px;
+            }
+            
+            .recipient-name {
+              font-size: 32px;
+            }
+            
+            .completion-text {
+              font-size: 14px;
+            }
+            
+            .completion-subtitle img {
+              width: 30px;
+            }
+            
+            .recipient-name::after {
+              width: 200px;
+              bottom: 5px;
+            }
+            
+            .certify-text {
+              font-size: 14px;
+            }
+            
+            .completion-text-main {
+              font-size: 12px;
+            }
+            
+            .duration-text,
+            .duration-text1 {
+              font-size: 12px;
+            }
+            
+            .signature-name {
+              font-size: 16px;
+            }
+            
+            .signature-title,
+            .instructor-title {
+              font-size: 12px;
+            }
+            
+            .signature-line {
+              width: 100px;
+            }
+            
+            .course-badge {
+              width: 110px;
+              height: 50px;
+            }
+            
+            .course-title {
+              font-size: 8px;
+              left: 18px;
+              top: 0px;
+            }
+          }
+          
+          @media (max-width: 360px) {
+            .certificate-content {
+              padding: 15px 10px;
+            }
+            
+            .certificate-title {
+              font-size: 28px;
+            }
+            
+            .recipient-name {
+              font-size: 28px;
+            }
+            
+            .completion-text {
+              font-size: 12px;
+            }
+            
+            .recipient-name::after {
+              width: 180px;
             }
           }
           
