@@ -34,10 +34,6 @@ interface CourseFormData {
   mainImage: string;
 }
 
-// interface CategoryData{
-//   uuid: string;
-// }
-
 interface CourseDetailViewProps {
   course: CourseFormData;
   courses: any[];
@@ -171,20 +167,20 @@ const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
   return (
     <div className="p-4">
-      <div className="w-full flex justify-between items-center mb-4">
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            onClick={onBack}
-            className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
-          >
-            <ArrowLeft size={50} style={{ width: "25px", height: "25px" }} />
-          </Button>
-        </div>
+      {/* Header with back button and edit button aligned properly */}
+      <div className="flex justify-between items-center mb-6">
+        <Button
+  onClick={onBack}
+  className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+  style={{ padding: "1rem" }}
+>
+  <ArrowLeft style={{ width: "28px", height: "28px" }} />
+</Button>
         <button
           onClick={() => setIsEditMode(!isEditMode)}
-          className="bg-[#1BBFCA] text-white px-6 py-2 rounded text-sm hover:bg-[#17a5b0] items-center gap-2 flex "
+          className="bg-[#1BBFCA] text-white px-4 py-2 rounded text-sm hover:bg-[#17a5b0] flex items-center gap-2"
         >
-          <img src={editicon1} alt="Edit" className="w-5 h-5" />
+          <img src={editicon1} alt="Edit" className="w-4 h-4"/>
           {isEditMode ? "Cancel" : "Edit"}
         </button>
       </div>
