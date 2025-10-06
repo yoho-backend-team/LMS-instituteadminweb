@@ -101,7 +101,12 @@ const StudentsAttendance = () => {
               <ChevronDownIcon className="opacity-50 text-[#716F6F]" />
             </SelectTrigger>
 
-            <SelectContent className="border w-full rounded-[8px] p-1">
+            <SelectContent
+              className="border w-full rounded-[8px] p-1 bg-white/30 backdrop-blur-md"
+              side="bottom"
+              align="start"
+              avoidCollisions={false}
+            >
               {studentAttendances?.data?.map((attendance: any, index: number) => {
                 const batchName = attendance?.student_class?.class_name;
                 if (!batchName) return null;
@@ -128,6 +133,7 @@ const StudentsAttendance = () => {
               })}
             </SelectContent>
           </Select>
+
 
         </div>
       )}
