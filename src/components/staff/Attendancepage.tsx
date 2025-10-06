@@ -2,7 +2,6 @@ import { useState } from "react";
 import { addMonths, format, getDaysInMonth, getDay, subMonths } from "date-fns";
 
 const Attendancepage = () => {
-    // const [openModal, setopenModal] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -62,41 +61,67 @@ const Attendancepage = () => {
     };
 
     return (
-        <div className='w-full'>
-            <div className="w-full grid grid-cols-2 mt-5">
-                <div className="col-span-1 flex justify-center items-center gap-4">
-                    <button onClick={handlePrevMonth} className="text-[#1BBFCA]">←</button>
-                    <p className="text-center text-[#716F6F] font-semibold text-[22px]">
+        <div className='w-full p-2 sm:p-4'>
+            {/* Header Section */}
+            <div className="w-full grid grid-cols-1 xs:grid-cols-2 gap-4 sm:gap-6 mt-3 sm:mt-5">
+                {/* Month Navigation */}
+                <div className="flex justify-center items-center gap-3 sm:gap-4 order-2 xs:order-1">
+                    <button 
+                        onClick={handlePrevMonth} 
+                        className="text-[#1BBFCA] hover:bg-[#1BBFCA]/10 p-1 sm:p-2 rounded-lg transition-colors duration-200 text-lg sm:text-xl"
+                    >
+                        ←
+                    </button>
+                    <p className="text-center text-[#716F6F] font-semibold text-base sm:text-lg md:text-[22px] min-w-[180px] sm:min-w-[200px]">
                         {format(currentMonth, 'MMMM yyyy')}
                     </p>
-                    <button onClick={handleNextMonth} className="text-[#1BBFCA]">→</button>
+                    <button 
+                        onClick={handleNextMonth} 
+                        className="text-[#1BBFCA] hover:bg-[#1BBFCA]/10 p-1 sm:p-2 rounded-lg transition-colors duration-200 text-lg sm:text-xl"
+                    >
+                        →
+                    </button>
                 </div>
-                <div className="w-full grid grid-cols-4 gap-5 **:w-full **:h-[47px] **:justify-center **:flex **:items-center **:border **:rounded-md">
-                    <div className="border-[#1BBFCA] bg-[#1BBFCA1A] text-[#1BBFCA]">Monthly</div>
-                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">Week</div>
-                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">Day</div>
-                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F]">List</div>
+                
+                {/* View Type Selector */}
+                <div className="w-full grid grid-cols-2 xs:grid-cols-4 gap-2 sm:gap-3 md:gap-5 order-1 xs:order-2">
+                    <div className="border-[#1BBFCA] bg-[#1BBFCA1A] text-[#1BBFCA] text-xs sm:text-sm md:text-base w-full h-8 sm:h-10 md:h-[47px] justify-center flex items-center border rounded-md cursor-pointer hover:bg-[#1BBFCA] hover:text-white transition-colors duration-200">
+                        Monthly
+                    </div>
+                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-xs sm:text-sm md:text-base w-full h-8 sm:h-10 md:h-[47px] justify-center flex items-center border rounded-md cursor-pointer hover:bg-[#716F6F] hover:text-white transition-colors duration-200">
+                        Week
+                    </div>
+                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-xs sm:text-sm md:text-base w-full h-8 sm:h-10 md:h-[47px] justify-center flex items-center border rounded-md cursor-pointer hover:bg-[#716F6F] hover:text-white transition-colors duration-200">
+                        Day
+                    </div>
+                    <div className="border-[#716F6F] bg-[#716F6F1A] text-[#716F6F] text-xs sm:text-sm md:text-base w-full h-8 sm:h-10 md:h-[47px] justify-center flex items-center border rounded-md cursor-pointer hover:bg-[#716F6F] hover:text-white transition-colors duration-200">
+                        List
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-7 h-[47px] w-full gap-5 mt-5">
+            {/* Days Header */}
+            <div className="grid grid-cols-7 h-8 sm:h-10 md:h-[47px] w-full gap-2 sm:gap-3 md:gap-5 mt-3 sm:mt-5">
                 {days.map((day, index) => (
                     <div
                         key={index}
-                        className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg text-[#716F6F]"
+                        className="border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-sm sm:text-base md:text-lg text-[#716F6F]"
                     >
                         {day}
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-7 w-full gap-5 mt-5 **:w-full **:h-[80px]">
+            {/* Calendar Grid */}
+            <div className="grid grid-cols-7 w-full gap-2 sm:gap-3 md:gap-5 mt-3 sm:mt-5">
                 {allDays.map((day, index) => (
                     <div
                         key={index}
-                        className={`border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-lg 
+                        className={`border border-[#BDC2C7BF] flex justify-center items-center rounded-md font-semibold text-sm sm:text-base md:text-lg
+                            w-full h-12 sm:h-16 md:h-20
                             ${isCurrentDay(day) ? 'bg-[#1BBFCA] text-white' : ''}
                             ${!isCurrentMonthDay(day) ? 'text-[#BDC2C7]' : 'text-[#716F6F]'}
+                            transition-colors duration-200 hover:bg-gray-50 cursor-pointer
                         `}
                     >
                         {day}
