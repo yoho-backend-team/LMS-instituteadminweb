@@ -22,11 +22,9 @@ import {
 } from "../../../features/staff/reducers/selector";
 import { getStaffDetailsData } from "../../../features/staff/reducers/thunks";
 import { GetImageUrl } from "../../../utils/helper";
-import { createStaff, updateStaff } from "../../../features/staff/services";
+import { createStaff, updateStaff, uploadFile } from "../../../features/staff/services";
 import ContentLoader from "react-content-loader";
 import toast from "react-hot-toast";
-// import { GetCourseThunk } from "../../../features/Refund_management/Reducer/refundThunks";
-// import { GetLocalStorage } from "../../../utils/localStorage";
 import { GetAllCoursesThunk } from "../../../features/Courses_mangement/Reducers/CourseThunks";
 import { selectCoursesData } from "../../../features/Courses_mangement/Reducers/Selectors";
 import { GetLocalStorage } from "../../../utils/localStorage";
@@ -73,11 +71,9 @@ interface Staff {
 }
 
 const TeachingStaffs: React.FC = () => {
-
   const [showFilter, setShowFilter] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [courseFilter, setCourseFilter] = useState<string>("all");
-
   const [showAddStaff, setShowAddStaff] = useState(false);
   const [newStaff, setNewStaff] = useState<Omit<Staff, "id" | "avatar">>({
     name: "",
@@ -105,6 +101,10 @@ const TeachingStaffs: React.FC = () => {
     Travel_allowance: "",
     Home_allowance: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
@@ -118,10 +118,7 @@ const TeachingStaffs: React.FC = () => {
     }
   }, [preview]);
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
+  
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -134,7 +131,6 @@ const TeachingStaffs: React.FC = () => {
 
     try {
       setIsLoading(true);
-      setFileUploadError(null);
 
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
@@ -149,11 +145,9 @@ const TeachingStaffs: React.FC = () => {
         throw new Error('Upload failed: No file path returned from server.');
       }
 
-      setUploadedFileName(file.name);
       setFileUrl(uploadedPath);
       toast.success('Profile picture uploaded successfully.');
     } catch (error: any) {
-      setFileUploadError(error?.message || 'Failed to upload file');
       toast.error(error?.message || 'Failed to upload file');
     } finally {
       setIsLoading(false);
@@ -179,7 +173,7 @@ const TeachingStaffs: React.FC = () => {
         email: newStaff.email,
         full_name: newStaff.name,
         gender: newStaff.gender,
-        image: "staticfiles/lms/default-image.png",
+        image: fileUrl ?? "staticfiles/lms/default-image.png",
         institute_id: GetLocalStorage("instituteId"),
         qualification: newStaff.qualification,
         staffId: "",
@@ -237,14 +231,10 @@ const TeachingStaffs: React.FC = () => {
     }
   };
 
-
-
   const toggleStatus = async (staffId: number, status: boolean) => {
     console.log(staffId, 'toggle')
 
-
     try {
-
       await updateStaff({ staffId }, { is_active: status });
       fetchClassData();
       toast.success('updated successfully.....!')
@@ -253,7 +243,6 @@ const TeachingStaffs: React.FC = () => {
       toast.error(' failed to update')
     }
   };
-
 
   const getStatusButtonStyle = (status: "Active" | "Inactive") => {
     if (status === "Active") {
@@ -267,10 +256,7 @@ const TeachingStaffs: React.FC = () => {
     navigate("/staffs-details", { state: { staff: staffMember } });
   };
 
-  const dispatch = useDispatch<any>();
-  const classData = useSelector(selectStaff)?.data || [];
-  const fileInputRef = useRef(null);
-  const loading = useSelector(selectLoading);
+    const loading = useSelector(selectLoading);
   const courseData = useSelector(selectCoursesData)
 
   const fetchClassData = (page: number = 1) => {
@@ -285,16 +271,11 @@ const TeachingStaffs: React.FC = () => {
     fetchClassData();
   }, [dispatch]);
 
-
   useEffect(() => {
-
     dispatch(GetAllCoursesThunk(''))
-
   }, [])
 
-  const handleFileChange = () => { };
-
-
+  
   const filteredStaff = classData.filter((member: any) => {
     const statusMatch =
       statusFilter === "all" ||
@@ -308,22 +289,22 @@ const TeachingStaffs: React.FC = () => {
     return statusMatch && courseMatch;
   });
 
-
   return (
-    <div className="space-y-4 min-h-screen overflow-y-auto">
-      <h1 style={{...FONTS.heading_02}}>Teaching Staff</h1>
-      
-      {showAddStaff ? (
-        <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-          <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
+    <div className="space-y-4 min-h-screen overflow-y-auto p-2 sm:p-4">
+      <h1 style={{ ...FONTS.heading_02 }} className="text-xl sm:text-2xl">Teaching Staff</h1>
 
-          <div className="flex items-center justify-between p-4 border rounded mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
-            <div className="flex items-center gap-4">
+      {showAddStaff ? (
+        <Card className="p-3 sm:p-4 m-1 sm:m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+          <h3 className="text-lg sm:text-xl font-semibold mb-4">Add New Teaching Staff</h3>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 border rounded mb-4 sm:mb-6 bg-white border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-0">
               <input
                 type="file"
                 accept=".pdf,.jpg,.jpeg,.png"
                 ref={fileInputRef}
                 onChange={handleFileChange}
+                className="text-xs sm:text-sm"
               />
               <div>
                 <p
@@ -331,35 +312,31 @@ const TeachingStaffs: React.FC = () => {
                     ...FONTS.heading_05_bold,
                     color: COLORS.gray_dark_02,
                   }}
+                  className="text-sm sm:text-base"
                 >
                   Profile Picture
                 </p>
-                <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}>
+                <p style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }} className="text-xs">
                   Allowed PNG or JPEG. Max size of 800k.
                 </p>
               </div>
             </div>
-            {/* <Button
-              onClick={handleUploadClick}
-              className="bg-green-500 hover:bg-green-600 text-white"
-            >
-              Upload Profile Picture
-            </Button> */}
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Personal Info */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <h1 className="col-span-full text-[20px] font-semibold text-[#716F6F]">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <h1 className="col-span-full text-lg sm:text-[20px] font-semibold text-[#716F6F] mb-2">
                 Personal Info
               </h1>
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Full Name
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.name}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, name: e.target.value })
@@ -369,10 +346,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Email
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.email}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, email: e.target.value })
@@ -382,11 +360,12 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Date of Birth
                 <Input
                   type="date"
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.dateOfBirth}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, dateOfBirth: e.target.value })
@@ -396,6 +375,7 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Gender
                 <Select
@@ -404,7 +384,7 @@ const TeachingStaffs: React.FC = () => {
                     setNewStaff({ ...newStaff, gender: value })
                   }
                 >
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
+                  <SelectTrigger className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base">
                     <SelectValue placeholder="Select Gender" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -417,6 +397,7 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Courses
                 <Select
@@ -425,7 +406,7 @@ const TeachingStaffs: React.FC = () => {
                     setNewStaff({ ...newStaff, course: value })
                   }
                 >
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none">
+                  <SelectTrigger className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base">
                     <SelectValue placeholder="Select Course" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -444,13 +425,13 @@ const TeachingStaffs: React.FC = () => {
                 </Select>
               </label>
 
-
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Designation
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.designation}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, designation: e.target.value })
@@ -460,10 +441,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Qualification
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.qualification}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, qualification: e.target.value })
@@ -473,10 +455,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Phone Number
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.phoneNumber}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, phoneNumber: e.target.value })
@@ -486,10 +469,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Alt Phone Number
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.altPhoneNumber}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, altPhoneNumber: e.target.value })
@@ -499,17 +483,18 @@ const TeachingStaffs: React.FC = () => {
             </div>
 
             {/* Address */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <h1 className="col-span-full text-[20px] font-semibold text-[#716F6F]">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <h1 className="col-span-full text-lg sm:text-[20px] font-semibold text-[#716F6F] mb-2">
                 Address
               </h1>
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Address Line 1
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.addressLine1}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, addressLine1: e.target.value })
@@ -519,10 +504,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Address Line 2
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.addressLine2}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, addressLine2: e.target.value })
@@ -532,10 +518,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 City
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.city}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, city: e.target.value })
@@ -545,10 +532,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 State
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.state}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, state: e.target.value })
@@ -558,10 +546,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Pin Code
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.pinCode}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, pinCode: e.target.value })
@@ -571,17 +560,18 @@ const TeachingStaffs: React.FC = () => {
             </div>
 
             {/* Bank Details */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <h1 className="col-span-full text-[20px] font-semibold text-[#716F6F]">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <h1 className="col-span-full text-lg sm:text-[20px] font-semibold text-[#716F6F] mb-2">
                 Bank Details
               </h1>
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Bank Name
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.bank_name}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, bank_name: e.target.value })
@@ -591,10 +581,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Branch
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.bank_branch}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, bank_branch: e.target.value })
@@ -604,10 +595,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Bank IFSC
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.bank_IFSC}
                   onChange={(e) =>
                     setNewStaff({ ...newStaff, bank_IFSC: e.target.value })
@@ -617,10 +609,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Bank Account Number
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.bank_account_number}
                   onChange={(e) =>
                     setNewStaff({
@@ -633,17 +626,18 @@ const TeachingStaffs: React.FC = () => {
             </div>
 
             {/* Salary Structure */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <h1 className="col-span-full text-[20px] font-semibold text-[#716F6F]">
+            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <h1 className="col-span-full text-lg sm:text-[20px] font-semibold text-[#716F6F] mb-2">
                 Salary Structure
               </h1>
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Monthly Basic
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.monthly_Basic}
                   onChange={(e) =>
                     setNewStaff({
@@ -656,10 +650,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 HRA
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.HRA}
                   onChange={(e) =>
                     setNewStaff({
@@ -672,10 +667,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Conveyance
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.Conveyance}
                   onChange={(e) =>
                     setNewStaff({
@@ -688,10 +684,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Travel Allowance
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.Travel_allowance}
                   onChange={(e) =>
                     setNewStaff({
@@ -704,10 +701,11 @@ const TeachingStaffs: React.FC = () => {
 
               <label
                 style={{ ...FONTS.heading_08, color: COLORS.gray_dark_02 }}
+                className="text-xs sm:text-sm"
               >
                 Home Allowance
                 <Input
-                  className="w-full h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none"
+                  className="w-full h-9 sm:h-10 border border-[#716F6F] focus:border-[#716F6F] focus:outline-none text-sm sm:text-base"
                   value={newStaff.Home_allowance}
                   onChange={(e) =>
                     setNewStaff({
@@ -720,22 +718,16 @@ const TeachingStaffs: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-4 mt-6">
-            <Button 
-              className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA]"
-              variant="outline" 
-              onClick={() => {
-                setShowAddStaff(false);
-                setPreview(null);
-                setFileUrl(null);
-                setUploadedFileName(null);
-              }}
-              disabled={isLoading}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
+            <Button
+              className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA] w-full sm:w-auto h-9 sm:h-10 text-sm sm:text-base"
+              variant="outline"
+              onClick={() => setShowAddStaff(false)}
             >
               Back
             </Button>
-            <Button 
-              className="bg-[#1BBFCA] hover:bg-teal-600 text-white"
+            <Button
+              className="bg-[#1BBFCA] hover:bg-teal-600 text-white w-full sm:w-auto h-9 sm:h-10 text-sm sm:text-base"
               onClick={handleAddStaff}
               disabled={isLoading}
             >
@@ -745,10 +737,10 @@ const TeachingStaffs: React.FC = () => {
         </Card>
       ) : (
         <>
-          <div className="flex items-center justify-between p-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 gap-3">
             <Button
               onClick={() => setShowFilter(!showFilter)}
-              className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+              className={`gap-2 w-full sm:w-auto ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border} h-9 sm:h-10 text-sm sm:text-base`}
             >
               <Filter size={16} />
               Show Filter
@@ -756,7 +748,7 @@ const TeachingStaffs: React.FC = () => {
             
             <Button 
               onClick={() => setShowAddStaff(true)}
-              className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
+              className={`gap-2 w-full sm:w-auto ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border} h-9 sm:h-10 text-sm sm:text-base`}
             >
               <Plus size={16} />
               Add New Staff
@@ -764,16 +756,16 @@ const TeachingStaffs: React.FC = () => {
           </div>
 
           {showFilter && (
-            <Card className="grid grid-cols-2 gap-4 p-4 mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
+            <Card className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 mx-1 sm:mx-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
               <div className="space-y-2">
-                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status">
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="status" className="text-sm">
                   Status
                 </Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                  <SelectTrigger className="w-full h-9 sm:h-10 border border-[#716F6F] text-sm sm:text-base">
                     <SelectValue placeholder=" " />
                   </SelectTrigger>
-                  <SelectContent className="bg-white ">
+                  <SelectContent className="bg-white">
                     <SelectItem value="all" className="hover:bg-[#1BBFCA] cursor-pointer">All</SelectItem>
                     <SelectItem value="Active" className="hover:bg-[#1BBFCA] cursor-pointer">Active</SelectItem>
                     <SelectItem value="Inactive" className="hover:bg-[#1BBFCA] cursor-pointer">Inactive</SelectItem>
@@ -782,11 +774,11 @@ const TeachingStaffs: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course">
+                <Label style={{ color: COLORS.gray_dark_02 }} htmlFor="course" className="text-sm">
                   Course
                 </Label>
                 <Select value={courseFilter} onValueChange={setCourseFilter}>
-                  <SelectTrigger className="w-full h-10 border border-[#716F6F]">
+                  <SelectTrigger className="w-full h-9 sm:h-10 border border-[#716F6F] text-sm sm:text-base">
                     <SelectValue placeholder=" " />
                   </SelectTrigger>
                   <SelectContent>
@@ -799,70 +791,67 @@ const TeachingStaffs: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-
             </Card>
           )}
 
-          <div className="w-full grid grid-cols-3">
+          <div className="w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-4">
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3">
-                {[...Array(6)].map((_, index) => (
-                  <ContentLoader
-                    speed={1}
+              [...Array(6)].map((_, index) => (
+                <ContentLoader
+                  speed={1}
+                  width="100%"
+                  height="100%"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                  className="w-full h-[280px] sm:h-[310px] p-3 sm:p-4 rounded-2xl border shadow-md"
+                  key={index}
+                >
+                  <rect x="0" y="0" rx="6" ry="6" width="80" height="20" />
+                  <rect x="200" y="0" rx="6" ry="6" width="60" height="20" />
+
+                  <rect
+                    x="0"
+                    y="32"
+                    rx="10"
+                    ry="10"
                     width="100%"
-                    height="100%"
-                    backgroundColor="#f3f3f3"
-                    foregroundColor="#ecebeb"
-                    className="w-full h-[310px] p-4 rounded-2xl border shadow-md"
-                    key={index}
-                  >
-                    <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
-                    <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
+                    height="100"
+                  />
 
-                    <rect
-                      x="0"
-                      y="36"
-                      rx="10"
-                      ry="10"
-                      width="100%"
-                      height="120"
-                    />
+                  <rect x="0" y="150" rx="6" ry="6" width="60%" height="16" />
 
-                    <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
+                  <rect x="0" y="180" rx="4" ry="4" width="60" height="14" />
+                  <rect
+                    x="200"
+                    y="180"
+                    rx="4"
+                    ry="4"
+                    width="50"
+                    height="16"
+                  />
 
-                    <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
-                    <rect
-                      x="280"
-                      y="200"
-                      rx="4"
-                      ry="4"
-                      width="60"
-                      height="20"
-                    />
+                  <rect x="0" y="210" rx="6" ry="6" width="80" height="28" />
 
-                    <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
-
-                    <rect
-                      x="260"
-                      y="240"
-                      rx="6"
-                      ry="6"
-                      width="80"
-                      height="32"
-                    />
-                  </ContentLoader>
-                ))}
-              </div>
+                  <rect
+                    x="180"
+                    y="210"
+                    rx="6"
+                    ry="6"
+                    width="70"
+                    height="28"
+                  />
+                </ContentLoader>
+              ))
             ) : (
               filteredStaff.map((member: any) => (
                 <Card
                   key={member?.id}
-                  className="max-w-md m-3 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]"
+                  className="w-full m-1 sm:m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]"
                 >
                   <div className="divide-y">
-                    <div className="p-4">
-                      <div className="flex items-center gap-3 ">
-                        <Avatar className="!w-[80px] !h-[80px]">
+                    <div className="p-3 sm:p-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="!w-[60px] !h-[60px] sm:!w-[80px] sm:!h-[80px]">
                           <AvatarImage
                             src={GetImageUrl(member?.image) ?? undefined}
                             alt={member?.full_name}
@@ -873,30 +862,32 @@ const TeachingStaffs: React.FC = () => {
                             ...FONTS.heading_02,
                             color: COLORS.gray_dark_02,
                           }}
-                          className="text-center "
+                          className="text-sm sm:text-base font-semibold truncate"
                         >
                           {member.full_name}
                         </h3>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-3 text-muted-foreground">
-                        <Mail size={16} />
+                      <div className="flex items-center gap-2 my-2 sm:my-3 text-muted-foreground">
+                        <Mail size={14} className="sm:w-4 sm:h-4" />
                         <span
                           style={{
                             ...FONTS.heading_06,
                             color: COLORS.gray_dark_02,
                           }}
+                          className="text-xs sm:text-sm truncate"
                         >
                           {member.email}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between mb-4 bg-white">
+                      <div className="flex items-center justify-between mb-3 sm:mb-4 bg-white">
                         <span
                           style={{
                             ...FONTS.heading_07,
                             color: COLORS.gray_dark_02,
                           }}
+                          className="text-xs sm:text-sm"
                         >
                           Status
                         </span>
@@ -907,7 +898,7 @@ const TeachingStaffs: React.FC = () => {
                           }
                         >
                           <SelectTrigger
-                            className={`gap-2 w-[120px] bg-white ${getStatusButtonStyle(
+                            className={`gap-2 w-[100px] sm:w-[120px] bg-white text-xs sm:text-sm h-8 sm:h-9 ${getStatusButtonStyle(
                               member.status
                             )}`}
                           >
@@ -916,13 +907,13 @@ const TeachingStaffs: React.FC = () => {
                           <SelectContent className="bg-[#1BBFCA]">
                             <SelectItem
                               value="Active"
-                              className="focus:bg-white cursor-pointer"
+                              className="focus:bg-white cursor-pointer text-xs sm:text-sm"
                             >
                               Active
                             </SelectItem>
                             <SelectItem
                               value="Inactive"
-                              className="focus:bg-white cursor-pointer"
+                              className="focus:bg-white cursor-pointer text-xs sm:text-sm"
                             >
                               Inactive
                             </SelectItem>
@@ -932,25 +923,25 @@ const TeachingStaffs: React.FC = () => {
 
                       <Button
                         onClick={() => handleProfile(member)}
-                        className={`w-full bg-[#0400ff] ${theme.primary.text}`}
+                        className={`w-full bg-[#0400ff] ${theme.primary.text} h-8 sm:h-9 text-xs sm:text-sm`}
                       >
                         View Profile
                       </Button>
                     </div>
                   </div>
-
-                  {/* {staff.length === 0 && (
-                    <div className="p-8 text-center text-muted-foreground">
-                      <p>No staff members found.</p>
-                      <p className="text-sm mt-1">
-                        Click "Add New Staff" to get started.
-                      </p>
-                    </div>
-                  )} */}
                 </Card>
               ))
             )}
           </div>
+
+          {!loading && filteredStaff.length === 0 && (
+            <div className="p-6 sm:p-8 text-center text-muted-foreground col-span-full">
+              <p className="text-sm sm:text-base">No staff members found.</p>
+              <p className="text-xs sm:text-sm mt-1">
+                Click "Add New Staff" to get started.
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>

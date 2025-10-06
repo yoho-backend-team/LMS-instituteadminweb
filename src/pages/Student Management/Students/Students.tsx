@@ -661,80 +661,52 @@ const Students = () => {
   });
 
   return (
-    <div className="p-6">
+    <div className="p-6 w-full">
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-[24px] font-semibold">Student</h4>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
         <Button
           variant="outline"
-          className="px-4 py-2 pr-16px pl-16px w-[153px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
           onClick={toggleFilters}
+          className="
+      w-full sm:w-auto 
+      max-w-xs sm:max-w-[180px] 
+      px-4 sm:px-6 
+      py-2 sm:py-3 
+      text-sm sm:text-base md:text-lg 
+      bg-[#1BBFCA] text-white 
+      hover:bg-[#1BBFCA]/90 
+      flex items-center justify-center gap-2
+    "
         >
-          <FaSlidersH className="text-white text-[18px]" />
+          <FaSlidersH className="text-base sm:text-lg md:text-xl" />
           {showFilters ? "Hide Filter" : "Show Filter"}
         </Button>
 
         <Button
-          className="px-4 py-2 pr-16px pl-16px w-[205px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
           onClick={toggleAddStudent}
+          className="
+      w-full sm:w-auto 
+      max-w-xs sm:max-w-[220px] 
+      px-4 sm:px-6 
+      py-2 sm:py-3 
+      text-sm sm:text-base md:text-lg 
+      bg-[#1BBFCA] text-white 
+      hover:bg-[#1BBFCA]/90 
+      flex items-center justify-center gap-2
+    "
         >
-          <BsPlusLg className="text-white text-[18px]" />
+          <BsPlusLg className="text-base sm:text-lg md:text-xl" />
           Add New Student
         </Button>
       </div>
 
+
       {showFilters && (
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200">
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Course
-              </label>
-              <Select value={courseFilter} onValueChange={setCourseFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="web-dev">Web Development</SelectItem>
-                  <SelectItem value="data-science">Data Science</SelectItem>
-                  <SelectItem value="mobile-dev">Mobile Development</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Batches
-              </label>
-              <Select value={batchFilter} onValueChange={setBatchFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2022">2022</SelectItem>
-                  <SelectItem value="2021">2021</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Status
-              </label>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-transparent select-none">
                 <label className="text-[16px] font-medium text-gray-700">
@@ -753,7 +725,7 @@ const Students = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-4">
         {loading ? (
           [...Array(6)].map((_, index) => (
             <ContentLoader
@@ -811,7 +783,7 @@ const Students = () => {
                 </div>
               </CardContent>
 
-              <CardFooter className="flex justify-center gap-[30px] items-center px-4 pb-4">
+              <CardFooter className="grid grid-cols-4 sm:grid-cols-4 md:gap-[25px] lg:gap-[30px] xl:gap-[30px] sm:gap-[20px] items-center px-4 pb-4">
                 <img className="w-8 h-8" src={call} alt="Call" />
                 <img className="w-8 h-8" src={msg} alt="Message" />
                 <img className="w-8 h-8" src={person} alt="Profile" />
