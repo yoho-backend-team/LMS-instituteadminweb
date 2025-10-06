@@ -40,28 +40,6 @@ const AccountProfile: React.FC = () => {
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  // type TimelineItem = {
-  // 	title: string;
-  // 	description: string;
-  // 	date: string;
-  // 	status: string;
-  // };
-
-  // const timelineData: TimelineItem[] = [
-  // 	{
-  // 		title: 'Note',
-  // 		description: 'JhgfdsA - Notes Created',
-  // 		date: 'July 17, 2025 At 06:13:23 Pm',
-  // 		status: 'Notes Created',
-  // 	},
-  // 	{
-  // 		title: 'Note',
-  // 		description: 'JhgfdsA - Notes Created',
-  // 		date: 'July 17, 2025 At 06:13:23 Pm',
-  // 		status: 'Notes Created',
-  // 	},
-  // ];
-
   const dispatch = useDispatch<any>();
   const timeline = useSelector(selectTimeline);
 
@@ -118,8 +96,8 @@ const AccountProfile: React.FC = () => {
           <ul className="space-y-3">
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "first"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 } `}
               onClick={() => {
                 setActivePanel("first");
@@ -131,8 +109,8 @@ const AccountProfile: React.FC = () => {
             </button>
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "second"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 }`}
               onClick={() => {
                 setActivePanel("second");
@@ -148,8 +126,8 @@ const AccountProfile: React.FC = () => {
             </button>
             <button
               className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "third"
-                  ? "bg-cyan-500 text-white"
-                  : "bg-white text-[#716F6F]"
+                ? "bg-cyan-500 text-white"
+                : "bg-white text-[#716F6F]"
                 }`}
               onClick={() => {
                 setActivePanel("third");
