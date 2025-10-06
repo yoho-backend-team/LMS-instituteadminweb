@@ -170,7 +170,7 @@ export const FeesTable: React.FC = () => {
 					/>
 				)}
 				<div className='overflow-x-auto rounded-xl border border-gray-200'>
-					<table className='min-w-full text-sm text-left'>
+					<table className='min-w-full text-sm text-left  sm:max-h-[90vh] '>
 						<thead className='bg-gray-100 text-gray-700'>
 							<tr>
 								<th className='px-4 py-3 font-medium'>ID</th>

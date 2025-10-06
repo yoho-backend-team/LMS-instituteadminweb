@@ -447,8 +447,8 @@ const StudentNotifications = () => {
 													alt={notification.user.name}
 												/>
 												<AvatarFallback>
-													{notification.user.name
-														.split(' ')
+													{notification?.user?.name
+														?.split(' ')
 														.map((n: string) => n[0])
 														.join('')}
 												</AvatarFallback>

@@ -160,10 +160,10 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               onChange={(e) => setSelectedStudent(e.target.value)}
             />
           </div>
-          <div className="flex my-4">
+          <div className="flex my-4 justify-start">
             <button
               onClick={onAdd}
-              className="bg-[#1BBFCA] text-white px-4 py-2 w-2/5 flex rounded-lg"
+              className="bg-[#1BBFCA] text-white px-4 py-2 flex rounded-lg"
             >
               <IoMdAdd className="pr-2 h-6 w-7" style={{ ...FONTS.heading_06_bold }} /> Add Student Certificate
             </button>
