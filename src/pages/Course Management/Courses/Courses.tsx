@@ -134,29 +134,31 @@ const Courses: React.FC = () => {
     );
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl text-[#3B3939] font-bold">Courses</h1>
+    <div className="p-3 sm:p-4 md:p-5 lg:p-6">
+      <div className="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
+        <h1 className="text-lg sm:text-xl md:text-2xl text-[#3B3939] font-bold">
+          Courses
+        </h1>
       </div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 gap-3">
         <button
-          className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm inline-block"
+          className="bg-[#1BBFCA] text-white px-3 sm:px-4 py-2 rounded-md text-sm inline-flex items-center justify-center sm:justify-start"
           onClick={handleToggleFilter}
         >
-          <span className="inline-block align-middle">
+          <span className="inline-flex items-center">
             <img
               src={showfilter}
               alt="Filter"
-              className="w-4 h-4 mr-2 inline-block align-middle"
+              className="w-4 h-4 mr-2"
             />
           </span>
-          <span className="inline-block align-middle">
+          <span>
             {showFilter ? "Hide Filter" : "Show Filter"}
           </span>
         </button>
 
         <button
-          className="bg-[#1BBFCA] text-white px-4 py-2 rounded-md text-sm"
+          className="bg-[#1BBFCA] text-white px-3 sm:px-4 py-2 rounded-md text-sm"
           onClick={handleAddNewCourse}
         >
           + Add New Course
@@ -164,28 +166,28 @@ const Courses: React.FC = () => {
       </div>
 
       {showFilter && (
-        <div className="w-full flex flex-col gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-md border-2 w-full">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex flex-col w-full md:flex-1">
-                <label className="pb-2 font-medium text-gray-700">
+        <div className="w-full flex flex-col gap-4 mb-4">
+          <div className="bg-white p-3 sm:p-4 md:p-5 rounded-lg shadow-md border-2 w-full">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col w-full sm:flex-1">
+                <label className="pb-2 font-medium text-gray-700 text-sm sm:text-base">
                   Course
                 </label>
                 <input
                   type="text"
                   placeholder="Search Course"
-                  className="border border-[#1BBFCA] px-4 py-2 w-full rounded-md"
+                  className="border border-[#1BBFCA] px-3 sm:px-4 py-2 w-full rounded-md text-sm sm:text-base"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 
-              <div className="flex flex-col w-full md:flex-1">
-                <label className="pb-2 font-medium text-gray-700">
+              <div className="flex flex-col w-full sm:flex-1">
+                <label className="pb-2 font-medium text-gray-700 text-sm sm:text-base">
                   Status
                 </label>
                 <select
-                  className="border border-gray-300 px-4 py-2 rounded-md hover:border-[#1BBFCA]"
+                  className="border border-gray-300 px-3 sm:px-4 py-2 rounded-md hover:border-[#1BBFCA] text-sm sm:text-base"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -199,7 +201,7 @@ const Courses: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 mt-4 gap-4 sm:gap-5">
         {isLoad &&
           Array(6)
             .fill(null)
@@ -210,7 +212,7 @@ const Courses: React.FC = () => {
                 height="100%"
                 backgroundColor="#f3f3f3"
                 foregroundColor="#ecebeb"
-                className="w-full h-[310px] p-4 rounded-2xl border shadow-md"
+                className="w-full h-[280px] sm:h-[300px] md:h-[310px] p-3 sm:p-4 rounded-2xl border shadow-md"
                 key={index}
               >
                 <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
@@ -242,8 +244,8 @@ const Courses: React.FC = () => {
             />
           ))
         ) : (
-          <Card className="col-span-3 mt-8">
-            <p className="font-lg text-gray-900 text-center">
+          <Card className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-3 xl:col-span-4 2xl:col-span-5 mt-8 p-6">
+            <p className="text-base sm:text-lg text-gray-900 text-center">
               No Courses available
             </p>
           </Card>
@@ -252,6 +254,5 @@ const Courses: React.FC = () => {
     </div>
   );
 };
-
 
 export default Courses;

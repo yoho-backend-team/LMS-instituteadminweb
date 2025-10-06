@@ -28,26 +28,33 @@ const UserCard: React.FC<props> = ({ Users }) => {
   const filterToggle = () => SetShowFilter(!showFilter);
 
   return (
-    <div className="grid gap-5">
-      <div className="grid gap-7 p-1.5">
+    <div className="grid gap-4 sm:gap-5">
+      {/* Top Section - Cards */}
+      <div className="grid gap-5 sm:gap-6 md:gap-7 p-1.5">
         <h1
-          className={`text-[${COLORS.gray_dark_01}]`}
+          className={`text-lg sm:text-xl md:text-2xl text-[${COLORS.gray_dark_01}]`}
           style={{ ...FONTS.heading_05_bold }}
         >
           Admin User
         </h1>
-        <div className="w-full flex gap-[30px]">
-          <div className="rounded-[12px] grid gap-[10px]  bg-[#EA745F]/20 pr-3.5 pb-3.5 w-full">
-            <div
-              className={`flex items-center`}
-              style={{ ...FONTS.heading_05 }}
-            >
-              <img className="w-[92px] h-[92px]" src={card3}></img>
-              <h3 className={`text-[${COLORS.gray_dark_02}]`}>Total Users</h3>
+
+        {/* Responsive cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-[30px]">
+          {/* Total Users */}
+          <div className="rounded-[12px] grid gap-[10px] bg-[#EA745F]/20 pr-3 sm:pr-3.5 pb-3 sm:pb-3.5">
+            <div className="flex items-center" style={{ ...FONTS.heading_05 }}>
+              <img 
+                className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[92px] h-[60px] sm:h-[70px] md:h-[80px] lg:h-[92px]" 
+                src={card3} 
+                alt="Total Users"
+              />
+              <h3 className={`text-sm sm:text-base md:text-lg text-[${COLORS.gray_dark_02}] ml-2 md:ml-3`}>
+                Total Users
+              </h3>
             </div>
             <div className="flex justify-end">
               <h1
-                className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`}
+                className={`text-2xl sm:text-3xl md:text-4xl text-[${COLORS.gray_light}] !font-semibold pr-2 sm:pr-3 md:pr-3.5`}
                 style={{ ...FONTS.heading_01 }}
               >
                 {Users?.length}
@@ -55,17 +62,21 @@ const UserCard: React.FC<props> = ({ Users }) => {
             </div>
           </div>
 
-          <div className="rounded-[12px] grid gap-[10px] bg-[#6454E2]/20  pr-3.5 pb-3.5 w-full">
-            <div
-              className={`flex items-center`}
-              style={{ ...FONTS.heading_05 }}
-            >
-              <img className="w-[92px] h-[92px]" src={card2}></img>
-              <h3 className={`text-[${COLORS.gray_dark_02}]`}>Total Groups</h3>
+          {/* Total Groups */}
+          <div className="rounded-[12px] grid gap-[10px] bg-[#6454E2]/20 pr-3 sm:pr-3.5 pb-3 sm:pb-3.5">
+            <div className="flex items-center" style={{ ...FONTS.heading_05 }}>
+              <img 
+                className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[92px] h-[60px] sm:h-[70px] md:h-[80px] lg:h-[92px]" 
+                src={card2} 
+                alt="Total Groups"
+              />
+              <h3 className={`text-sm sm:text-base md:text-lg text-[${COLORS.gray_dark_02}] ml-2 md:ml-3`}>
+                Total Groups
+              </h3>
             </div>
             <div className="flex justify-end">
               <h1
-                className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`}
+                className={`text-2xl sm:text-3xl md:text-4xl text-[${COLORS.gray_light}] !font-semibold pr-2 sm:pr-3 md:pr-3.5`}
                 style={{ ...FONTS.heading_01 }}
               >
                 0
@@ -73,17 +84,21 @@ const UserCard: React.FC<props> = ({ Users }) => {
             </div>
           </div>
 
-          <div className="rounded-[12px] grid gap-[10px]  bg-[#D7F6F5] pr-3.5 pb-3.5 w-full">
-            <div
-              className={`flex items-center`}
-              style={{ ...FONTS.heading_05 }}
-            >
-              <img className="w-[92px] h-[92px]" src={card1}></img>
-              <h3 className={`text-[${COLORS.gray_dark_02}]`}>Active Users</h3>
+          {/* Active Users */}
+          <div className="rounded-[12px] grid gap-[10px] bg-[#D7F6F5] pr-3 sm:pr-3.5 pb-3 sm:pb-3.5">
+            <div className="flex items-center" style={{ ...FONTS.heading_05 }}>
+              <img 
+                className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[92px] h-[60px] sm:h-[70px] md:h-[80px] lg:h-[92px]" 
+                src={card1} 
+                alt="Active Users"
+              />
+              <h3 className={`text-sm sm:text-base md:text-lg text-[${COLORS.gray_dark_02}] ml-2 md:ml-3`}>
+                Active Users
+              </h3>
             </div>
             <div className="flex justify-end">
               <h1
-                className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`}
+                className={`text-2xl sm:text-3xl md:text-4xl text-[${COLORS.gray_light}] !font-semibold pr-2 sm:pr-3 md:pr-3.5`}
                 style={{ ...FONTS.heading_01 }}
               >
                 0
@@ -91,17 +106,21 @@ const UserCard: React.FC<props> = ({ Users }) => {
             </div>
           </div>
 
-          <div className="rounded-[12px] grid gap-[10px]  bg-[#DEF6D7] pr-3.5 pb-3.5 w-full">
-            <div
-              className={`flex items-center`}
-              style={{ ...FONTS.heading_05 }}
-            >
-              <img className="w-[92px] h-[92px]" src={card4}></img>
-              <h3 className={`text-[${COLORS.gray_dark_02}]`}>Blocked Users</h3>
+          {/* Blocked Users */}
+          <div className="rounded-[12px] grid gap-[10px] bg-[#DEF6D7] pr-3 sm:pr-3.5 pb-3 sm:pb-3.5">
+            <div className="flex items-center" style={{ ...FONTS.heading_05 }}>
+              <img 
+                className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[92px] h-[60px] sm:h-[70px] md:h-[80px] lg:h-[92px]" 
+                src={card4} 
+                alt="Blocked Users"
+              />
+              <h3 className={`text-sm sm:text-base md:text-lg text-[${COLORS.gray_dark_02}] ml-2 md:ml-3`}>
+                Blocked Users
+              </h3>
             </div>
             <div className="flex justify-end">
               <h1
-                className={`text-[${COLORS.gray_light}] !font-semibold pr-3.5`}
+                className={`text-2xl sm:text-3xl md:text-4xl text-[${COLORS.gray_light}] !font-semibold pr-2 sm:pr-3 md:pr-3.5`}
                 style={{ ...FONTS.heading_01 }}
               >
                 0
@@ -111,55 +130,54 @@ const UserCard: React.FC<props> = ({ Users }) => {
         </div>
       </div>
 
-      <div className="grid gap-7 p-1.5">
-        <div className="flex justify-between w-full">
+      {/* Filter Section */}
+      <div className="grid gap-5 sm:gap-6 md:gap-7 p-1.5">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 w-full">
           <button
             onClick={filterToggle}
-            className="bg-[#1BBFCA] text-[#FFFFFF] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2"
+            className="bg-[#1BBFCA] text-[#FFFFFF] px-4 sm:px-[16px] h-[42px] sm:h-[45px] rounded-[8px] flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base"
             style={{ ...FONTS.heading_08 }}
           >
-            <img src={filter} className="w-[18px] h-[18px]" />
+            <img src={filter} className="w-[16px] sm:w-[18px] h-[16px] sm:h-[18px]" alt="Filter" />
             {showFilter ? "Hide" : "Show Filter"}
           </button>
 
           <button
             onClick={() => SetShowForm(true)}
-            className="bg-[#1BBFCA] pr-[16px] pl-[16px] h-[48px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]"
+            className="bg-[#1BBFCA] px-4 sm:px-[16px] h-[42px] sm:h-[45px] rounded-[8px] flex items-center justify-center gap-2 text-[#FFFFFF] w-full sm:w-auto text-sm sm:text-base"
             style={{ ...FONTS.heading_08 }}
           >
-            <img src={add} className="w-[18px] h-[18px]" />
+            <img src={add} className="w-[16px] sm:w-[18px] h-[16px] sm:h-[18px]" alt="Add" />
             Add User
           </button>
         </div>
 
         {showFilter && (
-          <div className="grid gap-5">
+          <div className="grid gap-4 sm:gap-5">
             <Input
-              className={`w-1/4 border-2 border-[${COLORS.primary}]`}
+              className={`w-full sm:w-2/3 md:w-1/2 lg:w-1/3 border-2 border-[${COLORS.primary}] h-[42px] sm:h-[45px] text-sm sm:text-base px-3 sm:px-4`}
               placeholder="Search Admin User"
-            ></Input>
-            <div className="flex justify-between gap-5 w-full p-5 shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px]">
+            />
+            <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-5 w-full p-4 sm:p-5 shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px]">
+              {/* Filter 1 */}
               <div className="w-full grid gap-2">
                 <label
-                  className={`text-[${COLORS.gray_dark_02}] font-semibold`}
+                  className={`text-sm sm:text-base text-[${COLORS.gray_dark_02}] font-semibold`}
                 >
                   Status
                 </label>
                 <Select>
                   <SelectTrigger
                     style={{ height: "45px" }}
-                    className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
+                    className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] px-3 sm:px-[16px] text-sm sm:text-base text-[${COLORS.gray_dark_02}]`}
                   >
-                    <SelectValue
-                      placeholder="Select"
-                      className={`p-2 bg-[#FFFFF]`}
-                    />
+                    <SelectValue placeholder="Select" className={`p-2`} />
                     <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
+                  <SelectContent className="bg-white border p-3 w-full rounded-[8px]">
                     <SelectItem
                       value="batch"
-                      className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
+                      className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer text-sm sm:text-base`}
                       style={{ ...FONTS.heading_08 }}
                     >
                       No results found...
@@ -168,27 +186,25 @@ const UserCard: React.FC<props> = ({ Users }) => {
                 </Select>
               </div>
 
+              {/* Filter 2 */}
               <div className="w-full grid gap-2">
                 <label
-                  className={`text-[${COLORS.gray_dark_02}] font-semibold`}
+                  className={`text-sm sm:text-base text-[${COLORS.gray_dark_02}] font-semibold`}
                 >
-                  Status
+                  Role
                 </label>
                 <Select>
                   <SelectTrigger
                     style={{ height: "45px" }}
-                    className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
+                    className={`w-full border rounded-[8px] border-[${COLORS.gray_dark_02}] px-3 sm:px-[16px] text-sm sm:text-base text-[${COLORS.gray_dark_02}]`}
                   >
-                    <SelectValue
-                      placeholder="Select"
-                      className={`p-2 bg-[#FFFFF]`}
-                    />
+                    <SelectValue placeholder="Select" className={`p-2`} />
                     <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white text-white border p-3 w-full rounded-[8px]">
+                  <SelectContent className="bg-white border p-3 w-full rounded-[8px]">
                     <SelectItem
                       value="batch"
-                      className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2  my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
+                      className={`hover:bg-[${COLORS.primary}] text-white bg-[${COLORS.primary}] focus:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer text-sm sm:text-base`}
                       style={{ ...FONTS.heading_08 }}
                     >
                       No results found...
@@ -200,10 +216,12 @@ const UserCard: React.FC<props> = ({ Users }) => {
           </div>
         )}
       </div>
+
+      {/* Add Form Drawer */}
       {showForm && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40">
           <div
-            className={`fixed top-0 right-0 rounded-[8px] overflow-y-auto h-full w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${
+            className={`fixed top-0 right-0 rounded-l-[8px] overflow-y-auto h-full w-full sm:w-[90vw] md:w-[500px] lg:w-[450px] xl:w-[400px] bg-white shadow-lg transition-transform duration-300 z-50 ${
               showForm ? "translate-x-0" : "translate-x-full"
             }`}
           >
