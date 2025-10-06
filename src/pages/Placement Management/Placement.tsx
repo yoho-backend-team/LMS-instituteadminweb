@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
 import {
@@ -27,116 +27,31 @@ import { useNavigate } from "react-router-dom";
 const SkeletonRow = () => (
   <TableRow>
     {[...Array(5)].map((_, i) => (
-      <TableCell key={i} className="px-3 sm:px-4 md:px-6 py-4">
+      <TableCell key={i} className="px-3 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-4">
         <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4"></div>
       </TableCell>
     ))}
   </TableRow>
 );
 
-// Mobile Card View for smaller screens
-const PlacementCard = ({ placement, onEdit, onDelete, actionRef, openAction, setOpenAction }: any) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition-shadow">
-    <div className="flex justify-between items-start mb-3">
-      <div className="flex-1">
-        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-          {placement?.company?.name ?? "N/A"}
-        </h3>
-        <p className="text-xs sm:text-sm text-gray-600 mt-1">
-          {placement?.company?.email ?? "N/A"}
-        </p>
-      </div>
-      <div ref={actionRef} className="relative">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="p-1 rounded-full hover:bg-gray-100"
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpenAction((prev: any) =>
-              prev === placement._id ? null : placement._id
-            );
-          }}
-        >
-          <FaEllipsisV className="h-4 w-4" />
-        </Button>
-        {openAction === placement._id && (
-          <div className="absolute right-0 z-20 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-300 overflow-hidden">
-            <Button
-              variant="ghost"
-              onClick={(e: any) => {
-                e.stopPropagation();
-                onEdit();
-                setOpenAction(null);
-              }}
-              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150"
-            >
-              <FaEdit className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={(e: any) => {
-                e.stopPropagation();
-                onDelete();
-                setOpenAction(null);
-              }}
-              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors border-t border-gray-100"
-            >
-              <FaTrash className="mr-2 h-4 w-4" />
-              <span>Delete</span>
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
-    <div className="space-y-2 text-xs sm:text-sm">
-      <div className="flex justify-between">
-        <span className="text-gray-600">Role:</span>
-        <span className="font-medium text-gray-900">{placement?.job?.name ?? "N/A"}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-gray-600">Date:</span>
-        <span className="font-medium text-gray-900">
-          {placement?.schedule?.interviewDate
-            ? new Date(placement.schedule.interviewDate).toLocaleDateString()
-            : "N/A"}
-        </span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-gray-600">Venue:</span>
-        <span className="font-medium text-gray-900 text-right">{placement?.schedule?.venue ?? "N/A"}</span>
-      </div>
-    </div>
-  </div>
-);
-
-// Skeleton Card for mobile view
-const SkeletonCard = () => (
-  <div className="bg-white border border-gray-200 rounded-lg p-4 mb-3">
-    <div className="flex justify-between items-start mb-3">
-      <div className="flex-1">
-        <div className="h-4 bg-gray-300 animate-pulse rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-gray-300 animate-pulse rounded w-1/2"></div>
-      </div>
-      <div className="h-8 w-8 bg-gray-300 animate-pulse rounded-full"></div>
-    </div>
-    <div className="space-y-2">
-      <div className="h-3 bg-gray-300 animate-pulse rounded"></div>
-      <div className="h-3 bg-gray-300 animate-pulse rounded"></div>
-      <div className="h-3 bg-gray-300 animate-pulse rounded"></div>
-    </div>
-  </div>
-);
-
 const Placements = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -207,7 +122,6 @@ const Placements = () => {
       uuid: editingPlacement?.uuid,
       student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
-      
     };
 
     try {
@@ -229,43 +143,129 @@ const Placements = () => {
     }
   };
 
-  const [openAction, setOpenAction] = useState<string | null>(null);
-  const actionRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  
-  useEffect(() => {
-    const handleDocClick = (e: MouseEvent) => {
-      if (!openAction) return;
-      const activeRef = actionRefs.current[openAction];
-      if (activeRef && !activeRef.contains(e.target as Node)) {
-        setOpenAction(null);
-      }
-    };
+  // Mobile Card View
+  const MobilePlacementCard = ({ placement }: { placement: any }) => (
+    <div
+      className="bg-white rounded-lg shadow-sm border p-4 mb-3"
+      onClick={() => navigate("/placementview", { state: { placement } })}
+    >
+      <div className="space-y-2">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-semibold text-gray-900">
+              {placement?.company?.name ?? "N/A"}
+            </h3>
+            <p className="text-sm text-gray-600">
+              {placement?.company?.email ?? "N/A"}
+            </p>
+          </div>
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="p-1 rounded-full hover:bg-gray-100"
+              onClick={(e?: any) => {
+                e.stopPropagation();
+                // Toggle actions menu
+                const menu = document.getElementById(`menu-${placement._id}`);
+                menu?.classList.toggle("hidden");
+              }}
+            >
+              <FaEllipsisV className="h-4 w-4" />
+            </Button>
+            <div
+              id={`menu-${placement._id}`}
+              className="hidden absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10"
+            >
+              {/* VIEW */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  navigate("/placementview", { state: { placement } });
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
+              >
+                <FaEdit className="mr-2 h-4 w-4" />
+                <span>View</span>
+              </Button>
 
-    document.addEventListener("mousedown", handleDocClick);
-    return () => document.removeEventListener("mousedown", handleDocClick);
-  }, [openAction]);
+              {/* EDIT */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  setEditingPlacement(placement);
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+              >
+                <FaEdit className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </Button>
+
+              {/* DELETE */}
+              <Button
+                variant="ghost"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  handleDelete(placement.uuid);
+                }}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+              >
+                <FaTrash className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div>
+            <span className="font-medium">Interview:</span>
+            <p>
+              {placement?.schedule?.interviewDate
+                ? new Date(
+                    placement.schedule.interviewDate
+                  ).toLocaleDateString()
+                : "N/A"}
+            </p>
+          </div>
+          <div>
+            <span className="font-medium">Role:</span>
+            <p>{placement?.job?.name ?? "N/A"}</p>
+          </div>
+          <div className="col-span-2">
+            <span className="font-medium">Venue:</span>
+            <p>{placement?.schedule?.venue ?? "N/A"}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="space-y-4 p-2 sm:p-4">
-      {/* Header - Responsive */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Placements</h2>
+    <div className="space-y-4 p-3 sm:p-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+          Placements
+        </h2>
         <button
           onClick={() => {
             setIsFormOpen(true);
             setEditingPlacement(null);
           }}
-          className="bg-blue-500 text-white px-4 py-2 rounded text-sm sm:text-base whitespace-nowrap w-full sm:w-auto"
+          className="bg-blue-500 text-white px-3 py-2 sm:px-4 sm:py-2 rounded flex flex-row gap-2 text-sm sm:text-base"
         >
-          <Plus />
-          Add Placement
+          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="hidden sm:inline">Add Placement</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
-      {/* Modal - Responsive */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-5xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg w-full max-w-5xl max-h-[95vh] overflow-y-auto relative">
             <Button
               type="button"
               onClick={() => {
@@ -274,10 +274,10 @@ const Placements = () => {
               }}
               variant="ghost"
               size="icon"
-              className="h-8 w-8 absolute top-4 right-6 sm:top-10 sm:right-12 text-gray-600 hover:text-gray-900 text-xl font-bold z-10"
+              className="h-6 w-6 sm:h-8 sm:w-8 absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900"
               aria-label="Close"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
 
             <PlacementForm
@@ -299,133 +299,147 @@ const Placements = () => {
         </div>
       )}
 
-      {/* Table View - Hidden on mobile (< 768px) */}
-      <div className="hidden md:block border border-gray-400 shadow-2xl rounded-2xl p-2 overflow-x-auto">
-        <Table>
-          <TableHeader className="bg-gray-200">
-            <TableRow>
-              <TableHead className="px-4 lg:px-6 py-3 font-medium text-sm lg:text-base">
-                Company Name
-              </TableHead>
-              <TableHead className="px-4 lg:px-6 py-3 font-medium text-sm lg:text-base">
-                Interview Date
-              </TableHead>
-              <TableHead className="px-4 lg:px-6 py-3 font-medium text-sm lg:text-base">Role</TableHead>
-              <TableHead className="px-4 lg:px-6 py-3 font-medium text-sm lg:text-base">Venue</TableHead>
-              <TableHead className="px-4 lg:px-6 py-3 font-medium text-right text-sm lg:text-base">
-                Actions
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      <div className="border border-gray-300 sm:border-gray-400 shadow-sm sm:shadow-2xl rounded-lg sm:rounded-2xl p-2 sm:p-4">
+        {isMobile ? (
+          // Mobile Card View
+          <div className="space-y-3">
             {loading
-              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
-              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
+              ? [...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-sm border p-4 mb-3"
+                  >
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-300 animate-pulse rounded w-1/2 mb-2"></div>
+                      <div className="h-3 bg-gray-300 animate-pulse rounded w-3/4 mb-1"></div>
+                      <div className="h-3 bg-gray-300 animate-pulse rounded w-2/3"></div>
+                    </div>
+                  </div>
+                ))
               : placements.map((placement: any) => (
-                  <TableRow key={placement?._id} className="hover:bg-gray-50">
-                    <TableCell className="px-4 lg:px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm lg:text-base">{placement?.company?.name ?? "N/A"}</span>
-                        <span className="text-xs lg:text-sm text-gray-600">{placement?.company?.email ?? "N/A"}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4 lg:px-6 py-4 text-sm lg:text-base">
-                      {placement?.schedule?.interviewDate
-                        ? new Date(
-                            placement.schedule.interviewDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell className="px-4 lg:px-6 py-4 text-sm lg:text-base">
-                      {placement?.job?.name ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="px-4 lg:px-6 py-4 text-sm lg:text-base">
-                      {placement?.schedule?.venue ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="px-4 lg:px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
-                      <div
-                        ref={(el) => {
-                          if (placement?._id)
-                            actionRefs.current[placement._id] = el;
-                        }}
-                        className="relative inline-block text-left"
-                      >
+                  <MobilePlacementCard
+                    key={placement?._id}
+                    placement={placement}
+                  />
+                ))}
+          </div>
+        ) : (
+          // Desktop Table View
+          <Table className="w-full">
+            <TableHeader className="bg-gray-100 sm:bg-gray-200">
+              <TableRow>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Company Name
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Interview Date
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Role
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
+                  Venue
+                </TableHead>
+                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm text-right">
+                  Actions
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading
+                ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
+                : placements.map((placement: any) => (
+                    <TableRow
+                      key={placement?._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() =>
+                        navigate("/placementview", { state: { placement } })
+                      }
+                    >
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {placement?.company?.name ?? "N/A"}
+                          </span>
+                          <span className="text-xs text-gray-600">
+                            {placement?.company?.email ?? "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.interviewDate
+                          ? new Date(
+                              placement.schedule.interviewDate
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.job?.name ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.venue ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative group">
                         <Button
                           variant="ghost"
                           size="icon"
                           className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
                           title="Actions"
                           aria-label="Actions menu"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenAction((prev) =>
-                              prev === placement._id ? null : placement._id
-                            );
-                          }}
+                          onClick={(e: any) => e.stopPropagation()} // prevent row click
                         >
                           <FaEllipsisV className="h-4 w-4" />
                         </Button>
 
-                        {openAction === placement._id && (
-                          <div className="absolute right-0 z-20 mt-2 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-300 overflow-hidden">
-                            <Button
-                              variant="ghost"
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                setEditingPlacement(placement);
-                                setIsFormOpen(true);
-                                setOpenAction(null);
-                              }}
-                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                              aria-label="Edit"
-                            >
-                              <FaEdit className="mr-2 h-4 w-4" />
-                              <span>Edit</span>
-                            </Button>
+                        <div className="hidden group-hover:block absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
+                          {/* VIEW */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              navigate("/placementview", {
+                                state: { placement },
+                              });
+                            }}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                          >
+                            <FaEdit className="mr-2 h-4 w-4" />
+                            <span>View</span>
+                          </Button>
 
-                            <Button
-                              variant="ghost"
-                              onClick={(e: any) => {
-                                e.stopPropagation();
-                                handleDelete(placement.uuid);
-                                setOpenAction(null);
-                              }}
-                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out border-t border-gray-100"
-                              aria-label="Delete"
-                            >
-                              <FaTrash className="mr-2 h-4 w-4" />
-                              <span>Delete</span>
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-          </TableBody>
-        </Table>
-      </div>
+                          {/* EDIT */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              setEditingPlacement(placement);
+                              setIsFormOpen(true);
+                            }}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                          >
+                            <FaEdit className="mr-2 h-4 w-4" />
+                            <span>Edit</span>
+                          </Button>
 
-      {/* Card View - Visible on mobile (< 768px) */}
-      <div className="md:hidden">
-        {loading
-          ? [...Array(5)].map((_, i) => <SkeletonCard key={i} />)
-          : placements.map((placement: any) => (
-              <PlacementCard
-                key={placement?._id}
-                placement={placement}
-                onEdit={() => {
-                  setEditingPlacement(placement);
-                  setIsFormOpen(true);
-                }}
-                onDelete={() => handleDelete(placement.uuid)}
-                actionRef={(el: any) => {
-                  if (placement?._id) actionRefs.current[placement._id] = el;
-                }}
-                openAction={openAction}
-                setOpenAction={setOpenAction}
-              />
-            ))}
+                          {/* DELETE */}
+                          <Button
+                            variant="ghost"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              handleDelete(placement.uuid);
+                            }}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                          >
+                            <FaTrash className="mr-2 h-4 w-4" />
+                            <span>Delete</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

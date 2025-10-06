@@ -107,58 +107,6 @@ const TeachingStaffs: React.FC = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch<any>();
-  const classData = useSelector(selectStaff)?.data || [];
-
-  useEffect(() => {
-    if (preview) {
-      return () => {
-        URL.revokeObjectURL(preview);
-      };
-    }
-  }, [preview]);
-
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error('Only image files (JPG, PNG) are allowed.');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setFileUploadError(null);
-
-      const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
-
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const response = await uploadFile(formData);
-      const uploadedPath = response?.data?.file;
-
-      if (!uploadedPath) {
-        throw new Error('Upload failed: No file path returned from server.');
-      }
-
-      setUploadedFileName(file.name);
-      setFileUrl(uploadedPath);
-      toast.success('Profile picture uploaded successfully.');
-    } catch (error: any) {
-      setFileUploadError(error?.message || 'Failed to upload file');
-      toast.error(error?.message || 'Failed to upload file');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleAddStaff = async () => {
     if (newStaff.name && newStaff.email) {
@@ -311,8 +259,8 @@ const TeachingStaffs: React.FC = () => {
 
   return (
     <div className="space-y-4 min-h-screen overflow-y-auto">
-      <h1 style={{...FONTS.heading_02}}>Teaching Staff</h1>
-      
+      <h1 style={{ ...FONTS.heading_02 }}>Teaching Staff</h1>
+
       {showAddStaff ? (
         <Card className="p-3 m-2 bg-white rounded-xl border border-gray-100 transition-shadow duration-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)]">
           <h3 className="text-xl font-semibold mb-4">Add New Teaching Staff</h3>
@@ -721,25 +669,18 @@ const TeachingStaffs: React.FC = () => {
           </div>
 
           <div className="flex justify-end gap-4 mt-6">
-            <Button 
+            <Button
               className="border border-[#1BBFCA] bg-[#1BBFCA]/10 text-[#1BBFCA]"
-              variant="outline" 
-              onClick={() => {
-                setShowAddStaff(false);
-                setPreview(null);
-                setFileUrl(null);
-                setUploadedFileName(null);
-              }}
-              disabled={isLoading}
+              variant="outline"
+              onClick={() => setShowAddStaff(false)}
             >
               Back
             </Button>
-            <Button 
+            <Button
               className="bg-[#1BBFCA] hover:bg-teal-600 text-white"
               onClick={handleAddStaff}
-              disabled={isLoading}
             >
-              {isLoading ? 'Submitting...' : 'Submit'}
+              Submit
             </Button>
           </div>
         </Card>
@@ -753,8 +694,8 @@ const TeachingStaffs: React.FC = () => {
               <Filter size={16} />
               Show Filter
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={() => setShowAddStaff(true)}
               className={`gap-2 ${theme.primary.bg} ${theme.primary.text} ${theme.primary.hover.bg} border ${theme.primary.border} ${theme.primary.hover.border}`}
             >
