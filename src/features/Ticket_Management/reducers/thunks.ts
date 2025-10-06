@@ -13,7 +13,7 @@ export const GetStaffTicketServicesThunks =
 		try {
 			dispatch(setLoading(true));
 			const response = await GetStaffTicketServices(params);
-			dispatch(getstaffticket(response.data));
+			dispatch(getstaffticket(response));
 			dispatch(setLoading(false));
 		} catch (error) {
 			console.log('Error in StaffTicketServices thunk:', error);

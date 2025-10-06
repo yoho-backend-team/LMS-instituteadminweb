@@ -24,6 +24,8 @@ import {
 	RemoveLocalStorage,
 	StoreLocalStorage,
 } from '../../utils/localStorage';
+import { getDashboard } from '../../features/Dashboard/services';
+import { useLoader } from '../../context/LoadingContext/Loader';
 
 export default function Component() {
 	const [periodOpen, setPeriodOpen] = useState(false);
@@ -37,12 +39,14 @@ export default function Component() {
 	const ActivityData = useSelector(selectActivityData);
 	const BranchData: any = useSelector(selectBranches);
 	const [selectedBranch, setSelectedBranch] = useState('');
+	const localBranch = GetLocalStorage('selectedBranchId');
+	const [selectedBranchID, setSelectedBranchID] = useState(localBranch);
 	const BranchOptions = BranchData?.map((branch: any) => {
 		return branch?.branch_identity;
 	});
-	const localBranch = GetLocalStorage('selectedBranchId');
 	const branchList = BranchOptions;
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
+	const { showLoader, hideLoader } = useLoader()
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
@@ -55,6 +59,7 @@ export default function Component() {
 				RemoveLocalStorage('selectedBranchId');
 				setSelectedBranch(branchID?.branch_identity);
 				StoreLocalStorage('selectedBranchId', branchID.uuid);
+				setSelectedBranchID(branchID.uuid)
 			}
 		});
 
@@ -62,24 +67,67 @@ export default function Component() {
 		setBranchMenuOpen(false);
 	};
 
-	const handleApply = () => {
-		setPeriodOpen(false);
-	};
-
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
-		dispatch(getDashboardthunks(paramsData));
-		dispatch(getActivitythunks({ page: 1 }));
-		(() => {
-			if (localBranch == null) {
-				return setSelectedBranch(BranchData?.[0]?.branch_identity);
+		(async () => {
+			showLoader()
+			const response = await dispatch(getDashboardthunks(paramsData));
+			const responsse2 = await dispatch(getActivitythunks({ page: 1 }));
+			if (response && responsse2) {
+				hideLoader()
 			}
-			const foundBranch = BranchData?.find(
-				(item: any) => item.uuid === localBranch
-			);
-			setSelectedBranch(foundBranch?.branch_identity);
+			if (localBranch) {
+				console.log("local found", localBranch)
+				BranchData?.forEach((item: any) => {
+					if (item?.uuid == localBranch) {
+						console.log(item?.branch_identity, "branch")
+						return setSelectedBranch(item?.branch_identity);
+					}
+				})
+			} else {
+				const foundBranch = BranchData?.find(
+					(item: any) => item.uuid === localBranch
+				);
+				setSelectedBranch(foundBranch?.branch_identity);
+			}
 		})();
-	}, [BranchData, dispatch, localBranch]);
+		// setTimeout(() => {
+		// 	hideLoader()
+		// }, 10000);
+	}, [BranchData, dispatch, hideLoader, localBranch, showLoader]);
+	const monthMap: { [key: string]: number } = {
+		January: 1,
+		February: 2,
+		March: 3,
+		April: 4,
+		May: 5,
+		June: 6,
+		July: 7,
+		August: 8,
+		September: 9,
+		October: 10,
+		November: 11,
+		December: 12,
+	};
+	const handleApply = async () => {
+		try {
+			const monthNumber = monthMap[selectedMonth];
+
+			const params = {
+				branch: selectedBranchID,
+				month: monthNumber,
+				year: selectedYear,
+			};
+
+			const data = await getDashboard(params);
+			console.log("API Response:", data);
+
+			setPeriodOpen(false);
+		} catch (error) {
+			console.error("Error fetching dashboard:", error);
+		}
+	};
+
 
 	return (
 		<div className=' h-[86vh] p-4  overflow-y-scroll overflow-x-hidden scrollbar-hide'>
@@ -200,7 +248,7 @@ export default function Component() {
 										</div>
 									</div>
 
-									{/* Apply Button */}
+
 									<button
 										className='w-full py-2 px-4 text-white rounded-md border-0'
 										onClick={handleApply}
@@ -428,11 +476,10 @@ export default function Component() {
 										(item: any, index: number) => (
 											<section
 												key={index}
-												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${
-													index === 0
-														? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-														: 'bg-white'
-												}`}
+												className={`w-[330px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 ${index === 0
+													? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+													: 'bg-white'
+													}`}
 											>
 												<img
 													src={GetImageUrl(item?.image) ?? undefined}
@@ -441,27 +488,24 @@ export default function Component() {
 												/>
 												<div className='flex-grow'>
 													<h2
-														className={`${
-															index === 0 ? 'text-white' : 'text-[#716F6F]'
-														} mb-1`}
+														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
+															} mb-1`}
 														style={{ ...FONTS.bold_heading }}
 													>
 														{item?.course_name}
 													</h2>
 													<p
-														className={`${
-															index === 0 ? 'text-white' : 'text-[#716F6F]'
-														} text-sm mb-4 leading-tight line-clamp-3`}
+														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
+															} text-sm mb-4 leading-tight line-clamp-3`}
 														style={{ ...FONTS.description }}
 													>
 														{item?.description}
 													</p>
 													<p
-														className={`w-fit rounded-lg px-4 py-2 ${
-															index === 0
-																? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
-																: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
-														}`}
+														className={`w-fit rounded-lg px-4 py-2 ${index === 0
+															? 'bg-white text-[#6C6C6C] px-4.5 py-2.5'
+															: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
+															}`}
 														style={{ ...FONTS.heading_08 }}
 													>
 														{item?.coursemodules.length} Modules
@@ -494,11 +538,10 @@ export default function Component() {
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${
-									index === 0
-										? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-										: 'bg-white'
-								}`}
+								className={`min-w-[300px] rounded-xl p-5 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-4 ${index === 0
+									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+									: 'bg-white'
+									}`}
 							>
 								<img
 									src={item?.image ?? undefined}
@@ -513,9 +556,8 @@ export default function Component() {
 										{item?.title}
 									</h2>
 									<p
-										className={` ${
-											index === 0 ? 'text-white' : ''
-										}  leading-tight line-clamp-3`}
+										className={` ${index === 0 ? 'text-white' : ''
+											}  leading-tight line-clamp-3`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}

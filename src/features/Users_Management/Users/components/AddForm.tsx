@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Select,
   SelectContent,
@@ -7,14 +8,16 @@ import {
 } from "../../../../components/ui/select";
 import { Input } from "../../../../components/ui/input";
 import { COLORS, FONTS } from "../../../../constants/uiConstants";
-import upload from "../../../../assets/cloud.png";
 import close from "../../../../assets/Cancel.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ChevronDownIcon } from "lucide-react";
 import { addUser } from "../service";
 import Client from "../../../../apis/index";
-import { getInstituteDetails, getSelectedBranchId } from "../../../../apis/httpEndpoints";
+import {
+  getInstituteDetails,
+  getSelectedBranchId,
+} from "../../../../apis/httpEndpoints";
 import { GetImageUrl } from "../../../../utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -44,15 +47,14 @@ interface UserDetail {
 
 type Props = {
   setShowForm: (show: boolean) => void;
-    userDetail: UserDetail | null;
+  userDetail?: UserDetail | undefined;
 };
 
-
-const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
+const AddForm: React.FC<Props> = ({ setShowForm, userDetail }) => {
   const [imgSrc, setImgSrc] = useState<string>("");
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
-  
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -91,25 +93,25 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm Password is required"),
       file: Yup.mixed()
-    .nullable()
-    .test("fileType", "Unsupported file format", (value: any) => {
-      if (!value) return true; // allow empty
-      return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
-    }),
+        .nullable()
+        .test("fileType", "Unsupported file format", (value: any) => {
+          if (!value) return true; // allow empty
+          return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
+        }),
       designation: Yup.string().required("Designation is required"),
     }),
     onSubmit: async (values) => {
-    console.log("Form values:", values);
+      console.log("Form values:", values);
       const formData = new FormData();
       const institute_id =
-        getInstituteDetails() ?? "973195c0-66ed-47c2-b098-d8989d3e4529";
+        getInstituteDetails();
 
       formData.append("first_name", values.first_name);
       formData.append("last_name", values.last_name);
       formData.append("email", values.email);
       formData.append("phone_number", "+91" + values.contact);
-    formData.append("branch", values.branch); 
-    formData.append("role", values.role); 
+      formData.append("branch", values.branch);
+      formData.append("role", values.role);
       formData.append("password", values.password);
       formData.append("confirm_password", values.confirm_password);
       formData.append("designation", values.designation);
@@ -117,11 +119,11 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
       formData.append("institute_id", institute_id);
 
       if (values.file) {
-        formData.append("image", '');
+        formData.append("image", imgSrc);
       }
 
       try {
-        const response = await addUser(formData);
+        await addUser(formData);
         console.log("Submitted FormData", [...formData.entries()]);
         setShowForm(false);
       } catch (err) {
@@ -149,7 +151,7 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
 
   const fetchAllBranches = useCallback(async () => {
     try {
-      const response = await getAllBranches({});
+      const response = await getAllBranches();
       if (response?.data) {
         setAllBranches(response.data);
       }
@@ -164,19 +166,21 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
   }, [fetchAllBranches]);
 
   const fetchGroups = async () => {
-          try {
-              const instituteId = getInstituteDetails() ?? '973195c0-66ed-47c2-b098-d8989d3e4529';
-              const branchId = getSelectedBranchId() ?? '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4';
-              const response = await GetAllGroupCard({ branch_id: branchId, institute_id: instituteId });
-              setGroups(response?.data || []);
-          } catch (error) {
-              console.error("Error fetching groups:", error);
-          }
-      }
-      useEffect
-(() => {
-        fetchGroups();
-      }, []);
+    try {
+      const instituteId = getInstituteDetails();
+      const branchId = getSelectedBranchId();
+      const response = await GetAllGroupCard({
+        branch_id: branchId,
+        institute_id: instituteId,
+      });
+      setGroups(response?.data || []);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  };
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   return (
     <div className={`p-4`}>
@@ -195,79 +199,113 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
         </button>
       </div>
       <form onSubmit={formik.handleSubmit} className="grid gap-4">
-        <div className=" p-1  grid justify-center ml-15">
-          {formik.values.file && typeof formik.values.file !== "string" && (
-            <img
-              className={`w-[100px] h-[100px] ml-8`}
-              src={imgSrc ? GetImageUrl(imgSrc) : upload}
-              alt="Preview"
-            ></img>
-          )}
-          <input
-            name="image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            onBlur={formik.handleBlur}
-            className="border-none text-left"
-          />
+        {/* Image Upload */}
+        <div className="flex justify-center mb-4">
+          <div className="relative">
+            <label
+              htmlFor="file-upload"
+              className="cursor-pointer w-24 h-24 rounded-full border-2 border-[#1BBFCA] flex items-center justify-center overflow-hidden hover:bg-[#1BBFCA1A] transition"
+            >
+              {formik.values.file ? (
+                <img
+                  onClick={() => setPreviewOpen(true)}
+                  src={GetImageUrl(imgSrc) ?? undefined}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <span className="text-[#716F6F] font-semibold">Upload</span>
+              )}
+            </label>
+            <input
+              id="file-upload"
+              name="file"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
         </div>
 
-<div className="grid gap-1">
-  <label
-    htmlFor="branch"
-    className={`text-[${COLORS.gray_dark_02}]`}
-    style={{ ...FONTS.heading_08_bold }}
-  >
-    Branch
-  </label>
-
-  <Select
-    onValueChange={(val) => {
-      formik.setFieldValue("branch", val);
-      formik.setFieldTouched("branch", true);
-    }}
-    defaultValue={formik.values.branch || ""}
-  >
-    <SelectTrigger
-      style={{ height: "45px" }}
-      className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
-    >
-      <SelectValue placeholder="Select branch" />
-      <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
-    </SelectTrigger>
-
-    <SelectContent className="bg-white">
-      {allBranches && allBranches.length > 0 ? (
-        allBranches.map((branch) => (
-          <SelectItem
-            key={branch._id}
-            value={branch._id}
-            className={`hover:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer`}
-            style={{ ...FONTS.heading_08 }}
+        {/* Image Preview Modal */}
+        {previewOpen && formik.values.file && (
+          <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setPreviewOpen(false)}
           >
-            {branch.branch_identity}
-          </SelectItem>
-        ))
-      ) : (
-        <SelectItem
-          value="no-options"
-          disabled
-          className="p-2 my-1.5 rounded-[8px] text-gray-400 cursor-not-allowed"
-          style={{ ...FONTS.heading_08 }}
-        >
-          No branches
-        </SelectItem>
-      )}
-    </SelectContent>
-  </Select>
+            <div className="relative bg-white p-4 rounded-lg max-w-[90%] max-h-[90%]">
+              <button
+                onClick={() => setPreviewOpen(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-red-500 font-bold text-lg"
+              >
+                ✕
+              </button>
+              <img
+                src={GetImageUrl(imgSrc) ?? undefined}
+                alt="Full Preview"
+                className="w-full h-full object-contain rounded-lg"
+              />
+            </div>
+          </div>
+        )}
 
-  {formik.touched.branch && formik.errors.branch && (
-    <p className="text-red-400" style={{ ...FONTS.heading_12 }}>
-      {formik.errors.branch}
-    </p>
-  )}
-</div>
+        <div className="grid gap-1">
+          <label
+            htmlFor="branch"
+            className={`text-[${COLORS.gray_dark_02}]`}
+            style={{ ...FONTS.heading_08_bold }}
+          >
+            Branch
+          </label>
+
+          <Select
+            onValueChange={(val) => {
+              formik.setFieldValue("branch", val);
+              formik.setFieldTouched("branch", true);
+            }}
+            defaultValue={formik.values.branch || ""}
+          >
+            <SelectTrigger
+              style={{ height: "45px" }}
+              className={`w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px] text-[${COLORS.gray_dark_02}]`}
+            >
+              <SelectValue placeholder="Select branch" />
+              <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
+            </SelectTrigger>
+
+            <SelectContent className="bg-white">
+              {allBranches && allBranches.length > 0 ? (
+                allBranches.map((branch) => (
+                  <SelectItem
+                    key={branch._id}
+                    value={branch.uuid}
+                    className={`hover:bg-[${COLORS.primary}] p-2 my-1.5 rounded-[8px] cursor-pointer`}
+                    style={{ ...FONTS.heading_08 }}
+                  >
+                    {branch.branch_identity}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem
+                  value="no-options"
+                  disabled
+                  className="p-2 my-1.5 rounded-[8px] text-gray-400 cursor-not-allowed"
+                  style={{ ...FONTS.heading_08 }}
+                >
+                  No branches
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+
+          {formik.touched.branch && formik.errors.branch && (
+            <p className="text-red-400" style={{ ...FONTS.heading_12 }}>
+              {formik.errors.branch}
+            </p>
+          )}
+        </div>
 
         <div className="grid gap-1">
           <label
@@ -403,63 +441,63 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
           )}
         </div>
 
- <div className="grid gap-1">
-  <label
-    htmlFor="role"
-    style={{ ...FONTS.heading_08_bold, color: COLORS.gray_dark_02 }}
-  >
-    Role
-  </label>
-
-  <Select
-    onValueChange={(val) => {
-      formik.setFieldValue("role", val);
-      formik.setFieldTouched("role", true);
-    }}
-    defaultValue={formik.values.role || userDetail?.role?._id || ""}
-  >
-    <SelectTrigger
-      style={{ height: "45px", color: COLORS.gray_dark_02 }}
-      className="w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px]"
-    >
-      <SelectValue placeholder="Select role" />
-      <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
-    </SelectTrigger>
-
-    <SelectContent className="bg-white">
-      {groups && groups.length > 0 ? (
-        groups.map((group) => (
-          <SelectItem
-            key={group._id}
-            value={group._id}
-            className="p-2 my-1.5 rounded-[8px] cursor-pointer"
-            style={{
-              ...FONTS.heading_08,
-              color: COLORS.gray_dark_02,
-            }}
+        <div className="grid gap-1">
+          <label
+            htmlFor="role"
+            style={{ ...FONTS.heading_08_bold, color: COLORS.gray_dark_02 }}
           >
-            {group.identity}
-          </SelectItem>
-        ))
-      ) : (
-        <SelectItem
-          value="no-options"
-          disabled
-          className="p-2 my-1.5 rounded-[8px] text-gray-400 cursor-not-allowed"
-          style={{ ...FONTS.heading_08 }}
-        >
-          No roles
-        </SelectItem>
-      )}
-    </SelectContent>
-  </Select>
+            Role
+          </label>
 
-  {formik.touched.role && formik.errors.role && (
-    <p className="text-red-400" style={{ ...FONTS.heading_12 }}>
-      {formik.errors.role}
-    </p>
-  )}
-</div>
+          <Select
+            onValueChange={(val) => {
+              formik.setFieldValue("role", val);
+              formik.setFieldTouched("role", true);
+            }}
+            defaultValue={formik.values.role || userDetail?.role?._id || ""}
+          >
+            <SelectTrigger
+              style={{ height: "45px", color: COLORS.gray_dark_02 }}
+              className="w-full border rounded-[8px] border-[#716F6F] pr-[16px] pl-[16px]"
+            >
+              <SelectValue placeholder="Select role" />
+              <ChevronDownIcon className="size-4 opacity-50 text-[#716F6F]" />
+            </SelectTrigger>
+
+            <SelectContent className="bg-white">
+              {groups && groups.length > 0 ? (
+                groups.map((group) => (
+                  <SelectItem
+                    key={group._id}
+                    value={group._id}
+                    className="p-2 my-1.5 rounded-[8px] cursor-pointer"
+                    style={{
+                      ...FONTS.heading_08,
+                      color: COLORS.gray_dark_02,
+                    }}
+                  >
+                    {group.identity}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem
+                  value="no-options"
+                  disabled
+                  className="p-2 my-1.5 rounded-[8px] text-gray-400 cursor-not-allowed"
+                  style={{ ...FONTS.heading_08 }}
+                >
+                  No roles
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+
+          {formik.touched.role && formik.errors.role && (
+            <p className="text-red-400" style={{ ...FONTS.heading_12 }}>
+              {formik.errors.role}
+            </p>
+          )}
+        </div>
 
         <div className="grid gap-1">
           <label
@@ -515,7 +553,15 @@ const AddForm: React.FC<Props> = ({ setShowForm,userDetail }) => {
             Cancel
           </button>
           <button
-           type="submit" onClick={() => console.log("Formik errors:", formik.errors, "values:", formik.values)}
+            type="submit"
+            onClick={() =>
+              console.log(
+                "Formik errors:",
+                formik.errors,
+                "values:",
+                formik.values
+              )
+            }
             style={{ ...FONTS.heading_08_bold }}
             className="bg-[#1BBFCA] pr-[16px] pl-[16px] h-[40px] rounded-[8px] flex items-center gap-2 text-[#FFFFFF]"
           >

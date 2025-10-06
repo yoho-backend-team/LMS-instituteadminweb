@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from "../../../apis/index";
 
 export const createRefund = async (data: any) => {
@@ -12,12 +13,8 @@ export const createRefund = async (data: any) => {
 
 
 export const getAllRefunds = async (params: any) => {
-  try {
-    const response = await Client.refund.getAll(params)
-    return await response
-  } catch (error) {
-    throw error;
-  }
+  const response = await Client.refund.getAll(params)
+  return response
 };
 
 
@@ -25,7 +22,7 @@ export const getAllRefunds = async (params: any) => {
 export const updateRefund = async (data: any) => {
   try {
     const res = await Client.refund.update(data);
-    console.log("update", res);
+   
     return res;
   } catch (error) {
     console.log("Update Servier", error)
@@ -37,33 +34,23 @@ export const updateRefund = async (data: any) => {
 
 
 export const deleteRefund = async (refundId: string) => {
-  try {
-    const res = await Client.refund.delete({ _id: refundId });
-    console.log("delete", res);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.refund.delete({ _id: refundId });
+  return res;
 };
 
 
 
 export const getRefundByID = async (data: any) => {
-  try {
-    const res = await Client.refund.getByID(data);
-    console.log("BYID", res)
-    return res
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.refund.getByID(data);
+ 
+  return res
 };
 
 
 
 export const GetBranchCourse = async (data: any) => {
   try {
-    const response = await Client.course.get(data.branchId);
-    console.log(" Branch course data getting in services", response);
+    const response = await Client.course.get_course_data(data.branchId);
     return response;
   } catch (error: any) {
     console.error("Error in GetBranchCourse:", error.response?.data || error.message);
@@ -74,7 +61,7 @@ export const GetBranchCourse = async (data: any) => {
 
 export const GetBatch = async (courseId: any) => {
   const response = await Client.batch.getWithCourseId(courseId);
-  console.log("Batch data getting", response);
+ 
   if (response) {
     return response;
   }
@@ -87,18 +74,14 @@ export const StudentsWithBatch = async (params: any) => {
   }
 
   const response = await Client.users.getStudentsWithBatch(params);
-  console.log("Student with batch-check services", response);
+ 
   return response;
 };
 
 export const StudentWithFee = async (id: string) => {
-  try {
-    const res = await Client.payment.student_fee.get({ id });
-    console.log("Refund fee", res);
-    return res;
-  } catch (error) {
-    throw error;
-  }
+  const res = await Client.payment.student_fee.get({ id });
+ 
+  return res;
 };
 
 

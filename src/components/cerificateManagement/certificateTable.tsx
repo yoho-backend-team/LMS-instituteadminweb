@@ -1,31 +1,32 @@
-import React from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaEye } from 'react-icons/fa';
-import { MdEditDocument, MdDelete } from 'react-icons/md';
-import { IoMdDownload } from 'react-icons/io';
-import { FONTS } from '../../constants/uiConstants';
-import { GetImageUrl } from '../../utils/helper';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { FaEye } from "react-icons/fa";
+import { MdEditDocument, MdDelete } from "react-icons/md";
+import { IoMdDownload } from "react-icons/io";
+import { FONTS } from "../../constants/uiConstants";
+import { GetImageUrl } from "../../utils/helper";
 
 export interface Certificate {
-	id: number;
-	uuid: string;
-	title: string;
-	description: string;
-	branch: string;
-	batch: string;
-	student: string;
-	email: string;
+  id: number;
+  uuid: string;
+  title: string;
+  description: string;
+  branch: string;
+  batch: string;
+  student: string;
+  email: string;
 }
 
 interface CertificateTableProps {
-	certificates: Certificate[];
-	openDropdownId: number | null;
-	setOpenDropdownId: (id: number | null) => void;
-	onEdit: (cert: Certificate) => void;
-	onView: (cert: Certificate) => void;
-	onDelete: (uuid: number) => void;
-	onDownload: (cert: Certificate) => void;
-	loading: boolean;
+  certificates: Certificate[];
+  openDropdownId: number | null;
+  setOpenDropdownId: (id: number | null) => void;
+  onEdit: (cert: Certificate) => void;
+  onView: (cert: Certificate) => void;
+  onDelete: (uuid: number) => void;
+  onDownload: (cert: Certificate) => void;
+  loading: boolean;
 }
 
 // Skeleton row component
@@ -56,14 +57,14 @@ const SkeletonRow: React.FC = () => {
 };
 
 export const CertificateTable: React.FC<CertificateTableProps> = ({
-	certificates,
-	openDropdownId,
-	setOpenDropdownId,
-	onEdit,
-	onView,
-	onDelete,
-	onDownload,
-	loading,
+  certificates,
+  openDropdownId,
+  setOpenDropdownId,
+  onEdit,
+  onView,
+  onDelete,
+  onDownload,
+  loading,
 }) => {
 	return (
 		<div className='bg-white shadow-2xl p-2 sm:p-3 md:p-4 mt-5 rounded-xl md:rounded-2xl'>

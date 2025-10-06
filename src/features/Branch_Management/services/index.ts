@@ -2,21 +2,16 @@
 import Client from "../../../apis/index";
 
 // Type definitions
-interface GetAllBranchesParams {
-  institute_id: string;
-  page?: number;
-}
+// interface GetAllBranchesParams {
+//   institute_id: string;
+//   page?: number;
+// }
 
 interface GetBranchByIdParams {
   uuid: string;
 }
-interface DeleteBranchParams {
-  institute_id: string;
-  uuid: string;
-}
-
 interface CreateBranchParams {
-  branch_name: string;
+  branch_identity: string;
   phone_number: string;
   alternate_number?: string;
   address: string;
@@ -25,24 +20,22 @@ interface CreateBranchParams {
   city: string;
   state: string;
   status?: "active" | "inactive";
-  institute_id: string;
+  institute_id?: string;
 }
 
-interface UpdateBranchParams {
-  uuid: string;
-  data: Partial<CreateBranchParams>;
-}
+// interface UpdateBranchParams {
+//   uuid: string;
+//   data: Partial<CreateBranchParams>;
+// }
 
 interface UpdateStatusParams {
   uuid: string;
   status: "active" | "inactive";
 }
 
-
-
 // Get all branches
-export const GetAllBranches = async (params: GetAllBranchesParams) => {
-  const response = await Client.branch.getAll(params);
+export const GetAllBranches = async () => {
+  const response = await Client.branch.getAll("");
   return response;
 };
 
@@ -64,22 +57,23 @@ export const CreateBranch = async (data: CreateBranchParams) => {
 };
 
 // Update branch
-export const EditBranch = async (params: { id: string; data: any }) => {
-  const response = await Client.branch.edit(params.data, params.id);
+export const EditBranch = async (params: { branchuuid: string; data: any }) => {
+  const response = await Client.branch.edit(params.data, params.branchuuid);
   return response.data;
 };
-
 
 // Update branch status
 export const ToggleBranchStatus = async (params: UpdateStatusParams) => {
-  const response = await Client.branch.updatestatus(params.uuid, { status: params.status });
+  const response = await Client.branch.updatestatusNew(params.uuid, {
+    is_active: params.status,
+  });
   return response.data;
 };
 
-export const DeleteBranch = async (params: DeleteBranchParams) => {
+export const DeleteBranch = async (params: any) => {
   const response = await Client.branch.delete(
-    params.institute_id, 
-    params.uuid
+    params.uuid,
+    params.institute_id
   );
   return response.data;
 };

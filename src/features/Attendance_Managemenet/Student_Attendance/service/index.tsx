@@ -3,6 +3,7 @@ import Client from '../../../../apis/index'
 export const getAllStudentsAttendances = async(data: any) => {
     try {
         const response = await Client.attedence.get_all_student_attedence(data)
+       
         return response;
     } catch (error) {
         console.log(error)

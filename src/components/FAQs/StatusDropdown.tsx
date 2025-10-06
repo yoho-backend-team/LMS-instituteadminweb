@@ -8,13 +8,14 @@ type StatusDropdownProps = {
   initialStatus: string;
   options: string[];
   itemId: string; // This should be the FAQ's UUID
+  onStatusChange?: () => void; // ✅ optional callback
 };
 
 export function StatusDropdown({
-  idx,
   initialStatus,
   options,
   itemId,
+  onStatusChange,
 }: StatusDropdownProps) {
   const [open, setOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(initialStatus);
@@ -24,7 +25,6 @@ export function StatusDropdown({
   const toggle = () => setOpen((prev) => !prev);
 
   const handleSelect = async (option: string) => {
-
     setOpen(false);
 
     if (option === currentStatus) return;
@@ -37,8 +37,11 @@ export function StatusDropdown({
       setIsSaving(true);
       await UpdateStatusFaq({
         id: itemId,
-        is_active: option === "Active" ? true : false,
+        is_active: option === "Active",
       });
+
+      // ✅ Call parent callback after successful update
+      if (onStatusChange) onStatusChange();
     } catch (e: any) {
       console.error("Failed to update status", e);
       setCurrentStatus(previousStatus); // rollback
@@ -67,8 +70,9 @@ export function StatusDropdown({
             {isSaving ? "Saving..." : currentStatus}
           </span>
           <ChevronDown
-            className={`w-4 h-4 text-white transition-transform duration-200 ${open ? "rotate-180" : ""
-              }`}
+            className={`w-4 h-4 text-white transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
           />
         </button>
 
@@ -90,10 +94,7 @@ export function StatusDropdown({
                 ))}
               </div>
             </div>
-            <div
-              className="fixed inset-0 z-0"
-              onClick={() => setOpen(false)}
-            />
+            <div className="fixed inset-0 z-0" onClick={() => setOpen(false)} />
           </>
         )}
       </div>

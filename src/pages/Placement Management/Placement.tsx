@@ -16,12 +16,12 @@ import {
   getAllPlacemetsThunk,
 } from "../../features/placementManagement/Reducer/thunk";
 import { GetLocalStorage } from "../../utils/localStorage";
-import { GetImageUrl } from "../../utils/helper";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import {
   deletePlacement,
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
+import { useNavigate } from "react-router-dom";
 
 // Skeleton Loader Row
 const SkeletonRow = () => (
@@ -207,6 +207,7 @@ const Placements = () => {
       uuid: editingPlacement?.uuid,
       student: data.selectedStudents.map((s: any) => s.value),
       institute: instituteId,
+      
     };
 
     try {
@@ -256,6 +257,7 @@ const Placements = () => {
           }}
           className="bg-blue-500 text-white px-4 py-2 rounded text-sm sm:text-base whitespace-nowrap w-full sm:w-auto"
         >
+          <Plus />
           Add Placement
         </button>
       </div>
@@ -317,6 +319,7 @@ const Placements = () => {
           </TableHeader>
           <TableBody>
             {loading
+              ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
               ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
               : placements.map((placement: any) => (
                   <TableRow key={placement?._id} className="hover:bg-gray-50">

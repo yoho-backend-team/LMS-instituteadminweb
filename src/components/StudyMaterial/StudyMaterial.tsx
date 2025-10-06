@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { HeaderActions } from './HeaderAction';
 import { FilterSection } from './FilterSection';
 
 import { NoteModal } from './StudyModal';
-import { IoMdAdd } from 'react-icons/io';
 
 import fileIcon from '../../assets/icons/FileIcon.svg';
 import titleIcon from '../../assets/icons/Mask group (2).svg';
@@ -28,6 +28,9 @@ import {
 import { updateStudyMaterialStatus } from '../../features/StudyMaterials/service';
 // import SkeletonCard from '../../components/shared/SkeletonCard/SkeletonCard';
 import ContentLoader from 'react-content-loader';
+import { GetLocalStorage } from '../../utils/localStorage';
+import type { AppDispatch } from '../../store/store';
+import { UploadFile } from '../../features/Content_Management/services';
 
 interface Note {
 	id: number;
@@ -36,7 +39,7 @@ interface Note {
 	description: string;
 	course: string;
 	branch: string;
-	status: 'Active' | 'Completed';
+	status: 'Active' | 'Inactive';
 	file?: File;
 	video?: string;
 }
@@ -45,8 +48,8 @@ const NotesManagement = () => {
 	const [showFilter, setShowFilter] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [editingNote, setEditingNote] = useState<Note | null>(null);
-	const [selectedNote, setSelectedNote] = useState<null | Note>(null);
-	const dispatch = useDispatch<any>();
+	const [, setSelectedNote] = useState<null | Note>(null);
+	const dispatch = useDispatch<AppDispatch>();
 	const studyMaterials = useSelector(selectStudyMaterials);
 	const loading = useSelector(selectLoading);
 	const branches = useSelector(selectBranches);
@@ -54,7 +57,7 @@ const NotesManagement = () => {
 
 	useEffect(() => {
 		const params = {
-			branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+			branch: GetLocalStorage('selectedBranchId'),
 		};
 		dispatch(GetBranchThunks(params));
 		dispatch(GetCourseThunks(params));
@@ -74,7 +77,7 @@ const NotesManagement = () => {
 
 	useEffect(() => {
 		const paramsData = {
-			branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+			branch: GetLocalStorage('selectedBranchId'),
 			page: 1,
 		};
 		dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -105,7 +108,7 @@ const NotesManagement = () => {
 		{
 			label: 'Status',
 			value: 'status',
-			options: ['', 'Active', 'Completed'],
+			options: ['all', 'Active', 'Inactive'],
 		},
 		{
 			label: 'Course',
@@ -142,22 +145,10 @@ const NotesManagement = () => {
 	const uploadFile = async (file: File): Promise<string> => {
 		const formData = new FormData();
 		formData.append('file', file);
+		const response = await UploadFile(formData);
+		console.log(response, 'res');
 
-		const response = await fetch(
-			'https://lms-node-backend-v1.onrender.com/api/upload',
-			{
-				method: 'POST',
-				body: formData,
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error('File upload failed');
-		}
-
-		const result = await response.json();
-
-		return result?.data?.file || '';
+		return response?.file || '';
 	};
 
 	const handleSubmit = async () => {
@@ -173,7 +164,7 @@ const NotesManagement = () => {
 				description: formData.description,
 				course: formData.course,
 				branch: formData.branch,
-				institute: '973195c0-66ed-47c2-b098-d8989d3e4529',
+				institute: GetLocalStorage('instituteId'),
 				file: filePath,
 			};
 
@@ -190,7 +181,7 @@ const NotesManagement = () => {
 			}
 
 			const paramsData = {
-				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				branch: GetLocalStorage('selectedBranchId'),
 				page: 1,
 			};
 			dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -234,7 +225,7 @@ const NotesManagement = () => {
 			await dispatch(deleteStudyMaterialThunk(id));
 
 			const paramsData = {
-				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				branch: GetLocalStorage('selectedBranchId'),
 				page: 1,
 			};
 			dispatch(fetchStudyMaterialsThunk(paramsData));
@@ -261,13 +252,9 @@ const NotesManagement = () => {
 		setFilterValues((prev) => ({ ...prev, [key]: value }));
 	};
 
-	const handleToggleStatus = async (
-		uuid: string,
-		currentStatus: 'Active' | 'Completed'
-	) => {
+	const handleToggleStatus = async (uuid: string, currentStatus: boolean) => {
 		try {
-			const toggledStatus = currentStatus === 'Active' ? true : false;
-
+			const toggledStatus = currentStatus === false ? false : true;
 			const payload = {
 				id: uuid,
 				is_active: toggledStatus,
@@ -277,7 +264,7 @@ const NotesManagement = () => {
 
 			dispatch(
 				fetchStudyMaterialsThunk({
-					branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+					branch: GetLocalStorage('selectedBranchId'),
 					page: 1,
 				})
 			);
@@ -289,7 +276,7 @@ const NotesManagement = () => {
 	const filteredNotes = Array.isArray(studyMaterials)
 		? studyMaterials.filter((note: any) => {
 				let statusMatch = true;
-				if (filterValues.status) {
+				if (filterValues.status && filterValues.status !== 'all') {
 					if (note.status) {
 						statusMatch = note.status === filterValues.status;
 					} else if (typeof note.is_active === 'boolean') {
@@ -305,7 +292,7 @@ const NotesManagement = () => {
 					} else if (note.status === 'active' || note.status === 'inactive') {
 						statusMatch =
 							(filterValues.status === 'Active' && note.status === 'active') ||
-							(filterValues.status === 'Completed' &&
+							(filterValues.status === 'Inactive' &&
 								note.status === 'inactive');
 					}
 				}
@@ -323,9 +310,17 @@ const NotesManagement = () => {
 						courseMatch = note.courseName === filterValues.course;
 					}
 				}
+
 				return statusMatch && courseMatch;
 		  })
 		: [];
+
+	const resetFilters = () => {
+		setFilterValues({
+			status: '',
+			course: '',
+		});
+	};
 
 	return (
 		<div className='min-h-screen p-3 w-full bg-cover bg-center'>
@@ -344,6 +339,7 @@ const NotesManagement = () => {
 					filters={filterOptions}
 					values={filterValues}
 					onChange={handleFilterChange}
+					onReset={resetFilters}
 				/>
 
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-3 gap-6 pt-4'>
@@ -383,15 +379,15 @@ const NotesManagement = () => {
 							))}
 						</div>
 					) : filteredNotes.length > 0 ? (
-						filteredNotes.map((note: any) => {
+						filteredNotes?.map((note: any) => {
 							return (
 								<NoteCard
-									key={note.id || note.uuid}
+									key={note?.id || note?.uuid}
 									note={note}
 									onEdit={handleEdit}
 									onView={(note: any) => setSelectedNote(note)}
 									onToggleStatus={handleToggleStatus}
-									onDelete={() => handleDelete(note.uuid)}
+									onDelete={() => handleDelete(note?.uuid)}
 									fileIcon={fileIcon}
 									titleIcon={titleIcon}
 								/>
@@ -421,6 +417,7 @@ const NotesManagement = () => {
 					}
 					onFileChange={setUploadedFile}
 					fields={formFields}
+					onReset={resetForm}
 				/>
 			</div>
 		</div>

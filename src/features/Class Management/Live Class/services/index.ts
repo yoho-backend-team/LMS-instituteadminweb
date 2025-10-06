@@ -27,7 +27,7 @@ export const getAllCourses = async (params: any) => {
 
 export const getAllBatches = async (params: any) => {
 	try {
-		const response = await Client.batch.getWithId(params);
+		const response = await Client.batch.getWithCourseId(params);
 		if (response) {
 			return response;
 		}
@@ -37,9 +37,9 @@ export const getAllBatches = async (params: any) => {
 	}
 };
 
-export const getAllBranches = async (params: string) => {
+export const getAllBranches = async () => {
 	try {
-		const response = await Client.branch.getdash(params);
+		const response = await Client.branch.getdash();
 		if (response) {
 			return response;
 		}

@@ -33,6 +33,13 @@ const Notes = () => {
 	const [selectedCourse, setSelectedCourse] = useState('');
 	const [editNote, setEditNote] = useState<any>(null);
 	const [viewNote, setViewNote] = useState<any>(null);
+	const [deleteModal, setDeleteModal] = useState<{
+		isOpen: boolean;
+		noteId: string | null;
+	}>({
+		isOpen: false,
+		noteId: null,
+	});
 	const panelRef = useRef<HTMLDivElement>(null);
 	const loading = useSelector(selectLoading);
 	const [toggleStatusMap, setToggleStatusMap] = useState<{
@@ -58,7 +65,7 @@ const Notes = () => {
 		dispatch(
 			UpdateModuleStatusThunk({
 				id,
-				status: newStatus ? 'active' : 'inactive',
+				is_active: newStatus ? true : false,
 			})
 		);
 	};
@@ -84,39 +91,40 @@ const Notes = () => {
 		setOpenIndex(null);
 	};
 
-	const handleDeleteNote = (noteId: string) => {
-		toast(
-			(t) => (
-				<div className='flex flex-col gap-2'>
-					<span>Are you sure you want to delete this note?</span>
-					<div className='flex justify-end gap-2 mt-2'>
-						<button
-							className='px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm'
-							onClick={() => toast.dismiss(t.id)}
-						>
-							Cancel
-						</button>
-						<button
-							className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm'
-							onClick={async () => {
-								toast.dismiss(t.id);
-								try {
-									await dispatch(deleteNoteThunk(noteId)).unwrap();
-									toast.success('Note deleted successfully');
-									setShowFilter(false);
-									setOpenIndex(null);
-								} catch (error) {
-									toast.error('Failed to delete note');
-								}
-							}}
-						>
-							Delete
-						</button>
-					</div>
-				</div>
-			),
-			{ duration: 5000 }
-		);
+	const handleDeleteClick = (noteId: string) => {
+		setDeleteModal({
+			isOpen: true,
+			noteId,
+		});
+	};
+
+	const handleConfirmDelete = async () => {
+		if (!deleteModal.noteId) return;
+
+		try {
+			const response = await dispatch(
+				deleteNoteThunk(deleteModal.noteId)
+			).unwrap();
+			if (response) {
+				toast.success('Notes deleted successfully');
+				setShowFilter(false);
+				setOpenIndex(null);
+			}
+		} catch (error) {
+			toast.error('Failed to delete note');
+		} finally {
+			setDeleteModal({
+				isOpen: false,
+				noteId: null,
+			});
+		}
+	};
+
+	const handleCancelDelete = () => {
+		setDeleteModal({
+			isOpen: false,
+			noteId: null,
+		});
 	};
 
 	useEffect(() => {
@@ -140,6 +148,36 @@ const Notes = () => {
 
 	return (
 		<div className='relative flex flex-col gap-6'>
+			{/* Delete Confirmation Modal */}
+			{deleteModal.isOpen && (
+				<div className='fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm'>
+					<div className='bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-auto'>
+						<div className='flex flex-col gap-4'>
+							<h3 className='text-lg font-semibold text-gray-800 text-center'>
+								Confirm Deletion
+							</h3>
+							<p className='text-gray-600 text-center'>
+								Are you sure you want to delete this note?
+							</p>
+							<div className='flex flex-row xs:flex-col justify-center gap-3 mt-4'>
+								<button
+									className='px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors duration-200 text-sm font-medium w-full xs:w-auto min-w-[100px]'
+									onClick={handleCancelDelete}
+								>
+									Cancel
+								</button>
+								<button
+									className='px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium w-full xs:w-auto min-w-[100px]'
+									onClick={handleConfirmDelete}
+								>
+									Delete
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+
 			{/* Side panel */}
 			{showPanel && (
 				<div
@@ -151,7 +189,7 @@ const Notes = () => {
 				>
 					<div
 						ref={panelRef}
-						className='bg-white shadow-xl rounded-xl w-[500px] max-w-full h-[95vh]'
+						className='bg-white shadow-xl rounded-xl w-[500px] max-w-[95%] h-[95vh]'
 						onClick={(e) => e.stopPropagation()}
 					>
 						{editNote ? (
@@ -177,32 +215,41 @@ const Notes = () => {
 			)}
 
 			{/* Top bar */}
-			<div className='flex justify-between items-center'>
-				<div className='bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center'>
-					<BsSliders size={20} />
-					<button onClick={() => setShowFilter((prev) => !prev)}>
+			<div className='flex flex-col sm:flex-row md:justify-between sm:justify-start md:items-center gap-3 w-full'>
+				{/* Filter Button */}
+				<button
+					onClick={() => setShowFilter((prev) => !prev)}
+					className='bg-[#1BBFCA] text-white py-3 px-4 rounded-xl flex gap-2 items-center justify-center transition-all hover:bg-[#19acc7] active:scale-95 flex-1 sm:w-auto shadow-md hover:shadow-lg md:max-w-[200px]'
+				>
+					<BsSliders className='text-lg flex-shrink-0' />
+					<span className='text-sm font-medium whitespace-nowrap'>
 						{showFilter ? 'Hide Filter' : 'Show Filter'}
-					</button>
-				</div>
+					</span>
+				</button>
 
-				<div
-					className='bg-[#1BBFCA] text-white p-2 rounded-xl flex gap-2 items-center cursor-pointer'
+				{/* Add New Note Button */}
+				<button
 					onClick={() => {
 						setEditNote(null);
 						setShowPanel(true);
 						setShowFilter(false);
 					}}
+					className='bg-[#1BBFCA] text-white py-3 px-4 rounded-xl flex gap-2 items-center justify-center transition-all hover:bg-[#19acc7] active:scale-95 flex-1 sm:w-auto shadow-md hover:shadow-lg md:max-w-[200px]'
 				>
-					<BsPlusLg size={20} />
-					<span>Add New Note</span>
-				</div>
+					<BsPlusLg className='text-lg flex-shrink-0' />
+					<span className='text-sm font-medium whitespace-nowrap'>
+						Add New Note
+					</span>
+				</button>
 			</div>
 
 			{/* Filters */}
 			{showFilter && (
-				<div className='flex gap-5 bg-white p-2 rounded-lg shadow-lg'>
-					<div className='flex-1 p-1 flex flex-col gap-2'>
-						<label className='text-[#716F6F] font-medium'>Status</label>
+				<div className='flex flex-col sm:flex-row gap-4 sm:gap-5 bg-white p-4 sm:p-2 rounded-lg shadow-lg'>
+					<div className='w-full sm:flex-1 p-1 flex flex-col gap-2'>
+						<label className='text-[#716F6F] font-medium text-sm sm:text-base'>
+							Status
+						</label>
 						<CustomDropdown
 							options={statusfilteroption}
 							value={selectedStatus}
@@ -211,8 +258,10 @@ const Notes = () => {
 							width='w-full'
 						/>
 					</div>
-					<div className='flex-1 p-1 flex flex-col gap-2'>
-						<label className='text-[#716F6F] font-medium'>Courses</label>
+					<div className='w-full sm:flex-1 p-1 flex flex-col gap-2'>
+						<label className='text-[#716F6F] font-medium text-sm sm:text-base'>
+							Courses
+						</label>
 						<CustomDropdown
 							options={courseOptions}
 							value={selectedCourse}
@@ -261,12 +310,12 @@ const Notes = () => {
 							id={note.uuid}
 							title={note.title}
 							course={note.course}
-							isActive={note.isActive}
+							isActive={note.is_active}
 							index={index}
 							openIndex={openIndex}
 							setOpenIndex={setOpenIndex}
 							onEdit={() => handleEditClick(note)}
-							onDelete={() => handleDeleteNote(note.uuid)}
+							onDelete={() => handleDeleteClick(note.uuid)}
 							onView={() => setViewNote(note)}
 							toggleStatusMap={toggleStatusMap}
 							onToggleStatus={handleToggleStatus}
@@ -287,7 +336,7 @@ const Notes = () => {
 								typeof viewNote.fileName === 'string'
 									? viewNote.fileName
 									: undefined,
-							status: viewNote.isActive ? 'Active' : 'Inactive',
+							status: viewNote.is_active ? 'Active' : 'Inactive',
 						}}
 						onClose={() => setViewNote(null)}
 					/>

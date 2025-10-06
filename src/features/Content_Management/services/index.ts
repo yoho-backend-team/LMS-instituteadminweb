@@ -2,6 +2,7 @@
 import Client from "../../../apis/index";
 export const GetAllModule = async (params: any) => {
   const response = await Client.course_module.getAll(params);
+  
   if (response) {
     return response;
   }
@@ -48,9 +49,10 @@ export const GetBranch = async (params: any) => {
   }
 };
 
-export const GetBranchCourse = async (branchname: string) => {
+export const GetBranchCourse = async (branchid?: string) => {
   try {
-    const response = await Client.course.getWithBranch(branchname);
+    const response = await Client.course.getWithBranch({branch_id:branchid});
+   
     return response;
   } catch (error: any) {
     console.error("Error in GetBranchCourse:", error.response?.data || error.message);

@@ -1,36 +1,37 @@
-import type React from "react"
-import { useState, useEffect, useRef } from "react" // Import useRef
-import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import { useDispatch } from "react-redux"
-import { ArrowLeft, ChevronDown, X } from "lucide-react"
-import { Button } from "@/components/ui/button" // Keep Button for the back button, but custom for dropdown trigger
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { Button } from "../../../components/ui/button";
 
 // Assuming these are available in your project
-import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service"
-import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks"
+import { CreateGroup } from "../../../features/Users_Management/Group/reducers/service";
+import { GetGroupCardthunks } from "../../../features/Users_Management/Group/reducers/thunks";
 
-const normalizeIdentity = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "_").replace(/-/, "_")
+const normalizeIdentity = (s: string) =>
+  s.trim().toLowerCase().replace(/\s+/g, "_").replace(/-/, "_");
 
 // Define the types of permissions
-const permissionTypes = ["Read", "Create", "Update", "Delete"] as const
-type PermissionType = (typeof permissionTypes)[number]
+const permissionTypes = ["Read", "Create", "Update", "Delete"] as const;
+type PermissionType = (typeof permissionTypes)[number];
 
 interface PermissionItem {
-  id: number
-  identity: string
-  selectedPermissions: Record<PermissionType, boolean>
+  id: number;
+  identity: string;
+  selectedPermissions: Record<PermissionType, boolean>;
 }
 
 interface OutputPermission {
-  id: number
-  identity: string
-  permission: Array<{ permission: string; granted: boolean }>
+  id: number;
+  identity: string;
+  permission: Array<{ permission: string; granted: boolean }>;
 }
 
 interface AddNewGroupProps {
-  institute_id?: string
-  defaultIdentity?: string
+  institute_id?: string;
+  defaultIdentity?: string;
 }
 
 function AddNewGroup({
@@ -81,11 +82,11 @@ function AddNewGroup({
     "FAQ Categories",
     "Help FAQs",
     "Fees",
-  ]
+  ];
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch<any>()
-  const [groupName, setGroupName] = useState(defaultIdentity)
+  const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const [groupName, setGroupName] = useState(defaultIdentity);
   const [permissions, setPermissions] = useState<PermissionItem[]>(
     permissionsList.map((p, i) => ({
       id: i + 1,
@@ -96,13 +97,15 @@ function AddNewGroup({
         Update: false,
         Delete: false,
       },
-    })),
-  )
-  const [selectAll, setSelectAll] = useState(false)
+    }))
+  );
+  const [selectAll, setSelectAll] = useState(false);
 
   // State and ref for custom dropdowns
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null)
-  const dropdownRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
+    null
+  );
+  const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     setPermissions((prev) =>
@@ -114,14 +117,14 @@ function AddNewGroup({
           Update: selectAll,
           Delete: selectAll,
         },
-      })),
-    )
+      }))
+    );
     if (selectAll) {
-      toast.success("All permissions selected")
+      toast.success("All permissions selected");
     } else {
-      toast.info("All permissions deselected")
+      toast.info("All permissions deselected");
     }
-  }, [selectAll])
+  }, [selectAll]);
 
   // Effect to handle clicks outside custom dropdowns
   useEffect(() => {
@@ -131,85 +134,92 @@ function AddNewGroup({
         dropdownRefs.current[openDropdownIndex] &&
         !dropdownRefs.current[openDropdownIndex]?.contains(event.target as Node)
       ) {
-        setOpenDropdownIndex(null)
+        setOpenDropdownIndex(null);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [openDropdownIndex])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdownIndex]);
 
-  const handlePermissionChange = (moduleIndex: number, permissionType: PermissionType, isChecked: boolean) => {
+  const handlePermissionChange = (
+    moduleIndex: number,
+    permissionType: PermissionType,
+    isChecked: boolean
+  ) => {
     setPermissions((prev) => {
-      const newPermissions = [...prev]
+      const newPermissions = [...prev];
       newPermissions[moduleIndex] = {
         ...newPermissions[moduleIndex],
         selectedPermissions: {
           ...newPermissions[moduleIndex].selectedPermissions,
           [permissionType]: isChecked,
         },
-      }
-      const allSelected = newPermissions.every((module) => Object.values(module.selectedPermissions).every(Boolean))
+      };
+      const allSelected = newPermissions.every((module) =>
+        Object.values(module.selectedPermissions).every(Boolean)
+      );
       const noneSelected = newPermissions.every((module) =>
-        Object.values(module.selectedPermissions).every((val) => !val),
-      )
+        Object.values(module.selectedPermissions).every((val) => !val)
+      );
       if (selectAll && !allSelected) {
-        setSelectAll(false)
+        setSelectAll(false);
       } else if (!selectAll && allSelected && !noneSelected) {
-        setSelectAll(true)
+        setSelectAll(true);
       }
-      return newPermissions
-    })
-  }
+      return newPermissions;
+    });
+  };
 
   const buildPayload = () => {
     const formattedPermissions: OutputPermission[] = permissions
       .filter((p) => Object.values(p.selectedPermissions).some(Boolean))
       .map((p) => {
-        const permissionArray: Array<{ permission: string; granted: boolean }> = []
+        const permissionArray: Array<{ permission: string; granted: boolean }> =
+          [];
         if (p.selectedPermissions.Read) {
-          permissionArray.push({ permission: "read", granted: true })
+          permissionArray.push({ permission: "read", granted: true });
         }
         if (p.selectedPermissions.Create) {
-          permissionArray.push({ permission: "create", granted: true })
+          permissionArray.push({ permission: "create", granted: true });
         }
         if (p.selectedPermissions.Update) {
-          permissionArray.push({ permission: "update", granted: true })
+          permissionArray.push({ permission: "update", granted: true });
         }
         if (p.selectedPermissions.Delete) {
-          permissionArray.push({ permission: "delete", granted: true })
+          permissionArray.push({ permission: "delete", granted: true });
         }
         return {
           id: p.id,
           identity: normalizeIdentity(p.identity),
           permission: permissionArray,
-        }
-      })
+        };
+      });
     return {
       identity: groupName,
       institute_id,
       permissions: formattedPermissions,
-    }
-  }
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const payload = buildPayload()
+    e.preventDefault();
+    const payload = buildPayload();
     try {
-      const response = await CreateGroup(payload)
-      toast.success("Group created successfully")
-      dispatch(GetGroupCardthunks({}))
-      navigate("/group")
+      await CreateGroup(payload);
+      toast.success("Group created successfully");
+      dispatch(GetGroupCardthunks({}));
+      navigate("/group");
     } catch (err) {
-      console.error("err creating group", err)
-      toast.error("Error creating group")
+      console.error("err creating group", err);
+      toast.error("Error creating group");
     }
-  }
+  };
 
   const reset = () => {
-    setGroupName(defaultIdentity)
+    setGroupName(defaultIdentity);
     setPermissions(
       permissionsList.map((p, i) => ({
         id: i + 1,
@@ -220,31 +230,40 @@ function AddNewGroup({
           Update: false,
           Delete: false,
         },
-      })),
-    )
-    setSelectAll(false)
-  }
+      }))
+    );
+    setSelectAll(false);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 sm:space-y-6 p-4 sm:p-6 md:p-8 bg-white rounded-lg shadow-md max-w-full mx-auto"
+    >
       {/* Back Button */}
       <Button
         variant="ghost"
         size="icon"
         onClick={() => navigate("/group")}
-        className="mb-4 text-xl text-[#7D7D7D] hover:text-gray-500"
+        className="mb-2 sm:mb-4 text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white"
       >
-        <ArrowLeft />
-        <span className="sr-only">Go back</span>
+        <ArrowLeft className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" />
       </Button>
 
       {/* Header */}
-      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">Add New Group</h1>
-      <p className="text-[#7D7D7D] mb-6">Set Group Permissions</p>
+      <div className="space-y-1 sm:space-y-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#1BBFCA]">
+          Add New Group
+        </h1>
+        <p className="text-sm sm:text-base text-[#7D7D7D]">Set Group Permissions</p>
+      </div>
 
       {/* Group Name */}
-      <div className="mb-6">
-        <label htmlFor="group-name" className="block mb-2 text-sm font-medium text-[#7D7D7D]">
+      <div className="mb-4 sm:mb-6">
+        <label
+          htmlFor="group-name"
+          className="block mb-2 text-xs sm:text-sm font-medium text-[#7D7D7D]"
+        >
           Group Name
         </label>
         <input
@@ -253,19 +272,24 @@ function AddNewGroup({
           placeholder="Group Name"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 w-96 mb-1 outline-none focus:ring-0"
+          className="border border-gray-300 rounded-lg p-2 sm:p-3 w-full sm:w-full md:w-96 outline-none focus:ring-0 text-sm sm:text-base"
         />
       </div>
 
       {/* Group Permissions Header */}
-      <div className="mb-2">
-        <div className="text-lg font-semibold text-[#7D7D7D]">Group Permissions</div>
+      <div className="mb-2 sm:mb-4">
+        <div className="text-base sm:text-lg md:text-xl font-semibold text-[#7D7D7D]">
+          Group Permissions
+        </div>
       </div>
 
       {/* Administrator Access + Select All */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="text-sm text-[#7D7D7D]">Administrator Access</div>
-        <label htmlFor="select-all" className="text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-1">
+        <div className="text-xs sm:text-sm text-[#7D7D7D]">Administrator Access</div>
+        <label
+          htmlFor="select-all"
+          className="text-xs sm:text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer"
+        >
           <input
             id="select-all"
             type="checkbox"
@@ -279,29 +303,38 @@ function AddNewGroup({
       <hr className="border-t border-gray-200 mb-4" />
 
       {/* Permission Grid with Custom Dropdowns and Chips */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-6">
         {permissions.map((item, moduleIndex) => {
-          const selectedPermissionsCount = Object.values(item.selectedPermissions).filter(Boolean).length
-          const hasSelectedPermissions = selectedPermissionsCount > 0
-          const isOpen = openDropdownIndex === moduleIndex
+          const selectedPermissionsCount = Object.values(
+            item.selectedPermissions
+          ).filter(Boolean).length;
+          const hasSelectedPermissions = selectedPermissionsCount > 0;
+          const isOpen = openDropdownIndex === moduleIndex;
 
           return (
             <div
               key={item.id}
-              className="flex flex-col gap-2 bg-white rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
+              className="flex flex-col gap-2 bg-white rounded-lg p-3 sm:p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
             >
-              <label className="text-base font-semibold text-[#7D7D7D] mb-2">{item.identity}</label>
+              <label className="text-sm sm:text-base font-semibold text-[#7D7D7D] mb-1 sm:mb-2 break-words">
+                {item.identity}
+              </label>
 
               {/* Custom Dropdown */}
-              <div className="relative" ref={(el) => (dropdownRefs.current[moduleIndex] = el)}>
+              <div
+                className="relative"
+                ref={(el: any) => (dropdownRefs.current[moduleIndex] = el)}
+              >
                 <button
                   type="button"
-                  onClick={() => setOpenDropdownIndex(isOpen ? null : moduleIndex)}
+                  onClick={() =>
+                    setOpenDropdownIndex(isOpen ? null : moduleIndex)
+                  }
                   className="w-full flex justify-between items-center text-[#7D7D7D] border border-gray-300 bg-transparent h-auto min-h-[40px] py-2 px-3 rounded-lg cursor-pointer
-                             outline-none focus:ring-0 hover:text-[#1BBFCA] hover:bg-transparent"
+                             outline-none focus:ring-0 hover:text-[#1BBFCA] hover:bg-transparent text-xs sm:text-sm"
                 >
                   {hasSelectedPermissions ? (
-                    <div className="flex flex-wrap gap-2 justify-start items-center w-full">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-start items-center w-full">
                       {permissionTypes.map((type) =>
                         item.selectedPermissions[type] ? (
                           <span
@@ -312,17 +345,21 @@ function AddNewGroup({
                             <button
                               type="button"
                               onClick={(e) => {
-                                e.stopPropagation()
-                                e.preventDefault()
-                                handlePermissionChange(moduleIndex, type, false)
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handlePermissionChange(
+                                  moduleIndex,
+                                  type,
+                                  false
+                                );
                               }}
-                              className="ml-1 text-[#1BBFCA] hover:text-[#1BBFCA]/80"
+                              className="ml-0.5 text-[#1BBFCA] hover:text-[#1BBFCA]/80"
                               aria-label={`Remove ${type} permission`}
                             >
                               <X className="h-3 w-3" />
                             </button>
                           </span>
-                        ) : null,
+                        ) : null
                       )}
                       <ChevronDown className="ml-auto h-4 w-4 shrink-0" />
                     </div>
@@ -337,16 +374,28 @@ function AddNewGroup({
                 {isOpen && (
                   <div
                     className="absolute z-10 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow-lg p-2"
-                    style={{ width: dropdownRefs.current[moduleIndex]?.offsetWidth }} // Match width of trigger
+                    style={{
+                      width: dropdownRefs.current[moduleIndex]?.offsetWidth,
+                    }}
                   >
                     {permissionTypes.map((type) => (
                       <button
                         key={type}
                         type="button"
-                        onClick={() => handlePermissionChange(moduleIndex, type, !item.selectedPermissions[type])}
+                        onClick={() =>
+                          handlePermissionChange(
+                            moduleIndex,
+                            type,
+                            !item.selectedPermissions[type]
+                          )
+                        }
                         className={`
-                          flex items-center justify-center w-full h-10 rounded-lg border border-gray-300 bg-white text-[#1F2D3A] cursor-pointer
-                          ${item.selectedPermissions[type] ? "bg-[#1BBFCA] text-white" : ""}
+                          flex items-center justify-center w-full h-9 sm:h-10 rounded-lg border border-gray-300 bg-white text-[#1F2D3A] cursor-pointer text-xs sm:text-sm
+                          ${
+                            item.selectedPermissions[type]
+                              ? "bg-[#1BBFCA] text-white"
+                              : ""
+                          }
                           outline-none focus:ring-0
                           hover:bg-[#1BBFCA] hover:text-white
                           mb-2 last:mb-0
@@ -359,28 +408,31 @@ function AddNewGroup({
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-end gap-5">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-5 pt-4">
         <button
           type="button"
-          onClick={reset}
-          className="w-28 h-10 rounded-xl bg-[#1BBFCA1A] border text-sm text-[#1BBFCA] border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white transition-colors"
+          onClick={() => {
+            reset();
+            navigate("/group");
+          }}
+          className="w-full sm:w-28 h-10 rounded-xl bg-[#1BBFCA1A] border text-xs sm:text-sm text-[#1BBFCA] border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="w-28 h-10 rounded-xl text-white text-sm bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 transition-colors"
+          className="w-full sm:w-28 h-10 rounded-xl text-white text-xs sm:text-sm bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 transition-colors"
         >
           Submit
         </button>
       </div>
     </form>
-  )
+  );
 }
 
-export default AddNewGroup
+export default AddNewGroup;

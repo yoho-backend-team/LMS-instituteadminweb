@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdDelete, MdEditNote } from "react-icons/md";
@@ -16,6 +15,7 @@ import {
   updateHelpCenter,
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
+import { GetLocalStorage } from "../../utils/localStorage";
 
 const AddQuestion = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +26,8 @@ const AddQuestion = () => {
   const [modalStage, setModalStage] = useState<
     "confirm" | "processing" | "success" | "dialog" | null
   >(null);
-  const [loading, setLoading] = useState(true); // Skeleton loader state
+  const [loading, setLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const categories = useSelector(faqCategory);
   const dispatch = useDispatch<any>();
@@ -39,22 +40,24 @@ const AddQuestion = () => {
     description: "",
   });
 
+  const overall_branch_id = GetLocalStorage("selectedBranchId");
+  const overall_istitute_id = GetLocalStorage("instituteId");
+
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
-
     setLoading(true);
     dispatch(fetchHelpCenterThunk(params)).finally(() => setLoading(false));
   }, [dispatch]);
 
   useEffect(() => {
     const params = {
-      branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branchid: overall_branch_id,
+      instituteid: overall_istitute_id,
       page: 1,
       perPage: 10,
     };
@@ -68,18 +71,19 @@ const AddQuestion = () => {
       videolink: formData.videoLink,
       question: formData.status,
       answer: formData.description,
-      branch_id: '"90c93163-01cf-4f80-b88b-4bc5a5dd8ee4"',
-      institute_id: "67f3a26df4b2c530acd16419",
+      branch_id: overall_branch_id,
+      institute_id: GetLocalStorage("instituteId"),
     };
 
     try {
       await createHelpCenter(payload);
+      setSuccessMessage("Question Added Successfully!");
       setModalStage("success");
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -111,8 +115,8 @@ const AddQuestion = () => {
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
-          branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-          instituteid: "973195c0-66ed-47c2-b098-d8989d3e4529",
+          branchid: overall_branch_id,
+          instituteid: overall_istitute_id,
           page: 1,
           perPage: 10,
         })
@@ -130,6 +134,47 @@ const AddQuestion = () => {
     setEditUuid(null);
     setShowModal(false);
     setModalStage("confirm");
+    setSuccessMessage("");
+  };
+
+  const handleUpdateQuestion = async () => {
+    if (isEditing && editUuid !== null) {
+      try {
+        const updateData = {
+          category: formData.category,
+          videolink: formData.videoLink,
+          question: formData.status,
+          answer: formData.description,
+        };
+
+        await updateHelpCenter(updateData, editUuid);
+
+        setSuccessMessage("Question Updated Successfully!");
+        setModalStage("success");
+
+        dispatch(
+          fetchHelpCenterThunk({
+            branchid: overall_branch_id,
+            instituteid: overall_istitute_id,
+            page: 1,
+            perPage: 10,
+          })
+        );
+
+        setIsEditing(false);
+        setEditUuid(null);
+        setFormData({
+          category: "",
+          status: "",
+          description: "",
+          videoLink: "",
+        });
+      } catch (error) {
+        console.error("Update failed:", error);
+        alert("Update failed. Please try again.");
+        setModalStage("confirm");
+      }
+    }
   };
 
   const filteredList = questions.filter((faq: any) =>
@@ -137,20 +182,20 @@ const AddQuestion = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-12 xl:px-16">
       <div className="text-2xl font-bold mb-4">FAQ</div>
 
       {/* Search + Add */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-wrap sm:flex-nowrap gap-4 mb-6">
         <input
           type="text"
-          className="border-2 font-semibold border-[#1BBFCA] px-4 py-2 appearance-none rounded-xl w-1/4"
+          className="border-2 font-semibold border-[#1BBFCA] px-4 py-2 rounded-xl flex-grow min-w-[180px]"
           placeholder="Search Category"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button
-          className="flex bg-teal-400 text-white w-42 text-lg px-4 py-2 rounded-lg ml-auto"
+          className="flex bg-teal-400 text-white text-lg px-4 py-2 rounded-lg ml-auto layout"
           onClick={() => {
             resetForm();
             setShowModal(true);
@@ -160,98 +205,106 @@ const AddQuestion = () => {
         </button>
       </div>
 
-      <div className="bg-white p-3 rounded-xl shadow-2xl overflow-visible">
-        <table className="min-w-full text-[#716F6F] text-sm border-separate border-spacing-y-4 relative z-0">
-          <thead className="bg-[#F8F8F8] h-18 text-left text-lg font-semibold">
-            <tr className="text-xl">
-              <th className="px-6 py-3 rounded-l-xl">ID</th>
-              <th className="px-6 py-3">Category</th>
-              <th className="px-6 py-3">Video Link</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3 rounded-r-xl text-right">Actions</th>
+      <div className="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-lg overflow-x-scroll relative">
+        <table className="min-w-full md:min-w-[640px] lg:w-full text-[#716F6F] text-sm sm:text-base border-separate border-spacing-y-4">
+          <thead className="bg-[#F8F8F8] text-left text-base sm:text-lg font-semibold">
+            <tr>
+              <th className="px-4 sm:px-6 py-3">ID</th>
+              <th className="px-4 sm:px-6 py-3">Category</th>
+              <th className="px-4 sm:px-6 py-3">Video Link</th>
+              <th className="px-4 sm:px-6 py-3">Question</th>
+              <th className="px-4 sm:px-6 py-3">Answer</th>
+              <th className="px-4 sm:px-6 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading
-              ? [...Array(5)].map((_, i) => (
-                  <tr key={i} className="animate-pulse">
-                    <td className="px-6 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-12"></div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-24"></div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-36"></div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="h-6 bg-gray-300 rounded w-40"></div>
-                      <div className="h-4 bg-gray-200 rounded w-28 mt-2"></div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="h-6 w-6 bg-gray-300 rounded-full ml-auto"></div>
-                    </td>
-                  </tr>
-                ))
-              : filteredList.map((faq: any) => (
-                  <tr
-                    key={faq.uuid || faq.id}
-                    className="bg-white/30 shadow-xl backdrop-blur-xl text-md h-22 rounded-xl font-semibold relative overflow-visible"
-                  >
-                    <td className="px-6 py-4 rounded-l-xl">{faq.id}</td>
-                    <td className="px-6 py-4 text-lg">{faq.category}</td>
-                    <td className="px-6 py-4 text-lg">
-                      <a
-                        href={faq.videolink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-[#1BBFCA]"
+            {loading ? (
+              [...Array(5)].map((_, i) => (
+                <tr key={i} className="animate-pulse relative">
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-12"></div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-24"></div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-36"></div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="h-6 bg-gray-300 rounded w-40"></div>
+                    <div className="h-4 bg-gray-200 rounded w-28 mt-2"></div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-40"></div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 text-right">
+                    <div className="h-6 w-6 bg-gray-300 rounded-full ml-auto"></div>
+                  </td>
+                </tr>
+              ))
+            ) : filteredList.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-4 sm:px-6 py-8 text-center">
+                  <div className="text-gray-500 text-lg font-semibold">No Data Found</div>
+                </td>
+              </tr>
+            ) : (
+              filteredList.map((faq: any) => (
+                <tr
+                  key={faq.uuid || faq.id}
+                  className="relative bg-white shadow-sm rounded-lg"
+                >
+                  <td className="px-4 sm:px-6 py-4">{faq.id}</td>
+                  <td className="px-4 sm:px-6 py-4">{faq.category}</td>
+                  <td className="px-4 sm:px-6 py-4 break-words max-w-[160px]">
+                    <a
+                      href={faq.videolink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#1BBFCA] block truncate"
+                    >
+                      {faq.videolink}
+                    </a>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 max-w-[200px] truncate">
+                    <div className="font-semibold">{faq.question}</div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 max-w-[200px] truncate">
+                    <div className="text-sm">{faq.answer}</div>
+                  </td>
+                  <td className="px-4 sm:px-6 py-4 text-right relative">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() =>
+                          setDropdownOpenId((prev) => (prev === faq.id ? null : faq.id))
+                        }
+                        className="p-1"
                       >
-                        {faq.videolink}
-                      </a>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="text-lg font-semibold">
-                          {faq.question}
+                        <BsThreeDotsVertical className="text-[#1BBFCA]" size={20} />
+                      </button>
+
+                      {/* Dropdown */}
+                      {dropdownOpenId === faq.id && (
+                        <div className="absolute z-50 right-4 top-full mt-2 w-40 bg-white border rounded-md shadow-xl">
+                          <button
+                            onClick={() => handleEdit(faq)}
+                            className="block w-full text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
+                          >
+                            <MdEditNote size={18} /> Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(faq.uuid)}
+                            className="block w-full text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
+                          >
+                            <MdDelete size={18} /> Delete
+                          </button>
                         </div>
-                        <div className="text-md">{faq.answer}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 rounded-r-xl relative overflow-visible">
-                      <div className="flex justify-end relative">
-                        <button
-                          onClick={() =>
-                            setDropdownOpenId((prev) =>
-                              prev === faq.id ? null : faq.id
-                            )
-                          }
-                        >
-                          <BsThreeDotsVertical
-                            className="text-[#1BBFCA]"
-                            size={23}
-                          />
-                        </button>
-                        {dropdownOpenId === faq.id && (
-                          <div className="absolute grid z-0 gap-2 right-5 bottom-0 mr-2 p-2 w-28 bg-white shadow-md rounded-md border">
-                            <button
-                              className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                              onClick={() => handleEdit(faq)}
-                            >
-                              <MdEditNote /> Edit
-                            </button>
-                            <button
-                              className="w-full border rounded-lg text-left px-4 py-2 hover:bg-[#1BBFCA] hover:text-white flex items-center gap-2"
-                              onClick={() => handleDelete(faq.uuid)}
-                            >
-                              <MdDelete /> Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -260,24 +313,20 @@ const AddQuestion = () => {
       {/* Modal */}
       {showModal && (
         <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-md bg-opacity-50 flex items-center ${modalStage === "success" || modalStage === "dialog" || modalStage === "processing"
-            ? "justify-center"
-            : "justify-end"
-            } z-50`}
+          className="fixed inset-0 bg-black/30 backdrop-blur-md flex items-center justify-center z-50 px-4"
         >
-          <div className="bg-white rounded-xl w-[500px] p-6 text-center space-y-6 relative">
-            {/* Form Stage */}
+          <div className="bg-white rounded-xl w-full max-w-md sm:max-w-lg lg:max-w-xl p-6 mx-auto space-y-6">
             {modalStage === "confirm" && (
               <div>
-                <div className="flex">
-                  <h2 className="text-2xl justify-start font-bold">
+                <div className="flex items-center">
+                  <h2 className="text-2xl font-bold">
                     {isEditing ? "Edit Question" : "Add Question"}
                   </h2>
                   <button
                     onClick={resetForm}
-                    className="ml-auto h-6 w-6 bg-gray-500 rounded-full right-4 text-black"
+                    className="ml-auto h-8 w-8 flex items-center justify-center bg-gray-300 rounded-full"
                   >
-                    <IoMdClose size={20} className="ml-0.5" />
+                    <IoMdClose size={20} />
                   </button>
                 </div>
                 <form
@@ -289,13 +338,13 @@ const AddQuestion = () => {
                       handleAddFAQ();
                     }
                   }}
-                  className="space-y-4 mt-5 text-left"
+                  className="space-y-4 mt-4"
                 >
                   <div>
                     <label className="block font-semibold mb-1">Category</label>
                     <select
                       required
-                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      className="w-full border px-3 py-2 rounded-md"
                       value={formData.category}
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
@@ -305,7 +354,7 @@ const AddQuestion = () => {
                         Select a category
                       </option>
                       {categories?.map((cat: any) => (
-                        <option key={cat.id} value={cat.name}>
+                        <option key={cat.id} value={cat.category_name}>
                           {cat.category_name}
                         </option>
                       ))}
@@ -318,7 +367,7 @@ const AddQuestion = () => {
                     <input
                       type="url"
                       required
-                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      className="w-full border px-3 py-2 rounded-md"
                       value={formData.videoLink}
                       onChange={(e) =>
                         setFormData({ ...formData, videoLink: e.target.value })
@@ -330,7 +379,7 @@ const AddQuestion = () => {
                     <input
                       type="text"
                       required
-                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      className="w-full border px-3 py-2 rounded-md"
                       value={formData.status}
                       onChange={(e) =>
                         setFormData({ ...formData, status: e.target.value })
@@ -341,7 +390,8 @@ const AddQuestion = () => {
                     <label className="block font-semibold mb-1">Answer</label>
                     <textarea
                       required
-                      className="w-full border h-18 px-4 py-2 rounded-md"
+                      className="w-full border px-3 py-2 rounded-md resize-none"
+                      rows={4}
                       value={formData.description}
                       onChange={(e) =>
                         setFormData({
@@ -351,7 +401,7 @@ const AddQuestion = () => {
                       }
                     />
                   </div>
-                  <div className="pt-4 flex justify-end gap-4">
+                  <div className="flex justify-end gap-4 pt-4">
                     <button
                       type="button"
                       onClick={resetForm}
@@ -370,13 +420,12 @@ const AddQuestion = () => {
               </div>
             )}
 
-            {/* Confirmation Dialog - Updated to use UUID */}
             {modalStage === "dialog" && (
-              <div className="flex flex-col items-center justify-center p-6">
+              <div className="flex flex-col items-center">
                 <img src={warning} alt="Warning" className="w-12 h-12 mb-4" />
                 <p className="text-lg font-semibold mb-2">Are you sure?</p>
                 <p className="text-sm text-gray-600 mb-6">
-                  You want to update status of this question.
+                  You want to update this question.
                 </p>
                 <div className="flex gap-4">
                   <button
@@ -386,71 +435,36 @@ const AddQuestion = () => {
                     Cancel
                   </button>
                   <button
-                    onClick={async () => {
-                      if (isEditing && editUuid !== null) {
-                        try {
-                          const updateData = {
-                            category: formData.category,
-                            videolink: formData.videoLink,
-                            question: formData.status,
-                            answer: formData.description,
-                          };
-
-                          await updateHelpCenter(updateData, editUuid);
-
-                          dispatch(
-                            fetchHelpCenterThunk({
-                              branchid: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-                              instituteid:
-                                "973195c0-66ed-47c2-b098-d8989d3e4529",
-                              page: 1,
-                              perPage: 10,
-                            })
-                          );
-
-                          setModalStage("success");
-                          setIsEditing(false);
-                          setEditUuid(null);
-                          setFormData({
-                            category: "",
-                            status: "",
-                            description: "",
-                            videoLink: "",
-                          });
-                        } catch (error) {
-                          console.error("Update failed:", error);
-                          alert("Update failed. Please try again.");
-                          setModalStage("confirm");
-                        }
-                      }
-                    }}
+                    onClick={handleUpdateQuestion}
                     className="bg-[#2AAA94] hover:bg-[#28907f] text-white px-4 py-2 rounded-md"
                   >
-                    Yes Status
+                    Yes, Update
                   </button>
                 </div>
               </div>
             )}
 
             {modalStage === "processing" && (
-              <div className="flex flex-col items-center justify-center p-6">
+              <div className="flex flex-col items-center">
                 <div className="loader mb-4"></div>
                 <p className="text-lg font-semibold mb-2">Processing...</p>
                 <p className="text-sm text-gray-600">
-                  Please wait while we update your request.
+                  Please wait while we process your request.
                 </p>
               </div>
             )}
 
             {modalStage === "success" && (
-              <div className="flex flex-col items-center justify-center p-6">
+              <div className="flex flex-col items-center">
                 <img src={success} alt="Success" className="w-12 h-12 mb-4" />
-                <p className="text-lg font-semibold mb-2">Status Updated</p>
+                <p className="text-lg font-semibold mb-2">{successMessage}</p>
                 <p className="text-sm text-gray-600 mb-6">
-                  The status has been successfully updated.
+                  {isEditing
+                    ? "The question has been successfully updated."
+                    : "The question has been successfully added."}
                 </p>
                 <button
-                  onClick={resetForm} // Use resetForm to properly close modal
+                  onClick={resetForm}
                   className="bg-[#2AAA94] hover:bg-[#28907f] text-white px-4 py-2 rounded-md"
                 >
                   Close

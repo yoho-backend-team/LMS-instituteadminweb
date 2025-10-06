@@ -7,6 +7,7 @@ const StudentSlice = createSlice({
 		data2: [],
 		liveClassdata: [],
 		activitydata: [],
+		class:[],
 		loading: false,
 	},
 	reducers: {
@@ -25,6 +26,9 @@ const StudentSlice = createSlice({
 		setLoading: (state, action) => {
 			state.loading = action.payload;
 		},
+       setClassdetails:(state,action)=>{
+		state.class=action.payload;
+	   }
 	},
 });
 export const {
@@ -33,6 +37,7 @@ export const {
 	getLiveClassDetails,
 	getActivityDetails,
 	setLoading,
+	setClassdetails,
 } = StudentSlice.actions;
 
 export default StudentSlice.reducer;

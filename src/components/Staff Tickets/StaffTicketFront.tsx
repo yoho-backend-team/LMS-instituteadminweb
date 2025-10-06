@@ -11,48 +11,52 @@ import { GetStaffTicketServicesThunks } from "../../features/Ticket_Management/r
 import ticket1 from "../../assets/ticket1.png";
 import { GetStaffTicket, selectLoading } from "../../features/Ticket_Management/reducers/selectors";
 import { GetImageUrl } from "../../utils/helper";
-
+import { GetLocalStorage } from "../../utils/localStorage";
 interface Ticket {
-	uuid: string;
-	name: string;
-	email: string;
-	message: string;
-	date: string;
-	time: string;
-	priority: 'High' | 'Low';
-	status: 'opened' | 'closed';
+  uuid: string;
+  name: string;
+  email: string;
+  message: string;
+  date: string;
+  time: string;
+  priority: "High" | "Low";
+  status: "opened" | "closed";
 }
 
 interface GetTicketsParams {
-	branch_id: string;
-	institute_id: string;
-	page: number;
-	status: 'opened' | 'closed';
+  branch_id: any;
+  institute_id: any;
+  page: number;
+  status: "opened" | "closed";
 }
 
 const StaffTickets: React.FC = () => {
-	const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
-	const [showOpenTickets, setShowOpenTickets] = useState<boolean>(true);
-	const [showClosedTickets, setShowClosedTickets] = useState<boolean>(false);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [showOpenTickets, setShowOpenTickets] = useState<boolean>(true);
+  const [showClosedTickets, setShowClosedTickets] = useState<boolean>(false);
 
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const staffTickets = useSelector(GetStaffTicket);
-  const loading: boolean = useSelector(
-    selectLoading
-  );
+  const loading: boolean = useSelector(selectLoading);
   const error: any = useSelector((state: any) => state.staffTickets?.error);
+  const overall_branch_id = GetLocalStorage("selectedBranchId")
+  const overall_istitute_id = GetLocalStorage("instituteId")
+  const totalPages = staffTickets?.last_page
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const params: GetTicketsParams = {
-      branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
-      institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
-      page: 1,
+      // branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+      // institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+      branch_id: overall_branch_id,
+      institute_id: overall_istitute_id,
+      page: currentPage,
       status: showOpenTickets ? "opened" : "closed",
     };
     dispatch(GetStaffTicketServicesThunks(params) as any);
-  }, [dispatch, showOpenTickets, showClosedTickets]);
+  }, [dispatch, showOpenTickets, showClosedTickets, currentPage]);
 
   const handleResolve = (ticket: Ticket) => {
     setMenuOpenId(null);
@@ -60,6 +64,7 @@ const StaffTickets: React.FC = () => {
       navigate(`/staff-tickets/${ticket.uuid}`);
     }
   };
+
 
   // Skeleton component
   const TicketSkeleton = () => (
@@ -87,12 +92,12 @@ const StaffTickets: React.FC = () => {
     </div>
   );
 
-	return (
-		<div>
-			<div className='bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6 w-full'>
-				<img src={ticket1} alt='Ticket Icon' className='w-5 h-5' />
-				STAFF TICKETS
-			</div>
+  return (
+    <div>
+      <div className="bg-[#14b8c6] text-white px-4 py-2 rounded-md inline-flex items-center gap-2 font-semibold text-lg mb-6 w-full">
+        <img src={ticket1} alt="Ticket Icon" className="w-5 h-5" />
+        STAFF TICKETS
+      </div>
 
       {/* Toggle Buttons */}
       <div className="flex gap-4 mb-4">
@@ -101,11 +106,10 @@ const StaffTickets: React.FC = () => {
             setShowOpenTickets(true);
             setShowClosedTickets(false);
           }}
-          className={`px-4 py-2 rounded-md font-semibold text-sm ${
-            showOpenTickets
-              ? "bg-[#14b8c6] text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${showOpenTickets
+            ? "bg-[#14b8c6] text-white"
+            : "bg-gray-200 text-gray-700"
+            }`}
         >
           Open Tickets
         </button>
@@ -115,21 +119,20 @@ const StaffTickets: React.FC = () => {
             setShowOpenTickets(false);
             setShowClosedTickets(true);
           }}
-          className={`px-4 py-2 rounded-md font-semibold text-sm ${
-            showClosedTickets
-              ? "bg-[#14b8c6] text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
+          className={`px-4 py-2 rounded-md font-semibold text-sm ${showClosedTickets
+            ? "bg-[#14b8c6] text-white"
+            : "bg-gray-200 text-gray-700"
+            }`}
         >
           Closed Tickets
         </button>
       </div>
 
-			{(showOpenTickets || showClosedTickets) && (
-				<div className='mb-6'>
-					<h3 className='text-lg font-semibold text-[#14b8c6] mb-2'>
-						{showOpenTickets ? 'Open Tickets' : 'Closed Tickets'}
-					</h3>
+      {(showOpenTickets || showClosedTickets) && (
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-[#14b8c6] mb-2">
+            {showOpenTickets ? "Open Tickets" : "Closed Tickets"}
+          </h3>
 
           {loading ? (
             <div className="grid md:grid-cols-3 gap-6">
@@ -139,9 +142,9 @@ const StaffTickets: React.FC = () => {
             </div>
           ) : error ? (
             <p className="text-red-500">Error loading tickets.</p>
-          ) : staffTickets.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6">
-              {staffTickets.map((ticket: any) => (
+          ) : staffTickets?.data?.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {staffTickets?.data?.map((ticket: any) => (
                 <div
                   key={ticket.id}
                   className="bg-white shadow-md rounded-lg p-4 relative border-2"
@@ -164,52 +167,58 @@ const StaffTickets: React.FC = () => {
                     </div>
 
                     <div className="relative">
-                      <FiMoreVertical
-                        className="text-gray-400 cursor-pointer"
-                        onClick={() =>
-                          setMenuOpenId(
-                            menuOpenId === ticket.id ? null : ticket.id
-                          )
-                        }
-                      />
-                      {menuOpenId === ticket.id && (
-                        <div className="absolute right-0 mt-2 z-10 w-25">
-                          <button
-                            className="w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
-                            onClick={() => handleResolve(ticket)}
-                          >
-                            <FiCheckCircle /> Resolve
-                          </button>
-                        </div>
+                      {ticket.status === "opened" && (
+                        <>
+                          <FiMoreVertical
+                            className="text-gray-400 cursor-pointer"
+                            onClick={() =>
+                              setMenuOpenId(
+                                menuOpenId === ticket.id ? null : ticket.id
+                              )
+                            }
+                          />
+                          {menuOpenId === ticket.id && (
+                            <div className="absolute right-0 mt-2 z-10 w-25">
+                              <button
+                                className="w-full px-2 py-2 text-sm text-white bg-[#14b8c6] rounded-xl flex items-center gap-2"
+                                onClick={() => handleResolve(ticket)}
+                              >
+                                <FiCheckCircle /> Resolve
+                              </button>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
 
-									<p className='text-gray-700 mb-4'>{ticket.query}</p>
+                  <p className="text-gray-700 mb-4">{ticket.query}</p>
 
-									<div className='flex justify-between text-sm text-gray-500 mb-4'>
-										<div className='flex items-center gap-1'>
-											<FiCalendar />
-										</div>
-										<div className='flex items-center gap-1'>
-											<FiClock />
-											{new Date(ticket.date).toLocaleString('en-IN', {
-												day: '2-digit',
-												month: 'short',
-												year: 'numeric',
-												hour: '2-digit',
-												minute: '2-digit',
-												hour12: true,
-											})}
-										</div>
-									</div>
+                  <div className="flex justify-between text-sm text-gray-500 mb-4">
+                    <div className="flex items-center gap-1">
+                      <FiCalendar />
+                      {new Date(ticket.date).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <FiClock />
+                      {new Date(ticket.date).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </div>
+                  </div>
 
                   <button
-                    className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${
-                      ticket.priority === "High"
-                        ? "bg-[#14b8c6]"
-                        : "bg-[#14b8c6]"
-                    }`}
+                    className={`text-white text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2 ${ticket.priority === "High"
+                      ? "bg-[#14b8c6]"
+                      : "bg-[#14b8c6]"
+                      }`}
                   >
                     <FiCalendar />
                     Priority: {ticket.priority}
@@ -224,6 +233,30 @@ const StaffTickets: React.FC = () => {
           )}
         </div>
       )}
+
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <span className="text-gray-700 text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

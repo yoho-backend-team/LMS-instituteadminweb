@@ -38,6 +38,7 @@ import refundReducer from "../features/Refund_management/Reducer/refundSlice"
 import CategoriesSlice from '../features/Course mangement/categories/reducers/slice'
 import branchReducer from '../features/Branch_Management/reducers/branchSlice';
 import CoursesReducer from '../features/CourseManagement/Course/slice'
+import CoursesReducer1 from '../features/Courses_mangement/Reducers/CourseSlice'
 import categoryReducer from '../features/Category/slice'
 
 
@@ -83,6 +84,7 @@ const store = configureStore({
 		branches: branchReducer,
 		CoursesReducer: CoursesReducer,
 		categoryReducer: categoryReducer,
+		CoursesReducer1:CoursesReducer1
 	},
 })
 

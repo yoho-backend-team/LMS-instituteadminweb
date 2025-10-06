@@ -1,9 +1,11 @@
-// CourseCard.tsx
 import React, { useState } from "react";
-import card1 from "../../assets/navbar/card1.png";
+
 import arr from "../../assets/navbar/arrow.png";
 import dots from "../../assets/navbar/dots.png";
 import { updateCourse } from "../../features/CourseManagement/Course/service";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { editCourse } from "../../features/CourseManagement/Course/slice";
 
 interface CourseCardProps {
   course_name: string;
@@ -31,12 +33,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const baseUrl = import.meta.env.VITE_PUBLIC_API_URL;
-  const imageUrl = image?.startsWith('http') ? image : `${baseUrl}${image}`;
-
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
-
-  console.log('is active', courseStatus)
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
     try {
@@ -49,16 +47,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
         is_active: newStatus === "Active",
       };
 
+      dispatch(editCourse({ uuid: courseuuid, is_active: newStatus === "Active", }))
       await updateCourse(payload);
     } catch (error) {
       console.error("Failed to update status", error);
     }
   };
 
-
   return (
-    <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
-
+    <div className="bg-white rounded-2xl shadow-md p-4 sm:p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full max-w-[374px] mx-auto">
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
           {category_name}
@@ -68,17 +65,16 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </span>
       </div>
 
-
-      <img
-        src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
-        alt="Course"
-        className="rounded-md w-full h-30 object-cover"
-      />
-
-
+      <div className="h-40 flex">
+        <img
+          src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
+          alt="Course"
+          className="rounded-md w-full h-full object-cover"
+        />
+      </div>
 
       <div className="flex flex-col gap-y-1">
-        <h2 className="text-lg font-semibold text-[#1BBFCA]">{course_name}</h2>
+        <h2 className="text-lg font-semibold text-[#1BBFCA] line-clamp-2">{course_name}</h2>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <img src={dots} alt="dot" className="w-4 h-4" />
@@ -87,7 +83,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <p className="text-lg font-bold">{price}</p>
         </div>
       </div>
-
 
       <div className="flex justify-between items-center relative">
         <div className="relative">
@@ -98,7 +93,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               : "bg-white text-black border border-gray-300"
               }`}
           >
-            <span>{courseStatus ? 'Active' : 'InActive'}</span>
+            <span>{courseStatus ? "Active" : "InActive"}</span>
             <img
               src={arr}
               alt="arrow"
@@ -133,7 +128,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
         <button
           onClick={onView}
-          className="bg-green-500 hover:bg-green-600 text-white text-sm px-5 py-1.5 rounded-md"
+          className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-1.5 rounded-md"
         >
           View
         </button>

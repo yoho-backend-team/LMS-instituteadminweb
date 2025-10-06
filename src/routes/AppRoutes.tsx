@@ -63,140 +63,142 @@ import UsersDetails from '../features/Users_Management/Users/components/UsersDet
 import HistoryPage from '../components/subscription/HistoryPage';
 import StaffTicketDetail from '../pages/Ticket Management/Staff/StaffTicketDetail';
 import ClassView from '../components/StudentManagement/ClassView';
+import Placementview from '../pages/Placement Management/Placementview';
 const AppRoutes = () => {
-	const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
-	if (isLoading) return null;
+  if (isLoading) return null;
 
-	const AuthRoutes = () => (
-		<Routes>
-			<Route path='/login' element={<LoginPage />} />
-			<Route path='/otp-verify' element={<OtpVerification />} />
-			<Route path='/reset-password' element={<ChangePassword />} />
-			<Route path='*' element={<Navigate to='/login' />} />
-			<Route path='/logout' element={<LogoutRoute />} />
-		</Routes>
-	);
+  const AuthRoutes = () => (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/otp-verify" element={<OtpVerification />} />
+      <Route path="/reset-password" element={<ChangePassword />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="/logout" element={<LogoutRoute />} />
+    </Routes>
+  );
 
-	const AdminRoutes = () => (
-		<Routes>
-			<Route path='/' element={<MainLayout />}>
-				<Route index element={<Dashboard />} />
-				{/* Profile Management */}
+  const AdminRoutes = () => (
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Dashboard />} />
+        {/* Profile Management */}
 
-				<Route path='/tickets/:id' element={<TicketDetailsPage />} />
-				<Route path='StaffTicketDetail' element={<StaffTicketDetail />} />
-				<Route path='/staff-tickets/:id' element={<TicketDetail />} />
-				{/* <Route path='StaffTicketDetail' element={<StaffTicketDetail />} /> */}
+        <Route path="/tickets/:id" element={<TicketDetailsPage />} />
+        <Route path="StaffTicketDetail" element={<StaffTicketDetail />} />
+        <Route path="/staff-tickets/:id" element={<TicketDetail />} />
+        {/* <Route path='StaffTicketDetail' element={<StaffTicketDetail />} /> */}
 
-				<Route path='noti/msg' element={<NotificationPage />} />
+        <Route path="noti/msg" element={<NotificationPage />} />
 
-				{/* <Route path="/" element={<HomePage />} /> */}
+        {/* <Route path="/" element={<HomePage />} /> */}
 
-				{/* <Route path='profile' element={<SecurityProfile />} /> */}
-				<Route path='profile' element={<Accountpf />} />
-				<Route path='Editprof' element={<EditUserInfo />} />
+        {/* <Route path='profile' element={<SecurityProfile />} /> */}
+        <Route path="profile" element={<Accountpf />} />
+        <Route path="Editprof" element={<EditUserInfo />} />
 
-				{/* Notifications Management */}
-				<Route path='notifications' element={<AllNotifications />} />
-				<Route path='staff-notifications' element={<StaffsNotifications />} />
-				<Route
-					path='student-notifications'
-					element={<StudentNotifications />}
-				/>
+        {/* Notifications Management */}
+        <Route path="notifications" element={<AllNotifications />} />
+        <Route path="staff-notifications" element={<StaffsNotifications />} />
+        <Route
+          path="student-notifications"
+          element={<StudentNotifications />}
+        />
 
-				<Route path='community' element={<Community />} />
+        <Route path="community" element={<Community />} />
 
-				{/* Branch Management */}
-				<Route path='branch' element={<BranchManagement />} />
+        {/* Branch Management */}
+        <Route path="branch" element={<BranchManagement />} />
 
-				{/* User Management */}
-				<Route path='users' element={<Users />} />
-				<Route path='users/details/:id' element={<UsersDetails />} />
-				<Route path='group' element={<Group />} />
-				<Route path='group/add' element={<AddNewGroup />} />
-				<Route path='group/view/:id' element={<View />} />
-				<Route path='group/edit/:id' element={<Edit />} />
+        {/* User Management */}
+        <Route path="users" element={<Users />} />
+        <Route path="users/details/:id" element={<UsersDetails />} />
+        <Route path="group" element={<Group />} />
+        <Route path="group/add" element={<AddNewGroup />} />
+        <Route path="group/view/:id" element={<View />} />
+        <Route path="group/edit/:id" element={<Edit />} />
 
-				{/* Course Management */}
-				<Route path='courses' element={<Courses />} />
-				<Route path='categories' element={<Categories />} />
+        {/* Course Management */}
+        <Route path="courses" element={<Courses />} />
+        <Route path="categories" element={<Categories />} />
 
-				{/* Content Management */}
-				<Route path='study-materials' element={<StudyMaterials />} />
-				<Route path='notes' element={<Notes />} />
-				<Route path='modules' element={<Modules />} />
+        {/* Content Management */}
+        <Route path="study-materials" element={<StudyMaterials />} />
+        <Route path="notes" element={<Notes />} />
+        <Route path="modules" element={<Modules />} />
 
-				{/* Staff Management */}
-				<Route path='staffs' element={<TeachingStaffs />} />
-				<Route path='staffs-details' element={<MainPage />} />
+        {/* Staff Management */}
+        <Route path="staffs" element={<TeachingStaffs />} />
+        <Route path="staffs-details" element={<MainPage />} />
 
-				{/* Student Management */}
-				<Route path='students' element={<Students />} />
-				<Route path='students/Profile' element={<Profile />} />
-				<Route path='students/Profile/view' element={<ClassView />} />
+        {/* Student Management */}
+        <Route path="students" element={<Students />} />
+        <Route path="students/Profile" element={<Profile />} />
+        <Route path="/students/Profile/view" element={<ClassView />} />
 
-				{/* Batch Management */}
-				<Route path='batch' element={<BatchManagement />} />
-				<Route path='/view-batch' element={<StudentDashboardMain />} />
+        {/* Batch Management */}
+        <Route path="batch" element={<BatchManagement />} />
+        <Route path="/view-batch" element={<StudentDashboardMain />} />
 
-				{/* Class Management */}
-				<Route path='offine-classes' element={<OfflineClasses />} />
-				<Route path='view-student/:id' element={<StudentClassBatch />} />
-				<Route path='live-classes' element={<LiveClasses />} />
-				<Route path='/live-classes/:uuid' element={<ViewLiveClassId />} />
+        {/* Class Management */}
+        <Route path="offine-classes" element={<OfflineClasses />} />
+        <Route path="view-student/:id" element={<StudentClassBatch />} />
+        <Route path="live-classes" element={<LiveClasses />} />
+        <Route path="/live-classes/:uuid" element={<ViewLiveClassId />} />
 
-				{/* Attendance Management */}
-				<Route path='students-attendance' element={<StudentsAttendance />} />
-				<Route
-					path='students-attendance/details/:id'
-					element={<StudentDetails />}
-				/>
-				<Route path='staffs-attendance' element={<StaffsAttendance />} />
-				<Route path='staffs-attendance/view/:id' element={<AddAttendance />} />
+        {/* Attendance Management */}
+        <Route path="students-attendance" element={<StudentsAttendance />} />
+        <Route
+          path="students-attendance/details/:id"
+          element={<StudentDetails />}
+        />
+        <Route path="staffs-attendance" element={<StaffsAttendance />} />
+        <Route path="staffs-attendance/view/:id" element={<AddAttendance />} />
 
-				{/* Refund Management */}
-				<Route path='refund-fees' element={<RefundFees />} />
+        {/* Refund Management */}
+        <Route path="refund-fees" element={<RefundFees />} />
 
-				{/* Certificate Management */}
-				<Route path='students-certificate' element={<StudentCertificate />} />
-				<Route path='/certificate-view' element={<CertificateView />} />
+        {/* Certificate Management */}
+        <Route path="students-certificate" element={<StudentCertificate />} />
+        <Route path="/certificate-view" element={<CertificateView />} />
 
-				{/* Placement Management */}
-				<Route path='placement' element={<Placement />} />
+        {/* Placement Management */}
+        <Route path='placement' element={<Placement />} />
+        <Route path='placementview' element={<Placementview />} />
 
-				{/* ID Card Management */}
-				<Route path='students-id_card' element={<StudentIDCard />} />
-				<Route path='staffs-id_card' element={<StaffIDCard />} />
+        {/* ID Card Management */}
+        <Route path="students-id_card" element={<StudentIDCard />} />
+        <Route path="staffs-id_card" element={<StaffIDCard />} />
 
-				{/* Help Center */}
-				<Route path='help-faqs' element={<HelpFAQs />} />
-				<Route path='add-questions' element={<AddQuestions />} />
-				<Route path='secure-delivery' element={<SecureDelivery />} />
-				<Route path='find-missingpackage' element={<FindMissingOrder />} />
-				<Route path='track-order' element={<TrackOrder />} />
+        {/* Help Center */}
+        <Route path="help-faqs" element={<HelpFAQs />} />
+        <Route path="add-questions" element={<AddQuestions />} />
+        <Route path="secure-delivery" element={<SecureDelivery />} />
+        <Route path="find-missingpackage" element={<FindMissingOrder />} />
+        <Route path="track-order" element={<TrackOrder />} />
 
-				{/* Payment Management */}
-				<Route path='student-fees' element={<StudentFees />} />
-				<Route path='staff-salaries' element={<StaffSalaries />} />
-				<Route path='subscriptions' element={<Subscription />} />
-				<Route path='/subscriptions/history' element={<HistoryPage />} />
+        {/* Payment Management */}
+        <Route path="student-fees" element={<StudentFees />} />
+        <Route path="staff-salaries" element={<StaffSalaries />} />
+        <Route path="subscriptions" element={<Subscription />} />
+        <Route path="/subscriptions/history" element={<HistoryPage />} />
 
-				{/* Ticket Management */}
-				<Route path='student-tickets' element={<StudentTickets />} />
-				<Route path='staff-tickets' element={<StaffTickets />} />
-				<Route path='your-tickets' element={<YourTicket />} />
+        {/* Ticket Management */}
+        <Route path="student-tickets" element={<StudentTickets />} />
+        <Route path="staff-tickets" element={<StaffTickets />} />
+        <Route path="your-tickets" element={<YourTicket />} />
 
-				{/* FAQ */}
-				<Route path='faq-category' element={<Category />} />
-				<Route path='faqs' element={<FAQs />} />
+        {/* FAQ */}
+        <Route path="faq-category" element={<Category />} />
+        <Route path="faqs" element={<FAQs />} />
 
-				<Route path='*' element={<Navigate to='/' />} />
-			</Route>
-		</Routes>
-	);
+        <Route path="*" element={<Navigate to="/" />} />
+      </Route>
+    </Routes>
+  );
 
-	return isAuthenticated ? <AdminRoutes /> : <AuthRoutes />;
+  return isAuthenticated ? <AdminRoutes /> : <AuthRoutes />;
 };
 
 export default AppRoutes;

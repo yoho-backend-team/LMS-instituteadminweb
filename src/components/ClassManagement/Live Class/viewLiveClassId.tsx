@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { COLORS, FONTS } from '../../../constants/uiConstants';
 import { Card } from '../../ui/card';
 import { GetImageUrl } from '../../../utils/helper';
+import { Button } from '../../ui/button';
 
 const ViewLiveClassId: React.FC = () => {
 	const [searchStudent, setSearchStudent] = useState('');
@@ -29,12 +30,20 @@ const ViewLiveClassId: React.FC = () => {
 
 	return (
 		<div className='p-6 bg-white min-h-screen'>
-			<button
+			{/* <button
 				onClick={() => navigate(-1)}
-				className='flex items-center gap-2 text-[#1BBFCA] hover:text-[#1BBFCA] transition-all mb-4'
+				className='flex items-center gap-2text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit transition-all mb-4'
 			>
-				<ArrowLeft className='w-7 h-7' />
-			</button>
+				<ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+			</button> */}
+			 <div className="flex items-center justify-between mb-8">
+                <Button
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white transition-colors duration-300"
+                >
+                  <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
+                </Button>
+            </div>
 			{/* Header */}
 			<div className='flex items-center justify-between'>
 				<h2

@@ -3,13 +3,13 @@ import { ChevronDown } from "lucide-react";
 import { UpdateStatusCard } from "../../../features/Users_Management/Group/reducers/service.ts";
 
 type StatusDropdownProps = {
-  idx: number;
+  idx?: number;
   initialStatus: string;
   options: string[];
   itemId: string;
 };
 export function StatusDropdown({
-  idx,
+  // idx,
   initialStatus,
   options,
   itemId,
@@ -55,7 +55,7 @@ export function StatusDropdown({
       <div className="relative inline-block">
         <button
           onClick={toggle}
-          className="px-3 py-2 rounded-xl text-white font-medium flex items-center gap-1 hover:opacity-90 transition-opacity duration-200"
+          className="px-3 py-2 rounded-xl text-white font-medium flex items-center gap-1 hover:opacity-90 transition-opacity duration-200 min-w-[100px]"
           style={{ backgroundColor: "#1BBFCA" }}
           disabled={isSaving}
         >

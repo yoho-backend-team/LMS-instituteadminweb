@@ -4,7 +4,21 @@ import React, { useEffect, useState } from "react";
 import { MoreVertical, Download, CheckCircle, X } from "lucide-react";
 import { FaEye, FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { MoreVertical, Download, CheckCircle, X } from "lucide-react";
+import { FaEye, FaEdit, FaTrash, FaExclamationTriangle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  GetAllSalaryThunks,
+  UpdateAllSalaryThunks,
+} from "../../../../features/Payment_Managemant/salary/reducers/thunks";
+import jsPDF from "jspdf";
+import { DeleteSalary } from "../../../../features/Payment_Managemant/salary/services";
+import toast from "react-hot-toast";
+import { IoMdClose } from "react-icons/io";
+import { GetBranchThunks } from "../../../../features/Payment_Managemant/salary/reducers/thunks";
+import ContentLoader from "react-content-loader";
+import type { RootState } from "../../../../store/store";
   GetAllSalaryThunks,
   UpdateAllSalaryThunks,
 } from "../../../../features/Payment_Managemant/salary/reducers/thunks";
@@ -17,6 +31,14 @@ import ContentLoader from "react-content-loader";
 import type { RootState } from "../../../../store/store";
 
 interface SalaryTableProps {
+  search: string;
+  branch: string;
+  startDate: string;
+  endDate: string;
+  cardData?: any[];
+  setCardData?: React.Dispatch<React.SetStateAction<any[]>>;
+  onView: (salary: any) => void;
+  loading?: boolean;
   search: string;
   branch: string;
   startDate: string;
@@ -54,7 +76,33 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     paymentDate: "",
     branchId: "",
   });
+  const [openCardId, setOpenCardId] = useState<number | null>(null);
+  const [showEditPanel, setShowEditPanel] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<any | null>(null);
+  const [showWarning, setShowWarning] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showView, setShowView] = useState(false);
+  const [branches, setBranches] = useState<any[]>([]);
+  const dispatch = useDispatch<any>();
+  const AllSalary = useSelector(
+    (state: RootState) => state?.StaffSalary?.salary
+  );
+  const [cardData, setCardData] = useState<any[]>([]);
 
+  const [formData, setFormData] = useState<any>({
+    staff: "",
+    transactionId: "",
+    salaryAmount: "",
+    paymentDate: "",
+    branchId: "",
+  });
+
+  const filteredData = AllSalary.filter((row: any) => {
+    const searchQuery = search.toLowerCase();
+    const matchesSearch =
+      row.staff.username?.toLowerCase().includes(searchQuery) ||
+      row.salary_amount?.toString().includes(searchQuery) ||
+      row.id?.toString().includes(searchQuery);
   const filteredData = AllSalary.filter((row: any) => {
     const searchQuery = search.toLowerCase();
     const matchesSearch =
@@ -63,7 +111,11 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
       row.id?.toString().includes(searchQuery);
 
     const matchesBranch = branch === "" || row.branchId === branch;
+    const matchesBranch = branch === "" || row.branchId === branch;
 
+    const rowDate = new Date(row.paymentDate);
+    const matchesStartDate = startDate === "" || rowDate >= new Date(startDate);
+    const matchesEndDate = endDate === "" || rowDate <= new Date(endDate);
     const rowDate = new Date(row.paymentDate);
     const matchesStartDate = startDate === "" || rowDate >= new Date(startDate);
     const matchesEndDate = endDate === "" || rowDate <= new Date(endDate);
@@ -83,7 +135,24 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     setShowEditPanel(true);
     setOpenCardId(null);
   };
+  const handleEditClick = (card: any) => {
+    setSelectedCard(card);
+    setFormData({
+      name: card.name,
+      transactionId: card.transaction_id,
+      salaryAmount: String(card.salary_amount),
+      paymentDate: card.payment_date.split("T")[0],
+      branchId: card.branchId,
+    });
+    setShowEditPanel(true);
+    setOpenCardId(null);
+  };
 
+  const handleViewClick = (card: any) => {
+    setSelectedCard(card);
+    setShowView(true);
+    setOpenCardId(null);
+  };
   const handleViewClick = (card: any) => {
     setSelectedCard(card);
     setShowView(true);
@@ -101,7 +170,23 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
       branchId: "",
     });
   };
+  const handleCancel = () => {
+    setShowEditPanel(false);
+    setSelectedCard(null);
+    setFormData({
+      name: "",
+      transactionId: "",
+      salaryAmount: "",
+      paymentDate: "",
+      branchId: "",
+    });
+  };
 
+  const handleSubmitAndClose = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowWarning(true);
+    setShowEditPanel(false);
+  };
   const handleSubmitAndClose = (e: React.FormEvent) => {
     e.preventDefault();
     setShowWarning(true);
@@ -110,7 +195,15 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
 
   const confirmUpdate = async () => {
     if (!selectedCard) return;
+  const confirmUpdate = async () => {
+    if (!selectedCard) return;
 
+    const updatedFields = {
+      transaction_id: formData.transactionId,
+      salary_amount: parseFloat(formData.salaryAmount),
+      payment_date: formData.paymentDate,
+      branchId: formData.branchId,
+    };
     const updatedFields = {
       transaction_id: formData.transactionId,
       salary_amount: parseFloat(formData.salaryAmount),
@@ -121,7 +214,14 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     const result = await dispatch(
       UpdateAllSalaryThunks({ _id: selectedCard._id, ...updatedFields })
     );
+    const result = await dispatch(
+      UpdateAllSalaryThunks({ _id: selectedCard._id, ...updatedFields })
+    );
 
+    if (result?.payload) {
+      const updated = cardData.map((item) =>
+        item._id === selectedCard.id ? { ...item, ...updatedFields } : item
+      );
     if (result?.payload) {
       const updated = cardData.map((item) =>
         item._id === selectedCard.id ? { ...item, ...updatedFields } : item
@@ -132,13 +232,36 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
     }
     setShowSuccess(true);
   };
+      setCardData(updated);
+      setShowWarning(false);
+    }
+    setShowSuccess(true);
+  };
 
+  const handleDownload = (card: any) => {
+    const doc = new jsPDF();
   const handleDownload = (card: any) => {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
     doc.text("Salary Receipt", 20, 20);
+    doc.setFontSize(16);
+    doc.text("Salary Receipt", 20, 20);
 
+    doc.setFontSize(12);
+    const salaryData = [
+      `Transaction ID: ${card.transaction_id || "N/A"}`,
+      `Staff Name: ${card.staff?.username || "N/A"}`,
+      `Email: ${card.email || "N/A"}`,
+      `Branch: ${card.branchId === "1" ? "Chennai" : "Madurai"}`,
+      `Payment Date: ${
+        card.payment_date
+          ? new Date(card.payment_date).toISOString().split("T")[0]
+          : "N/A"
+      }`,
+      `Salary Amount: $${card.salary_amount || "N/A"}`,
+      `Status: ${card.is_active ? "Active" : "Inactive"}`,
+    ];
     doc.setFontSize(12);
     const salaryData = [
       `Transaction ID: ${card.transaction_id || "N/A"}`,
@@ -159,13 +282,33 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
       doc.text(line, 20, y);
       y += 10;
     });
+    let y = 30;
+    salaryData.forEach((line) => {
+      doc.text(line, 20, y);
+      y += 10;
+    });
 
     const fileName = `SalaryReceipt_${
       card.staff?.username?.replace(/\s+/g, "_") || "Staff"
     }_${card.transaction_id || "TXN"}.pdf`;
     doc.save(fileName);
   };
+    const fileName = `SalaryReceipt_${
+      card.staff?.username?.replace(/\s+/g, "_") || "Staff"
+    }_${card.transaction_id || "TXN"}.pdf`;
+    doc.save(fileName);
+  };
 
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await DeleteSalary({ id });
+      if (response?.sucess) {
+        toast.success("Deleted Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleDelete = async (id: string) => {
     try {
       const response = await DeleteSalary({ id });
@@ -184,6 +327,13 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
         setCardData(result.data);
       }
     };
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await dispatch(GetAllSalaryThunks({}));
+      if (result?.payload && Array.isArray(result.payload)) {
+        setCardData(result.data);
+      }
+    };
 
     const fetchBranches = async () => {
       const branchRes = await dispatch(GetBranchThunks({}));
@@ -191,7 +341,16 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
         setBranches(branchRes.payload);
       }
     };
+    const fetchBranches = async () => {
+      const branchRes = await dispatch(GetBranchThunks({}));
+      if (branchRes?.payload && Array.isArray(branchRes.payload)) {
+        setBranches(branchRes.payload);
+      }
+    };
 
+    fetchData();
+    fetchBranches();
+  }, [dispatch, setCardData]);
     fetchData();
     fetchBranches();
   }, [dispatch, setCardData]);

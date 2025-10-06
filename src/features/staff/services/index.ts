@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Client from '../../../apis/index';
 
 export const getStaffData = async (query: any) => {
@@ -25,8 +26,8 @@ export const createStaff = async (data: any) => {
 	if (response) return response;
 };
 
-export const updateStaff = async (data: any) => {
-	const response = await Client.staff.update(data);
+export const updateStaff = async (params: any, data: any) => {
+	const response = await Client.staff.update(params, data);
 	if (response) return response;
 };
 
@@ -44,3 +45,15 @@ export const getBranchData = async (data: any) => {
 	const response = await Client.staff.getWithBranch(data);
 	if (response) return response;
 };
+
+
+export const getWihtIdclass = async (data: any) => {
+	try {
+		const response = await Client.online_class.getWithId(data);
+		if (response)
+			return response;
+	}
+	catch (err) {
+		console.log(err, 'error for class details');
+	}
+}

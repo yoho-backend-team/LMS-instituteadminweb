@@ -4,8 +4,7 @@ import { createCourse, getCourse } from "../Services/index";
 export const GetAllCoursesThunk = (params: any) => async (dispatch: any) => {
   try {
     const data = await getCourse(params);
-    console.log("THUNK response:", data);
-    dispatch(setCCourses(data?.data?.data)); 
+    dispatch(setCCourses(data?.data)); 
   } catch (error: any) {
     console.error("Failed to fetch courses:", error);
     throw error;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDashboardthunks } from '../../features/Dashboard/reducers/thunks';
@@ -5,7 +6,7 @@ import { selectDashboardData } from '../../features/Dashboard/reducers/selectors
 import { GetLocalStorage } from '../../utils/localStorage';
 
 const Bar = () => {
-    const [selectedYear, setSelectedYear] = useState('2024');
+    const [selectedYear] = useState('2024');
     const [selectedType, setSelectedType] = useState<'Revenue' | 'Expense'>('Revenue');
 
 

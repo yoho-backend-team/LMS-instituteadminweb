@@ -60,3 +60,19 @@ body {
 
 
 } */
+
+.media {
+  width: 100%;
+}
+
+@media (max-width: 430px) {
+  .media {
+    width: 260px;
+  }
+  .layout{
+    margin-left: 0;
+  }
+  .chatwindow{
+    width: 300px;
+  }
+}

@@ -7,6 +7,9 @@ import {
 } from "../../features/batchManagement/services";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
+} from "../../features/batchManagement/services";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
 import {
   createCertificate,
   getAllBatches,
@@ -90,16 +93,23 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
       branch: editingCertificate?.branch || "",
       batch: editingCertificate?.batch || "",
       student: editingCertificate?.student || "",
+      title: editingCertificate?.title || "",
+      course: editingCertificate?.course || "",
+      branch: editingCertificate?.branch || "",
+      batch: editingCertificate?.batch || "",
+      student: editingCertificate?.student || "",
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        let payload;
+        let payload: any;
         if (isEditing) {
           payload = {
             certificate_name: values.title,
+            certificate_name: values.title,
             id: editingCertificate?.id,
             certificateid: editingCertificate?.uuid,
+            description: editingCertificate?.description,
             description: editingCertificate?.description,
           };
           await updateCertificate(payload);
@@ -114,13 +124,43 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           };
           await createCertificate(payload);
         }
-        onSave(payload);
+        onSave?.(payload);
         onClose();
       } catch (error) {
+        console.error("Error submitting form:", error);
         console.error("Error submitting form:", error);
       }
     },
   });
+
+  // Fetch all required data
+  useEffect(() => {
+    (async () => {
+      try {
+        const [coursesRes, branchesRes, batchesRes] = await Promise.all([
+          getCourseService({ branch: formik.values.branch }),
+          getBranchService({}),
+          getAllBatches({}),
+        ]);
+        setCourses(coursesRes?.data || []);
+        setBranches(branchesRes?.data || []);
+        setAllBatches(batchesRes?.data || []);
+      } catch (error) {
+        console.error("Error fetching certificate data:", error);
+      }
+    })();
+    dispatch(
+      getStudentmanagement({
+        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        page: 1,
+      })
+    );
+  }, [dispatch, formik.values.branch]);
+
+  // Set students from redux
+  useEffect(() => {
+    if (Array.isArray(studentData)) setStudents(studentData);
+  }, [studentData]);
 
   if (!isOpen) return null;
 
@@ -361,6 +401,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 w-full sm:w-auto sm:min-w-[100px] md:min-w-[120px]
               "
             >
+              {isEditing ? "Update" : "Submit"}
               {isEditing ? "Update" : "Submit"}
             </button>
           </div>

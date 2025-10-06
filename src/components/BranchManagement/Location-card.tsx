@@ -1,17 +1,23 @@
-"use client";
-import { Plus, X, MoreVertical, ArrowRight, Eye, Edit2, Trash2 } from "lucide-react";
+import { MoreVertical, ArrowRight, Eye, Edit2, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import TrichyImg from "../../assets/trichy.png";
+// import TrichyImg from "../../assets/trichy.png";
 import { ConfirmationPopup } from "../../components/BranchManagement/ConfirmationPopup";
+import { DeleteBranchThunk } from "../../features/Branch_Management/reducers/branchThunks";
+import { GetLocalStorage } from "../../utils/localStorage";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { GetImageUrl } from "../../utils/helper";
 
 type BranchStatus = "Active" | "Inactive";
 type HoveredButton = "view" | "edit" | "delete" | null;
 
 interface LocationCardProps {
   id: string;
+  // phoneNumber?: string;
   imageSrc?: string;
   cityName: string;
   address: string;
+  phoneNumber?: string;
   status: BranchStatus;
   onViewDetails: () => void;
   onEdit: () => void;
@@ -31,6 +37,7 @@ export function LocationCard({
   onEdit,
   onStatusChange,
   onDelete,
+  // phoneNumber
 }: LocationCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -40,6 +47,7 @@ export function LocationCard({
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<BranchStatus | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const dispatch = useDispatch<AppDispatch>()
 
   const menuRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
@@ -74,8 +82,20 @@ export function LocationCard({
     setIsMenuOpen(false);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     onDelete(id);
+    try {
+      dispatch(
+        DeleteBranchThunk({
+          instituteId: GetLocalStorage("instituteId"),
+          branchUuid: id,
+        })
+      )
+
+      setShowSuccessPopup(true);
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
     setShowDeleteConfirm(false);
     setShowSuccessPopup(true);
   };
@@ -94,25 +114,21 @@ export function LocationCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getButtonClasses = (buttonType: HoveredButton) => 
-    `flex items-center px-3 py-2 gap-2 w-full rounded-lg border transition-colors ${
-      hoveredButton === buttonType
-        ? "bg-[#1BBFCA] border-transparent text-white"
-        : "border-[#716F6F] bg-white text-[#716F6F]"
+  const getButtonClasses = (buttonType: HoveredButton) =>
+    `flex items-center px-3 py-2 gap-2 w-full rounded-lg border transition-colors ${hoveredButton === buttonType
+      ? "bg-[#1BBFCA] border-transparent text-white"
+      : "border-[#716F6F] bg-white text-[#716F6F]"
     }`;
 
   return (
     <>
-      <div className="flex flex-col items-end p-4 gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
+      <div className="flex flex-col items-end  gap-2 w-full max-w-sm bg-white shadow-lg rounded-xl md:w-[410px] relative">
         {/* Image with menu button */}
         <div className="w-full rounded-xl overflow-hidden relative h-48">
           <img
-            src={imageSrc || TrichyImg}
+            src={GetImageUrl(imageSrc ?? "") ?? undefined}
             alt={cityName}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = TrichyImg;
-            }}
           />
           <div className="absolute top-4 right-2">
             <button
@@ -193,9 +209,8 @@ export function LocationCard({
           <div className="relative" ref={statusRef}>
             <button
               onClick={toggleStatusDropdown}
-              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${
-                currentStatus === "Active" ? "bg-[#1BBFCA]" : "bg-gray-200"
-              } text-white`}
+              className={`flex justify-center items-center px-4 py-2 w-[111px] h-[40px] rounded-lg ${currentStatus === "Active" ? "bg-[#1BBFCA]" : "bg-gray-200"
+                } text-white`}
               aria-label="Change status"
               aria-expanded={isStatusDropdownOpen}
             >
@@ -204,9 +219,8 @@ export function LocationCard({
                   {currentStatus}
                 </span>
                 <ArrowRight
-                  className={`w-5 h-5 transform ${
-                    isStatusDropdownOpen ? "rotate-270" : "rotate-90"
-                  }`}
+                  className={`w-5 h-5 transform ${isStatusDropdownOpen ? "rotate-270" : "rotate-90"
+                    }`}
                 />
               </div>
             </button>
@@ -217,11 +231,10 @@ export function LocationCard({
                   <button
                     key={option}
                     onClick={() => requestStatusChange(option)}
-                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${
-                      currentStatus === option
-                        ? "bg-[#1BBFCA] text-white font-medium"
-                        : "text-[#7D7D7D] hover:bg-gray-50"
-                    }`}
+                    className={`w-full px-4 py-2 text-xs text-left capitalize font-poppins ${currentStatus === option
+                      ? "bg-[#1BBFCA] text-white font-medium"
+                      : "text-[#7D7D7D] hover:bg-gray-50"
+                      }`}
                   >
                     {option}
                   </button>

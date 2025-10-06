@@ -13,6 +13,7 @@ import { getStaffDetailsDataId } from "../../features/staff/reducers/thunks"
 import { selectStaffId } from "../../features/staff/reducers/selector"
 import { GetImageUrl } from "../../utils/helper"
 import { deleteStaff, updateStaff } from "../../features/staff/services"
+import toast from "react-hot-toast"
 
 interface Staff {
   _id: any
@@ -51,7 +52,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
   const filcategory = course?.map((item: any) => item?.category?.category_name)
   const fildescription = course?.map((item: any) => item?.overview)
   const filthumbnail = course?.map((item: any) => item?.thumbnail)
-
+console.log(staffIdData,'staffiddata')
   const [formData, setFormData] = useState({
     fullName: staffIdData?.full_name || "",
     email: staffIdData?.email || "",
@@ -104,7 +105,10 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       price: "$",
       courseDescription: fildescription || "The MEAN Stack is a Collection Of Technologies For Building Web Applications Including Front-End And Back-End Using JavaScript. It Stands For MongoDB, Express JS, Angular, Node JS.",
     })
+
   }
+
+  const id = staff?.uuid
 
   const handleSubmit = async () => {
     setIsEditing(false)
@@ -119,7 +123,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
         phone_number: formData.primaryNumber,
         alternate_phone_number: formData.altNumber
       },
-      course: ['67f3b7fcb8d2634300cc87b6'], // Get course IDs array
+      course: ['67f3b7fcb8d2634300cc87b6'],
       designation: formData.designation,
       dob: formData.dob,
       email: formData.email,
@@ -130,13 +134,20 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       qualification: formData.qualification,
       user_details: "InstituteTeachingStaff", // Hardcoded as per requirement
       username: staffIdData?.userDetail?.username || formData.fullName.replace(/\s+/g, '').toLowerCase() // Generate username if not available
-    };
 
+    };
+    const staffId = {
+      staffId: id
+    }
+    console.log("payload", payload)
     try {
-      const response = await updateStaff(payload)
+      await updateStaff(staffId, payload)
+       toast.success("Staff updated successfully!");
+        fetchClassDataId()
     }
     catch (error) {
       console.log(error);
+      toast.error("Failed to update staff.");
     }
 
   }
@@ -146,7 +157,7 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const id = staff?.uuid
+
 
 
   const handleDelete = async () => {
@@ -154,9 +165,11 @@ const Infopage: React.FC<InfopageProps> = ({ isEditing, setIsEditing, staff }) =
       await deleteStaff({
         staffId: id
       });
-      // Add any success handling or navigation here
+      toast.success("Staff deleted successfully!");
+   fetchClassDataId()
     } catch (error) {
       console.error("Delete failed:", error);
+      toast.error("Failed to delete staff.");
     }
   }
 
