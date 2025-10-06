@@ -32,7 +32,6 @@ const RefundFees = () => {
   const dispatch = useDispatch<any>();
   const refunds = useSelector(selectRefundData);
   const loading = useSelector(selectRefundLoading);
-  console.log("refund",refunds)
 
   const [showPanel, setShowPanel] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,7 +55,9 @@ const RefundFees = () => {
       paid: item.studentfees?.paid_amount
         ? item.studentfees.paid_amount.toString()
         : "0",
-      payment: item.payment_date ? new Date(item.payment_date).toISOString() : "",
+      payment: item.payment_date
+        ? new Date(item.payment_date).toISOString()
+        : "",
       status: item.is_active ? "Active" : "Inactive",
       branch: item.branch_name?.uuid || "",
       courseId: item.course?.uuid || "",
@@ -85,8 +86,9 @@ const RefundFees = () => {
         dispatch(GetAllRefundsThunk());
         setShowDeleteConfirm(false);
         setDeleteItemId(null);
+        toast.success("Refund deleted successfully!");
       } catch (error) {
-        console.error("Failed to delete refund:", error);
+        toast.error("Failed to delete refund. Please try again.");
       }
     }
   };
@@ -107,27 +109,28 @@ const RefundFees = () => {
   };
 
   return (
-    <div className="relative flex flex-col gap-6 p-4 sm:p-6 md:p-8">
+    <div className="relative flex flex-col gap-4 sm:gap-6 p-3 sm:p-4 md:p-6">
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-30 px-4">
-          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm sm:max-w-md">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+          <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 w-full max-w-xs sm:max-w-sm md:max-w-md">
+            <h3 className="text-lg font-semibold mb-3 sm:mb-4 text-gray-800">
               Confirm Delete
             </h3>
-            <p className="text-gray-600 mb-6 text-sm sm:text-base">
-              Are you sure you want to delete this refund? This action cannot be undone.
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
+              Are you sure you want to delete this refund? This action cannot be
+              undone.
             </p>
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="px-3 sm:px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm sm:text-base order-2 sm:order-1"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                className="px-3 sm:px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm sm:text-base order-1 sm:order-2 mb-2 sm:mb-0"
               >
                 Delete
               </button>
@@ -139,11 +142,11 @@ const RefundFees = () => {
       {/* Add/Edit Panel */}
       {showPanel && (
         <div
-          className="fixed inset-0 z-50 flex justify-center sm:justify-end items-center backdrop-blur-sm bg-black/20"
+          className="fixed inset-0 z-50 flex justify-center sm:justify-end items-center backdrop-blur-sm bg-black/20 p-2 sm:p-4"
           onClick={handleClosePanel}
         >
           <div
-            className="bg-white rounded-xl shadow-xl w-full sm:w-[500px] max-w-full mx-4 sm:mx-0"
+            className="bg-white rounded-xl shadow-xl w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl h-[90vh] sm:h-auto sm:max-h-[100vh] mx-2 sm:mx-0"
             onClick={(e) => e.stopPropagation()}
           >
             <RefundAdd
@@ -156,28 +159,28 @@ const RefundFees = () => {
       )}
 
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
         <input
           type="search"
           placeholder="Search by Student Name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-10 border-[#1BBFCA] border rounded-xl p-2 font-normal ring-0 focus:ring-0 focus:outline-none w-full sm:w-80"
+          className="h-10 border-[#1BBFCA] border rounded-xl p-3 font-normal ring-0 focus:ring-0 focus:outline-none w-full sm:w-60 md:w-80 text-sm sm:text-base"
         />
         <button
-          className="bg-[#1BBFCA] text-white p-2 rounded-xl flex justify-center items-center gap-2 hover:bg-[#1AACB7] transition-colors w-full sm:w-auto"
+          className="bg-[#1BBFCA] text-white p-2 sm:p-3 rounded-xl flex justify-center items-center gap-2 hover:bg-[#1AACB7] transition-colors w-full sm:w-auto text-sm sm:text-base"
           onClick={() => {
             setEditData(null);
             setShowPanel(true);
           }}
         >
-          <BsPlusLg size={20} />
-          <span className="hidden sm:inline sm:text-xs lg:text-base">Add Refund</span>
+          <BsPlusLg size={18} className="sm:size-5" />
+          <span>Add Refund</span>
         </button>
       </div>
 
       {/* Table Container */}
-      <div className="flex-1 overflow-auto border rounded-xl shadow-lg max-h-[70vh]">
+      <div className="flex-1 overflow-auto border rounded-xl shadow-lg max-h-[60vh] sm:max-h-[65vh] md:max-h-[70vh]">
         <RefundTable
           data={filteredRefunds}
           onEdit={handleEdit}
