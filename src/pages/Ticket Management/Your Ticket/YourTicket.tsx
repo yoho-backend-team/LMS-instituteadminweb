@@ -41,10 +41,9 @@ const TicketsPage: React.FC = () => {
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage] = useState(1);
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
-  const totalPages = adminTickets?.last_page
 
 
   const overall_branch_id = GetLocalStorage("selectedBranchId")
