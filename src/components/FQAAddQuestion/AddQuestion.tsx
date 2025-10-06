@@ -72,7 +72,7 @@ const AddQuestion = () => {
       question: formData.status,
       answer: formData.description,
       branch_id: overall_branch_id,
-      institute_id: "67f3a26df4b2c530acd16419",
+      institute_id: GetLocalStorage("instituteId"),
     };
 
     try {
@@ -206,7 +206,7 @@ const AddQuestion = () => {
       </div>
 
       <div className="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-lg overflow-x-scroll relative">
-        <table className="min-w-full md:min-w-[640px] text-[#716F6F] text-sm sm:text-base border-separate border-spacing-y-4">
+        <table className="min-w-full md:min-w-[640px] lg:w-full text-[#716F6F] text-sm sm:text-base border-separate border-spacing-y-4">
           <thead className="bg-[#F8F8F8] text-left text-base sm:text-lg font-semibold">
             <tr>
               <th className="px-4 sm:px-6 py-3">ID</th>
