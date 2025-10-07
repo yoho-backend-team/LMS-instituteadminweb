@@ -147,7 +147,6 @@ const OtpVerification = () => {
     </section>
   </div>
 </div>
-
   );
 };
 
