@@ -101,7 +101,7 @@ const TeachingStaffs: React.FC = () => {
     Travel_allowance: "",
     Home_allowance: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);

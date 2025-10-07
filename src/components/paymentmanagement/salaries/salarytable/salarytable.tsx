@@ -31,7 +31,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({
   branch,
   startDate,
   endDate,
-  onView,
+  // onView,
   loading,
 }) => {
   const [openCardId, setOpenCardId] = useState<number | null>(null);
