@@ -131,7 +131,7 @@ const LoginPage = () => {
                   className="w-full mt-2 rounded-md px-3 sm:px-4 py-2 sm:py-3 border border-[#716F6F] text-[#716F6F] outline-none text-sm sm:text-base lg:text-lg xl:text-xl 2xl:text-2xl pr-10"
                 />
                 <span
-                  className="absolute transform -translate-y-1/2 top-1/2 right-3 text-gray-500 cursor-pointer"
+                  className="absolute inset-y-0 right-3 top-2 flex items-center cursor-pointer text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
