@@ -22,6 +22,7 @@ import {
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 // Skeleton Loader Row
 const SkeletonRow = () => (
@@ -39,6 +40,7 @@ const Placements = () => {
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
@@ -61,6 +63,18 @@ const Placements = () => {
     };
     fetchData();
   }, [dispatch]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setActiveMenu(null);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const transformPlacementToFormData = (placement: any) => ({
     companyName: placement?.company?.name || "",
@@ -112,8 +126,10 @@ const Placements = () => {
       await dispatch(createPlacementThunk(payload));
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
+      toast.success("Placement created successfully! 🎉");
     } catch (err) {
       console.error("Failed to add placement", err);
+      toast.error("Failed to create placement. Please try again.");
     }
   };
 
@@ -129,8 +145,10 @@ const Placements = () => {
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
       setEditingPlacement(null);
+      toast.success("Placement updated successfully! ✅");
     } catch (error) {
       console.error("Failed to update placement", error);
+      toast.error("Failed to update placement. Please try again.");
     }
   };
 
@@ -138,8 +156,33 @@ const Placements = () => {
     try {
       await deletePlacement(uuid);
       await dispatch(getAllPlacemetsThunk({}));
+      toast.success("Placement deleted successfully! 🗑️");
     } catch (error) {
       console.error("Failed to delete placement", error);
+      toast.error("Failed to delete placement. Please try again.");
+    }
+  };
+
+  const toggleMenu = (placementId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveMenu(activeMenu === placementId ? null : placementId);
+  };
+
+  const handleMenuAction = (action: string, placement: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveMenu(null);
+
+    switch (action) {
+      case "view":
+        navigate("/placementview", { state: { placement } });
+        break;
+      case "edit":
+        setEditingPlacement(placement);
+        setIsFormOpen(true);
+        break;
+      case "delete":
+        handleDelete(placement.uuid);
+        break;
     }
   };
 
@@ -164,59 +207,43 @@ const Placements = () => {
               variant="ghost"
               size="icon"
               className="p-1 rounded-full hover:bg-gray-100"
-              onClick={(e?: any) => {
-                e.stopPropagation();
-                // Toggle actions menu
-                const menu = document.getElementById(`menu-${placement._id}`);
-                menu?.classList.toggle("hidden");
-              }}
+              onClick={(e:any) => toggleMenu(placement._id, e)}
             >
               <FaEllipsisV className="h-4 w-4" />
             </Button>
-            <div
-              id={`menu-${placement._id}`}
-              className="hidden absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10"
-            >
-              {/* VIEW */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  navigate("/placementview", { state: { placement } });
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
-              >
-                <FaEdit className="mr-2 h-4 w-4" />
-                <span>View</span>
-              </Button>
+            {activeMenu === placement._id && (
+              <div className="absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10">
+                {/* VIEW */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("view", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
+                >
+                  <FaEdit className="mr-2 h-4 w-4" />
+                  <span>View</span>
+                </Button>
 
-              {/* EDIT */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  setEditingPlacement(placement);
-                  setIsFormOpen(true);
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
-              >
-                <FaEdit className="mr-2 h-4 w-4" />
-                <span>Edit</span>
-              </Button>
+                {/* EDIT */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("edit", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+                >
+                  <FaEdit className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </Button>
 
-              {/* DELETE */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  handleDelete(placement.uuid);
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
-              >
-                <FaTrash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
-              </Button>
-            </div>
+                {/* DELETE */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("delete", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+                >
+                  <FaTrash className="mr-2 h-4 w-4" />
+                  <span>Delete</span>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -379,61 +406,51 @@ const Placements = () => {
                       <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
                         {placement?.schedule?.venue ?? "N/A"}
                       </TableCell>
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative group">
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative">
                         <Button
                           variant="ghost"
                           size="icon"
                           className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
                           title="Actions"
                           aria-label="Actions menu"
-                          onClick={(e: any) => e.stopPropagation()} // prevent row click
+                          onClick={(e:any) => toggleMenu(placement._id, e)}
                         >
                           <FaEllipsisV className="h-4 w-4" />
                         </Button>
 
-                        <div className="hidden group-hover:block absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
-                          {/* VIEW */}
-                          <Button
-                            variant="ghost"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              navigate("/placementview", {
-                                state: { placement },
-                              });
-                            }}
-                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
-                          >
-                            <FaEdit className="mr-2 h-4 w-4" />
-                            <span>View</span>
-                          </Button>
+                        {activeMenu === placement._id && (
+                          <div className="absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
+                            {/* VIEW */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("view", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                            >
+                              <FaEdit className="mr-2 h-4 w-4" />
+                              <span>View</span>
+                            </Button>
 
-                          {/* EDIT */}
-                          <Button
-                            variant="ghost"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              setEditingPlacement(placement);
-                              setIsFormOpen(true);
-                            }}
-                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
-                          >
-                            <FaEdit className="mr-2 h-4 w-4" />
-                            <span>Edit</span>
-                          </Button>
+                            {/* EDIT */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("edit", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                            >
+                              <FaEdit className="mr-2 h-4 w-4" />
+                              <span>Edit</span>
+                            </Button>
 
-                          {/* DELETE */}
-                          <Button
-                            variant="ghost"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              handleDelete(placement.uuid);
-                            }}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
-                          >
-                            <FaTrash className="mr-2 h-4 w-4" />
-                            <span>Delete</span>
-                          </Button>
-                        </div>
+                            {/* DELETE */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("delete", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                            >
+                              <FaTrash className="mr-2 h-4 w-4" />
+                              <span>Delete</span>
+                            </Button>
+                          </div>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

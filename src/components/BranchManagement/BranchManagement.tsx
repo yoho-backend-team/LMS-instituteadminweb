@@ -20,7 +20,6 @@ import { GetLocalStorage } from "../../utils/localStorage";
 import toast from "react-hot-toast";
 import Client from "../../apis/index";
 
-
 export function LocationCardsGrid() {
   const dispatch = useDispatch<any>();
   const { branches, error } = useSelector((state: RootState) => state.branches);
@@ -42,7 +41,7 @@ export function LocationCardsGrid() {
     city: "",
     state: "Tamil Nadu",
     branchuuid: "",
-      branch_image: "",
+    branch_image: "",
   });
 
   useEffect(() => {
@@ -51,8 +50,8 @@ export function LocationCardsGrid() {
 
   const filteredBranches = searchTerm
     ? branches.filter((branch: any) =>
-      branch.branch_identity.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        branch.branch_identity.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : branches;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,11 +105,10 @@ export function LocationCardsGrid() {
             data: branchData,
           })
         );
-        toast.success("edit branch success")
+        toast.success("Branch updated successfully! ");
       } else {
-        await dispatch(
-          AddBranchThunk(branchData)
-        );
+        await dispatch(AddBranchThunk(branchData));
+        toast.success("Branch created successfully! ");
         setShowSuccessPopup(true);
       }
 
@@ -118,6 +116,7 @@ export function LocationCardsGrid() {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save branch:", error);
+      toast.error("Failed to save branch. Please try again.");
     }
   };
 
@@ -128,17 +127,19 @@ export function LocationCardsGrid() {
           instituteId: GetLocalStorage("instituteId"),
           branchUuid: branch._id,
         })
-      )
-
+      );
+      toast.success("Branch deleted successfully! ");
       setShowSuccessPopup(true);
     } catch (error) {
       console.error("Delete failed:", error);
+      toast.error("Failed to delete branch. Please try again.");
     }
   };
 
   const handleStatusChange = (uuid: string, newStatus: string) => {
     console.log(uuid, newStatus, "uuid")
     dispatch(UpdateBranchStatusThunk({ uuid, status: newStatus }));
+    toast.success(`Branch ${newStatus === "true" ? "activated" : "deactivated"} successfully!`);
   };
 
   const resetForm = () => {
@@ -170,8 +171,6 @@ export function LocationCardsGrid() {
       />
     );
   }
-
-  
 
   return (
     <div className="container mx-auto p-3 ">
@@ -244,31 +243,31 @@ export function LocationCardsGrid() {
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
         {!loading && filteredBranches.length > 0
           ? filteredBranches.map((branch: any, index: number) => (
-            <div key={index} className="w-full">
-              <LocationCard
-                id={branch?.uuid}
-                imageSrc={TrichyImg}
-                cityName={branch?.branch_identity}
-                address={branch?.contact_info?.address}
-                status={branch?.is_active ? "Active" : "Inactive"}
-                onViewDetails={() => setViewingBranch(branch)}
-                onEdit={() => handleEditBranch(branch)}
-                onDelete={handleDeleteBranch}
-                onStatusChange={() =>
-                  handleStatusChange(branch?.uuid, branch?.is_active ? "false" : "true")
-                }
-              />
-            </div>
-          ))
+              <div key={index} className="w-full">
+                <LocationCard
+                  id={branch?.uuid}
+                  imageSrc={TrichyImg}
+                  cityName={branch?.branch_identity}
+                  address={branch?.contact_info?.address}
+                  status={branch?.is_active ? "Active" : "Inactive"}
+                  onViewDetails={() => setViewingBranch(branch)}
+                  onEdit={() => handleEditBranch(branch)}
+                  onDelete={() => handleDeleteBranch(branch)}
+                  onStatusChange={() =>
+                    handleStatusChange(branch?.uuid, branch?.is_active ? "false" : "true")
+                  }
+                />
+              </div>
+            ))
           : !loading && (
-            <div className="col-span-full text-center py-10">
-              <p className="text-lg text-[#716F6F]">
-                {searchTerm
-                  ? `No branches found matching "${searchTerm}"`
-                  : "No branches available"}
-              </p>
-            </div>
-          )}
+              <div className="col-span-full text-center py-10">
+                <p className="text-lg text-[#716F6F]">
+                  {searchTerm
+                    ? `No branches found matching "${searchTerm}"`
+                    : "No branches available"}
+                </p>
+              </div>
+            )}
       </div>
 
       {/* Modal */}
@@ -310,29 +309,28 @@ function BranchModal({
 }: any) {
   const [preview, setPreview] = useState<string | null>(null);
 
-const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files[0]) {
-    const file = e.target.files[0];
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
 
-    const data = new FormData();
-    data.append("file", file);
+      const data = new FormData();
+      data.append("file", file);
 
-    try {
-      const upload = await Client.file.upload(data);
-      const uploadedUrl = upload?.data?.file; 
+      try {
+        const upload = await Client.file.upload(data);
+        const uploadedUrl = upload?.data?.file; 
 
-      setPreview(uploadedUrl);
-      onChange({
-        target: { name: "branch_image", value: uploadedUrl },
-      });
-    } catch (err) {
-      console.error("File upload failed", err);
+        setPreview(uploadedUrl);
+        onChange({
+          target: { name: "branch_image", value: uploadedUrl },
+        });
+        toast.success("Image uploaded successfully!");
+      } catch (err) {
+        console.error("File upload failed", err);
+        toast.error("Failed to upload image. Please try again.");
+      }
     }
-  }
-};
-
-
-
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -366,7 +364,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
 
           <form onSubmit={onSubmit} className="flex-1 flex flex-col">
-
             <div className="flex justify-center items-center my-6">
               <div className="flex flex-col items-center gap-4">
                 <p>Upload Image</p>
@@ -472,7 +469,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     </div>
   );
 }
-
 
 function FormField({ label, name, value, onChange, required = false }: any) {
   return (
