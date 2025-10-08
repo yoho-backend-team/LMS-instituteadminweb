@@ -229,7 +229,7 @@ const OfflineClasses = () => {
 							key={offlineClass?._id}
 							title={offlineClass?.class_name}
 							students={offlineClass?.students ?? '0'}
-							startDate={offlineClass?.createdAt}
+							startDate={offlineClass?.start_date}
 							endTime={offlineClass?.end_time}
 							startTime={offlineClass?.start_time}
 							classData={offlineClass}

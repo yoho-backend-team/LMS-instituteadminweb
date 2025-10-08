@@ -153,6 +153,7 @@ export const DashboardCards: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const instituteId = GetLocalStorage("instituteId");
@@ -203,8 +204,43 @@ export const DashboardCards: React.FC = () => {
     }
   };
 
+  // Validate file type
+  const isValidImageType = (file: File): boolean => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    return allowedTypes.includes(file.type);
+  };
+
+  // Validate file size (max 5MB)
+  const isValidFileSize = (file: File): boolean => {
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    return file.size <= maxSize;
+  };
+
   const handleImageUpload = async (file: File) => {
     if (!file) return;
+
+    // Reset previous error
+    setUploadError(null);
+
+    // Validate file type
+    if (!isValidImageType(file)) {
+      setUploadError("Please upload only PNG or JPEG images. GIF files are not allowed.");
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    // Validate file size
+    if (!isValidFileSize(file)) {
+      setUploadError("File size should be less than 5MB.");
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
 
     setIsUploading(true);
     const formData = new FormData();
@@ -226,9 +262,11 @@ export const DashboardCards: React.FC = () => {
         setSelectedImage(response.data.file);
       } else {
         console.error("Upload response missing path:", response.data.file);
+        setUploadError("Upload failed. Please try again.");
       }
     } catch (err) {
       console.error("Upload failed", err);
+      setUploadError("Upload failed. Please try again.");
     } finally {
       setIsUploading(false);
     }
@@ -247,10 +285,10 @@ export const DashboardCards: React.FC = () => {
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOver(false);
+    setUploadError(null);
 
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setUploadedFileName(file.name);
+    if (file) {
       await handleImageUpload(file);
     }
   };
@@ -266,11 +304,20 @@ export const DashboardCards: React.FC = () => {
   };
 
   const triggerFileInput = () => {
+    setUploadError(null);
     fileInputRef.current?.click();
   };
 
   const handleAddCategory = async () => {
-    if (!categoryName.trim()) return;
+    if (!categoryName.trim()) {
+      setUploadError("Please provide a category name.");
+      return;
+    }
+
+    if (!selectedImage) {
+      setUploadError("Please select an image.");
+      return;
+    }
 
     try {
       const payload = {
@@ -293,9 +340,10 @@ export const DashboardCards: React.FC = () => {
       setShowAddCategoryModal(false);
       setCategoryName("");
       setSelectedImage(null);
-      setUploadedFileName(null);
+      setUploadError(null);
     } catch (err) {
       console.error("Error creating category", err);
+      setUploadError("Failed to create category. Please try again.");
     }
   };
 
@@ -309,11 +357,17 @@ export const DashboardCards: React.FC = () => {
     setSelectedImage(cat?.image ?? null);
     setSelecteduuid(cat?.uuid);
     setShowEditModal(true);
+    setUploadError(null);
     console.log("✏️ Category Edited:", editingCategory);
   };
 
   const handleUpdateCategory = async () => {
-    if (!categoryName.trim() || !editingCategory) return;
+    if (!categoryName.trim()) {
+      setUploadError("Please provide a category name.");
+      return;
+    }
+
+    if (!editingCategory) return;
 
     const payload = {
       id: selecteduuid,
@@ -343,9 +397,10 @@ export const DashboardCards: React.FC = () => {
       setSelectedImage(null);
       setEditingCategory(null);
       setSelecteduuid(null);
-      setUploadedFileName(null);
+      setUploadError(null);
     } catch (error) {
       console.error("Error updating category:", error);
+      setUploadError("Failed to update category. Please try again.");
     }
   };
 
@@ -357,6 +412,7 @@ export const DashboardCards: React.FC = () => {
       );
     } catch (error) {
       console.error("Error deleting category:", error);
+      alert("Failed to delete category. Please try again.");
     }
   };
 
@@ -389,15 +445,21 @@ export const DashboardCards: React.FC = () => {
         type="file"
         ref={fileInputRef}
         onChange={handleFileInputChange}
-        accept="image/*"
+        accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
         className="hidden"
       />
       
-      {/* Image upload area */}
+      {/* Error Message */}
+      {uploadError && (
+        <div className="mb-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
+          {uploadError}
+        </div>
+      )}
+
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200 ${
-          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300 hover:border-[#1BBFCA]"
-        }`}
+        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${
+          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
+        } ${uploadError ? 'border-red-400' : ''}`}
         onClick={triggerFileInput}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -406,60 +468,38 @@ export const DashboardCards: React.FC = () => {
         {isUploading ? (
           <div className="flex flex-col items-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1BBFCA] mb-2"></div>
-            <p className="text-sm text-gray-600">Uploading image...</p>
+            <p className="text-sm sm:text-base">Uploading...</p>
           </div>
         ) : selectedImage ? (
           <div className="flex flex-col items-center">
-            <div className="relative mb-3">
-              <img
-                src={selectedImage}
-                alt="Uploaded preview"
-                className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md border"
-              />
-              <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
-                <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-sm font-medium text-green-600 mb-1">Image Uploaded Successfully!</p>
-            {uploadedFileName && (
-              <p className="text-xs text-gray-600 mb-2">
-                <span className="font-medium">File Name:</span> {uploadedFileName}
-              </p>
-            )}
-            <p className="text-xs text-gray-500">Click to change image</p>
+            <img
+              src={selectedImage}
+              alt="Preview"
+              className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md mb-2"
+            />
+            <p className="text-sm text-green-600">✓ Image uploaded successfully</p>
+            <p className="text-xs text-gray-500 mt-1">Click to change image</p>
           </div>
         ) : currentImage ? (
           <div className="flex flex-col items-center">
             <img
               src={currentImage}
               alt="Current"
-              className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md border mb-3"
+              className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md mb-2"
             />
-            <p className="text-sm font-medium text-gray-700 mb-1">Current Category Image</p>
-            <p className="text-xs text-gray-500">Click to change image</p>
+            <p className="text-sm text-gray-600">Current image</p>
+            <p className="text-xs text-gray-500 mt-1">Click to change image</p>
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <svg
-              className="h-12 w-12 text-gray-400 mb-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
+            <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="text-sm font-medium text-gray-700 mb-1">
+            <p className="text-sm sm:text-base mb-1">
               Drag & drop your image or click to browse
             </p>
             <p className="text-xs text-gray-500">
-              Supports: PNG, JPG, JPEG • Max: 10MB
+              Supported formats: PNG, JPEG (Max 5MB)
             </p>
           </div>
         )}
@@ -537,15 +577,21 @@ export const DashboardCards: React.FC = () => {
 
             <div className="mb-4 sm:mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category Name
-              </label>
-              <input
-                type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm sm:text-base"
-                placeholder="Enter category name"
-              />
+  Category Name
+</label>
+<input
+  type="text"
+  value={categoryName}
+  onChange={(e) => {
+    const value = e.target.value;
+    // Allow only letters and spaces
+    if (/^[A-Za-z\s]*$/.test(value)) {
+      setCategoryName(value);
+    }
+  }}
+  className="w-full border border-gray-300 rounded px-3 py-2 text-sm sm:text-base"
+  placeholder="Enter category name"
+/>
             </div>
 
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
@@ -553,7 +599,7 @@ export const DashboardCards: React.FC = () => {
                 onClick={() => {
                   setShowAddCategoryModal(false);
                   setSelectedImage(null);
-                  setUploadedFileName(null);
+                  setUploadError(null);
                 }}
                 className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
@@ -599,7 +645,7 @@ export const DashboardCards: React.FC = () => {
             <p className="text-xs text-gray-500 mb-4">
               Recommended: 388x300 Pixels
               <br />
-              Accepted Formats: PNG, JPG, JPEG • Max: 10MB
+              Accepted Formats: PNG, JPG, JPEG (Max 5MB)
             </p>
 
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
@@ -608,7 +654,7 @@ export const DashboardCards: React.FC = () => {
                   setShowEditModal(false);
                   setSelectedImage(null);
                   setSelecteduuid(null);
-                  setUploadedFileName(null);
+                  setUploadError(null);
                 }}
                 className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
@@ -626,6 +672,7 @@ export const DashboardCards: React.FC = () => {
         </div>
       )}
 
+      {/* Rest of your existing JSX remains the same */}
       <div className="flex flex-col mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
           Course Category

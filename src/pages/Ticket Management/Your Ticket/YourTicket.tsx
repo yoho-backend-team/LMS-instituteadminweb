@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../Ticket Management/Your Ticket/TicketsPage";
 import iconticket from "../../../assets/navbar/ticketicon.png";
@@ -15,7 +16,6 @@ import {
 } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 import { GetLocalStorage } from "../../../utils/localStorage";
-// import { GetImageUrl } from "../../../utils/helper";
 import { uploadTicketService } from "../../../features/Ticket_Management/services";
 import toast from "react-hot-toast";
 
@@ -34,6 +34,7 @@ const TicketsPage: React.FC = () => {
   const [showCreateButton, setShowCreateButton] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string>("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] =
@@ -66,16 +67,22 @@ const TicketsPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (fileError) {
+      alert("Please upload a valid PNG or JPEG file.");
+      return;
+    }
+
     let fileUrl;
 
     if (selectedFile) {
-      const formFile = new FormData()
+      const formFile = new FormData();
       formFile.append("file", selectedFile);
-      const response = await uploadTicketService(formFile)
+      const response = await uploadTicketService(formFile);
       if (response) {
-        fileUrl = response?.data?.file
+        fileUrl = response?.data?.file;
       }
     }
+
     const formData: any = {
       query,
       description,
@@ -83,26 +90,24 @@ const TicketsPage: React.FC = () => {
       branch: overall_branch_id,
       institute: overall_istitute_id,
       status: activeTab === "open" ? "opened" : "closed",
-      file: fileUrl
+      file: fileUrl,
     };
-
 
     try {
       if (isEditMode && editingTicketId) {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
-
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
         toast.success("Ticket created successsfully")
       }
 
       const params = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch_id: overall_branch_id,
         status: formData.status,
         page: currentPage,
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute_id: overall_istitute_id,
       };
       dispatch(fetchAdminTicketsThunk(params));
 
@@ -110,6 +115,7 @@ const TicketsPage: React.FC = () => {
       setDescription("");
       setPriority("High");
       setSelectedFile(null);
+      setFileError("");
       setviewShowModal(false);
       setIsEditMode(false);
       setEditingTicketId(null);
@@ -117,12 +123,6 @@ const TicketsPage: React.FC = () => {
       console.error("Error submitting ticket:", error);
     }
   };
-
-  // useEffect(() => {
-  //   if (adminTickets?.messages) {
-  //     setMessages(adminTickets.messages);
-  //   }
-  // }, [adminTickets]);
 
   useEffect(() => {
     if (!socket) return;
@@ -158,7 +158,6 @@ const TicketsPage: React.FC = () => {
     </div>
   );
 
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -177,9 +176,25 @@ const TicketsPage: React.FC = () => {
     fetchTickets();
   }, [dispatch, activeTab, currentPage]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const allowedTypes = ["image/png", "image/jpeg"];
+
+      if (!allowedTypes.includes(file.type)) {
+        setFileError("Only PNG or JPEG files are allowed.");
+        setSelectedFile(null);
+        return;
+      }
+
+      setSelectedFile(file);
+      setFileError("");
+    }
+  };
 
   return (
     <div className="h-auto p-0 w-full">
+      {/* Header */}
       <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px] chatwindow">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
@@ -188,6 +203,7 @@ const TicketsPage: React.FC = () => {
           <img className="mr-2" src={iconticket} />
           YOUR TICKET
         </h1>
+
         {showCreateButton && (
           <button
             onClick={() => {
@@ -200,6 +216,7 @@ const TicketsPage: React.FC = () => {
             CREATE
           </button>
         )}
+
         {showBackButton && (
           <button
             onClick={() => {
@@ -217,6 +234,7 @@ const TicketsPage: React.FC = () => {
         )}
       </div>
 
+      {/* Tabs */}
       {showbuttonWindow && (
         <div className="mb-6 mt-2 flex flex-row" style={{ ...FONTS.heading_08 }}>
           <button
@@ -224,10 +242,11 @@ const TicketsPage: React.FC = () => {
               setActiveTab("open");
               setShowChatWindow(false);
             }}
-            className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
-              ? "bg-[#1BBFCA] text-white"
-              : "bg-white text-teal-500 border border-teal-500"
-              }`}
+            className={`mr-2 rounded-lg w-[157px] h-[35px] ${
+              activeTab === "open"
+                ? "bg-[#1BBFCA] text-white"
+                : "bg-white text-teal-500 border border-teal-500"
+            }`}
           >
             Opened Tickets
           </button>
@@ -236,48 +255,53 @@ const TicketsPage: React.FC = () => {
               setActiveTab("closed");
               setShowChatWindow(false);
             }}
-            className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
-              ? "bg-[#1BBFCA] text-white"
-              : "bg-white text-[#1BBFCA] border border-teal-500"
-              }`}
+            className={`rounded-lg w-[157px] h-[35px] items-center ${
+              activeTab === "closed"
+                ? "bg-[#1BBFCA] text-white"
+                : "bg-white text-[#1BBFCA] border border-teal-500"
+            }`}
           >
             Closed Tickets
           </button>
         </div>
       )}
+
+      {/* Ticket List */}
       {!showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
           {loading
-            ? Array.from({ length: 6 }).map((_, index) => <TicketSkeleton key={index} />)
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <TicketSkeleton key={index} />
+              ))
             : adminTickets?.data?.map((ticket: any, index: number) => (
-              <TicketCard
-                key={index}
-                name={ticket?.user?.first_name + ticket?.user?.last_name}
-                email={ticket?.user?.email}
-                category={ticket?.description}
-                query={ticket?.query}
-                message={messages}
-                date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
-                time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-                priority={ticket.priority}
-                avatarUrl={ticket?.user?.image}
-                lastPage={adminTickets?.last_page}
-                onView={() => {
-                  setSelectedTicketUserDetails(ticket);
-                  setShowChatWindow(true);
-                  setShowbuttonWindow(false);
-                  setShowCreateButton(false);
-                  setShowBackButton(true);
-                }}
-              />
-            ))}
+                <TicketCard
+                  key={index}
+                  name={ticket?.user?.first_name + ticket?.user?.last_name}
+                  email={ticket?.user?.email}
+                  category={ticket?.description}
+                  query={ticket?.query}
+                  message={messages}
+                  date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
+                  time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  priority={ticket.priority}
+                  avatarUrl={ticket?.user?.image}
+                  lastPage={adminTickets?.last_page}
+                  onView={() => {
+                    setSelectedTicketUserDetails(ticket);
+                    setShowChatWindow(true);
+                    setShowbuttonWindow(false);
+                    setShowCreateButton(false);
+                    setShowBackButton(true);
+                  }}
+                />
+              ))}
         </div>
       )}
 
-
+      {/* Chat View */}
       {showChatWindow && (
         <div className="h-full gap-4 w-full grid sm:grid-cols-1 lg:grid-cols-4 font-sans">
           <div className="md:col-span-1 lg:col-span-3">
@@ -287,10 +311,10 @@ const TicketsPage: React.FC = () => {
         </div>
       )}
 
+      {/* Modal */}
       {viewShowModal && (
         <div className="fixed inset-0 z-30 flex justify-end items-center bg-black bg-opacity-25 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm min-w-[350px]  h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
-
+          <div className="relative w-full max-w-sm min-w-[350px] h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2
                 className="text-lg font-semibold text-[#716F6F]"
@@ -358,22 +382,25 @@ const TicketsPage: React.FC = () => {
                 <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
                   <input
                     type="file"
-                    accept="*"
-                    onChange={async (e: any) => {
-                      if (e.target.files && e.target.files[0]) {
-                        const file = e.target.files[0];
-                        setSelectedFile(file);
-                      }
-                    }}
+                    accept=".png,.jpg,.jpeg"
+                    onChange={handleFileChange}
                     className="hidden"
                   />
                   <span className="text-sm text-gray-500 flex items-center gap-2">
                     <img className="w-5 h-5" src={fileimg} alt="file" />
-                    {selectedFile ? selectedFile.name : "Drop Files Here Or Click To Upload"}
+                    {selectedFile
+                      ? selectedFile.name
+                      : "Drop Files Here Or Click To Upload"}
                   </span>
                 </label>
-              </div>
 
+                {fileError && (
+                  <p className="text-red-500 text-xs mt-1 font-medium">
+                    {fileError}
+                  </p>
+                )}
+                
+              </div>
 
               {/* Buttons */}
               <div className="flex justify-end gap-3 pt-5">
