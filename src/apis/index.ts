@@ -581,6 +581,11 @@ class Client {
 				HTTP_END_POINTS.subscription.upgrade_request + institute + '/request',
 				body
 			),
+		cancel_request: ({ institute, body }: { institute: string; body: any }) =>
+			HttpClient.update(
+				HTTP_END_POINTS.subscription.cancel_request.replace(":instituteId", getInstituteDetails()),
+				body
+			),
 	};
 	activity = {
 		get: (query: any) => HttpClient.get(HTTP_END_POINTS.activity.get, query),

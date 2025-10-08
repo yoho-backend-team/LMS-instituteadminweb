@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import chatBg from "../../assets/navbar/chatbg.png";
 import emojiIcon from "../../assets/navbar/emojiIcon.png";
-import attachIcon from "../../assets/navbar/attachIcon.png";
+// import attachIcon from "../../assets/navbar/attachIcon.png";
 import cancel from "../../assets/navbar/Cancel.png";
 import image from "../../assets/navbar/image.png";
 import Button from "../../assets/navbar/Button.png";
@@ -11,10 +11,8 @@ import contact from "../../assets/navbar/contact.png";
 import send from "../../assets/navbar/send.png";
 import { GetImageUrl } from "../../utils/helper";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
-// import { GetLocalStorage } from "../../utils/localStorage";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch, RootState } from "../../store/store";
-import { useDispatch } from "react-redux";
 import { fetchCommunityProfileThunk } from "../../features/Community/Reducers/thunks";
 
 interface Message {
@@ -30,7 +28,7 @@ interface Props {
   messages: Message[];
   message: string;
   onChangeMessage: (msg: string) => void;
-  onSendMessage: () => void;
+  onSendMessage: (attachment?: File | null) => void;
   onDeleteMessage: (index: number) => void;
   onClose: () => void;
   showProfile: boolean;
@@ -44,11 +42,11 @@ interface Props {
 const colors = [
   "#FF5733",
   "#1E90FF",
-  "#2ECC71", // green
-  "#9B59B6", // purple
-  "#E67E22", // orange
-  "#E91E63", // pink
-  "#16A085", // teal
+  "#2ECC71",
+  "#9B59B6",
+  "#E67E22",
+  "#E91E63",
+  "#16A085",
 ];
 const senderColorMap: Record<string, string> = {};
 
@@ -61,7 +59,6 @@ function getSenderColor(sender: string) {
 }
 
 const ChatView: React.FC<Props> = ({
-  // userId,
   selectedBatch,
   messages,
   message,
@@ -72,23 +69,51 @@ const ChatView: React.FC<Props> = ({
   setShowProfile,
 }) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedAttachment, setSelectedAttachment] = useState<File | null>(
+    null
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
+  const userIds: any = useSelector((state: RootState) => state.authuser.user);
+  const profile: any = useSelector(
+    (state: RootState) => state.community.profileData
+  );
+
+  // ✅ Emoji handling
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     onChangeMessage(message + emojiData.emoji);
   };
-  const dispatch = useDispatch<AppDispatch>()
 
-  const userIds: any = useSelector((state: RootState) => state.authuser.user)
-  const profile: any = useSelector((state: RootState) => state.community.profileData)
+  // ✅ Scroll to bottom when messages update
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  console.log(profile, "chekib")
-
+  // ✅ Fetch batch profile
   useEffect(() => {
     if (showProfile) {
-      dispatch(fetchCommunityProfileThunk(selectedBatch?.batch?._id))
+      dispatch(fetchCommunityProfileThunk(selectedBatch?.batch?._id));
     }
   }, [dispatch, selectedBatch?.batch?._id, showProfile]);
+
+  // ✅ Prevent empty message send
+  const handleSend = () => {
+    if (!message.trim() && !selectedAttachment) return; // block empty sends
+    onSendMessage(selectedAttachment);
+    setSelectedAttachment(null);
+  };
+
+  // ✅ Handle file attachment
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedAttachment(file);
+    }
+  };
+  
 
   return (
     <div className="h-[83vh] grow shadow-lg font-poppins rounded-xl relative">
@@ -101,8 +126,7 @@ const ChatView: React.FC<Props> = ({
           <img
             src={
               selectedBatch
-                ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
-                undefined
+                ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ?? undefined
                 : circle
             }
             alt="batch"
@@ -134,8 +158,9 @@ const ChatView: React.FC<Props> = ({
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`mb-3 flex ${msg.sender === userIds?._id ? "justify-end" : "justify-start"
-                } group items-end`}
+              className={`mb-3 flex ${
+                msg.sender === userIds?._id ? "justify-end" : "justify-start"
+              } group items-end`}
             >
               {msg.sender !== userIds?._id && (
                 <img
@@ -156,10 +181,11 @@ const ChatView: React.FC<Props> = ({
                 </p>
 
                 <div
-                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${msg.sender === userIds?._id
-                    ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
-                    : "bg-white border text-black rounded-bl-none"
-                    }`}
+                  className={`px-4 py-2 rounded-xl text-sm whitespace-pre-wrap break-words shadow-sm flex gap-2 ${
+                    msg.sender === userIds?._id
+                      ? "bg-[#1BBFCA] text-white rounded-br-none justify-end"
+                      : "bg-white border text-black rounded-bl-none"
+                  }`}
                 >
                   <p>{msg.text}</p>
                   <p className="text-[10px] text-right mt-1 opacity-70">
@@ -210,36 +236,61 @@ const ChatView: React.FC<Props> = ({
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input */}
-        <div className="flex items-center">
+        {/* Input Section */}
+        <div className="flex items-center mt-2 relative">
           <div className="flex items-center w-full border rounded-md overflow-hidden bg-white shadow p-1">
-            <span
+            {/* <span
               className="pl-3 pr-2 cursor-pointer"
               onClick={() => setShowEmojiPicker((prev) => !prev)}
             >
               <img src={emojiIcon} alt="emoji" className="w-5 h-5" />
-            </span>
+            </span> */}
+
             <input
               className="w-full outline-none py-2 text-sm"
               placeholder="Type a message"
               value={message}
               onChange={(e) => onChangeMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && onSendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
-            <button className="opacity-70 pr-3">
+
+            {/* File upload */}
+            {/* <button
+              className="opacity-70 pr-3"
+              onClick={() => fileInputRef.current?.click()}
+            >
               <img src={attachIcon} alt="attach" className="w-5 h-5" />
-            </button>
+            </button> */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileChange}
+            />
           </div>
 
-          <button onClick={onSendMessage} className="p-1 mt-2">
+          <button onClick={handleSend} className="p-1 mt-2">
             <img src={send} alt="send" className="w-[50px] h-[50px]" />
           </button>
-          {showEmojiPicker && (
-            <div className="absolute bottom-16 left-4 z-50">
-              <EmojiPicker onEmojiClick={handleEmojiClick} />
-            </div>
-          )}
+{showEmojiPicker && (
+  <div className="absolute bottom-16 left-4 z-50">
+    <EmojiPicker onEmojiClick={handleEmojiClick} />
+  </div>
+)}
         </div>
+
+        {/* Preview of attachment (optional) */}
+        {selectedAttachment && (
+          <div className="mt-2 flex items-center gap-3 bg-gray-100 px-3 py-2 rounded-lg text-sm">
+            <p className="truncate w-[200px]">{selectedAttachment.name}</p>
+            <button
+              onClick={() => setSelectedAttachment(null)}
+              className="text-red-500 text-xs"
+            >
+              Remove
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Profile Panel */}
@@ -254,8 +305,7 @@ const ChatView: React.FC<Props> = ({
             <img
               src={
                 selectedBatch
-                  ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ??
-                  undefined
+                  ? GetImageUrl(selectedBatch?.groupimage ?? undefined) ?? undefined
                   : circle
               }
               alt="profile"
@@ -267,49 +317,25 @@ const ChatView: React.FC<Props> = ({
             <p className="text-green-500 text-sm">Online</p>
           </div>
 
-          <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0 ">
+          <div className="overflow-y-auto px-4 py-4 flex-1 min-h-0">
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold text-[#716F6F]">About</h3>
                 <p>{profile?.batch?.course?.description}</p>
               </div>
-
-              {/* <div>
-                <h3 className="font-semibold text-[#716F6F]">
-                  Personal Information
-                </h3>
-                <ul className="space-y-2 mt-2">
-                  <li className="flex items-center gap-2">
-                    <img src={box} alt="email" className="w-4 h-4" />
-                    <span>{profileData.email}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <img src={clock} alt="availability" className="w-4 h-4" />
-                    <span>{profileData.availability}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <img src={phone} alt="phone" className="w-4 h-4" />
-                    <span>{profileData.phone}</span>
-                  </li>
-                </ul>
-              </div> */}
             </div>
 
             <div className="mt-6">
               <h3 className="font-semibold text-[#716F6F] mb-1">Staffs</h3>
-              {
-                profile?.batch?.instructor?.map((data: any) => (
-                  <p>{data?.full_name}</p>
-                ))
-              }
+              {profile?.batch?.instructor?.map((data: any, i: number) => (
+                <p key={i}>{data?.full_name}</p>
+              ))}
             </div>
             <div className="mt-6">
-              <h3 className="font-semibold text-[#716F6F] mb-1">Stuents</h3>
-              {
-                profile?.batch?.student?.map((data: any) => (
-                  <p>{data?.full_name}</p>
-                ))
-              }
+              <h3 className="font-semibold text-[#716F6F] mb-1">Students</h3>
+              {profile?.batch?.student?.map((data: any, i: number) => (
+                <p key={i}>{data?.full_name}</p>
+              ))}
             </div>
           </div>
         </div>
