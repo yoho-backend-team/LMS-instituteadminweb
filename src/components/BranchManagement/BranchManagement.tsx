@@ -10,7 +10,6 @@ import {
   UpdateBranchStatusThunk,
 } from "../../features/Branch_Management/reducers/branchThunks";
 import { BranchDetailsPage } from "./BranchDetailsPage";
-import TrichyImg from "../../assets/trichy.png";
 import ContentLoader from "react-content-loader";
 import { ConfirmationPopup } from "../BranchManagement/ConfirmationPopup";
 import { LocationCard } from "../BranchManagement/Location-card";
@@ -19,6 +18,7 @@ import type { RootState } from "../../store/store";
 import { GetLocalStorage } from "../../utils/localStorage";
 import toast from "react-hot-toast";
 import Client from "../../apis/index";
+import { GetImageUrl } from "../../utils/helper";
 
 
 export function LocationCardsGrid() {
@@ -76,7 +76,7 @@ export function LocationCardsGrid() {
       city: branch.branch_identity.split(",")[0],
       state: "Tamil Nadu",
       branchuuid: branch?.uuid,
-      branch_image: branch.branchImage,
+      branch_image: GetImageUrl(branch.image) ?? "",
     });
     setIsModalOpen(true);
   };
