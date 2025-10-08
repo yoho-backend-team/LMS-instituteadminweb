@@ -51,8 +51,8 @@ export function LocationCardsGrid() {
 
   const filteredBranches = searchTerm
     ? branches.filter((branch: any) =>
-      branch.branch_identity.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        branch.branch_identity.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : branches;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,17 +176,19 @@ export function LocationCardsGrid() {
           instituteId: GetLocalStorage("instituteId"),
           branchUuid: branch._id,
         })
-      )
-
+      );
+      toast.success("Branch deleted successfully! ");
       setShowSuccessPopup(true);
     } catch (error) {
       console.error("Delete failed:", error);
+      toast.error("Failed to delete branch. Please try again.");
     }
   };
 
   const handleStatusChange = (uuid: string, newStatus: string) => {
     console.log(uuid, newStatus, "uuid")
     dispatch(UpdateBranchStatusThunk({ uuid, status: newStatus }));
+    toast.success(`Branch ${newStatus === "true" ? "activated" : "deactivated"} successfully!`);
   };
 
   const resetForm = () => {
@@ -218,8 +220,6 @@ export function LocationCardsGrid() {
       />
     );
   }
-
-  
 
   return (
     <div className="container mx-auto p-3 ">
@@ -309,14 +309,14 @@ export function LocationCardsGrid() {
             </div>
           ))
           : !loading && (
-            <div className="col-span-full text-center py-10">
-              <p className="text-lg text-[#716F6F]">
-                {searchTerm
-                  ? `No branches found matching "${searchTerm}"`
-                  : "No branches available"}
-              </p>
-            </div>
-          )}
+              <div className="col-span-full text-center py-10">
+                <p className="text-lg text-[#716F6F]">
+                  {searchTerm
+                    ? `No branches found matching "${searchTerm}"`
+                    : "No branches available"}
+                </p>
+              </div>
+            )}
       </div>
 
       {/* Modal */}

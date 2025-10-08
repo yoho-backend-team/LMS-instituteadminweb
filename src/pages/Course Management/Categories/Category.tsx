@@ -146,6 +146,7 @@ export const DashboardCards: React.FC = () => {
     image: string;
   }>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoad, setisLoad] = useState(true);
   const [selecteduuid, setSelecteduuid] = useState<string | null>(null);
@@ -238,6 +239,7 @@ export const DashboardCards: React.FC = () => {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
+      setUploadedFileName(file.name);
       await handleImageUpload(file);
     }
   };
@@ -248,6 +250,7 @@ export const DashboardCards: React.FC = () => {
 
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
+      setUploadedFileName(file.name);
       await handleImageUpload(file);
     }
   };
@@ -290,6 +293,7 @@ export const DashboardCards: React.FC = () => {
       setShowAddCategoryModal(false);
       setCategoryName("");
       setSelectedImage(null);
+      setUploadedFileName(null);
     } catch (err) {
       console.error("Error creating category", err);
     }
@@ -339,6 +343,7 @@ export const DashboardCards: React.FC = () => {
       setSelectedImage(null);
       setEditingCategory(null);
       setSelecteduuid(null);
+      setUploadedFileName(null);
     } catch (error) {
       console.error("Error updating category:", error);
     }
@@ -387,9 +392,11 @@ export const DashboardCards: React.FC = () => {
         accept="image/*"
         className="hidden"
       />
+      
+      {/* Image upload area */}
       <div
-        className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all duration-200 ${
-          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300"
+        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all duration-200 ${
+          isDragOver ? "border-[#1BBFCA] bg-blue-50" : "border-gray-300 hover:border-[#1BBFCA]"
         }`}
         onClick={triggerFileInput}
         onDrop={handleDrop}
@@ -397,25 +404,123 @@ export const DashboardCards: React.FC = () => {
         onDragLeave={handleDragLeave}
       >
         {isUploading ? (
-          <p className="text-sm sm:text-base">Uploading...</p>
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1BBFCA] mb-2"></div>
+            <p className="text-sm text-gray-600">Uploading image...</p>
+          </div>
         ) : selectedImage ? (
-          <img
-            src={selectedImage}
-            alt="Preview"
-            className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md"
-          />
+          <div className="flex flex-col items-center">
+            <div className="relative mb-3">
+              <img
+                src={selectedImage}
+                alt="Uploaded preview"
+                className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md border"
+              />
+              <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
+                <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-sm font-medium text-green-600 mb-1">Image Uploaded Successfully!</p>
+            {uploadedFileName && (
+              <p className="text-xs text-gray-600 mb-2">
+                <span className="font-medium">File Name:</span> {uploadedFileName}
+              </p>
+            )}
+            <p className="text-xs text-gray-500">Click to change image</p>
+          </div>
         ) : currentImage ? (
-          <img
-            src={currentImage}
-            alt="Current"
-            className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md"
-          />
+          <div className="flex flex-col items-center">
+            <img
+              src={currentImage}
+              alt="Current"
+              className="h-24 w-24 sm:h-32 sm:w-32 mx-auto object-cover rounded-lg shadow-md border mb-3"
+            />
+            <p className="text-sm font-medium text-gray-700 mb-1">Current Category Image</p>
+            <p className="text-xs text-gray-500">Click to change image</p>
+          </div>
         ) : (
-          <p className="text-sm sm:text-base">
-            Drag & drop your image or click to browse
-          </p>
+          <div className="flex flex-col items-center">
+            <svg
+              className="h-12 w-12 text-gray-400 mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <p className="text-sm font-medium text-gray-700 mb-1">
+              Drag & drop your image or click to browse
+            </p>
+            <p className="text-xs text-gray-500">
+              Supports: PNG, JPG, JPEG • Max: 10MB
+            </p>
+          </div>
         )}
       </div>
+
+      {/* File name and URL display */}
+      {(selectedImage || currentImage) && (
+        <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Image Information:
+          </label>
+          
+          <div className="space-y-3">
+            {/* File Name Display */}
+            {uploadedFileName && (
+              <div>
+                <span className="text-xs font-medium text-gray-600">File Name:</span>
+                <div className="mt-1 p-2 bg-white border border-gray-300 rounded">
+                  <p className="text-sm text-gray-900 break-all">{uploadedFileName}</p>
+                </div>
+              </div>
+            )}
+            
+            {/* Image URL Display */}
+            <div>
+              <span className="text-xs font-medium text-gray-600">Image URL:</span>
+              <div className="flex flex-col sm:flex-row gap-2 mt-1">
+                <div className="flex-1 p-2 bg-white border border-gray-300 rounded">
+                  <p className="text-sm text-gray-900 break-all">
+                    {selectedImage || currentImage || 'No image URL available'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedImage || currentImage || '');
+                    alert('Image URL copied to clipboard!');
+                  }}
+                  className="px-3 py-2 text-xs bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] transition-colors whitespace-nowrap"
+                >
+                  Copy URL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Placeholder when no image is selected */}
+      {!selectedImage && !currentImage && (
+        <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center gap-2">
+            <svg className="h-4 w-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <p className="text-sm text-yellow-700">
+              No image selected. Please upload an image for the category.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -448,6 +553,7 @@ export const DashboardCards: React.FC = () => {
                 onClick={() => {
                   setShowAddCategoryModal(false);
                   setSelectedImage(null);
+                  setUploadedFileName(null);
                 }}
                 className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
@@ -455,7 +561,7 @@ export const DashboardCards: React.FC = () => {
               </button>
               <button
                 onClick={handleAddCategory}
-                disabled={isUploading}
+                disabled={isUploading || !selectedImage}
                 className="w-full sm:w-auto px-4 py-2 bg-[#1BBFCA] text-white rounded hover:bg-[#1BBFCA] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isUploading ? "Uploading..." : "Save Changes"}
@@ -493,7 +599,7 @@ export const DashboardCards: React.FC = () => {
             <p className="text-xs text-gray-500 mb-4">
               Recommended: 388x300 Pixels
               <br />
-              Accepted Formats: PNG, JPG, JPEG
+              Accepted Formats: PNG, JPG, JPEG • Max: 10MB
             </p>
 
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
@@ -502,6 +608,7 @@ export const DashboardCards: React.FC = () => {
                   setShowEditModal(false);
                   setSelectedImage(null);
                   setSelecteduuid(null);
+                  setUploadedFileName(null);
                 }}
                 className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 text-sm sm:text-base"
               >
@@ -580,7 +687,7 @@ export const DashboardCards: React.FC = () => {
           </div>
          <div className="bg-white p-3 sm:p-4 rounded-lg shadow-md mb-4 sm:mb-6">
   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6">
-    <div className="flex-1 min-w-0"> {/* Added min-w-0 to prevent overflow */}
+    <div className="flex-1 min-w-0">
       <label className="block text-sm font-semibold text-gray-700 mb-1">
         Status
       </label>
@@ -594,7 +701,7 @@ export const DashboardCards: React.FC = () => {
         <option value="Inactive">Inactive</option>
       </select>
     </div>
-    <div className="flex-1 min-w-0"> {/* Added min-w-0 to prevent overflow */}
+    <div className="flex-1 min-w-0">
       <label className="block text-sm font-semibold text-gray-700 mb-1">
         Filter by Course
       </label>

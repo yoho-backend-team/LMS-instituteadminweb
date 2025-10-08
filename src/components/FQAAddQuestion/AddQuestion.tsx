@@ -4,7 +4,7 @@ import { MdDelete, MdEditNote } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import success from "../../assets/tick.png";
 import warning from "../../assets/warning.png";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { faqCategory } from "../../features/Faq_Category/selector";
 import { fetchHelpCenterThunk } from "../../features/HelpCenter/thunks";
@@ -16,6 +16,7 @@ import {
 } from "../../features/HelpCenter/service";
 import { fetchFaqCategoryThunk } from "../../features/Faq_Category/thunks";
 import { GetLocalStorage } from "../../utils/localStorage";
+import toast from "react-hot-toast";
 
 const AddQuestion = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +29,8 @@ const AddQuestion = () => {
   >(null);
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const categories = useSelector(faqCategory);
   const dispatch = useDispatch<any>();
@@ -131,6 +134,7 @@ const AddQuestion = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteHelpCenter(id);
+       toast.success("FAQ deleted successfully!");
       setLoading(true);
       dispatch(
         fetchHelpCenterThunk({
@@ -142,6 +146,7 @@ const AddQuestion = () => {
       ).finally(() => setLoading(false));
     } catch (error) {
       console.error("Failed to delete FAQ:", error);
+       toast.error("Failed to delete FAQ. Please try again."); 
     } finally {
       setDropdownOpenId(null);
     }
@@ -173,7 +178,7 @@ const AddQuestion = () => {
         };
 
         await updateHelpCenter(updateData, editUuid);
-
+        toast.success("Question updated successfully!");
         setSuccessMessage("Question Updated Successfully!");
         setModalStage("success");
 
@@ -196,6 +201,7 @@ const AddQuestion = () => {
         });
       } catch (error) {
         console.error("Update failed:", error);
+        toast.error("Update failed. Please try again.");
         alert("Update failed. Please try again.");
         setModalStage("confirm");
       }
@@ -206,11 +212,38 @@ const AddQuestion = () => {
     faq.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+ 
+  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = filteredList.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+ 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-12 xl:px-16">
       <div className="text-2xl font-bold mb-4">FAQ</div>
 
-      {/* Search + Add */}
+     
       <div className="flex flex-wrap sm:flex-nowrap gap-4 mb-6">
         <input
           type="text"
@@ -267,34 +300,34 @@ const AddQuestion = () => {
                   </td>
                 </tr>
               ))
-            ) : filteredList.length === 0 ? (
+            ) : currentItems.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 sm:px-6 py-8 text-center">
                   <div className="text-gray-500 text-lg font-semibold">No Data Found</div>
                 </td>
               </tr>
             ) : (
-              filteredList.map((faq: any) => (
+              currentItems.map((faq: any) => (
                 <tr
                   key={faq.uuid || faq.id}
                   className="relative bg-white shadow-sm rounded-lg"
                 >
                   <td className="px-4 sm:px-6 py-4">{faq.id}</td>
-                  <td className="px-4 sm:px-6 py-4">{faq.category}</td>
+                  <td className="px-4 sm:px-6 py-4 break-words">{faq.category}</td>
                   <td className="px-4 sm:px-6 py-4 break-words max-w-[160px]">
-                    <a
-                      href={faq.videolink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#1BBFCA] block break-words"
-                    >
-                      {faq.videolink}
-                    </a>
-                  </td>
-                  <td className="px-4 sm:px-6 py-4 max-w-[200px] break-words">
-                    <div className="font-semibold">{faq.question}</div>
-                  </td>
-                  <td className="px-4 sm:px-6 py-4 max-w-[200px] break-words">
+                  <a
+                    href={faq.videolink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#1BBFCA] block"
+                  >
+                    {faq.videolink}
+                  </a>
+                </td>
+                  <td className="px-4 sm:px-6 py-4 break-words">
+                  <div className="font-semibold">{faq.question}</div>
+                </td>
+                  <td className="px-4 sm:px-6 py-4 max-w-[200px] break-words ">
                     <div className="text-sm">{faq.answer}</div>
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-right relative">
@@ -332,8 +365,55 @@ const AddQuestion = () => {
             )}
           </tbody>
         </table>
-      </div>
 
+        {/* Pagination */}
+        {!loading && filteredList.length > 0 && (
+          <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              Showing {startIndex + 1} to {Math.min(endIndex, filteredList.length)} of {filteredList.length} entries
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className={`p-2 rounded ${
+                  currentPage === 1 
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                }`}
+              >
+                <FaChevronLeft size={14} />
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === page
+                      ? "bg-[#1BBFCA] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                }`}
+              >
+                <FaChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Modal */}
       {showModal && (

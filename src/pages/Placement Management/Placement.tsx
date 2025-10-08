@@ -40,19 +40,14 @@ const Placements = () => {
   const [editingPlacement, setEditingPlacement] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const navigate = useNavigate();
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [, setOpenMenuId] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState(false);
 
- const sortedPlacements = [...placements].sort((a, b) => {
-  const dateA = new Date(a?.schedule?.interviewDate || "").getTime();
-  const dateB = new Date(b?.schedule?.interviewDate || "").getTime();
-
-  return sortAsc ? dateA - dateB : dateB - dateA;
-});
 
 
 
@@ -88,6 +83,18 @@ const Placements = () => {
     };
     fetchData();
   }, [dispatch]);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setActiveMenu(null);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const transformPlacementToFormData = (placement: any) => ({
     companyName: placement?.company?.name || "",
@@ -142,12 +149,10 @@ const Placements = () => {
       await new Promise(resolve => setTimeout(resolve, 300));
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
-      toast.success("Placement Added successfully");
+      toast.success("Placement created successfully! 🎉");
     } catch (err) {
       console.error("Failed to add placement", err);
-      toast.error("Failed to add placement");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to create placement. Please try again.");
     }
   };
 
@@ -166,12 +171,10 @@ const Placements = () => {
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
       setEditingPlacement(null);
-      toast.success("Placement Edited successfully");
+      toast.success("Placement updated successfully! ✅");
     } catch (error) {
       console.error("Failed to update placement", error);
-      toast.error("Failed to edit placement");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to update placement. Please try again.");
     }
   };
 
@@ -182,12 +185,33 @@ const Placements = () => {
       // Add a small delay to ensure state updates
       await new Promise(resolve => setTimeout(resolve, 300));
       await dispatch(getAllPlacemetsThunk({}));
-      toast.success("Placement deleted successfully");
+      toast.success("Placement deleted successfully! 🗑️");
     } catch (error) {
       console.error("Failed to delete placement", error);
-      toast.error("Failed to delete placement");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to delete placement. Please try again.");
+    }
+  };
+
+  const toggleMenu = (placementId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveMenu(activeMenu === placementId ? null : placementId);
+  };
+
+  const handleMenuAction = (action: string, placement: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveMenu(null);
+
+    switch (action) {
+      case "view":
+        navigate("/placementview", { state: { placement } });
+        break;
+      case "edit":
+        setEditingPlacement(placement);
+        setIsFormOpen(true);
+        break;
+      case "delete":
+        handleDelete(placement.uuid);
+        break;
     }
   };
 
@@ -212,58 +236,43 @@ const Placements = () => {
               variant="ghost"
               size="icon"
               className="p-1 rounded-full hover:bg-gray-100"
-              onClick={(e?: any) => {
-                e.stopPropagation();
-                const menu = document.getElementById(`menu-${placement._id}`);
-                menu?.classList.toggle("hidden");
-              }}
+              onClick={(e:any) => toggleMenu(placement._id, e)}
             >
               <FaEllipsisV className="h-4 w-4" />
             </Button>
-            <div
-              id={`menu-${placement._id}`}
-              className="hidden absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10"
-            >
-              {/* VIEW */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  navigate("/placementview", { state: { placement } });
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
-              >
-                <FaEdit className="mr-2 h-4 w-4" />
-                <span>View</span>
-              </Button>
+            {activeMenu === placement._id && (
+              <div className="absolute right-0 mt-1 w-36 bg-white shadow-lg rounded-lg border z-10">
+                {/* VIEW */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("view", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start"
+                >
+                  <FaEdit className="mr-2 h-4 w-4" />
+                  <span>View</span>
+                </Button>
 
-              {/* EDIT */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  setEditingPlacement(placement);
-                  setIsFormOpen(true);
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
-              >
-                <FaEdit className="mr-2 h-4 w-4" />
-                <span>Edit</span>
-              </Button>
+                {/* EDIT */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("edit", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+                >
+                  <FaEdit className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </Button>
 
-              {/* DELETE */}
-              <Button
-                variant="ghost"
-                onClick={(e: any) => {
-                  e.stopPropagation();
-                  handleDelete(placement.uuid);
-                }}
-                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
-              >
-                <FaTrash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
-              </Button>
-            </div>
+                {/* DELETE */}
+                <Button
+                  variant="ghost"
+                  onClick={(e:any) => handleMenuAction("delete", placement, e)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full justify-start border-t"
+                >
+                  <FaTrash className="mr-2 h-4 w-4" />
+                  <span>Delete</span>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -407,116 +416,85 @@ const Placements = () => {
             <TableBody>
               {loading
                 ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
-                : placements && placements.length > 0 ? (
-               sortedPlacements.map((placement: any) => (
-
-                  <TableRow
-                    key={placement?._id}
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() =>
-                      navigate("/placementview", { state: { placement } })
-                    }
-                  >
-                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {placement?.company?.name ?? "N/A"}
-                        </span>
-                        <span className="text-xs text-gray-600">
-                          {placement?.company?.email ?? "N/A"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                      {placement?.schedule?.interviewDate
-                        ? new Date(
-                            placement.schedule.interviewDate
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                      {placement?.job?.name ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                      {placement?.schedule?.venue ?? "N/A"}
-                    </TableCell>
-                    <TableCell className="relative text-right px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="p-1 rounded-full hover:bg-gray-100"
-                        title="Actions"
-                        aria-label="Actions menu"
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === placement._id ? null : placement._id);
-                        }}
-                      >
-                        <FaEllipsisV className="h-4 w-4" />
-                      </Button>
-
-                      {openMenuId === placement._id && (
-                        <div
-                          className="absolute right-0 mt-2 w-36 z-20 bg-white border shadow-lg rounded-md"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {/* VIEW */}
-                          <Button
-                            variant="ghost"
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              navigate("/placementview", { state: { placement } });
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            <FaEdit className="mr-2 h-4 w-4" />
-                            View
-                          </Button>
-
-                          {/* EDIT */}
-                          <Button
-                            variant="ghost"
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white border-t"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              setEditingPlacement(placement);
-                              setIsFormOpen(true);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            <FaEdit className="mr-2 h-4 w-4" />
-                            Edit
-                          </Button>
-
-                          {/* DELETE */}
-                          <Button
-                            variant="ghost"
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white border-t"
-                            onClick={(e: any) => {
-                              e.stopPropagation();
-                              handleDelete(placement.uuid);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            <FaTrash className="mr-2 h-4 w-4" />
-                            Delete
-                          </Button>
+                : placements.map((placement: any) => (
+                    <TableRow
+                      key={placement?._id}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() =>
+                        navigate("/placementview", { state: { placement } })
+                      }
+                    >
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {placement?.company?.name ?? "N/A"}
+                          </span>
+                          <span className="text-xs text-gray-600">
+                            {placement?.company?.email ?? "N/A"}
+                          </span>
                         </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center py-8 text-gray-500"
-                  >
-                    No placements found
-                  </TableCell>
-                </TableRow>
-              )}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.interviewDate
+                          ? new Date(
+                              placement.schedule.interviewDate
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.job?.name ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                        {placement?.schedule?.venue ?? "N/A"}
+                      </TableCell>
+                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
+                          title="Actions"
+                          aria-label="Actions menu"
+                          onClick={(e:any) => toggleMenu(placement._id, e)}
+                        >
+                          <FaEllipsisV className="h-4 w-4" />
+                        </Button>
+
+                        {activeMenu === placement._id && (
+                          <div className="absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
+                            {/* VIEW */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("view", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
+                            >
+                              <FaEdit className="mr-2 h-4 w-4" />
+                              <span>View</span>
+                            </Button>
+
+                            {/* EDIT */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("edit", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                            >
+                              <FaEdit className="mr-2 h-4 w-4" />
+                              <span>Edit</span>
+                            </Button>
+
+                            {/* DELETE */}
+                            <Button
+                              variant="ghost"
+                              onClick={(e:any) => handleMenuAction("delete", placement, e)}
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
+                            >
+                              <FaTrash className="mr-2 h-4 w-4" />
+                              <span>Delete</span>
+                            </Button>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         )}

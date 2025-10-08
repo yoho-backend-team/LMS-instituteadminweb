@@ -136,7 +136,7 @@ const HelpFAQ = () => {
           <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
             <IoMdCall className="fill-white h-6 w-6" />
           </div>
-          <div className="mt-3 font-bold">+ (810) 2548 2568</div>
+          <div className="mt-3 font-bold">+ (910) 4598761</div>
           <div className="mt-3">We are always happy to help!</div>
         </div>
 
@@ -152,7 +152,7 @@ const HelpFAQ = () => {
           <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
             <IoMdMail className="fill-white h-6 w-6" />
           </div>
-          <div className="mt-3 font-bold">help@gmail.com</div>
+          <div className="mt-3 font-bold">customerhelp@gmail.com</div>
           <div className="mt-3">Best way to get answer fast!</div>
         </div>
       </div>
