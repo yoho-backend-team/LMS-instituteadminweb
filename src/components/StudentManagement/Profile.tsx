@@ -162,40 +162,41 @@ export const Profile = () => {
   });
 
   // Update form data when studData changes
-  useEffect(() => {
-    if (studData?.data) {
-      setFormData({
-        fullName: studData.data.first_name || "",
-        lastName: studData.data.last_name || "",
-        image: studData?.data?.image,
-        email: studData.data.email || "",
-        dateOfBirth: studData.data.dob || "",
-        gender: studData.data.gender || "",
-        courses: studData.data.userDetail?.course?.course_name || "",
-        qualification: studData.data.qualification || "",
-        state: studData.data.contact_info?.state || "",
-        city: studData.data.contact_info?.city || "",
-        pinCode: studData.data.contact_info?.pincode || "",
-        addressLine1: studData.data.contact_info?.address1 || "",
-        addressLine2: studData.data.contact_info?.address2 || "",
-        phoneNumber: studData.data.contact_info?.phone_number || "",
-        altPhoneNumber:
-          studData.data.contact_info?.alternate_phone_number || "",
-        userName: studData.data.full_name || "",
-        status: studData.data.is_active ? "Active" : "Inactive",
-        courseId: studData.data.id || "",
-        courseName: studData.data.userDetail?.course?.course_name || "",
-        courseDuration: studData.data.userDetail?.course?.duration || "",
-        coursePrice:
-          studData.data.userDetail?.course?.current_price?.toString() || "",
-        learningFormat:
-          studData.data.userDetail?.course?.class_type?.join(", ") || "",
-        address: `${studData.data.contact_info?.address1 || ""} ${studData.data.contact_info?.address2 || ""
-          } ${studData.data.contact_info?.city || ""} ${studData.data.contact_info?.state || ""
-          } ${studData.data.contact_info?.pincode || ""}`.trim(),
-      });
-    }
-  }, [studData]);
+  // Update form data when studData changes - ONLY when not editing
+useEffect(() => {
+  if (studData?.data && !isEditing) {
+    setFormData({
+      fullName: studData.data.first_name || "",
+      lastName: studData.data.last_name || "",
+      image: studData?.data?.image,
+      email: studData.data.email || "",
+      dateOfBirth: studData.data.dob || "",
+      gender: studData.data.gender || "",
+      courses: studData.data.userDetail?.course?.course_name || "",
+      qualification: studData.data.qualification || "",
+      state: studData.data.contact_info?.state || "",
+      city: studData.data.contact_info?.city || "",
+      pinCode: studData.data.contact_info?.pincode || "",
+      addressLine1: studData.data.contact_info?.address1 || "",
+      addressLine2: studData.data.contact_info?.address2 || "",
+      phoneNumber: studData.data.contact_info?.phone_number || "",
+      altPhoneNumber:
+        studData.data.contact_info?.alternate_phone_number || "",
+      userName: studData.data.full_name || "",
+      status: studData.data.is_active ? "Active" : "Inactive",
+      courseId: studData.data.id || "",
+      courseName: studData.data.userDetail?.course?.course_name || "",
+      courseDuration: studData.data.userDetail?.course?.duration || "",
+      coursePrice:
+        studData.data.userDetail?.course?.current_price?.toString() || "",
+      learningFormat:
+        studData.data.userDetail?.course?.class_type?.join(", ") || "",
+      address: `${studData.data.contact_info?.address1 || ""} ${studData.data.contact_info?.address2 || ""
+        } ${studData.data.contact_info?.city || ""} ${studData.data.contact_info?.state || ""
+        } ${studData.data.contact_info?.pincode || ""}`.trim(),
+    });
+  }
+}, [studData, isEditing]); // Add isEditing to dependencies
 
   // Enhanced validation function
   const validateField = (name: string, value: string) => {
@@ -243,11 +244,11 @@ export const Profile = () => {
         if (!value.trim()) return "City is required";
         return "";
       
-      case "pinCode":
-        if (!value.trim()) return "Pin Code is required";
-        const cleanPinCode = value.replace(/\D/g, '');
-        if (!/^\d{6}$/.test(cleanPinCode)) return "Please enter a valid 6-digit pin code";
-        return "";
+      // case "pinCode":
+      //   if (!value.trim()) ;
+      //   const cleanPinCode = value.replace(/\D/g, '');
+      //   if (!/^\d{6}$/.test(cleanPinCode)) return "Please enter a valid 6-digit pin code";
+      //   return "";
       
       case "addressLine1":
         if (!value.trim()) return "Address Line 1 is required";
@@ -345,69 +346,76 @@ export const Profile = () => {
   };
 
   const handleSubmit = async () => {
-    // Mark all fields as touched to show all errors
-    const allFields = [
-      "fullName", "lastName", "email", "dateOfBirth", "gender", 
-      "phoneNumber", "qualification", "state", "city", "pinCode", 
-      "addressLine1", "userName", "altPhoneNumber"
-    ];
-    
-    const touched: Record<string, boolean> = {};
-    allFields.forEach(field => {
-      touched[field] = true;
-    });
-    setTouchedFields(touched);
+  // Mark all fields as touched to show all errors
+  const allFields = [
+    "fullName", "lastName", "email", "dateOfBirth", "gender", 
+    "phoneNumber", "qualification", "state", "city", "pinCode", 
+    "addressLine1", "userName", "altPhoneNumber"
+  ];
+  
+  const touched: Record<string, boolean> = {};
+  allFields.forEach(field => {
+    touched[field] = true;
+  });
+  setTouchedFields(touched);
 
-    // Validate form before submission
-    if (!validateForm()) {
-      toast.error("Please fix the validation errors before submitting");
-      return;
+  // Validate form before submission
+  if (!validateForm()) {
+    toast.error("Please fix the validation errors before submitting");
+    return;
+  }
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const updateData = {
+      ...formData,
+      uuid: studData?.data?.uuid,
+      _id: studData?.data?._id,
+      first_name: formData.fullName,
+      last_name: formData.lastName,
+      full_name: `${formData.fullName} ${formData.lastName}`,
+      email: formData.email,
+      dob: formData.dateOfBirth,
+      gender: formData.gender,
+      qualification: formData.qualification,
+      contact_info: {
+        phone_number: formData.phoneNumber,
+        alternate_phone_number: formData.altPhoneNumber,
+        address1: formData.addressLine1,
+        address2: formData.addressLine2,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pinCode,
+      },
+      is_active: formData.status === "Active",
+    };
+
+    const response = await updatestudentdata(updateData);
+
+    if (response) {
+      // Don't call fetchData() here as it will trigger the useEffect and reset form
+      // Instead, manually update the UI state
+      setIsEditing(false);
+      setValidationErrors({});
+      setTouchedFields({});
+      toast.success("Student data updated successfully!");
+      
+      // If you need to refresh the data, do it after a small delay
+      // to ensure the form is no longer in editing mode
+      setTimeout(() => {
+        fetchData();
+      }, 100);
     }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const updateData = {
-        ...formData,
-        uuid: studData?.data?.uuid,
-        _id: studData?.data?._id,
-        first_name: formData.fullName,
-        last_name: formData.lastName,
-        full_name: `${formData.fullName} ${formData.lastName}`,
-        email: formData.email,
-        dob: formData.dateOfBirth,
-        gender: formData.gender,
-        qualification: formData.qualification,
-        contact_info: {
-          phone_number: formData.phoneNumber,
-          alternate_phone_number: formData.altPhoneNumber,
-          address1: formData.addressLine1,
-          address2: formData.addressLine2,
-          city: formData.city,
-          state: formData.state,
-          pincode: formData.pinCode,
-        },
-        is_active: formData.status === "Active",
-      };
-
-      const response = await updatestudentdata(updateData);
-
-      if (response) {
-        await fetchData();
-        setIsEditing(false);
-        setValidationErrors({});
-        setTouchedFields({});
-        toast.success("Student data updated successfully!");
-      }
-    } catch (err) {
-      console.error("Update failed:", err);
-      setError("Failed to update student data. Please try again.");
-      toast.error("Failed to update student data");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error("Update failed:", err);
+    setError("Failed to update student data. Please try again.");
+    toast.error("Failed to update student data");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleDelete = async () => {
     try {
