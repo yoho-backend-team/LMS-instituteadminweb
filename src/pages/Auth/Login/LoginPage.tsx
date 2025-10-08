@@ -36,6 +36,7 @@ const LoginPage = () => {
       } else {
         dispatch(AuthThunks(response?.data));
         StoreLocalStorage("instituteId", response?.data?.institute?.uuid);
+        StoreLocalStorage("institute_Id", response?.data?.institute?._id);
         login(response?.data?.token);
         toast.success(response?.message);
       }
@@ -45,7 +46,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:grid lg:grid-cols-2">
+    <div className="min-h-screen w-full flex flex-col md:flex-col lg:grid lg:grid-cols-2">
+
       {/* IMAGE SECTION */}
       <div className="w-full h-[40vh] sm:h-[50vh] lg:h-screen order-1 lg:order-2">
         <img

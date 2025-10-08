@@ -32,6 +32,10 @@ const AddQuestion = () => {
   const categories = useSelector(faqCategory);
   const dispatch = useDispatch<any>();
   const questions = useSelector(selectFaq);
+  const [videoLinkError, setVideoLinkError] = useState("");
+
+
+
 
   const [formData, setFormData] = useState({
     category: "",
@@ -42,6 +46,14 @@ const AddQuestion = () => {
 
   const overall_branch_id = GetLocalStorage("selectedBranchId");
   const overall_istitute_id = GetLocalStorage("instituteId");
+  const overall_institute_id = GetLocalStorage("institute_Id");
+
+  const isValidVideoLink = (url: string) => {
+  // Example pattern: allow YouTube, Vimeo, etc.
+  const videoPattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.+$/i;
+  return videoPattern.test(url);
+};
+
 
   useEffect(() => {
     const params = {
@@ -65,14 +77,21 @@ const AddQuestion = () => {
   }, [dispatch]);
 
   const handleAddFAQ = async () => {
-    setModalStage("processing");
+  if (!isValidVideoLink(formData.videoLink)) {
+    setVideoLinkError("Please enter a valid YouTube or Vimeo link.");
+    return;
+  } else {
+    setVideoLinkError("");
+  }
+
+  setModalStage("processing");
     const payload = {
       category: formData.category,
       videolink: formData.videoLink,
       question: formData.status,
       answer: formData.description,
       branch_id: overall_branch_id,
-      institute_id: GetLocalStorage("instituteId"),
+      institute_id: overall_institute_id,
     };
 
     try {
@@ -137,7 +156,13 @@ const AddQuestion = () => {
     setSuccessMessage("");
   };
 
-  const handleUpdateQuestion = async () => {
+ const handleUpdateQuestion = async () => {
+  if (!isValidVideoLink(formData.videoLink)) {
+    setVideoLinkError("Please enter a valid link.");
+    return;
+  } else {
+    setVideoLinkError("");
+  }
     if (isEditing && editUuid !== null) {
       try {
         const updateData = {
@@ -261,15 +286,15 @@ const AddQuestion = () => {
                       href={faq.videolink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-[#1BBFCA] block truncate"
+                      className="hover:text-[#1BBFCA] block break-words"
                     >
                       {faq.videolink}
                     </a>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 max-w-[200px] truncate">
+                  <td className="px-4 sm:px-6 py-4 max-w-[200px] break-words">
                     <div className="font-semibold">{faq.question}</div>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 max-w-[200px] truncate">
+                  <td className="px-4 sm:px-6 py-4 max-w-[200px] break-words">
                     <div className="text-sm">{faq.answer}</div>
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-right relative">
@@ -360,20 +385,34 @@ const AddQuestion = () => {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block font-semibold mb-1">
-                      Video Link
-                    </label>
-                    <input
-                      type="url"
-                      required
-                      className="w-full border px-3 py-2 rounded-md"
-                      value={formData.videoLink}
-                      onChange={(e) =>
-                        setFormData({ ...formData, videoLink: e.target.value })
-                      }
-                    />
-                  </div>
+                 <div>
+  <label className="block font-semibold mb-1">Video Link</label>
+  <input
+    type="url"
+    required
+    className={`w-full border px-3 py-2 rounded-md ${
+      videoLinkError ? "border-red-500" : "border-gray-300"
+    }`}
+    value={formData.videoLink}
+    onChange={(e) => {
+      const value = e.target.value;
+      setFormData({ ...formData, videoLink: value });
+
+      // Validate link
+      if (!isValidVideoLink(value)) {
+        setVideoLinkError("Please enter a valid link.");
+      } else {
+        setVideoLinkError("");
+      }
+    }}
+  />
+
+  {/* ✅ Show error below input */}
+  {videoLinkError && (
+    <p className="text-red-500 text-sm mt-1">{videoLinkError}</p>
+  )}
+</div>
+
                   <div>
                     <label className="block font-semibold mb-1">Question</label>
                     <input

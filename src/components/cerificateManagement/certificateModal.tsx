@@ -16,6 +16,7 @@ import {
 import { getStudentmanagement } from "../../features/StudentManagement/reducer/thunks";
 import { selectStudent } from "../../features/StudentManagement/reducer/selector";
 import { GetLocalStorage } from "../../utils/localStorage";
+import toast from "react-hot-toast";
 
 export interface Certificate {
   id: number;
@@ -80,7 +81,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             description: editingCertificate?.description,
           };
           await updateCertificate(payload);
+          
           fetchgetStudentCertificate();
+           toast.success("Certificate updated successfully!");
         } else {
           payload = {
             batch_id: values.batch,
@@ -90,6 +93,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             institute_id: GetLocalStorage("instituteId"),
           };
           await createCertificate(payload);
+           toast.success("Certificate created successfully!");
         }
         onSave?.(payload);
         onClose();

@@ -22,6 +22,7 @@ import {
   updatePlacement,
 } from "../../features/placementManagement/Services/Placement";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 // Skeleton Loader Row
 const SkeletonRow = () => (
@@ -43,6 +44,26 @@ const Placements = () => {
   const placements = useSelector((state: any) => state.placements.placements);
   const dispatch = useDispatch<any>();
   const instituteId = GetLocalStorage("instituteId");
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [sortAsc, setSortAsc] = useState(false);
+
+ const sortedPlacements = [...placements].sort((a, b) => {
+  const dateA = new Date(a?.schedule?.interviewDate || "").getTime();
+  const dateB = new Date(b?.schedule?.interviewDate || "").getTime();
+
+  return sortAsc ? dateA - dateB : dateB - dateA;
+});
+
+
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenMenuId(null);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,9 +76,15 @@ const Placements = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      await dispatch(getAllPlacemetsThunk({}));
-      setLoading(false);
+      try {
+        setLoading(true);
+        await dispatch(getAllPlacemetsThunk({}));
+      } catch (error) {
+        console.error("Error fetching placements:", error);
+        toast.error("Failed to load placements");
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [dispatch]);
@@ -109,11 +136,18 @@ const Placements = () => {
     };
 
     try {
+      setLoading(true);
       await dispatch(createPlacementThunk(payload));
+      // Add a small delay to ensure state updates
+      await new Promise(resolve => setTimeout(resolve, 300));
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
+      toast.success("Placement Added successfully");
     } catch (err) {
       console.error("Failed to add placement", err);
+      toast.error("Failed to add placement");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,21 +159,35 @@ const Placements = () => {
     };
 
     try {
+      setLoading(true);
       await updatePlacement(payload);
+      // Add a small delay to ensure state updates
+      await new Promise(resolve => setTimeout(resolve, 300));
       await dispatch(getAllPlacemetsThunk({}));
       setIsFormOpen(false);
       setEditingPlacement(null);
+      toast.success("Placement Edited successfully");
     } catch (error) {
       console.error("Failed to update placement", error);
+      toast.error("Failed to edit placement");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (uuid: string) => {
     try {
+      setLoading(true);
       await deletePlacement(uuid);
+      // Add a small delay to ensure state updates
+      await new Promise(resolve => setTimeout(resolve, 300));
       await dispatch(getAllPlacemetsThunk({}));
+      toast.success("Placement deleted successfully");
     } catch (error) {
       console.error("Failed to delete placement", error);
+      toast.error("Failed to delete placement");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,7 +214,6 @@ const Placements = () => {
               className="p-1 rounded-full hover:bg-gray-100"
               onClick={(e?: any) => {
                 e.stopPropagation();
-                // Toggle actions menu
                 const menu = document.getElementById(`menu-${placement._id}`);
                 menu?.classList.toggle("hidden");
               }}
@@ -245,7 +292,7 @@ const Placements = () => {
   );
 
   return (
-    <div className="space-y-4 p-3 sm:p-4">
+    <div className="space-y-4 p-3 sm:p-4 min-h-screen bg-white">
       <div className="flex justify-between items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
           Placements
@@ -274,7 +321,7 @@ const Placements = () => {
               }}
               variant="ghost"
               size="icon"
-              className="h-6 w-6 sm:h-8 sm:w-8 absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900"
+              className="h-6 w-6 sm:h-8 sm:w-8 absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900 z-10"
               aria-label="Close"
             >
               <X className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -299,7 +346,7 @@ const Placements = () => {
         </div>
       )}
 
-      <div className="border border-gray-300 sm:border-gray-400 shadow-sm sm:shadow-2xl rounded-lg sm:rounded-2xl p-2 sm:p-4">
+      <div className="border border-gray-300 sm:border-gray-400 shadow-sm sm:shadow-2xl rounded-lg sm:rounded-2xl p-2 sm:p-4 bg-white">
         {isMobile ? (
           // Mobile Card View
           <div className="space-y-3">
@@ -316,12 +363,18 @@ const Placements = () => {
                     </div>
                   </div>
                 ))
-              : placements.map((placement: any) => (
+              : placements && placements.length > 0 ? (
+                placements.map((placement: any) => (
                   <MobilePlacementCard
                     key={placement?._id}
                     placement={placement}
                   />
-                ))}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No placements found</p>
+                </div>
+              )}
           </div>
         ) : (
           // Desktop Table View
@@ -331,9 +384,15 @@ const Placements = () => {
                 <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
                   Company Name
                 </TableHead>
-                <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
-                  Interview Date
-                </TableHead>
+               <TableHead
+  className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm cursor-pointer select-none"
+  onClick={() => setSortAsc(prev => !prev)}
+>
+  Interview Date{" "}
+  <span className="ml-1">{sortAsc ? "↑" : "↓"}</span>
+</TableHead>
+
+
                 <TableHead className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 font-medium text-xs sm:text-sm">
                   Role
                 </TableHead>
@@ -348,95 +407,116 @@ const Placements = () => {
             <TableBody>
               {loading
                 ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
-                : placements.map((placement: any) => (
-                    <TableRow
-                      key={placement?._id}
-                      className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() =>
-                        navigate("/placementview", { state: { placement } })
-                      }
-                    >
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium">
-                            {placement?.company?.name ?? "N/A"}
-                          </span>
-                          <span className="text-xs text-gray-600">
-                            {placement?.company?.email ?? "N/A"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                        {placement?.schedule?.interviewDate
-                          ? new Date(
-                              placement.schedule.interviewDate
-                            ).toLocaleDateString()
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                        {placement?.job?.name ?? "N/A"}
-                      </TableCell>
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
-                        {placement?.schedule?.venue ?? "N/A"}
-                      </TableCell>
-                      <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 whitespace-nowrap text-right text-sm font-medium relative group">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="p-1 rounded-full hover:bg-gray-100 focus:outline-none"
-                          title="Actions"
-                          aria-label="Actions menu"
-                          onClick={(e: any) => e.stopPropagation()} // prevent row click
-                        >
-                          <FaEllipsisV className="h-4 w-4" />
-                        </Button>
+                : placements && placements.length > 0 ? (
+               sortedPlacements.map((placement: any) => (
 
-                        <div className="hidden group-hover:block absolute right-8 z-10 mt-1 w-36 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-gray-200 border border-gray-400 overflow-hidden">
+                  <TableRow
+                    key={placement?._id}
+                    className="hover:bg-gray-50 cursor-pointer"
+                    onClick={() =>
+                      navigate("/placementview", { state: { placement } })
+                    }
+                  >
+                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">
+                          {placement?.company?.name ?? "N/A"}
+                        </span>
+                        <span className="text-xs text-gray-600">
+                          {placement?.company?.email ?? "N/A"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                      {placement?.schedule?.interviewDate
+                        ? new Date(
+                            placement.schedule.interviewDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                      {placement?.job?.name ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-sm">
+                      {placement?.schedule?.venue ?? "N/A"}
+                    </TableCell>
+                    <TableCell className="relative text-right px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-1 rounded-full hover:bg-gray-100"
+                        title="Actions"
+                        aria-label="Actions menu"
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === placement._id ? null : placement._id);
+                        }}
+                      >
+                        <FaEllipsisV className="h-4 w-4" />
+                      </Button>
+
+                      {openMenuId === placement._id && (
+                        <div
+                          className="absolute right-0 mt-2 w-36 z-20 bg-white border shadow-lg rounded-md"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {/* VIEW */}
                           <Button
                             variant="ghost"
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white"
                             onClick={(e: any) => {
                               e.stopPropagation();
-                              navigate("/placementview", {
-                                state: { placement },
-                              });
+                              navigate("/placementview", { state: { placement } });
+                              setOpenMenuId(null);
                             }}
-                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full transition-colors duration-150 ease-in-out"
                           >
                             <FaEdit className="mr-2 h-4 w-4" />
-                            <span>View</span>
+                            View
                           </Button>
 
                           {/* EDIT */}
                           <Button
                             variant="ghost"
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white border-t"
                             onClick={(e: any) => {
                               e.stopPropagation();
                               setEditingPlacement(placement);
                               setIsFormOpen(true);
+                              setOpenMenuId(null);
                             }}
-                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
                           >
                             <FaEdit className="mr-2 h-4 w-4" />
-                            <span>Edit</span>
+                            Edit
                           </Button>
 
                           {/* DELETE */}
                           <Button
                             variant="ghost"
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white border-t"
                             onClick={(e: any) => {
                               e.stopPropagation();
                               handleDelete(placement.uuid);
+                              setOpenMenuId(null);
                             }}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#1BBFCA] hover:text-white w-full border-t transition-colors duration-150 ease-in-out"
                           >
                             <FaTrash className="mr-2 h-4 w-4" />
-                            <span>Delete</span>
+                            Delete
                           </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center py-8 text-gray-500"
+                  >
+                    No placements found
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         )}

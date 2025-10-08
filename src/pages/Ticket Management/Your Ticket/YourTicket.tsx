@@ -17,6 +17,7 @@ import socket from "../../../utils/socket";
 import { GetLocalStorage } from "../../../utils/localStorage";
 // import { GetImageUrl } from "../../../utils/helper";
 import { uploadTicketService } from "../../../features/Ticket_Management/services";
+import toast from "react-hot-toast";
 
 interface Message {
   id: string;
@@ -41,13 +42,15 @@ const TicketsPage: React.FC = () => {
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
-  const [currentPage] = useState(1);
+  // const [currentPage] = useState(1);
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
 
 
   const overall_branch_id = GetLocalStorage("selectedBranchId")
   const overall_istitute_id = GetLocalStorage("instituteId")
+  const [currentPage, setCurrentPage] = useState(1);
+
 
 
   useEffect(() => {
@@ -92,6 +95,7 @@ const TicketsPage: React.FC = () => {
 
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
+        toast.success("Ticket created successsfully")
       }
 
       const params = {
@@ -393,6 +397,45 @@ const TicketsPage: React.FC = () => {
           </div>
         </div>
       )}
+{!showChatWindow && adminTickets?.last_page > 1 && (
+  <div className="flex justify-center items-center gap-4 mt-6 text-[#716F6F]">
+    {/* Prev Button */}
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className={`px-3 py-1 rounded-md font-medium transition ${
+        currentPage === 1
+          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          : 'bg-[#1BBFCA] text-white hover:bg-[#17a4b0]'
+      }`}
+    >
+      Prev
+    </button>
+
+    {/* Page Indicator */}
+    <span className="font-medium text-sm">
+      Page {currentPage} of {adminTickets?.last_page}
+    </span>
+
+    {/* Next Button */}
+    <button
+      onClick={() =>
+        setCurrentPage((prev) =>
+          Math.min(prev + 1, adminTickets.last_page)
+        )
+      }
+      disabled={currentPage === adminTickets.last_page}
+      className={`px-3 py-1 rounded-md font-medium transition ${
+        currentPage === adminTickets.last_page
+          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          : 'bg-[#1BBFCA] text-white hover:bg-[#17a4b0]'
+      }`}
+    >
+      Next
+    </button>
+  </div>
+)}
+
 
     </div>
   );
