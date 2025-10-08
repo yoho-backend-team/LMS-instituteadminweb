@@ -136,21 +136,33 @@ export default function Component() {
 					<div className='relative'>
 						{/* Trigger Button */}
 						<button
-							onClick={() => setBranchMenuOpen(!branchMenuOpen)}
-							className='flex items-center justify-between w-full sm:w-96 px-3 sm:px-4 py-2 rounded-full'
+							onClick={() => {
+								if (BranchData?.length > 0) {
+									setBranchMenuOpen(!branchMenuOpen);
+								}
+							}}
+							className={`flex items-center justify-between w-full sm:w-96 px-3 sm:px-4 py-2 rounded-full ${
+								BranchData?.length === 0 ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+							}`}
 							style={{
 								background: 'white',
-								border: `2px solid ${COLORS.primary}`,
+								border: `2px solid ${BranchData?.length === 0 ? '#CCCCCC' : COLORS.primary}`,
 								...FONTS.heading_07,
-								color: '#716F6F',
+								color: BranchData?.length === 0 ? '#999999' : '#716F6F',
 							}}
 						>
-							<span className='truncate mr-2'>{selectedBranch}</span>
-							<ChevronDown className='h-4 w-4 flex-shrink-0 text-[#716F6F]' />
+							<span className='truncate mr-2'>
+								{BranchData?.length === 0 ? "No branches available" : selectedBranch}
+							</span>
+							<ChevronDown 
+								className={`h-4 w-4 flex-shrink-0 ${
+									BranchData?.length === 0 ? 'text-gray-400' : 'text-[#716F6F]'
+								}`} 
+							/>
 						</button>
 
-						{/* Dropdown Options */}
-						{branchMenuOpen && (
+						{/* Dropdown Options - Only show if branches exist */}
+						{branchMenuOpen && BranchData?.length > 0 && (
 							<div className='absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-full sm:w-96 max-h-60 overflow-y-auto'>
 								<div className='space-y-2 p-2'>
 									{branchList.map((branch: any) => (
@@ -367,20 +379,19 @@ export default function Component() {
 				{/* Right Section  */}
 				<section className='lg:w-[75%]'>
 					{/* Bar Chart  */}
-					{/* Bar Chart  */}
-<div className='w-full bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
-  {/* Scrollable container for mobile */}
-  <div className='sm:hidden overflow-x-auto'>
-    <div className='min-w-[600px]'> {/* Minimum width to ensure content doesn't get too squeezed */}
-      <Barchart />
-    </div>
-  </div>
-  
-  {/* Default view for larger screens */}
-  <div className='hidden sm:block'>
-    <Barchart />
-  </div>
-</div>
+					<div className='w-full bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
+						{/* Scrollable container for mobile */}
+						<div className='sm:hidden overflow-x-auto'>
+							<div className='min-w-[600px]'> {/* Minimum width to ensure content doesn't get too squeezed */}
+								<Barchart />
+							</div>
+						</div>
+						
+						{/* Default view for larger screens */}
+						<div className='hidden sm:block'>
+							<Barchart />
+						</div>
+					</div>
 
 					{/* Popular Course  */}
 					<div className='bg-white rounded-xl mt-4 sm:mt-6 shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>

@@ -42,7 +42,7 @@ export function LocationCardsGrid() {
     city: "",
     state: "Tamil Nadu",
     branchuuid: "",
-      branch_image: "",
+    branch_image: "",
   });
 
   useEffect(() => {
@@ -82,44 +82,92 @@ export function LocationCardsGrid() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const branchData = {
-      branch_identity: formData.branchName,
-      branch_image: formData.branch_image,    
-      contact_info: {
-        phone_no: parseInt(formData.phoneNumber),
-        address: formData.address,
-        alternate_no: formData.alternateNumber,
-        pincode: formData.pinCode,
-        landmark: formData.landMark,
-        city: formData?.city,
-        state: formData?.state,
-      },
-    };
+  // Validation regex
+  const phoneRegex = /^[6-9]\d{9}$/; // Indian phone numbers
+  const pinRegex = /^[1-9][0-9]{5}$/; // 6-digit PIN
 
-    try {
-      if (editingBranch) {
-        await dispatch(
-          EditBranchThunk({
-            branchuuid: formData?.branchuuid,
-            data: branchData,
-          })
-        );
-        toast.success("edit branch success")
-      } else {
-        await dispatch(
-          AddBranchThunk(branchData)
-        );
-        setShowSuccessPopup(true);
-      }
+  // Field validations
+  if (!formData.branchName.trim()) {
+    toast.error("Branch name is required.");
+    return;
+  }
 
-      resetForm();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Failed to save branch:", error);
-    }
+  if (!phoneRegex.test(formData.phoneNumber)) {
+    toast.error("Please enter a valid 10-digit phone number.");
+    return;
+  }
+
+  if (formData.alternateNumber && !phoneRegex.test(formData.alternateNumber)) {
+    toast.error("Please enter a valid alternate phone number.");
+    return;
+  }
+
+  if (!formData.address.trim() || formData.address.length < 5) {
+    toast.error("Address must be at least 5 characters long.");
+    return;
+  }
+
+  if (!pinRegex.test(formData.pinCode)) {
+    toast.error("Please enter a valid 6-digit pin code.");
+    return;
+  }
+
+  if (!formData.landMark.trim() || formData.landMark.length < 3) {
+    toast.error("Landmark must be at least 3 characters long.");
+    return;
+  }
+
+  if (!formData.city.trim()) {
+    toast.error("City name is required.");
+    return;
+  }
+
+  if (!formData.state.trim()) {
+    toast.error("State name is required.");
+    return;
+  }
+
+  // Prepare payload
+  const branchData = {
+    branch_identity: formData.branchName,
+    image: formData.branch_image,
+    contact_info: {
+      phone_no: parseInt(formData.phoneNumber),
+      address: formData.address,
+      alternate_no: formData.alternateNumber,
+      pincode: formData.pinCode,
+      landmark: formData.landMark,
+      city: formData.city,
+      state: formData.state,
+    },
   };
+
+  try {
+    if (editingBranch) {
+      await dispatch(
+        EditBranchThunk({
+          branchuuid: formData.branchuuid,
+          data: branchData,
+        })
+      );
+      toast.success("Branch updated successfully!");
+    } else {
+      await dispatch(AddBranchThunk(branchData));
+      toast.success("Branch created successfully!");
+    }
+
+    resetForm();
+    setIsModalOpen(false);
+    setShowSuccessPopup(true);
+  } catch (error) {
+    console.error("Failed to save branch:", error);
+    toast.error("Failed to save branch. Please try again.");
+  }
+};
+
+
 
   const handleDeleteBranch = async (branch: any) => {
     try {
@@ -247,7 +295,7 @@ export function LocationCardsGrid() {
             <div key={index} className="w-full">
               <LocationCard
                 id={branch?.uuid}
-                imageSrc={TrichyImg}
+                imageSrc={branch?.image}
                 cityName={branch?.branch_identity}
                 address={branch?.contact_info?.address}
                 status={branch?.is_active ? "Active" : "Inactive"}
@@ -309,30 +357,56 @@ function BranchModal({
   onSubmit,
 }: any) {
   const [preview, setPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files[0]) {
-    const file = e.target.files[0];
-
-    const data = new FormData();
-    data.append("file", file);
-
-    try {
-      const upload = await Client.file.upload(data);
-      const uploadedUrl = upload?.data?.file; 
-
-      setPreview(uploadedUrl);
-      onChange({
-        target: { name: "branch_image", value: uploadedUrl },
-      });
-    } catch (err) {
-      console.error("File upload failed", err);
+  // Set preview when editing and branch_image exists
+  useEffect(() => {
+    if (formData.branch_image) {
+      setPreview(formData.branch_image);
     }
-  }
-};
+  }, [formData.branch_image]);
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
 
+      // Create local preview URL
+      const localPreviewUrl = URL.createObjectURL(file);
+      setPreview(localPreviewUrl);
 
+      // Upload file and get server URL
+      const data = new FormData();
+      data.append("file", file);
+
+      try {
+        const upload = await Client.file.upload(data);
+        const uploadedUrl = upload?.data?.file; 
+
+        // Update form data with server URL
+        onChange({
+          target: { name: "branch_image", value: uploadedUrl },
+        });
+        
+        // Update preview with server URL if needed
+        // setPreview(uploadedUrl);
+      } catch (err) {
+        console.error("File upload failed", err);
+        toast.error("Failed to upload image. Please try again.");
+        // Remove local preview if upload fails
+        setPreview(null);
+        setSelectedFile(null);
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPreview(null);
+    setSelectedFile(null);
+    onChange({
+      target: { name: "branch_image", value: "" },
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -366,29 +440,64 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
 
           <form onSubmit={onSubmit} className="flex-1 flex flex-col">
-
             <div className="flex justify-center items-center my-6">
               <div className="flex flex-col items-center gap-4">
-                <p>Upload Image</p>
-                {preview ? (
-                  <img
-                    src={preview}
-                    alt="Branch Preview"
-                    className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                <p className="text-[#716F6F] font-poppins font-medium text-base">
+                  Upload Branch Image
+                </p>
+                
+                {/* Image Preview */}
+                <div className="relative">
+                  {preview ? (
+                    <div className="relative group">
+                      <img
+                        src={preview}
+                        alt="Branch Preview"
+                        className="w-32 h-32 object-cover rounded-lg border-2 border-[#1BBFCA] shadow-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg text-gray-400 hover:border-[#1BBFCA] hover:text-[#1BBFCA] transition-colors cursor-pointer">
+                      <Plus size={24} />
+                      <span className="text-xs mt-2 text-center">Add Image</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* File Input */}
+                <div className="flex flex-col items-center gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    id="branch-image-upload"
                   />
-                ) : (
-                  <div className="w-32 h-32 flex items-center justify-center border border-dashed border-gray-400 rounded-lg text-gray-400">
-                    No Image
-                  </div>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="text-sm"
-                />
+                  <label
+                    htmlFor="branch-image-upload"
+                    className="px-4 py-2 bg-[#1BBFCA] text-white font-poppins font-medium text-sm rounded-lg hover:bg-[#15a9b4] transition-colors cursor-pointer"
+                  >
+                    {preview ? "Change Image" : "Choose Image"}
+                  </label>
+                  {selectedFile && (
+                    <p className="text-xs text-gray-500 text-center max-w-[200px] truncate">
+                      {selectedFile.name}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 text-center">
+                    Supports: JPG, PNG, JPEG (Max: 5MB)
+                  </p>
+                </div>
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-6">
               <div className="flex flex-col gap-6">
                 <FormField
@@ -396,14 +505,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="branchName"
                   value={formData.branchName}
                   onChange={onChange}
-                  required
                 />
                 <FormField
                   label="Phone Number"
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={onChange}
-                  required
                 />
                 <FormField
                   label="Alternate Number"
@@ -416,7 +523,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="address"
                   value={formData.address}
                   onChange={onChange}
-                  required
                 />
               </div>
 
@@ -426,7 +532,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="pinCode"
                   value={formData.pinCode}
                   onChange={onChange}
-                  required
                 />
                 <FormField
                   label="Land Mark"
@@ -439,14 +544,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="city"
                   value={formData.city}
                   onChange={onChange}
-                  required
                 />
                 <FormField
                   label="State"
                   name="state"
                   value={formData.state}
                   onChange={onChange}
-                  required
                 />
               </div>
             </div>
@@ -472,7 +575,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     </div>
   );
 }
-
 
 function FormField({ label, name, value, onChange, required = false }: any) {
   return (
