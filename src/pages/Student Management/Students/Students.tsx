@@ -31,25 +31,31 @@ import { getStudentmanagement } from "../../../features/StudentManagement/reduce
 import {
   selectLoading,
   selectStudent,
-} from '../../../features/StudentManagement/reducer/selector';
-import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
-import { GetImageUrl } from '../../../utils/helper';
-import { createstudentdata } from '../../../features/StudentManagement/services/Student';
-import { toast } from 'react-toastify';
-import { uploadFile } from '../../../features/staff/services';
-import ContentLoader from 'react-content-loader';
-import { ArrowLeft, Phone, Mail, User, Video, X } from 'lucide-react';
+} from "../../../features/StudentManagement/reducer/selector";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { GetImageUrl } from "../../../utils/helper";
+import { createstudentdata } from "../../../features/StudentManagement/services/Student";
+import { toast } from "react-toastify";
+import { uploadFile } from "../../../features/staff/services";
+import ContentLoader from "react-content-loader";
+import { ArrowLeft, Phone, Mail, User, Video, X } from "lucide-react";
 import { GetLocalStorage } from "../../../utils/localStorage";
-import { GetBranchCourseThunks, GetBranchThunks } from "../../../features/Content_Management/reducers/thunks";
-import { Branch, BranchCourse } from "../../../features/Content_Management/reducers/selectors";
+import {
+  GetBranchCourseThunks,
+  GetBranchThunks,
+} from "../../../features/Content_Management/reducers/thunks";
+import {
+  Branch,
+  BranchCourse,
+} from "../../../features/Content_Management/reducers/selectors";
 import PagenationCard from "../../../components/Pagenation/PagenationCard";
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [courseFilter,] = useState<string | undefined>(undefined);
-  const [batchFilter,] = useState<string | undefined>(undefined);
-  const [statusFilter,] = useState("");
+  const [courseFilter] = useState<string | undefined>(undefined);
+  const [batchFilter] = useState<string | undefined>(undefined);
+  const [statusFilter] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -146,7 +152,7 @@ const Students = () => {
   const handleMessageClick = (student: any, e: React.MouseEvent) => {
     e.stopPropagation();
     const email = student.email;
-    
+
     if (!email) {
       toast.error("No email address available for this student");
       return;
@@ -155,9 +161,11 @@ const Students = () => {
     // Create mailto link that opens default email client
     const subject = "Regarding Student Information";
     const body = `Dear ${student.name},\n\nI hope this message finds you well.`;
-    
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
     // Open default email client
     window.location.href = mailtoLink;
   };
@@ -300,9 +308,10 @@ const Students = () => {
       lastName: student.last_name,
       email: student.email,
       location: student.contact_info
-        ? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
+        ? `${student.contact_info.address1 || ""}, ${
+            student.contact_info.city || student.contact_info.state || ""
           }`.trim()
-        : 'Location not specified',
+        : "Location not specified",
       image: student.image,
       phone: student.contact_info?.phone_number,
       altPhone: student.contact_info?.alternate_phone_number,
@@ -316,7 +325,7 @@ const Students = () => {
       state: student.contact_info?.state,
       pincode: student.contact_info?.pincode,
       joinedDate: student.created_at,
-      status: student.status || 'Active',
+      status: student.status || "Active",
       uuid: student?.uuid,
     }));
   };
@@ -332,11 +341,12 @@ const Students = () => {
   };
 
   // Sample video URL - replace with actual student video URL from your data
-  const sampleVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+  const sampleVideoUrl =
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
 
   if (showAddStudent) {
     return (
-      <div className='p-6'>
+      <div className="p-6">
         <div className="flex items-center justify-between mb-8">
           <Button
             onClick={toggleAddStudent}
@@ -345,53 +355,53 @@ const Students = () => {
             <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
           </Button>
         </div>
-        <Card className='mb-6 shadow-md mt-4'>
+        <Card className="mb-6 shadow-md mt-4">
           <CardHeader>
-            <h1 className='text-[20px] text-[#1BBFCA] font-bold'>
+            <h1 className="text-[20px] text-[#1BBFCA] font-bold">
               Add New Student
             </h1>
             <hr></hr>
-            <CardTitle className='text-[20px] font-semibold'>
+            <CardTitle className="text-[20px] font-semibold">
               Upload Profile Picture
             </CardTitle>
-            <p className='text-[14px] text-gray-500'>
+            <p className="text-[14px] text-gray-500">
               Allowed PNG or JPEG. Max size of 2MB.
             </p>
           </CardHeader>
           <CardContent>
             <div
-              className='border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative'
+              className="border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
               }}
               onDragLeave={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
                 if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                   handleFileUpload(e.dataTransfer.files[0]);
                 }
               }}
-              onClick={() => document.getElementById('file-upload')?.click()}
+              onClick={() => document.getElementById("file-upload")?.click()}
             >
               <input
-                id='file-upload'
-                type='file'
-                accept='image/png, image/jpeg'
-                className='hidden'
+                id="file-upload"
+                type="file"
+                accept="image/png, image/jpeg"
+                className="hidden"
                 ref={fileInputRef}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
@@ -400,24 +410,24 @@ const Students = () => {
                 }}
               />
               {newStudentForm.image ? (
-                <div className='flex flex-col items-center'>
+                <div className="flex flex-col items-center">
                   <img
                     src={
-                      typeof newStudentForm.image === 'string'
+                      typeof newStudentForm.image === "string"
                         ? newStudentForm.image
                         : URL.createObjectURL(newStudentForm.image)
                     }
-                    alt='Preview'
-                    className='h-32 w-32 rounded-full object-cover mb-4'
+                    alt="Preview"
+                    className="h-32 w-32 rounded-full object-cover mb-4"
                   />
-                  <p className='text-[14px] text-gray-700'>
-                    {typeof newStudentForm.image === 'string'
-                      ? 'Image uploaded'
+                  <p className="text-[14px] text-gray-700">
+                    {typeof newStudentForm.image === "string"
+                      ? "Image uploaded"
                       : newStudentForm.image.name}
                   </p>
                   <Button
-                    variant='ghost'
-                    className='mt-2 text-red-500 hover:text-red-700'
+                    variant="ghost"
+                    className="mt-2 text-red-500 hover:text-red-700"
                     onClick={(e: any) => {
                       e.stopPropagation();
                       setNewStudentForm((prev) => ({ ...prev, image: null }));
@@ -428,12 +438,12 @@ const Students = () => {
                 </div>
               ) : (
                 <>
-                  <RiUploadCloudFill className='mx-auto text-[#1BBFCA] text-3xl mb-2' />
-                  <p className='text-[14px] text-gray-500'>
+                  <RiUploadCloudFill className="mx-auto text-[#1BBFCA] text-3xl mb-2" />
+                  <p className="text-[14px] text-gray-500">
                     Drop files here or click to upload
                   </p>
                   {isUploading && (
-                    <p className='text-[14px] text-gray-500 mt-2'>
+                    <p className="text-[14px] text-gray-500 mt-2">
                       Uploading...
                     </p>
                   )}
@@ -688,13 +698,9 @@ const Students = () => {
       .toLowerCase()
       .includes(searchInput.toLowerCase());
 
-    const matchesCourse = courseFilter
-      ? student.course === courseFilter
-      : true;
+    const matchesCourse = courseFilter ? student.course === courseFilter : true;
 
-    const matchesBatch = batchFilter
-      ? student.batch === batchFilter
-      : true;
+    const matchesBatch = batchFilter ? student.batch === batchFilter : true;
 
     const matchesStatus = statusFilter
       ? student.status?.toLowerCase() === statusFilter.toLowerCase()
@@ -721,7 +727,9 @@ const Students = () => {
             <div className="text-center mb-6">
               <p className="text-gray-600 mb-2">Calling:</p>
               <p className="text-xl font-semibold">{selectedStudent.name}</p>
-              <p className="text-gray-500">{selectedStudent.phone || "No phone number available"}</p>
+              <p className="text-gray-500">
+                {selectedStudent.phone || "No phone number available"}
+              </p>
             </div>
             <div className="flex justify-center space-x-4">
               <Button
@@ -737,10 +745,7 @@ const Students = () => {
                 <Phone className="mr-2" size={16} />
                 Call Now
               </Button>
-              <Button
-                onClick={() => setShowCallModal(false)}
-                variant="outline"
-              >
+              <Button onClick={() => setShowCallModal(false)} variant="outline">
                 Cancel
               </Button>
             </div>
@@ -791,18 +796,17 @@ const Students = () => {
                 </Button>
               )}
               <Button
-  onClick={() => {
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${selectedStudent.email}&su=Hello&body=Your message here`;
-    window.open(gmailUrl, "_blank"); // opens Gmail compose in a new tab
-    setShowContactModal(false);
-  }}
-  className="w-full justify-start"
-  variant="outline"
->
-  <Mail className="mr-3" size={16} />
-  Send Email: {selectedStudent.email}
-</Button>
-
+                onClick={() => {
+                  const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${selectedStudent.email}&su=Hello&body=Your message here`;
+                  window.open(gmailUrl, "_blank"); // opens Gmail compose in a new tab
+                  setShowContactModal(false);
+                }}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <Mail className="mr-3" size={16} />
+                Send Email: {selectedStudent.email}
+              </Button>
             </div>
           </div>
         </div>
@@ -971,29 +975,29 @@ const Students = () => {
               </CardContent>
 
               <CardFooter className="grid grid-cols-4 sm:grid-cols-4 md:gap-[25px] lg:gap-[30px] xl:gap-[30px] sm:gap-[20px] items-center px-4 pb-4">
-                <button 
+                <button
                   onClick={(e) => handleCallClick(student, e)}
                   className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <img className="w-6 h-6" src={call} alt="Call" />
                 </button>
-               <button
-  onClick={() => {
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${student.email}&su=Hello&body=Your message here`;
-    window.open(gmailUrl, "_blank");
-  }}
-  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
->
-  <img className="w-6 h-6" src={msg} alt="Message" />
-</button>
+                <button
+                  onClick={() => {
+                    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${student.email}&su=Hello&body=Your message here`;
+                    window.open(gmailUrl, "_blank");
+                  }}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={msg} alt="Message" />
+                </button>
 
-                <button 
+                <button
                   onClick={(e) => handleContactClick(student, e)}
                   className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <img className="w-6 h-6" src={person} alt="Profile" />
                 </button>
-                <button 
+                <button
                   onClick={(e) => handleVideoClick(student, e)}
                   className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
                 >
@@ -1011,7 +1015,12 @@ const Students = () => {
         )}
       </div>
 
-      <PagenationCard page={pages} perpage={studentData?.pagination?.perPage} totalpage={studentData?.pagination?.totalPages} setpage={setpages} />
+      <PagenationCard
+        page={pages}
+        perpage={studentData?.pagination?.perPage}
+        totalpage={studentData?.pagination?.totalPages}
+        setpage={setpages}
+      />
     </div>
   );
 };
