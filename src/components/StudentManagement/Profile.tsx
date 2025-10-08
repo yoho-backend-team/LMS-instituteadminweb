@@ -57,6 +57,9 @@ export const Profile = () => {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 5;
 
+  // Validation state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
   // Get student data from navigation state
   const studentDataFromLocation = location.state?.studentData || {};
 
@@ -193,16 +196,86 @@ export const Profile = () => {
     }
   }, [studData]);
 
+  // Validation function
+const validateForm = () => {
+  const errors: Record<string, string> = {};
+
+  // Required fields validation
+  if (!formData.fullName.trim()) {
+    errors.fullName = "First Name is required";
+  }
+
+  if (!formData.lastName.trim()) {
+    errors.lastName = "Last Name is required";
+  }
+
+  if (!formData.email.trim()) {
+    errors.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    errors.email = "Please enter a valid email address";
+  }
+
+  if (!formData.dateOfBirth) {
+    errors.dateOfBirth = "Date of Birth is required";
+  }
+
+  if (!formData.gender.trim()) {
+    errors.gender = "Gender is required";
+  }
+
+  if (!formData.phoneNumber.trim()) {
+    errors.phoneNumber = "Phone Number is required";
+  } else if (!/^\d{10}$/.test(formData.phoneNumber.replace(/\D/g, ''))) {
+    errors.phoneNumber = "Please enter a valid 10-digit phone number";
+  }
+
+  if (!formData.qualification.trim()) {
+    errors.qualification = "Qualification is required";
+  }
+
+  if (!formData.state.trim()) {
+    errors.state = "State is required";
+  }
+
+  if (!formData.city.trim()) {
+    errors.city = "City is required";
+  }
+
+  if (!formData.pinCode.trim()) {
+    errors.pinCode = "Pin Code is required";
+  } else if (!/^\d{6}$/.test(formData.pinCode)) {
+    errors.pinCode = "Please enter a valid 6-digit pin code";
+  }
+
+  if (!formData.addressLine1.trim()) {
+    errors.addressLine1 = "Address Line 1 is required";
+  }
+
+  if (!formData.userName.trim()) {
+    errors.userName = "User Name is required";
+  }
+
+  // Optional field validation for alt phone number
+  if (formData.altPhoneNumber && !/^\d{10}$/.test(formData.altPhoneNumber.replace(/\D/g, ''))) {
+    errors.altPhoneNumber = "Please enter a valid 10-digit phone number";
+  }
+
+  setValidationErrors(errors);
+  return Object.keys(errors).length === 0;
+};
+
   const handleBack = () => {
     navigate("/students");
   };
 
   const handleEdit = () => {
     setIsEditing(true);
+    setValidationErrors({}); // Clear validation errors when entering edit mode
   };
 
   const handleCancel = () => {
     setIsEditing(false);
+    setValidationErrors({}); // Clear validation errors when canceling
     if (studData?.data) {
       setFormData({
         fullName: studData.data.first_name || "",
@@ -238,6 +311,12 @@ export const Profile = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error("Please fix the validation errors before submitting");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -270,10 +349,13 @@ export const Profile = () => {
       if (response) {
         await fetchData();
         setIsEditing(false);
+        setValidationErrors({}); // Clear validation errors after successful submission
+        toast.success("Student data updated successfully!");
       }
     } catch (err) {
       console.error("Update failed:", err);
       setError("Failed to update student data. Please try again.");
+      toast.error("Failed to update student data");
     } finally {
       setIsLoading(false);
     }
@@ -295,6 +377,15 @@ export const Profile = () => {
   ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+    
+    // Clear validation error for this field when user starts typing
+    if (validationErrors[id]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[id];
+        return newErrors;
+      });
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -374,14 +465,21 @@ export const Profile = () => {
                     htmlFor="fullName"
                     className="text-sm font-medium text-gray-700"
                   >
-                    First Name
+                    First Name *
                   </Label>
                   <Input
                     id="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.fullName 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.fullName && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.fullName}</p>
+                  )}
                 </div>
 
                 {/* Last Name */}
@@ -390,14 +488,21 @@ export const Profile = () => {
                     htmlFor="lastName"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Last Name
+                    Last Name *
                   </Label>
                   <Input
                     id="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.lastName 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.lastName && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.lastName}</p>
+                  )}
                 </div>
 
                 {/* Email */}
@@ -406,15 +511,22 @@ export const Profile = () => {
                     htmlFor="email"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Email
+                    Email *
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.email 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.email && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
+                  )}
                 </div>
 
                 {/* Date Of Birth */}
@@ -423,15 +535,22 @@ export const Profile = () => {
                     htmlFor="dateOfBirth"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Date Of Birth
+                    Date Of Birth *
                   </Label>
                   <Input
                     id="dateOfBirth"
                     type="date"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.dateOfBirth 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.dateOfBirth && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.dateOfBirth}</p>
+                  )}
                 </div>
 
                 {/* Gender */}
@@ -440,14 +559,21 @@ export const Profile = () => {
                     htmlFor="gender"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Gender
+                    Gender *
                   </Label>
                   <Input
                     id="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.gender 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.gender && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.gender}</p>
+                  )}
                 </div>
 
                 {/* Courses */}
@@ -472,14 +598,21 @@ export const Profile = () => {
                     htmlFor="qualification"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Qualification
+                    Qualification *
                   </Label>
                   <Input
                     id="qualification"
                     value={formData.qualification}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.qualification 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.qualification && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.qualification}</p>
+                  )}
                 </div>
 
                 {/* State */}
@@ -488,14 +621,21 @@ export const Profile = () => {
                     htmlFor="state"
                     className="text-sm font-medium text-gray-700"
                   >
-                    State
+                    State *
                   </Label>
                   <Input
                     id="state"
                     value={formData.state}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.state 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.state && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.state}</p>
+                  )}
                 </div>
 
                 {/* City */}
@@ -504,14 +644,21 @@ export const Profile = () => {
                     htmlFor="city"
                     className="text-sm font-medium text-gray-700"
                   >
-                    City
+                    City *
                   </Label>
                   <Input
                     id="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.city 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.city && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.city}</p>
+                  )}
                 </div>
 
                 {/* Pin Code */}
@@ -520,14 +667,21 @@ export const Profile = () => {
                     htmlFor="pinCode"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Pin Code
+                    Pin Code *
                   </Label>
                   <Input
                     id="pinCode"
                     value={formData.pinCode}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.pinCode 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.pinCode && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.pinCode}</p>
+                  )}
                 </div>
 
                 {/* Address Line 1 */}
@@ -536,14 +690,21 @@ export const Profile = () => {
                     htmlFor="addressLine1"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Address Line 1
+                    Address Line 1 *
                   </Label>
                   <Input
                     id="addressLine1"
                     value={formData.addressLine1}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.addressLine1 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.addressLine1 && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.addressLine1}</p>
+                  )}
                 </div>
 
                 {/* Address Line 2 */}
@@ -568,14 +729,21 @@ export const Profile = () => {
                     htmlFor="phoneNumber"
                     className="text-sm font-medium text-gray-700"
                   >
-                    Phone Number
+                    Phone Number *
                   </Label>
                   <Input
                     id="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.phoneNumber 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.phoneNumber && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.phoneNumber}</p>
+                  )}
                 </div>
 
                 {/* Alt Phone Number */}
@@ -590,8 +758,15 @@ export const Profile = () => {
                     id="altPhoneNumber"
                     value={formData.altPhoneNumber}
                     onChange={handleInputChange}
-                    className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px]"
+                    className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] ${
+                      validationErrors.altPhoneNumber 
+                        ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                        : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                    }`}
                   />
+                  {validationErrors.altPhoneNumber && (
+                    <p className="text-red-500 text-xs mt-1">{validationErrors.altPhoneNumber}</p>
+                  )}
                 </div>
               </div>
 
@@ -601,14 +776,21 @@ export const Profile = () => {
                   htmlFor="userName"
                   className="text-sm font-medium text-gray-700"
                 >
-                  User Name
+                  User Name *
                 </Label>
                 <Input
                   id="userName"
                   value={formData.userName}
                   onChange={handleInputChange}
-                  className="w-full h-9 sm:h-10 border border-gray-300 placeholder:text-gray-500 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:border-gray-400 text-base sm:text-[18px] max-w-full md:max-w-[49%]"
+                  className={`w-full h-9 sm:h-10 border placeholder:text-gray-500 hover:border-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 text-base sm:text-[18px] max-w-full md:max-w-[49%] ${
+                    validationErrors.userName 
+                      ? "border-red-500 focus:border-red-500 focus-visible:border-red-500" 
+                      : "border-gray-300 focus:border-gray-400 focus-visible:border-gray-400"
+                  }`}
                 />
+                {validationErrors.userName && (
+                  <p className="text-red-500 text-xs mt-1">{validationErrors.userName}</p>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -635,7 +817,7 @@ export const Profile = () => {
     );
   }
 
-  // View Mode
+  // View Mode (unchanged from your original code)
   return (
     <div className="min-h-screen p-4 sm:p-6">
       <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">

@@ -38,7 +38,7 @@ import { createstudentdata } from '../../../features/StudentManagement/services/
 import { toast } from 'react-toastify';
 import { uploadFile } from '../../../features/staff/services';
 import ContentLoader from 'react-content-loader';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, User, Video, X } from 'lucide-react';
 import { GetLocalStorage } from "../../../utils/localStorage";
 import { GetBranchCourseThunks, GetBranchThunks } from "../../../features/Content_Management/reducers/thunks";
 import { Branch, BranchCourse } from "../../../features/Content_Management/reducers/selectors";
@@ -58,6 +58,13 @@ const Students = () => {
   const branches = useSelector(Branch);
   const courses = useSelector(BranchCourse);
   const [pages, setpages] = useState(1);
+
+  // New states for modals
+  const [showCallModal, setShowCallModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [newStudentForm, setNewStudentForm] = useState({
     first_name: "",
@@ -81,13 +88,11 @@ const Students = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = async (file: File) => {
-    // Check file type
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       toast.error("Only JPEG and PNG files are allowed");
       return;
     }
 
-    // Check file size (2MB max)
     if (file.size > 2 * 1024 * 1024) {
       toast.error("File size must be less than 2MB");
       return;
@@ -108,7 +113,7 @@ const Students = () => {
 
       setNewStudentForm((prev) => ({
         ...prev,
-        image: file, // Keep the file for preview, we'll use the uploadedPath in the payload
+        image: file,
       }));
 
       toast.success("Profile picture uploaded successfully");
@@ -130,6 +135,52 @@ const Students = () => {
     setNewStudentForm((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Handle call icon click
+  const handleCallClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowCallModal(true);
+  };
+
+  // Handle message icon click - Opens default email client
+  const handleMessageClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const email = student.email;
+    
+    if (!email) {
+      toast.error("No email address available for this student");
+      return;
+    }
+
+    // Create mailto link that opens default email client
+    const subject = "Regarding Student Information";
+    const body = `Dear ${student.name},\n\nI hope this message finds you well.`;
+    
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open default email client
+    window.location.href = mailtoLink;
+  };
+
+  // Handle contact icon click
+  const handleContactClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowContactModal(true);
+  };
+
+  // Handle video icon click
+  const handleVideoClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowVideoModal(true);
+  };
+
+  // Handle actual phone call
+  const handleMakeCall = (phoneNumber: string) => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
   const handleAddNewStudent = async () => {
     if (
       !newStudentForm.first_name ||
@@ -141,7 +192,6 @@ const Students = () => {
     }
 
     try {
-      // First upload the image if it's a file (not already a URL)
       let imageUrl =
         typeof newStudentForm.image === "string" ? newStudentForm.image : null;
 
@@ -179,11 +229,8 @@ const Students = () => {
         type: "payment",
       };
 
-
-
       await dispatch(createstudentdata(payload)).unwrap();
 
-      // Reset form and close modal on success
       setNewStudentForm({
         first_name: "",
         last_name: "",
@@ -235,7 +282,6 @@ const Students = () => {
     })();
   }, [dispatch, pages]);
 
-
   useEffect(() => {
     dispatch(GetBranchThunks({}));
   }, [dispatch]);
@@ -285,14 +331,12 @@ const Students = () => {
     });
   };
 
+  // Sample video URL - replace with actual student video URL from your data
+  const sampleVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+
   if (showAddStudent) {
     return (
       <div className='p-6'>
-        {/* <div
-          onClick={toggleAddStudent}
-          className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
-          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-        </div> */}
         <div className="flex items-center justify-between mb-8">
           <Button
             onClick={toggleAddStudent}
@@ -399,7 +443,6 @@ const Students = () => {
           </CardContent>
         </Card>
 
-        {/* Rest of your form remains exactly the same */}
         <Card className="mb-6 shadow-md">
           <CardHeader>
             <CardTitle className="text-[20px] font-semibold">
@@ -662,6 +705,151 @@ const Students = () => {
 
   return (
     <div className="p-6 w-full">
+      {/* Call Modal */}
+      {showCallModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Call Student</h3>
+              <button
+                onClick={() => setShowCallModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="text-center mb-6">
+              <p className="text-gray-600 mb-2">Calling:</p>
+              <p className="text-xl font-semibold">{selectedStudent.name}</p>
+              <p className="text-gray-500">{selectedStudent.phone || "No phone number available"}</p>
+            </div>
+            <div className="flex justify-center space-x-4">
+              <Button
+                onClick={() => {
+                  if (selectedStudent.phone) {
+                    handleMakeCall(selectedStudent.phone);
+                  } else {
+                    toast.error("No phone number available for this student");
+                  }
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white"
+              >
+                <Phone className="mr-2" size={16} />
+                Call Now
+              </Button>
+              <Button
+                onClick={() => setShowCallModal(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Modal */}
+      {showContactModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Contact Options</h3>
+              <button
+                onClick={() => setShowContactModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <Button
+                onClick={() => {
+                  if (selectedStudent.phone) {
+                    handleMakeCall(selectedStudent.phone);
+                    setShowContactModal(false);
+                  } else {
+                    toast.error("No phone number available");
+                  }
+                }}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <Phone className="mr-3" size={16} />
+                Call Primary: {selectedStudent.phone || "Not available"}
+              </Button>
+              {selectedStudent.altPhone && (
+                <Button
+                  onClick={() => {
+                    handleMakeCall(selectedStudent.altPhone);
+                    setShowContactModal(false);
+                  }}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Phone className="mr-3" size={16} />
+                  Call Alternate: {selectedStudent.altPhone}
+                </Button>
+              )}
+              <Button
+  onClick={() => {
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${selectedStudent.email}&su=Hello&body=Your message here`;
+    window.open(gmailUrl, "_blank"); // opens Gmail compose in a new tab
+    setShowContactModal(false);
+  }}
+  className="w-full justify-start"
+  variant="outline"
+>
+  <Mail className="mr-3" size={16} />
+  Send Email: {selectedStudent.email}
+</Button>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Modal */}
+      {showVideoModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-3/4 max-w-4xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">
+                Student Video - {selectedStudent.name}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowVideoModal(false);
+                  if (videoRef.current) {
+                    videoRef.current.pause();
+                  }
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="bg-black rounded-lg overflow-hidden">
+              <video
+                ref={videoRef}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-96"
+                onEnded={() => console.log("Video ended")}
+                onError={() => toast.error("Error playing video")}
+              >
+                <source src={sampleVideoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-gray-600">
+                Playing student-related video for {selectedStudent.name}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-[24px] font-semibold">Student</h4>
       </div>
@@ -702,7 +890,6 @@ const Students = () => {
           Add New Student
         </Button>
       </div>
-
 
       {showFilters && (
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200">
@@ -784,10 +971,34 @@ const Students = () => {
               </CardContent>
 
               <CardFooter className="grid grid-cols-4 sm:grid-cols-4 md:gap-[25px] lg:gap-[30px] xl:gap-[30px] sm:gap-[20px] items-center px-4 pb-4">
-                <img className="w-8 h-8" src={call} alt="Call" />
-                <img className="w-8 h-8" src={msg} alt="Message" />
-                <img className="w-8 h-8" src={person} alt="Profile" />
-                <img className="w-8 h-8" src={send} alt="Send" />
+                <button 
+                  onClick={(e) => handleCallClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={call} alt="Call" />
+                </button>
+               <button
+  onClick={() => {
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${student.email}&su=Hello&body=Your message here`;
+    window.open(gmailUrl, "_blank");
+  }}
+  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+>
+  <img className="w-6 h-6" src={msg} alt="Message" />
+</button>
+
+                <button 
+                  onClick={(e) => handleContactClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={person} alt="Profile" />
+                </button>
+                <button 
+                  onClick={(e) => handleVideoClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={send} alt="Send" />
+                </button>
               </CardFooter>
             </Card>
           ))
@@ -800,10 +1011,7 @@ const Students = () => {
         )}
       </div>
 
-
       <PagenationCard page={pages} perpage={studentData?.pagination?.perPage} totalpage={studentData?.pagination?.totalPages} setpage={setpages} />
-
-
     </div>
   );
 };
