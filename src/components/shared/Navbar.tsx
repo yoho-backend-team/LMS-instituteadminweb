@@ -8,19 +8,22 @@ import { FaRegUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 import NotificationPopup from "../Notification/NotificationPopup";
 import { useDispatch, useSelector } from "react-redux";
-import { GetBranchThunks, GetProfileThunk } from "../../features/Auth/reducer/thunks";
+import {
+  GetBranchThunks,
+  GetProfileThunk,
+} from "../../features/Auth/reducer/thunks";
 import { GetImageUrl } from "../../utils/helper";
 import { useAuth } from "../../pages/Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
 const Navbar = () => {
-  const dispatch = useDispatch<any>()
-  const profile = useSelector((state: any) => state?.authuser?.user)
+  const dispatch = useDispatch<any>();
+  const profile = useSelector((state: any) => state?.authuser?.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
@@ -42,16 +45,15 @@ const Navbar = () => {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-
-  const nowDate = new Date().getHours()
+  const nowDate = new Date().getHours();
 
   function GetWelcomeType(hour: number) {
     if (hour < 12) {
-      return 'Good morning';
+      return "Good morning";
     } else if (hour < 18) {
-      return 'Good afternoon';
+      return "Good afternoon";
     } else {
-      return 'Good evening'
+      return "Good evening";
     }
   }
 
@@ -96,9 +98,9 @@ const Navbar = () => {
     }
 
     (async () => {
-      await dispatch(GetProfileThunk())
-      await dispatch(GetBranchThunks())
-    })()
+      await dispatch(GetProfileThunk());
+      await dispatch(GetBranchThunks());
+    })();
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -106,21 +108,32 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className='w-full p-3 flex items-center justify-between bg-[#1BBFCA] '>
-        <div className='flex items-center'>
-          <img src={titleIcon} alt='Logo' className='h-10 w-auto' />
+      <nav className="w-full p-3 flex items-center justify-between bg-[#1BBFCA] ">
+        <div className="flex items-center">
+          <img src={titleIcon} alt="Logo" className="h-10 w-auto" />
         </div>
 
         <div className="flex items-center gap-4 relative">
           {/* 🔔 Notification Bell */}
           <div className="relative" ref={notificationDropdownRef}>
+            {/* Bell Button */}
             <button
-              className="px-1 text-white bg-blue-800 rounded-2xl h-[35px] w-[35px]"
+              className="px-1 text-white bg-blue-800 rounded-2xl h-[35px] w-[35px] relative group"
               onClick={() => setShowNotifications(!showNotifications)}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
             >
               <FiBell size={28} className="p-1" />
+
+              {/* Tooltip */}
+              {showTooltip && (
+                <div className="absolute -bottom-7 left-3/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-md whitespace-nowrap">
+                  Notifications
+                </div>
+              )}
             </button>
 
+            {/* Notification Popup */}
             {showNotifications && (
               <NotificationPopup
                 notifications={notifications}
@@ -131,25 +144,37 @@ const Navbar = () => {
 
           {/* 👤 Profile Dropdown */}
           <div className="relative" ref={profileDropdownRef}>
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="h-[40px] w-[40px] rounded-full overflow-hidden border-2 border-gray-300"
-            >
-              <img
-                src={GetImageUrl(profile?.image) ?? undefined}
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="h-[40px] w-[40px] rounded-full overflow-hidden border-2 border-gray-300"
+              >
+                <img
+                  src={GetImageUrl(profile?.image) ?? undefined}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                />
+              </button>
+
+              {/* Tooltip */}
+              <div className="absolute -bottom-6 left-2/2 mt-2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                Profile
+              </div>
+            </div>
+
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-60 bg-white rounded-md shadow-lg z-50">
                 <div className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-sm text-gray-500">{GetWelcomeType(nowDate)}</p>
-                    <p className="text-lg font-bold text-gray-800">{profile?.first_name + ' ' + profile?.last_name}</p>
+                    <p className="text-sm text-gray-500">
+                      {GetWelcomeType(nowDate)}
+                    </p>
+                    <p className="text-lg font-bold text-gray-800">
+                      {profile?.first_name + " " + profile?.last_name}
+                    </p>
                   </div>
                   <button className="bg-green-500 text-white text-xs px-2 py-1 rounded-sm">
-                    {profile?.is_active ? 'Active' : 'Inactive'}
+                    {profile?.is_active ? "Active" : "Inactive"}
                   </button>
                 </div>
                 <ul className="p-2">
@@ -160,10 +185,11 @@ const Navbar = () => {
                         setActiveTab("profile");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "profile"
-                        ? "bg-[#1BBFCA] text-white font-semibold"
-                        : ""
-                        }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
+                        activeTab === "profile"
+                          ? "bg-[#1BBFCA] text-white font-semibold"
+                          : ""
+                      }`}
                     >
                       <div className="flex items-center gap-2">
                         <FaRegUser /> Profile
@@ -177,10 +203,11 @@ const Navbar = () => {
                         setActiveTab("settings");
                         setDropdownOpen(false);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "settings"
-                        ? "bg-[#1BBFCA] text-white font-semibold"
-                        : ""
-                        }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
+                        activeTab === "settings"
+                          ? "bg-[#1BBFCA] text-white font-semibold"
+                          : ""
+                      }`}
                     >
                       <div className="flex items-center gap-2">
                         <IoSettingsOutline /> Settings
@@ -195,14 +222,15 @@ const Navbar = () => {
                         setDropdownOpen(false);
                         setIsOpen(true);
                       }}
-                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${activeTab === "logout"
-                        ? "bg-[#1BBFCA] text-white font-semibold"
-                        : ""
-                        }`}
+                      className={`block rounded-lg px-4 py-2 text-sm hover:bg-gray-200 ${
+                        activeTab === "logout"
+                          ? "bg-[#1BBFCA] text-white font-semibold"
+                          : ""
+                      }`}
                     >
-
-                      <div className="flex gap-2"><TbLogout /> Logout</div>
-
+                      <div className="flex gap-2">
+                        <TbLogout /> Logout
+                      </div>
                     </Link>
                   </li>
                 </ul>
@@ -244,7 +272,6 @@ const Navbar = () => {
 
                     {/* Modal content */}
                     <div className="p-4 md:p-5 text-center">
-
                       <h3 className="mb-7 mt-10 text-[20px] font-normal text-gray-700 dark:text-gray-400">
                         Are you sure you want to Logout
                       </h3>

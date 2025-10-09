@@ -123,7 +123,7 @@ const HelpFAQ = () => {
       </div>
 
       {/* Responsive grid for contact cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-5 gap-5 text-[#716F6F]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 gap-5 text-[#716F6F]">
         <div className="bg-white p-5 rounded-2xl shadow-2xl">
           <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
             <IoMdCall className="fill-white h-6 w-6" />
@@ -148,13 +148,7 @@ const HelpFAQ = () => {
           <div className="mt-3">Best way to get answer fast!</div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl shadow-2xl">
-          <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
-            <IoMdMail className="fill-white h-6 w-6" />
-          </div>
-          <div className="mt-3 font-bold">customerhelp@gmail.com</div>
-          <div className="mt-3">Best way to get answer fast!</div>
-        </div>
+    
       </div>
     </div>
   );

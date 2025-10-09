@@ -38,16 +38,19 @@ const Communitys: React.FC = () => {
   const dispatch = useDispatch<any>();
   const communityMessages = useSelector(selectMessages);
   const userIds: any = useSelector((state: RootState) => state.authuser.user)
+  
 
   const getProfile = async () => {
     try {
       const res = await GetProfileDetail();
+      console.log("Profile response:", res);
       if (res?.data) {
         setUserId(res.data._id);
 
         const fullName = `${res.data.first_name || ""} ${res.data.last_name || ""
           }`.trim();
         setUserName(fullName);
+        console.log("Profile data:", res.data);
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);

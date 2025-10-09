@@ -19,3 +19,18 @@ export const getsecurity = async (params: any) => {
     throw new Error(error.message);
   }
 };
+export const uploadImageOrFile = async (data: FormData) => {
+  try {
+    const response = await Client.file.upload(data);
+
+    if (response) {
+      return response;
+    }
+
+    throw new Error("No response from file upload");
+  } catch (error) {
+    console.error("File upload error:", error);
+    throw error; // rethrow so calling code can handle it
+  }
+};
+

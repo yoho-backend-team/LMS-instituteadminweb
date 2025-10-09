@@ -144,7 +144,11 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             {isEditing ? "Edit Certificate" : "Add Certificate"}
           </h2>
           <button
-            onClick={onClose}
+              onClick={() => {
+      formik.resetForm(); // Reset form to initial values
+      onClose(); // Close modal or form
+    }}
+            
             className="bg-black text-white rounded-full ml-auto p-1 h-6 w-6 hover:bg-gray-800"
           >
             <HiMiniXMark className="h-6 w-6 pb-2 pr-2" />
@@ -173,33 +177,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               />
             </div>
           ) : (
+          
             <div>
-
-
-              <label
-                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
-              >
-                Course
-              </label>
-              <select
-                name="course"
-                className="w-full border rounded-md px-4 py-2"
-                value={formik.values.course}
-                onChange={formik.handleChange}
-              >
-                <option value="">Select Course</option>
-                {courses.map((course) => (
-                  <option key={course.uuid} value={course.uuid}>
-                    {course.course_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {!isEditing && (
-            <>
-              <div>
                 <label
                   style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
                 >
@@ -220,6 +199,31 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                 </select>
               </div>
 
+          )}
+
+          {!isEditing && (
+            <>
+              <div>
+              <label
+                style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
+              >
+                Course
+              </label>
+              <select
+                name="course"
+                className="w-full border rounded-md px-4 py-2"
+                value={formik.values.course}
+                onChange={formik.handleChange}
+              >
+                <option value="">Select Course</option>
+                {courses.map((course) => (
+                  <option key={course.uuid} value={course.uuid}>
+                    {course.course_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+             
               <div>
                 <label
                   style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
@@ -265,23 +269,26 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           )}
 
           {/* Actions */}
-          <div className="flex justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-[#0400FF1A] text-[#0400FF] px-4 py-2 rounded-lg"
-              style={{ ...FONTS.heading_08 }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg"
-              style={{ ...FONTS.heading_08 }}
-            >
-              {isEditing ? "Update" : "Submit"}
-            </button>
-          </div>
+         <div className="flex justify-end gap-4 mt-6">
+  <button
+    type="button"
+    onClick={() => {
+      formik.resetForm(); // Reset form to initial values
+      onClose(); // Close modal or form
+    }}
+    className="bg-[#0400FF1A] text-[#0400FF] px-4 py-2 rounded-lg"
+    style={{ ...FONTS.heading_08 }}
+  >
+    Cancel
+  </button>
+  <button
+    type="submit"
+    className="bg-[#1BBFCA] text-white px-4 py-2 rounded-lg"
+    style={{ ...FONTS.heading_08 }}
+  >
+    {isEditing ? "Update" : "Submit"}
+  </button>
+</div>
         </form>
       </div>
     </div>
