@@ -127,7 +127,7 @@ export function LocationCard({
         <div className="w-full rounded-xl overflow-hidden relative h-48">
           <img
             src={GetImageUrl(imageSrc ?? "") ?? undefined}
-            alt={cityName}
+            // alt={cityName}
             className="w-full h-full object-cover"
           />
           <div className="absolute top-4 right-2">

@@ -36,6 +36,7 @@ const LoginPage = () => {
       } else {
         dispatch(AuthThunks(response?.data));
         StoreLocalStorage("instituteId", response?.data?.institute?.uuid);
+        StoreLocalStorage("institute_Id", response?.data?.institute?._id);
         login(response?.data?.token);
         toast.success(response?.message);
       }

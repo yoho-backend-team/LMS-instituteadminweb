@@ -12,6 +12,7 @@ import {
 } from "../../features/certificateManagement/reducers/selectors";
 import { deleteCertificate } from "../../features/certificateManagement/services";
 import { GetLocalStorage } from "../../utils/localStorage";
+import toast from "react-hot-toast";
 
 export interface Certificate {
   id: number;
@@ -94,6 +95,7 @@ export const CertificateManager: React.FC = () => {
     setEditingCertificate(cert);
     setIsEditing(true);
     setIsModalOpen(true);
+    
   };
 
   const handleView = (cert: Certificate) => {
@@ -111,8 +113,10 @@ export const CertificateManager: React.FC = () => {
       const result = await deleteCertificate(data);
       if (result) {
         fetchgetStudentCertificate(currentPage);
+        toast.success("Student Certificate is deleted successfully ")
       } else {
         console.error("Failed to delete certificate");
+         toast.error("Failed to delete student certificate")
       }
     } catch (error) {
       console.error("Delete error:", error);

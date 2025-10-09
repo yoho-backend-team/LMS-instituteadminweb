@@ -119,7 +119,7 @@ export const CertificateTable: React.FC<CertificateTableProps> = ({
                   <td className="px-3 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-3">
                     <img
                       src={GetImageUrl(cert.image) ?? undefined}
-                      alt={cert.student}
+                      // alt={cert.student}
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
                     />
                     <div>
