@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import icon1 from "../../assets/navbar/Icon1.png";
 import icon2 from "../../assets/navbar/Icon2.png";
 import icon3 from "../../assets/navbar/Icon3.png";
-import actimg from "../../assets/navbar/activeimg.png";
-import insadmin from "../../assets/navbar/insadminimg.png";
+// import actimg from "../../assets/navbar/activeimg.png";
+// import insadmin from "../../assets/navbar/insadminimg.png";
 import { FONTS } from "../../../src/constants/uiConstants";
 import noteimg from "../../assets/navbar/notescreated.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -15,6 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectTimeline } from "../../features/Profile_Security/reducer/selector";
 import { fetchTimeline } from "../../features/Profile_Security/reducer/thunks";
 import { getsecurity } from "../../features/Profile_Security/services";
+import { UpdateProfileThunks } from "../../features/Auth/reducer/thunks";
+import toast from "react-hot-toast";
+import { formatDateandTime } from "../../utils/datetime";
 
 const AccountProfile: React.FC = () => {
   const [activePanel, setActivePanel] = useState<"first" | "second" | "third">(
@@ -40,28 +43,6 @@ const AccountProfile: React.FC = () => {
     setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  // type TimelineItem = {
-  // 	title: string;
-  // 	description: string;
-  // 	date: string;
-  // 	status: string;
-  // };
-
-  // const timelineData: TimelineItem[] = [
-  // 	{
-  // 		title: 'Note',
-  // 		description: 'JhgfdsA - Notes Created',
-  // 		date: 'July 17, 2025 At 06:13:23 Pm',
-  // 		status: 'Notes Created',
-  // 	},
-  // 	{
-  // 		title: 'Note',
-  // 		description: 'JhgfdsA - Notes Created',
-  // 		date: 'July 17, 2025 At 06:13:23 Pm',
-  // 		status: 'Notes Created',
-  // 	},
-  // ];
-
   const dispatch = useDispatch<any>();
   const timeline = useSelector(selectTimeline);
 
@@ -82,6 +63,38 @@ const AccountProfile: React.FC = () => {
       console.log(response);
     } catch (error) {
       console.log(error);
+    }
+  };
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [userInfo, setUserInfo] = useState({
+    is_active: profile?.is_active,
+  });
+
+  // 🔹 Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setStatusDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 🔹 Handles backend update when status changes
+  const handleStatusChange = async (isActive: boolean) => {
+    try {
+      const updatedInfo = { ...userInfo, is_active: isActive };
+      setUserInfo(updatedInfo);
+      await dispatch(UpdateProfileThunks(profile?.uuid, updatedInfo));
+      toast.success(`Status changed to ${isActive ? "Active" : "Inactive"}`);
+      setStatusDropdownOpen(false);
+    } catch {
+      toast.error("Failed to update status");
     }
   };
   return (
@@ -117,10 +130,11 @@ const AccountProfile: React.FC = () => {
         <div className="w-68 bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 ml-3 mt-5 ">
           <ul className="space-y-3">
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "first"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
+                activePanel === "first"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-                } `}
+              } `}
               onClick={() => {
                 setActivePanel("first");
                 setActiveIndex(0);
@@ -130,10 +144,11 @@ const AccountProfile: React.FC = () => {
               <span style={{ ...FONTS.heading_06_bold }}>Account</span>
             </button>
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "second"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
+                activePanel === "second"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-                }`}
+              }`}
               onClick={() => {
                 setActivePanel("second");
                 setActiveIndex(1);
@@ -147,10 +162,11 @@ const AccountProfile: React.FC = () => {
               <span style={{ ...FONTS.heading_06_bold }}>Security</span>
             </button>
             <button
-              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${activePanel === "third"
+              className={`flex items-center justify-left gap-5 px-4 py-2 rounded-2xl w-full h-[48px] font-semibold border border-[#716F6F] ${
+                activePanel === "third"
                   ? "bg-cyan-500 text-white"
                   : "bg-white text-[#716F6F]"
-                }`}
+              }`}
               onClick={() => {
                 setActivePanel("third");
                 setActiveIndex(2);
@@ -163,140 +179,157 @@ const AccountProfile: React.FC = () => {
         </div>
 
         {/* Account Page Content */}
-        {activePanel === "first" && (
-          <div className="relative flex-4 ml-6 bg-white  rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 mt-5">
-            <div className="flex items-top justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <img
-                  src={GetImageUrl(profile?.image) ?? undefined}
-                  alt="Profile"
-                  className="w-[166px] h-[166px] rounded"
-                />
-                <div>
-                  <h3
-                    className="mb-1 mt-1 font-semibold text-[#716F6F]"
-                    style={{ ...FONTS.heading_05_bold }}
-                  >
-                    {profile?.first_name + " " + profile?.last_name}
-                  </h3>
-                  {/* <p className="mb-8 text-[#716F6F]" style={{ ...FONTS.heading_07_light }}>Trainee ID : LMSTRN231</p> */}
-                  <img
-                    src={actimg} // replace with your actual image path
-                    alt="Active"
-                    className="inline-block mt-2 w-[90px] h-[38px] rounded-lg"
-                    style={{ objectFit: "cover" }} // Optional styling
-                  />
-                  <h3
-                    className="mb-1 mt-1 font-semibold text-[#716F6F]"
-                    style={{ ...FONTS.heading_05_bold }}
-                  >
-                    Albert Elnstein
-                  </h3>
-                  <p
-                    className="mb-8 text-[#716F6F]"
-                    style={{ ...FONTS.heading_07_light }}
-                  >
-                    Trainee ID : LMSTRN231
-                  </p>
-                  <button
-                    className="bg-green-500 h-[38px] w-[107px] text-white  rounded-2xl hover:bg-green-600"
-                    style={{ ...FONTS.heading_06 }}
-                  >
-                    Active
-                  </button>
-                </div>
-              </div>
-              <span>
-                <img
-                  src={insadmin}
-                  alt="Active"
-                  className="inline-block mt-2 w-[173px] h-[48px] rounded-lg"
-                  style={{ objectFit: "cover" }}
-                />
-              </span>
-            </div>
-            <div className="border-t border border-[#A9A7A7] my-4"></div>
-            {/* User Details */}
-            <div className="p-1 mr-5 flex-2">
-              <h4
-                className="font-semibold mb-6 text-[#716F6F] mr-5"
-                style={{ ...FONTS.heading_04_bold }}
-              >
-                User Details
-              </h4>
+       {activePanel === "first" && (
+  <div className="relative flex-4 ml-6 bg-white rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.1)] p-4 mt-5">
+    <div className="flex items-top justify-between mb-6">
+      <div className="flex items-center space-x-4">
+        <img
+          src={GetImageUrl(profile?.image) ?? undefined}
+          alt="Profile"
+          className="w-[166px] h-[166px] rounded"
+        />
+        <div className="mb-20">
+          <h3
+            className="mb-2 font-semibold text-[#716F6F]"
+            style={{ ...FONTS.heading_05_bold }}
+          >
+            {profile?.first_name + " " + profile?.last_name}
+          </h3>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm">
-                <div>
-                  <p
-                    className="text-[#716F6F] font-medium mb-1"
-                    style={{ ...FONTS.heading_06_light }}
-                  >
-                    Name
-                  </p>
-                  <p
-                    className="text-[#716F6F] font-semibold text-base"
-                    style={{ ...FONTS.heading_06_bold }}
-                  >
-                    {profile?.first_name + " " + profile?.last_name}
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className="text-[#716F6F] font-medium mb-1"
-                    style={{ ...FONTS.heading_06_light }}
-                  >
-                    Email
-                  </p>
-                  <p
-                    className="text-[#716F6F] font-semibold text-base"
-                    style={{ ...FONTS.heading_06_bold }}
-                  >
-                    {profile?.email}
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className="text-[#716F6F] font-medium mb-1 ml-12"
-                    style={{ ...FONTS.heading_06_light }}
-                  >
-                    Status
-                  </p>
-                  <p
-                    className="text-[#3ABE65] font-semibold text-base ml-12"
-                    style={{ ...FONTS.heading_06_bold }}
-                  >
-                    {profile?.is_active ? "Active" : "Inactive"}
-                  </p>
-                </div>
-                <div>
-                  <p
-                    className="text-[#716F6F] font-medium mb-1 ml-8"
-                    style={{ ...FONTS.heading_06_light }}
-                  >
-                    Contact
-                  </p>
-                  <p
-                    className="text-[#716F6F] font-semibold text-base ml-8"
-                    style={{ ...FONTS.heading_06_bold }}
-                  >
-                    {profile?.phone_number}
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* ✅ Status Button + Dropdown */}
+          <div className="relative inline-block" ref={dropdownRef}>
+            <button
+              onClick={() => setStatusDropdownOpen((prev) => !prev)}
+              className={`h-[48px] w-[137px] rounded-lg px-4 py-2 text-white font-semibold text-sm transition ${
+                profile?.is_active
+                  ? "bg-[#3ABE65] hover:bg-[#34a25a]"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
+              style={{ ...FONTS.heading_06_bold }}
+            >
+              {profile?.is_active ? "Active" : "Inactive"}
+            </button>
 
-            {/* Edit Profile Button */}
-            <div className="text-right mb-0 mt-31">
-              <button
-                onClick={handleEdit}
-                className="bg-green-500 h-[48px] w-[137px] text-white px-4 py-2 rounded-lg hover:bg-green-600"
-                style={{ ...FONTS.heading_06 }}
-              >
-                Edit Profile
-              </button>
-            </div>
+            {statusDropdownOpen && (
+              <div className="absolute left-0 mt-1 w-[137px] bg-white border border-gray-200 rounded-md shadow-md z-10">
+                <button
+                  onClick={() => handleStatusChange(true)}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => handleStatusChange(false)}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                >
+                  Inactive
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+      </div>
+
+      <span>
+        {/* <img
+          src={insadmin}
+          alt="Active"
+          className="inline-block mt-2 w-[173px] h-[48px] rounded-lg"
+          style={{ objectFit: "cover" }}
+        /> */}
+      </span>
+    </div>
+
+    <div className="border-t border border-[#A9A7A7] my-4"></div>
+
+    {/* ✅ User Details */}
+    <div className="p-1 mr-5 flex-2">
+      <h4
+        className="font-semibold mb-6 text-[#716F6F] mr-5"
+        style={{ ...FONTS.heading_04_bold }}
+      >
+        User Details
+      </h4>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm">
+        <div>
+          <p
+            className="text-[#716F6F] font-medium mb-1"
+            style={{ ...FONTS.heading_06_light }}
+          >
+            Name
+          </p>
+          <p
+            className="text-[#716F6F] font-semibold text-base"
+            style={{ ...FONTS.heading_06_bold }}
+          >
+            {profile?.first_name + " " + profile?.last_name}
+          </p>
+        </div>
+
+        <div>
+          <p
+            className="text-[#716F6F] font-medium mb-1"
+            style={{ ...FONTS.heading_06_light }}
+          >
+            Email
+          </p>
+          <p
+            className="text-[#716F6F] font-semibold text-base"
+            style={{ ...FONTS.heading_06_bold }}
+          >
+            {profile?.email}
+          </p>
+        </div>
+
+        {/* ✅ Status color dynamically changes */}
+        <div>
+          <p
+            className="text-[#716F6F] font-medium mb-1 ml-12"
+            style={{ ...FONTS.heading_06_light }}
+          >
+            Status
+          </p>
+          <p
+            className={`font-semibold text-base ml-12 ${
+              profile?.is_active ? "text-[#3ABE65]" : "text-red-500"
+            }`}
+            style={{ ...FONTS.heading_06_bold }}
+          >
+            {profile?.is_active ? "Active" : "Inactive"}
+          </p>
+        </div>
+
+        <div>
+          <p
+            className="text-[#716F6F] font-medium mb-1 ml-8"
+            style={{ ...FONTS.heading_06_light }}
+          >
+            Contact
+          </p>
+          <p
+            className="text-[#716F6F] font-semibold text-base ml-8"
+            style={{ ...FONTS.heading_06_bold }}
+          >
+            {profile?.phone_number}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Edit Profile Button */}
+    <div className="text-right mb-0 mt-31">
+      <button
+        onClick={handleEdit}
+        className="bg-green-500 h-[48px] w-[137px] text-white px-4 py-2 rounded-lg hover:bg-green-600"
+        style={{ ...FONTS.heading_06 }}
+      >
+        Edit Profile
+      </button>
+    </div>
+  </div>
+)}
+
         {/* Security Page Content */}
         {activePanel === "second" && (
           <div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white  rounded-lg shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] p-2">
@@ -418,50 +451,50 @@ const AccountProfile: React.FC = () => {
             </div>
           </div>
         )}
-        {/* TimeLine Page Content */}
         {activePanel === "third" && (
-          <div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)]  rounded-lg p-6">
-            <div className="relative z-10 ml-5 overflow-y-auto px-9 py-2 max-h-[calc(90vh-180px)] scrollbar-hidden">
-              {timeline?.map((item: any, index: any) => (
-                <div key={index} className="mb-1 ml-4 relative">
-                  <div className="absolute -left-[50px] top-0">
-                    <div
-                      className="flex bg-green-500 mr-20 text-white text-xs font-semibold px-1 py-1 rounded-2xl mb-2 mt-0 shadow"
-                      style={{ ...FONTS.heading_07 }}
-                    >
-                      <img src={noteimg} className="h-[42px] w-[144px]" />
-                    </div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full mt-3 ml-16"></div>
-                    <div className=" border-l-4 border-green-500 h-35 w-0 ml-17 mb-20"></div>
-                  </div>
-                  <br></br>
-                  <div className="ml-38 mt-9 mb-9 h-[150px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
-                    <h3
-                      className="text-md font-semibold"
-                      style={{ ...FONTS.heading_05_bold }}
-                    >
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 ">
-                      <span
-                        className="block mb-3"
-                        style={{ ...FONTS.heading_06_light }}
-                      >
-                        {item.action}
-                      </span>
-                      <span
-                        className="block font-medium !line-clamp-2"
-                        style={{ ...FONTS.heading_07 }}
-                      >
-                        {item.details}
-                      </span>
-                    </p>
-                    <p className="text-sm text-gray-500 text-right mt-0">
-                      {item.createdAt}
-                    </p>
-                  </div>
-                </div>
-              ))}
+          <div className="relative h-[530px] flex-6 ml-6 mt-5 bg-white shadow-[0_4px_10px_3px_rgba(0,0,0,0.10)] rounded-lg p-6">
+            <div className="relative z-10 ml-5 overflow-y-auto px-3 py-2 h-full scrollbar-hidden ">
+            {timeline?.map((item: any, index: any) => (
+  <div key={index} className="mb-7 ml-4 relative flex items-start">
+    <div className="flex flex-col items-center">
+      <div
+        className="flex bg-green-500 text-white text-xs font-semibold px-1 py-1 rounded-2xl mt-0 shadow"
+        style={{ ...FONTS.heading_07 }}
+      >
+        <img src={noteimg} className="h-[42px] w-[144px]" />
+      </div>
+      <div className="w-3 h-3 bg-green-500 rounded-full mt-3"></div>
+      <div className="border-l-4 border-green-500 h-35 w-0 "></div>
+    </div>
+
+    <div className="ml-15 mt-17 h-[140px] shadow-[0_0_10px_rgba(0,1,1,0.1)] text-[#716F6F] bg-white rounded-lg px-4 py-4 w-[500px]">
+      <h3
+        className="text-md font-semibold"
+        style={{ ...FONTS.heading_05_bold }}
+      >
+        {item.title}
+      </h3>
+      <p className="text-sm text-gray-600 ">
+        <span
+          className="block mb-3"
+          style={{ ...FONTS.heading_06_light }}
+        >
+          {item.action}
+        </span>
+        <span
+          className="block font-medium !line-clamp-2"
+          style={{ ...FONTS.heading_07 }}
+        >
+          {item.details}
+        </span>
+      </p>
+      <p className="text-sm text-gray-500 text-right mt-0">
+        {formatDateandTime(item.createdAt)}
+      </p>
+    </div>
+  </div>
+))}
+
             </div>
           </div>
         )}

@@ -179,11 +179,13 @@ const StaffsNotification: React.FC = () => {
   return (
     <div className="p-6">
       {/* Top Right Button */}
-      <div className="flex justify-between mb-6">
-         <p className="text-lg font-bold">Staff Notification</p>
+      <div className="flex flex-col max-[420px]:gap-3 sm:flex-row justify-between mb-6">
+        <p className="text-lg font-bold text-center max-[420px]:text-left">
+          Staff Notification
+        </p>
         <Button
           onClick={() => setOpen(true)}
-          className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
+          className="w-full max-[420px]:w-full sm:w-auto flex justify-center items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-2 shadow"
         >
           <img src={bell} alt="bell" className="w-6 h-6" />
           Add Notification
@@ -323,9 +325,10 @@ const StaffsNotification: React.FC = () => {
 
       {/* Notifications List */}
       <h2 className="text-lg font-semibold mb-4">Notifications</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 max-w-full gap-4 lg:grid-cols-2">
+
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 mt-4 gap-5 col-span-3">
+          <div className="grid grid-cols-1 mt-4 gap-5">
             {[...Array(6)].map((_, index) => (
               <ContentLoader
                 speed={1}
@@ -338,59 +341,59 @@ const StaffsNotification: React.FC = () => {
               >
                 <rect x="0" y="0" rx="6" ry="6" width="100" height="24" />
                 <rect x="270" y="0" rx="6" ry="6" width="80" height="24" />
-
                 <rect x="0" y="36" rx="10" ry="10" width="100%" height="120" />
-
                 <rect x="0" y="170" rx="6" ry="6" width="60%" height="20" />
-
                 <rect x="0" y="200" rx="4" ry="4" width="80" height="16" />
                 <rect x="280" y="200" rx="4" ry="4" width="60" height="20" />
-
                 <rect x="0" y="240" rx="6" ry="6" width="100" height="32" />
-
                 <rect x="260" y="240" rx="6" ry="6" width="80" height="32" />
               </ContentLoader>
             ))}
           </div>
         ) : notifications.length ? (
-          notifications?.map((n: any, index: number) => (
+          notifications.map((n: any, index: number) => (
             <Card
               key={n._id || index}
-              className="p-4 rounded-2xl shadow-md flex flex-col justify-between min-h-[220px] overflow-hidden"
+              className="bg-white shadow-lg hover:shadow-md transition-shadow flex flex-col border w-full min-h-[255px] max-[420px]:min-h-[auto] overflow-hidden"
             >
-              <CardContent className="p-0 flex flex-col h-full">
-                <div className="flex items-center w-full mb-2">
-                  <img
-                    src={instructorImg}
-                    alt=""
-                    className="w-12 h-12 rounded-full mr-2"
-                  />
-                  <div className="flex-1">
-                    <span className="text-gray-500 block truncate">
-                      {n.staff?.[0]?.full_name || "Staff"}
-                    </span>
-                    <p className="text-sm">Instructor</p>
+              <CardContent className="p-6 flex flex-col flex-grow">
+                {/* User Info */}
+                <div className="flex flex-col max-[420px]:items-start max-[420px]:gap-1 sm:flex-row sm:items-center justify-between mb-4">
+                  <div className="flex flex-col max-[420px]:items-start max-[420px]:gap-1 sm:flex-row sm:items-center sm:space-x-3">
+                    <img
+                      src={instructorImg}
+                      alt=""
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="flex flex-col max-[420px]:items-start">
+                      <p className="font-medium text-gray-900 max-[420px]:text-sm">
+                        {n.staff?.[0]?.full_name || "Staff"}
+                      </p>
+                      <p className="text-sm text-gray-500 max-[420px]:text-xs">
+                        Instructor
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500">ID: {n.id}</div>
+                  <span className="text-sm text-gray-500 sm:mt-0">ID: {n.id}</span>
                 </div>
 
-                <div className="text-sm mb-1">
+                {/* Status */}
+                <div className="text-sm mb-2">
                   <span
-                    className={`font-semibold ${
-                      n.status === "read" ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`font-semibold ${n.status === "read" ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     Status: {n.status}
                   </span>
                 </div>
 
-                <h3 className="font-semibold text-gray-800 mb-1 truncate">
-                  {n.title}
-                </h3>
-                <p className="text-gray-500 text-sm mb-2 line-clamp-3 break-words">
+                {/* Title & Body */}
+                <h3 className="font-semibold text-gray-800 mb-2">{n.title}</h3>
+                <p className="text-gray-600 text-sm mb-2 line-clamp-3 break-words">
                   {n.body}
                 </p>
 
+                {/* Link */}
                 {n.link && (
                   <a
                     href={n.link}
@@ -402,23 +405,27 @@ const StaffsNotification: React.FC = () => {
                   </a>
                 )}
 
-                <Button
-                  onClick={() => handleResend(n.uuid)}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white rounded px-4 py-1 self-end mt-auto"
-                >
-                  Resend
-                </Button>
+                {/* Resend Button */}
+                <div className="mt-auto flex justify-end">
+                  <Button
+                    onClick={() => handleResend(n.uuid)}
+                    className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                  >
+                    Resend
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))
         ) : (
-          <Card className="col-span-3 mt-8">
+          <Card className="mt-8">
             <p className="font-lg text-gray-900 text-center">
               No Staff Notifications available
             </p>
           </Card>
         )}
       </div>
+
 
       {/* Pagination */}
       {notifications.length > 0 && (

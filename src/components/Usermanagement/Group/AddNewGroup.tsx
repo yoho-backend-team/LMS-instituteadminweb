@@ -238,30 +238,31 @@ function AddNewGroup({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 p-6 bg-white rounded-lg shadow-md"
+      className="space-y-4 sm:space-y-6 p-4 sm:p-6 md:p-8 bg-white rounded-lg shadow-md max-w-full mx-auto"
     >
       {/* Back Button */}
       <Button
         variant="ghost"
         size="icon"
         onClick={() => navigate("/group")}
-        className="mb-4 text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white"
+        className="mb-2 sm:mb-4 text-xl text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white"
       >
-        <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-      
-      </Button>
+<ArrowLeft style={{ width: "28px", height: "28px" }} />      
+</Button>
 
       {/* Header */}
-      <h1 className="text-2xl font-semibold text-[#1BBFCA] mb-2">
-        Add New Group
-      </h1>
-      <p className="text-[#7D7D7D] mb-6">Set Group Permissions</p>
+      <div className="space-y-1 sm:space-y-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#1BBFCA]">
+          Add New Group
+        </h1>
+        <p className="text-sm sm:text-base text-[#7D7D7D]">Set Group Permissions</p>
+      </div>
 
       {/* Group Name */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <label
           htmlFor="group-name"
-          className="block mb-2 text-sm font-medium text-[#7D7D7D]"
+          className="block mb-2 text-xs sm:text-sm font-medium text-[#7D7D7D]"
         >
           Group Name
         </label>
@@ -271,23 +272,23 @@ function AddNewGroup({
           placeholder="Group Name"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 w-96 mb-1 outline-none focus:ring-0"
+          className="border border-gray-300 rounded-lg p-2 sm:p-3 w-full sm:w-full md:w-96 outline-none focus:ring-0 text-sm sm:text-base"
         />
       </div>
 
       {/* Group Permissions Header */}
-      <div className="mb-2">
-        <div className="text-lg font-semibold text-[#7D7D7D]">
+      <div className="mb-2 sm:mb-4">
+        <div className="text-base sm:text-lg md:text-xl font-semibold text-[#7D7D7D]">
           Group Permissions
         </div>
       </div>
 
       {/* Administrator Access + Select All */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="text-sm text-[#7D7D7D]">Administrator Access</div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-1">
+        <div className="text-xs sm:text-sm text-[#7D7D7D]">Administrator Access</div>
         <label
           htmlFor="select-all"
-          className="text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer"
+          className="text-xs sm:text-sm text-[#7D7D7D] flex items-center gap-2 cursor-pointer"
         >
           <input
             id="select-all"
@@ -302,7 +303,7 @@ function AddNewGroup({
       <hr className="border-t border-gray-200 mb-4" />
 
       {/* Permission Grid with Custom Dropdowns and Chips */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-6">
         {permissions.map((item, moduleIndex) => {
           const selectedPermissionsCount = Object.values(
             item.selectedPermissions
@@ -313,9 +314,9 @@ function AddNewGroup({
           return (
             <div
               key={item.id}
-              className="flex flex-col gap-2 bg-white rounded-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
+              className="flex flex-col gap-2 bg-white rounded-lg p-3 sm:p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-gray-100"
             >
-              <label className="text-base font-semibold text-[#7D7D7D] mb-2">
+              <label className="text-sm sm:text-base font-semibold text-[#7D7D7D] mb-1 sm:mb-2 break-words">
                 {item.identity}
               </label>
 
@@ -330,10 +331,10 @@ function AddNewGroup({
                     setOpenDropdownIndex(isOpen ? null : moduleIndex)
                   }
                   className="w-full flex justify-between items-center text-[#7D7D7D] border border-gray-300 bg-transparent h-auto min-h-[40px] py-2 px-3 rounded-lg cursor-pointer
-                             outline-none focus:ring-0 hover:text-[#1BBFCA] hover:bg-transparent"
+                             outline-none focus:ring-0 hover:text-[#1BBFCA] hover:bg-transparent text-xs sm:text-sm"
                 >
                   {hasSelectedPermissions ? (
-                    <div className="flex flex-wrap gap-2 justify-start items-center w-full">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-start items-center w-full">
                       {permissionTypes.map((type) =>
                         item.selectedPermissions[type] ? (
                           <span
@@ -352,7 +353,7 @@ function AddNewGroup({
                                   false
                                 );
                               }}
-                              className="ml-1 text-[#1BBFCA] hover:text-[#1BBFCA]/80"
+                              className="ml-0.5 text-[#1BBFCA] hover:text-[#1BBFCA]/80"
                               aria-label={`Remove ${type} permission`}
                             >
                               <X className="h-3 w-3" />
@@ -375,7 +376,7 @@ function AddNewGroup({
                     className="absolute z-10 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow-lg p-2"
                     style={{
                       width: dropdownRefs.current[moduleIndex]?.offsetWidth,
-                    }} // Match width of trigger
+                    }}
                   >
                     {permissionTypes.map((type) => (
                       <button
@@ -389,7 +390,7 @@ function AddNewGroup({
                           )
                         }
                         className={`
-                          flex items-center justify-center w-full h-10 rounded-lg border border-gray-300 bg-white text-[#1F2D3A] cursor-pointer
+                          flex items-center justify-center w-full h-9 sm:h-10 rounded-lg border border-gray-300 bg-white text-[#1F2D3A] cursor-pointer text-xs sm:text-sm
                           ${
                             item.selectedPermissions[type]
                               ? "bg-[#1BBFCA] text-white"
@@ -412,20 +413,20 @@ function AddNewGroup({
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-end gap-5">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-5 pt-4">
         <button
           type="button"
           onClick={() => {
             reset();
             navigate("/group");
           }}
-          className="w-28 h-10 rounded-xl bg-[#1BBFCA1A] border text-sm text-[#1BBFCA] border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white transition-colors"
+          className="w-full sm:w-28 h-10 rounded-xl bg-[#1BBFCA1A] border text-xs sm:text-sm text-[#1BBFCA] border-[#1BBFCA] hover:bg-[#1BBFCA] hover:text-white transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="w-28 h-10 rounded-xl text-white text-sm bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 transition-colors"
+          className="w-full sm:w-28 h-10 rounded-xl text-white text-xs sm:text-sm bg-[#1BBFCA] hover:bg-[#1BBFCA]/90 transition-colors"
         >
           Submit
         </button>

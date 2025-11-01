@@ -177,21 +177,28 @@ export const SubScriptionPlan = ({ onSelectPlan }: SubScriptionPlanProps) => {
               >
                 Features
               </p>
-              <ul className="space-y-2">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <HiCheckCircle
-                      className={cn(
-                        "w-6 h-6 rounded-full p-1 transition-all",
-                        isSelected ? "text-white bg-[#1BBFCA]" : "text-gray-400"
-                      )}
-                    />
-                    <span>
-                      {feature.feature?.identity || "Unnamed Feature"}
-                    </span>
-                  </li>
-                ))}
+              <ul className="space-y-2 h-20 overflow-y-auto">
+  {plan.features.filter((feature) => feature.feature).length > 0 ? (
+    plan.features
+      .filter((feature) => feature.feature)
+      .map((feature, idx) => (
+        <li key={idx} className="flex items-center gap-2">
+          <HiCheckCircle
+            className={cn(
+              "w-6 h-6 rounded-full p-1 transition-all",
+              isSelected ? "text-white bg-[#1BBFCA]" : "text-gray-400"
+            )}
+          />
+          <span>{feature.feature?.identity}</span>
+        </li>
+      ))
+  ) : (
+    <li className="text-gray-400 text-sm italic">
+      Stay tuned — new features will be added soon!
+    </li>
+  )}
               </ul>
+
             </div>
 
             <div className="flex flex-col gap-2">

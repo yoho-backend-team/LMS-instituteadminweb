@@ -29,10 +29,11 @@ const StaffAddBar: React.FC<formtype> = ({
 
   return (
     <div className="flex flex-col w-full gap-4 p-2">
-      <div className="flex flex-row w-full justify-between items-center p-4 bg-white rounded-lg shadow-[0px_4px_24px_0px_#00000026]">
-        <div className="flex flex-row items-center w-full h-max gap-5">
+      {/* Top card with staff info and Add Attendance */}
+      <div className="flex flex-col sm:flex-col md:flex-row w-full justify-between items-center p-4 bg-white rounded-lg shadow-[0px_4px_24px_0px_#00000026]">
+        <div className="flex flex-row flex-wrap md:flex-nowrap items-center w-full h-max gap-5">
           <button
-            onClick={()=>navigate('/staffs-attendance')}
+            onClick={() => navigate('/staffs-attendance')}
             className="p-2 rounded-full hover:bg-gray-100 transition"
           >
             <ArrowLeft size={24} className="text-[#3ABE65]" />
@@ -52,8 +53,7 @@ const StaffAddBar: React.FC<formtype> = ({
           </div>
         </div>
 
-        <div
-          className="flex flex-row bg-[#3ABE65] w-[199px] h-min p-2 text-white rounded-md items-center gap-1 cursor-pointer"
+        <div className="mt-4 md:mt-0 flex justify-start md:justify-end w-[200px] md:w-[199px] bg-[#3ABE65] h-min p-2 text-white rounded-md items-center gap-1 cursor-pointer"
           onClick={() => setOpen(true)}
         >
           <img src={plus} alt="" className="w-5 h-5" />
@@ -61,7 +61,7 @@ const StaffAddBar: React.FC<formtype> = ({
         </div>
       </div>
 
-      <div className="flex flex-row justify-between w-full">
+      <div className="flex flex-row justify-between w-full relative">
         <div
           className="p-4 bg-[#1BBFCA] rounded-md cursor-pointer"
           onClick={() => setcallader(!callader)}
@@ -69,7 +69,7 @@ const StaffAddBar: React.FC<formtype> = ({
           <img src={cals} alt="" />
         </div>
         {callader && (
-          <div className="absolute ml-15">
+          <div className="absolute top-full left-0 mt-2 z-10">
             <DashCalender
               setMonth={setMonth}
               setYear={setYear}
@@ -77,6 +77,7 @@ const StaffAddBar: React.FC<formtype> = ({
             />
           </div>
         )}
+
         <div
           onClick={() => setfilterDiv(!filterDiv)}
           className="flex flex-row p-4 bg-[#1BBFCA] rounded-md gap-1 cursor-pointer"
@@ -85,7 +86,7 @@ const StaffAddBar: React.FC<formtype> = ({
           <p className="text-white text-[16px] font-medium">Filters</p>
         </div>
         {filterDiv && (
-          <div className="absolute flex flex-col rounded-lg p-4 gap-5 bg-white right-9 mt-15 **:p-2 **:cursor-pointer shadow-[0px_4px_24px_0px_#00000026]">
+          <div className="absolute top-full right-0 mt-2 z-10 flex flex-col rounded-lg p-4 gap-5 bg-white shadow-[0px_4px_24px_0px_#00000026]">
             <div className="border-[#716F6F] border-2 text-[#716F6F] text-[16px] font-medium hover:text-white hover:bg-[#1BBFCA] hover:border-[#1BBFCA] rounded-md">
               View All
             </div>
@@ -98,7 +99,9 @@ const StaffAddBar: React.FC<formtype> = ({
           </div>
         )}
       </div>
+
     </div>
+
   );
 };
 

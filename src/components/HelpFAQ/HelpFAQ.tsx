@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { IoMdCall, IoMdMail } from "react-icons/io";
-import { FaChevronRight, FaChevronDown, FaChevronUp } from "react-icons/fa"; // icons
+import { FaChevronRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { getHelpCenterAll } from "../../features/HelpCenter/service";
 
 const HelpFAQ = () => {
@@ -39,15 +39,14 @@ const HelpFAQ = () => {
         CUSTOMER
       </div>
 
-      <div className="flex mt-5 gap-5">
-        <div className="w-1/4 bg-white rounded-2xl shadow-2xl p-4">
+      {/* Responsive layout */}
+      <div className="flex flex-col md:flex-row mt-5 gap-5">
+        {/* Sidebar */}
+        <div className="w-full md:w-1/4 bg-white rounded-2xl shadow-2xl p-4">
           {loading ? (
             <div className="space-y-3 animate-pulse">
               {Array.from({ length: modules.length }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-8 bg-gray-200 rounded-md w-full"
-                ></div>
+                <div key={i} className="h-8 bg-gray-200 rounded-md w-full"></div>
               ))}
             </div>
           ) : (
@@ -55,8 +54,8 @@ const HelpFAQ = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between p-2 cursor-pointer rounded ${selectedModule === module
-                    ? "bg-[#1BBFCA] text-white"
-                    : "hover:bg-gray-100 text-[#716F6F]"
+                  ? "bg-[#1BBFCA] text-white"
+                  : "hover:bg-gray-100 text-[#716F6F]"
                   }`}
                 onClick={() => {
                   setSelectedModule(module);
@@ -70,15 +69,13 @@ const HelpFAQ = () => {
           )}
         </div>
 
-        <div className="w-3/4 bg-white rounded-2xl shadow-2xl p-4">
+        {/* Main content */}
+        <div className="w-full md:w-3/4 bg-white rounded-2xl shadow-2xl p-4">
           <>
             {loading ? (
               <div className="space-y-3 animate-pulse">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-10 bg-gray-200 rounded-md w-full"
-                  ></div>
+                  <div key={i} className="h-10 bg-gray-200 rounded-md w-full"></div>
                 ))}
                 <div className="h-24 bg-gray-200 rounded-md mt-4"></div>
               </div>
@@ -89,8 +86,8 @@ const HelpFAQ = () => {
                     <li
                       key={i}
                       className={`flex items-center justify-between p-3 rounded shadow cursor-pointer transition-colors ${selectedTitle === data.title
-                          ? " text-white border bg-[#1BBFCA]"
-                          : "bg-gray-50 text-[#716F6F] hover:bg-gray-100"
+                        ? " text-white border bg-[#1BBFCA]"
+                        : "bg-gray-50 text-[#716F6F] hover:bg-gray-100"
                         }`}
                       onClick={() =>
                         setSelectedTitle(
@@ -125,7 +122,8 @@ const HelpFAQ = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 mt-5 gap-5 text-[#716F6F]">
+      {/* Responsive grid for contact cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 gap-5 text-[#716F6F]">
         <div className="bg-white p-5 rounded-2xl shadow-2xl">
           <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
             <IoMdCall className="fill-white h-6 w-6" />
@@ -138,7 +136,7 @@ const HelpFAQ = () => {
           <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
             <IoMdCall className="fill-white h-6 w-6" />
           </div>
-          <div className="mt-3 font-bold">+ (810) 2548 2568</div>
+          <div className="mt-3 font-bold">+ (910) 4598761</div>
           <div className="mt-3">We are always happy to help!</div>
         </div>
 
@@ -150,13 +148,7 @@ const HelpFAQ = () => {
           <div className="mt-3">Best way to get answer fast!</div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl shadow-2xl">
-          <div className="bg-[#1BBFCA] w-12 h-11 rounded-md p-3">
-            <IoMdMail className="fill-white h-6 w-6" />
-          </div>
-          <div className="mt-3 font-bold">help@gmail.com</div>
-          <div className="mt-3">Best way to get answer fast!</div>
-        </div>
+    
       </div>
     </div>
   );

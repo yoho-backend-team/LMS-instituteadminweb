@@ -156,7 +156,7 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 w-full">
       <h1 className="text-2xl font-bold mb-6">FAQ</h1>
 
       <FAQActionBar
@@ -174,8 +174,8 @@ export default function FAQPage() {
       {loading ? (
         <FAQSkeleton />
       ) : (
-        <div className=" mx-auto bg-white rounded-lg p-6 shadow-gray-200 border bg-gray-40 shadow-md ">
-          <div className="grid gap-4 shadow-gray-300 ">
+        <div className="bg-white rounded-lg p-4 shadow-gray-200 border bg-gray-40 shadow-md overflow-auto w-full media">
+          <div className="grid gap-4 shadow-gray-300 w-full">
             {/* Table Header */}
             <div className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-2 p-4 bg-gray-200 text-sm font-semibold text-gray-600 border-gray-400 rounded-lg shadow-gray">
               <div>ID</div>
@@ -190,7 +190,7 @@ export default function FAQPage() {
               FilterData.map((faq: any, index: number) => (
                 <div
                   key={index}
-                  className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-4 p-4 items-center shadow-sm rounded-lg shadow-gray-300"
+                  className="grid grid-cols-[0.5fr_2fr_1fr_1fr_0.5fr] gap-4 p-4 text-sm items-center shadow-sm rounded-lg shadow-gray-300 w-full"
                 >
                   <div className="text-gray-700">{index + 1}</div>
                   <div>

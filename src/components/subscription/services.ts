@@ -1,7 +1,7 @@
 import Client from '../../apis/index'
 import { GetLocalStorage } from '../../utils/localStorage'
 
-const institute = GetLocalStorage('institute') ?? '973195c0-66ed-47c2-b098-d8989d3e4529'
+const institute = GetLocalStorage('instituteId') 
 
 export const getAllPlan = async () => {
     try {
@@ -27,6 +27,17 @@ export const getSubscriptionStatus = async (params: any) => {
         const data = { ...params, institute };
         if (!institute) throw new Error("Missing institute ID");
         const response = await Client.subscription.get_subscription_status(data)
+        return response
+    } catch (error: any) {
+        console.error("Backend Error Response for status:", error?.response?.data || error.message);
+        throw new Error(error.message)
+    }
+}
+export const cancelplan = async (params: any) => {
+    try {
+        const data = { ...params, institute };
+        if (!institute) throw new Error("Missing institute ID");
+        const response = await Client.subscription.cancel_request(data)
         return response
     } catch (error: any) {
         console.error("Backend Error Response for status:", error?.response?.data || error.message);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../Ticket Management/Your Ticket/TicketsPage";
 import iconticket from "../../../assets/navbar/ticketicon.png";
@@ -15,8 +16,8 @@ import {
 } from "../../../features/TicketManagement/YourTicket/service";
 import socket from "../../../utils/socket";
 import { GetLocalStorage } from "../../../utils/localStorage";
-// import { GetImageUrl } from "../../../utils/helper";
 import { uploadTicketService } from "../../../features/Ticket_Management/services";
+import toast from "react-hot-toast";
 
 interface Message {
   id: string;
@@ -33,6 +34,7 @@ const TicketsPage: React.FC = () => {
   const [showCreateButton, setShowCreateButton] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string>("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingTicketId, setEditingTicketId] = useState<string | null>(null);
   const [selectedTicketUserDetails, setSelectedTicketUserDetails] =
@@ -41,14 +43,15 @@ const TicketsPage: React.FC = () => {
   const [query, setQuery] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage] = useState(1);
   const dispatch = useDispatch<any>();
   const adminTickets = useSelector(selectAdminTickets);
-  const totalPages = adminTickets?.last_page
 
 
   const overall_branch_id = GetLocalStorage("selectedBranchId")
   const overall_istitute_id = GetLocalStorage("instituteId")
+  const [currentPage, setCurrentPage] = useState(1);
+
 
 
   useEffect(() => {
@@ -64,16 +67,22 @@ const TicketsPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (fileError) {
+      alert("Please upload a valid PNG or JPEG file.");
+      return;
+    }
+
     let fileUrl;
 
     if (selectedFile) {
-      const formFile = new FormData()
+      const formFile = new FormData();
       formFile.append("file", selectedFile);
-      const response = await uploadTicketService(formFile)
+      const response = await uploadTicketService(formFile);
       if (response) {
-        fileUrl = response?.data?.file
+        fileUrl = response?.data?.file;
       }
     }
+
     const formData: any = {
       query,
       description,
@@ -81,25 +90,24 @@ const TicketsPage: React.FC = () => {
       branch: overall_branch_id,
       institute: overall_istitute_id,
       status: activeTab === "open" ? "opened" : "closed",
-      file: fileUrl
+      file: fileUrl,
     };
-
 
     try {
       if (isEditMode && editingTicketId) {
         const response = await updateTicket(formData, editingTicketId);
         console.log("Ticket successfully updated:", response.data);
       } else {
-
         const response = await createTicket(formData);
         console.log("Ticket successfully created:", response.data);
+        toast.success("Ticket created successsfully")
       }
 
       const params = {
-        branch_id: "90c93163-01cf-4f80-b88b-4bc5a5dd8ee4",
+        branch_id: overall_branch_id,
         status: formData.status,
         page: currentPage,
-        institute_id: "973195c0-66ed-47c2-b098-d8989d3e4529",
+        institute_id: overall_istitute_id,
       };
       dispatch(fetchAdminTicketsThunk(params));
 
@@ -107,6 +115,7 @@ const TicketsPage: React.FC = () => {
       setDescription("");
       setPriority("High");
       setSelectedFile(null);
+      setFileError("");
       setviewShowModal(false);
       setIsEditMode(false);
       setEditingTicketId(null);
@@ -114,12 +123,6 @@ const TicketsPage: React.FC = () => {
       console.error("Error submitting ticket:", error);
     }
   };
-
-  // useEffect(() => {
-  //   if (adminTickets?.messages) {
-  //     setMessages(adminTickets.messages);
-  //   }
-  // }, [adminTickets]);
 
   useEffect(() => {
     if (!socket) return;
@@ -133,28 +136,27 @@ const TicketsPage: React.FC = () => {
     };
   }, []);
 
-const TicketSkeleton = () => (
-  <div className="animate-pulse bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-      <div className="flex-1">
-        <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+  const TicketSkeleton = () => (
+    <div className="animate-pulse bg-white rounded-lg shadow-md p-4 flex flex-col gap-3">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+        <div className="flex-1">
+          <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+
+      <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+
+      <div className="h-3 bg-gray-200 rounded w-full"></div>
+      <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+
+      <div className="flex justify-between items-center mt-3">
+        <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+        <div className="h-3 bg-gray-300 rounded w-1/6"></div>
       </div>
     </div>
-
-    <div className="h-4 bg-gray-300 rounded w-5/6"></div>
-
-    <div className="h-3 bg-gray-200 rounded w-full"></div>
-    <div className="h-3 bg-gray-200 rounded w-4/5"></div>
-
-    <div className="flex justify-between items-center mt-3">
-      <div className="h-3 bg-gray-300 rounded w-1/4"></div>
-      <div className="h-3 bg-gray-300 rounded w-1/6"></div>
-    </div>
-  </div>
-);
-
+  );
 
   const [loading, setLoading] = useState(false);
 
@@ -174,10 +176,26 @@ const TicketSkeleton = () => (
     fetchTickets();
   }, [dispatch, activeTab, currentPage]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const allowedTypes = ["image/png", "image/jpeg"];
+
+      if (!allowedTypes.includes(file.type)) {
+        setFileError("Only PNG or JPEG files are allowed.");
+        setSelectedFile(null);
+        return;
+      }
+
+      setSelectedFile(file);
+      setFileError("");
+    }
+  };
 
   return (
-    <div className="h-auto p-0">
-      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px]">
+    <div className="h-auto p-0 w-full">
+      {/* Header */}
+      <div className="flex bg-[#1BBFCA] rounded-lg justify-between items-center mb-4 h-[55px] chatwindow">
         <h1
           className="flex text-lg text-white bg-[#1BBFCA] px-4 py-2 rounded"
           style={{ ...FONTS.heading_07_bold }}
@@ -185,6 +203,7 @@ const TicketSkeleton = () => (
           <img className="mr-2" src={iconticket} />
           YOUR TICKET
         </h1>
+
         {showCreateButton && (
           <button
             onClick={() => {
@@ -197,6 +216,7 @@ const TicketSkeleton = () => (
             CREATE
           </button>
         )}
+
         {showBackButton && (
           <button
             onClick={() => {
@@ -214,17 +234,19 @@ const TicketSkeleton = () => (
         )}
       </div>
 
+      {/* Tabs */}
       {showbuttonWindow && (
-        <div className="mb-6 mt-2 " style={{ ...FONTS.heading_08 }}>
+        <div className="mb-6 mt-2 flex flex-row" style={{ ...FONTS.heading_08 }}>
           <button
             onClick={() => {
               setActiveTab("open");
               setShowChatWindow(false);
             }}
-            className={`mr-2 rounded-lg w-[157px] h-[35px] ${activeTab === "open"
+            className={`mr-2 rounded-lg w-[157px] h-[35px] ${
+              activeTab === "open"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-teal-500 border border-teal-500"
-              }`}
+            }`}
           >
             Opened Tickets
           </button>
@@ -233,59 +255,66 @@ const TicketSkeleton = () => (
               setActiveTab("closed");
               setShowChatWindow(false);
             }}
-            className={`rounded-lg w-[157px] h-[35px] items-center ${activeTab === "closed"
+            className={`rounded-lg w-[157px] h-[35px] items-center ${
+              activeTab === "closed"
                 ? "bg-[#1BBFCA] text-white"
                 : "bg-white text-[#1BBFCA] border border-teal-500"
-              }`}
+            }`}
           >
             Closed Tickets
           </button>
         </div>
       )}
+
+      {/* Ticket List */}
       {!showChatWindow && (
         <div className="grid md:grid-cols-3 gap-4">
           {loading
-            ? Array.from({ length: 6 }).map((_, index) => <TicketSkeleton key={index} />)
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <TicketSkeleton key={index} />
+              ))
             : adminTickets?.data?.map((ticket: any, index: number) => (
-              <TicketCard
-                key={index}
-                name={ticket?.user?.first_name + ticket?.user?.last_name}
-                email={ticket?.user?.email}
-                category={ticket?.description}
-                query={ticket?.query}
-                message={messages}
-                date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
-                time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-                priority={ticket.priority}
-                avatarUrl={ticket?.user?.image}
-                lastPage={adminTickets?.last_page}
-                onView={() => {
-                  setSelectedTicketUserDetails(ticket);
-                  setShowChatWindow(true);
-                  setShowbuttonWindow(false);
-                  setShowCreateButton(false);
-                  setShowBackButton(true);
-                }}
-              />
-            ))}
+                <TicketCard
+                  key={index}
+                  name={ticket?.user?.first_name + ticket?.user?.last_name}
+                  email={ticket?.user?.email}
+                  category={ticket?.description}
+                  query={ticket?.query}
+                  message={messages}
+                  date={new Date(ticket.createdAt).toLocaleDateString("en-GB")}
+                  time={new Date(ticket.createdAt).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  priority={ticket.priority}
+                  avatarUrl={ticket?.user?.image}
+                  lastPage={adminTickets?.last_page}
+                  onView={() => {
+                    setSelectedTicketUserDetails(ticket);
+                    setShowChatWindow(true);
+                    setShowbuttonWindow(false);
+                    setShowCreateButton(false);
+                    setShowBackButton(true);
+                  }}
+                />
+              ))}
         </div>
       )}
 
-
+      {/* Chat View */}
       {showChatWindow && (
-        <div className="flex h-[50vh] md:h-[71vh] gap-4 font-sans">
-          <ChatWindow user={selectedTicketUserDetails} />
+        <div className="h-full gap-4 w-full grid sm:grid-cols-1 lg:grid-cols-4 font-sans">
+          <div className="md:col-span-1 lg:col-span-3">
+            <ChatWindow user={selectedTicketUserDetails} />
+          </div>
           <Sidebar user={selectedTicketUserDetails} />
         </div>
       )}
 
+      {/* Modal */}
       {viewShowModal && (
         <div className="fixed inset-0 z-30 flex justify-end items-center bg-black bg-opacity-25 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm min-w-[350px]  h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
-
+          <div className="relative w-full max-w-sm min-w-[350px] h-[90vh] overflow-auto p-4 rounded-lg bg-white shadow-xl">
             <div className="flex justify-between items-center border-b pb-2 mb-4">
               <h2
                 className="text-lg font-semibold text-[#716F6F]"
@@ -353,22 +382,25 @@ const TicketSkeleton = () => (
                 <label className="w-full h-16 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:bg-gray-50">
                   <input
                     type="file"
-                    accept="*"
-                    onChange={async (e: any) => {
-                      if (e.target.files && e.target.files[0]) {
-                        const file = e.target.files[0];
-                        setSelectedFile(file);
-                      }
-                    }}
+                    accept=".png,.jpg,.jpeg"
+                    onChange={handleFileChange}
                     className="hidden"
                   />
                   <span className="text-sm text-gray-500 flex items-center gap-2">
                     <img className="w-5 h-5" src={fileimg} alt="file" />
-                    {selectedFile ? selectedFile.name : "Drop Files Here Or Click To Upload"}
+                    {selectedFile
+                      ? selectedFile.name
+                      : "Drop Files Here Or Click To Upload"}
                   </span>
                 </label>
-              </div>
 
+                {fileError && (
+                  <p className="text-red-500 text-xs mt-1 font-medium">
+                    {fileError}
+                  </p>
+                )}
+                
+              </div>
 
               {/* Buttons */}
               <div className="flex justify-end gap-3 pt-5">
@@ -392,30 +424,46 @@ const TicketSkeleton = () => (
           </div>
         </div>
       )}
+{!showChatWindow && adminTickets?.last_page > 1 && (
+  <div className="flex justify-center items-center gap-4 mt-6 text-[#716F6F]">
+    {/* Prev Button */}
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className={`px-3 py-1 rounded-md font-medium transition ${
+        currentPage === 1
+          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          : 'bg-[#1BBFCA] text-white hover:bg-[#17a4b0]'
+      }`}
+    >
+      Prev
+    </button>
 
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
+    {/* Page Indicator */}
+    <span className="font-medium text-sm">
+      Page {currentPage} of {adminTickets?.last_page}
+    </span>
 
-        <span className="text-gray-700 text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
+    {/* Next Button */}
+    <button
+      onClick={() =>
+        setCurrentPage((prev) =>
+          Math.min(prev + 1, adminTickets.last_page)
+        )
+      }
+      disabled={currentPage === adminTickets.last_page}
+      className={`px-3 py-1 rounded-md font-medium transition ${
+        currentPage === adminTickets.last_page
+          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          : 'bg-[#1BBFCA] text-white hover:bg-[#17a4b0]'
+      }`}
+    >
+      Next
+    </button>
+  </div>
+)}
 
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+
     </div>
   );
 };

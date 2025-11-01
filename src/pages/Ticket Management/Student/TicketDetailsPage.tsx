@@ -162,13 +162,13 @@ const TicketDetailsPage: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center mb-6 border-t-4 border-[#14b8c6]">
-        <div className="flex items-center justify-between w-full">
-          <p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_01 }}>
+        <div className="flex flex-wrap items-center justify-between w-full">
+          <p style={{ ...FONTS.heading_07, color: COLORS.gray_dark_01 }} className="sm:text-sm">
             TICKET ID :{" "}
             <span className="text-[#14b8c6]">#{ticketData?.ticket_id}</span>
           </p>
           <p
-            className="mt-1"
+            className="mt-1 sm:text-sm"
             style={{ ...FONTS.heading_07, color: COLORS.gray_dark_02 }}
           >
             RAISED DATE & TIME :{" "}
@@ -197,7 +197,7 @@ const TicketDetailsPage: React.FC = () => {
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 h-[70vh]">
         <div className="flex-1 flex flex-col gap-4 relative">
           <div className="bg-white rounded-md border-t-2 shadow p-4">
             <div className="flex items-center gap-3">
@@ -223,7 +223,7 @@ const TicketDetailsPage: React.FC = () => {
           >
             <div
               ref={chatRef}
-              className="h-[300px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
+              className="h-[470px] overflow-y-auto p-4 space-y-4 bg-no-repeat bg-cover bg-center"
             >
               {messages?.map((msg: any, idx: any) => (
                 <div

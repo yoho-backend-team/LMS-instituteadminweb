@@ -64,7 +64,6 @@ const PlacementForm = ({
     if (initialData) reset(initialData);
   }, [initialData, reset]);
 
-
   const onFormSubmit = (data: PlacementFormData) => {
     onSubmit(data);
     onClose();
@@ -73,27 +72,25 @@ const PlacementForm = ({
   const isEditMode = mode === "edit";
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4 sm:px-6">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-lg sm:text-xl md:text-2xl">
               {mode === "add"
                 ? "Add Placement Details"
                 : "Edit Placement Details"}
             </CardTitle>
-            {/* <Button type="button" onClick={onClose} variant="ghost" size="icon" className="h-8 w-8">
-              <X className="h-4 w-4" />
-            </Button> */}
           </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+        <CardContent className="px-3 sm:px-4 md:px-6">
+          <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 sm:space-y-6">
+            {/* Company Details */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Company Details</CardTitle>
+              <CardHeader className="pb-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Company Details</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Company Name</label>
                   <Input
@@ -102,9 +99,10 @@ const PlacementForm = ({
                       required: "Company name is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.companyName && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.companyName.message}
                     </p>
                   )}
@@ -117,9 +115,10 @@ const PlacementForm = ({
                       required: "Company address is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.companyAddress && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.companyAddress.message}
                     </p>
                   )}
@@ -132,9 +131,10 @@ const PlacementForm = ({
                       required: "Contact email is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.contactEmail && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.contactEmail.message}
                     </p>
                   )}
@@ -147,9 +147,10 @@ const PlacementForm = ({
                       required: "Contact number is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.contactNumber && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.contactNumber.message}
                     </p>
                   )}
@@ -159,10 +160,10 @@ const PlacementForm = ({
 
             {/* Job Details */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Job Details</CardTitle>
+              <CardHeader className="pb-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Job Details</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Job Name</label>
                   <Input
@@ -171,9 +172,10 @@ const PlacementForm = ({
                       required: "Job name is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.jobName && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.jobName.message}
                     </p>
                   )}
@@ -186,9 +188,10 @@ const PlacementForm = ({
                       required: "Job description is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.jobDescription && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.jobDescription.message}
                     </p>
                   )}
@@ -199,9 +202,10 @@ const PlacementForm = ({
                     type="text"
                     {...register("skills", { required: "Skills are required" })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.skills && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.skills.message}
                     </p>
                   )}
@@ -211,10 +215,10 @@ const PlacementForm = ({
 
             {/* Student Details */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Student Details</CardTitle>
+              <CardHeader className="pb-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Student Details</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-4 sm:px-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Select Students</label>
                   <Controller
@@ -231,15 +235,19 @@ const PlacementForm = ({
                           value: student._id,
                           label: student.full_name,
                         }))}
-                        className="basic-multi-select"
+                        className="basic-multi-select text-sm"
                         classNamePrefix="select"
                         placeholder="Select students..."
                         closeMenuOnSelect={false}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: base => ({ ...base, zIndex: 9999 })
+                        }}
                       />
                     )}
                   />
                   {errors.selectedStudents && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.selectedStudents.message}
                     </p>
                   )}
@@ -249,10 +257,10 @@ const PlacementForm = ({
 
             {/* Interview Details */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Interview Details</CardTitle>
+              <CardHeader className="pb-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Interview Details</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Interview Date</label>
                   <Input
@@ -261,9 +269,10 @@ const PlacementForm = ({
                       required: "Interview date is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.interviewDate && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.interviewDate.message}
                     </p>
                   )}
@@ -274,14 +283,15 @@ const PlacementForm = ({
                     type="text"
                     {...register("venue", { required: "Venue is required" })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.venue && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.venue.message}
                     </p>
                   )}
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <label className="text-sm font-medium">Address</label>
                   <Input
                     type="text"
@@ -289,9 +299,10 @@ const PlacementForm = ({
                       required: "Address is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.address && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.address.message}
                     </p>
                   )}
@@ -301,10 +312,10 @@ const PlacementForm = ({
 
             {/* Eligibility Criteria */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Eligibility Criteria</CardTitle>
+              <CardHeader className="pb-3 px-4 sm:px-6">
+                <CardTitle className="text-base sm:text-lg">Eligibility Criteria</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-4 sm:px-6">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Course Name</label>
                   <Input
@@ -313,9 +324,10 @@ const PlacementForm = ({
                       required: "Course name is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.courseName && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.courseName.message}
                     </p>
                   )}
@@ -328,28 +340,30 @@ const PlacementForm = ({
                       required: "Education level is required",
                     })}
                     readOnly={isEditMode}
+                    className="text-sm sm:text-base"
                   />
                   {errors.education && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-xs sm:text-sm">
                       {errors.education.message}
                     </p>
                   )}
                 </div>
               </CardContent>
             </Card>
+
             {/* Actions */}
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
               <Button
                 type="button"
                 onClick={onClose}
                 variant="outline"
-                className="!border-[#1BBFCA] !text-[#1BBFCA]"
+                className="!border-[#1BBFCA] !text-[#1BBFCA] order-2 sm:order-1"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-[#1BBFCA] hover:bg-[#17abb4] text-white px-4"
+                className="bg-[#1BBFCA] hover:bg-[#17abb4] text-white px-4 order-1 sm:order-2 mb-3 sm:mb-0"
               >
                 {mode === "add" ? "Add Placement" : "Update Placement"}
               </Button>

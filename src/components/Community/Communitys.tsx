@@ -9,6 +9,7 @@ import socket, { socketConnect, socketDisconnect } from "../../utils/socket";
 import { GetProfileDetail } from "../../features/Auth/service";
 import { getInstituteDetails } from "../../apis/httpEndpoints";
 import type { RootState } from "../../store/store";
+import { ArrowLeft } from "lucide-react"; // Import the arrow icon
 
 interface Message {
   sender: string;
@@ -33,20 +34,23 @@ const Communitys: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [showChatView, setShowChatView] = useState(false); // New state to control chat view visibility on mobile
   const dispatch = useDispatch<any>();
   const communityMessages = useSelector(selectMessages);
   const userIds: any = useSelector((state: RootState) => state.authuser.user)
-
+  
 
   const getProfile = async () => {
     try {
       const res = await GetProfileDetail();
+      console.log("Profile response:", res);
       if (res?.data) {
         setUserId(res.data._id);
 
         const fullName = `${res.data.first_name || ""} ${res.data.last_name || ""
           }`.trim();
         setUserName(fullName);
+        console.log("Profile data:", res.data);
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
@@ -108,9 +112,6 @@ const Communitys: React.FC = () => {
   }, []);
 
   const handleSendMessage = () => {
-    // if (!message.trim() || !selectedBatch || !userId) return;
-
-
     const msgData = {
       content: message.trim(),
       groupId: selectedBatch?._id,
@@ -153,43 +154,76 @@ const Communitys: React.FC = () => {
     })();
   }, [dispatch, selectedBatch, userIds]);
 
+  const handleSelectBatch = (batch: Batch) => {
+    setSelectedBatch(batch);
+    setShowProfile(false);
+    // On mobile, show chat view and hide left side
+    if (window.innerWidth <= 600) {
+      setShowChatView(true);
+    }
+  };
+
+  const handleBackToLeftSide = () => {
+    setShowChatView(false);
+    setSelectedBatch(null);
+    setMessages([]);
+  };
+
+  const handleCloseChat = () => {
+    setSelectedBatch(null);
+    setMessages([]);
+    if (window.innerWidth <= 600) {
+      setShowChatView(false);
+    }
+  };
+
   return (
     <div className="flex justify-between w-full gap-6 bg-white font-poppins">
-      <LeftSide
-        selectedBatch={selectedBatch}
-        onSelectBatch={(batch) => {
-          setSelectedBatch(batch);
-          setShowProfile(false);
-        }}
-        instituteId={instituteId}
-      />
-
-      {selectedBatch && (
-        <ChatView
-          userId={userId}
-          messages={messages}
-          message={message}
-          onChangeMessage={setMessage}
-          onSendMessage={handleSendMessage}
-          onDeleteMessage={handleDeleteMessage}
+      {/* LeftSide - hidden on mobile when chat is open */}
+      <div className={`${showChatView ? 'hidden' : 'block'} w-full md:w-auto`}>
+        <LeftSide
           selectedBatch={selectedBatch}
-          onClose={() => {
-            setSelectedBatch(null);
-            setMessages([]);
-          }}
-          showProfile={showProfile}
-          setShowProfile={setShowProfile}
-          profileData={{
-            name: selectedBatch?.group || "",
-            about: "Hello My name is Zilan ...",
-            email: "felecia_rower@email.com",
-            availability: "Mon-Fri 10AM - 8PM",
-            phone: "+91 98765 43265",
-          }}
-          setProfileData={() => { }}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
+          onSelectBatch={handleSelectBatch}
+          instituteId={instituteId}
         />
+      </div>
+
+      {/* ChatView - conditionally rendered */}
+      {selectedBatch && (
+        <div className={`${showChatView ? 'block' : 'hidden md:block'} w-full md:w-auto relative`}>
+          {/* Back arrow for mobile */}
+          <div className="md:hidden top-4 left-4 z-10">
+            <button
+              onClick={handleBackToLeftSide}
+              className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              <ArrowLeft size={20} className="text-[#1BBFCA]" />
+            </button>
+          </div>
+          
+          <ChatView
+            userId={userId}
+            messages={messages}
+            message={message}
+            onChangeMessage={setMessage}
+            onSendMessage={handleSendMessage}
+            onDeleteMessage={handleDeleteMessage}
+            selectedBatch={selectedBatch}
+            onClose={handleCloseChat}
+            showProfile={showProfile}
+            setShowProfile={setShowProfile}
+            profileData={{
+              name: selectedBatch?.group || "",
+              about: "Hello My name is Zilan ...",
+              email: "felecia_rower@email.com",
+              availability: "Mon-Fri 10AM - 8PM",
+              phone: "+91 98765 43265",
+            }}
+            setProfileData={() => { }}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+          />
+        </div>
       )}
     </div>
   );

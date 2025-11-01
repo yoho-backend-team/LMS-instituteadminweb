@@ -31,25 +31,31 @@ import { getStudentmanagement } from "../../../features/StudentManagement/reduce
 import {
   selectLoading,
   selectStudent,
-} from '../../../features/StudentManagement/reducer/selector';
-import { Avatar, AvatarImage } from '@radix-ui/react-avatar';
-import { GetImageUrl } from '../../../utils/helper';
-import { createstudentdata } from '../../../features/StudentManagement/services/Student';
-import { toast } from 'react-toastify';
-import { uploadFile } from '../../../features/staff/services';
-import ContentLoader from 'react-content-loader';
-import { ArrowLeft } from 'lucide-react';
+} from "../../../features/StudentManagement/reducer/selector";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { GetImageUrl } from "../../../utils/helper";
+import { createstudentdata } from "../../../features/StudentManagement/services/Student";
+import { toast } from "react-toastify";
+import { uploadFile } from "../../../features/staff/services";
+import ContentLoader from "react-content-loader";
+import { ArrowLeft, Phone, Mail, X } from "lucide-react";
 import { GetLocalStorage } from "../../../utils/localStorage";
-import { GetBranchCourseThunks, GetBranchThunks } from "../../../features/Content_Management/reducers/thunks";
-import { Branch, BranchCourse } from "../../../features/Content_Management/reducers/selectors";
+import {
+  GetBranchCourseThunks,
+  GetBranchThunks,
+} from "../../../features/Content_Management/reducers/thunks";
+import {
+  Branch,
+  BranchCourse,
+} from "../../../features/Content_Management/reducers/selectors";
 import PagenationCard from "../../../components/Pagenation/PagenationCard";
 
 const Students = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [courseFilter,] = useState<string | undefined>(undefined);
-  const [batchFilter,] = useState<string | undefined>(undefined);
-  const [statusFilter,] = useState("");
+  const [courseFilter] = useState<string | undefined>(undefined);
+  const [batchFilter] = useState<string | undefined>(undefined);
+  const [statusFilter] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +64,13 @@ const Students = () => {
   const branches = useSelector(Branch);
   const courses = useSelector(BranchCourse);
   const [pages, setpages] = useState(1);
+
+  // New states for modals
+  const [showCallModal, setShowCallModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [newStudentForm, setNewStudentForm] = useState({
     first_name: "",
@@ -81,13 +94,11 @@ const Students = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = async (file: File) => {
-    // Check file type
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       toast.error("Only JPEG and PNG files are allowed");
       return;
     }
 
-    // Check file size (2MB max)
     if (file.size > 2 * 1024 * 1024) {
       toast.error("File size must be less than 2MB");
       return;
@@ -108,7 +119,7 @@ const Students = () => {
 
       setNewStudentForm((prev) => ({
         ...prev,
-        image: file, // Keep the file for preview, we'll use the uploadedPath in the payload
+        image: file,
       }));
 
       toast.success("Profile picture uploaded successfully");
@@ -130,6 +141,34 @@ const Students = () => {
     setNewStudentForm((prev) => ({ ...prev, [id]: value }));
   };
 
+  // Handle call icon click
+  const handleCallClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowCallModal(true);
+  };
+
+  // Handle message icon click - Opens default email client
+
+  // Handle contact icon click
+  const handleContactClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowContactModal(true);
+  };
+
+  // Handle video icon click
+  const handleVideoClick = (student: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowVideoModal(true);
+  };
+
+  // Handle actual phone call
+  const handleMakeCall = (phoneNumber: string) => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
   const handleAddNewStudent = async () => {
     if (
       !newStudentForm.first_name ||
@@ -141,7 +180,6 @@ const Students = () => {
     }
 
     try {
-      // First upload the image if it's a file (not already a URL)
       let imageUrl =
         typeof newStudentForm.image === "string" ? newStudentForm.image : null;
 
@@ -179,11 +217,8 @@ const Students = () => {
         type: "payment",
       };
 
-
-
       await dispatch(createstudentdata(payload)).unwrap();
 
-      // Reset form and close modal on success
       setNewStudentForm({
         first_name: "",
         last_name: "",
@@ -235,7 +270,6 @@ const Students = () => {
     })();
   }, [dispatch, pages]);
 
-
   useEffect(() => {
     dispatch(GetBranchThunks({}));
   }, [dispatch]);
@@ -254,9 +288,10 @@ const Students = () => {
       lastName: student.last_name,
       email: student.email,
       location: student.contact_info
-        ? `${student.contact_info.address1 || ''}, ${student.contact_info.city || student.contact_info.state || ''
+        ? `${student.contact_info.address1 || ""}, ${
+            student.contact_info.city || student.contact_info.state || ""
           }`.trim()
-        : 'Location not specified',
+        : "Location not specified",
       image: student.image,
       phone: student.contact_info?.phone_number,
       altPhone: student.contact_info?.alternate_phone_number,
@@ -270,7 +305,7 @@ const Students = () => {
       state: student.contact_info?.state,
       pincode: student.contact_info?.pincode,
       joinedDate: student.created_at,
-      status: student.status || 'Active',
+      status: student.status || "Active",
       uuid: student?.uuid,
     }));
   };
@@ -285,14 +320,13 @@ const Students = () => {
     });
   };
 
+  // Sample video URL - replace with actual student video URL from your data
+  const sampleVideoUrl =
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+
   if (showAddStudent) {
     return (
-      <div className='p-6'>
-        {/* <div
-          onClick={toggleAddStudent}
-          className=' text-[#1BBFCA] hover:bg-[#1BBFCA]/80 hover:text-white w-fit'>
-          <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
-        </div> */}
+      <div className="p-6">
         <div className="flex items-center justify-between mb-8">
           <Button
             onClick={toggleAddStudent}
@@ -301,53 +335,53 @@ const Students = () => {
             <ArrowLeft size={50} style={{ width: "40px", height: "40px" }} />
           </Button>
         </div>
-        <Card className='mb-6 shadow-md mt-4'>
+        <Card className="mb-6 shadow-md mt-4">
           <CardHeader>
-            <h1 className='text-[20px] text-[#1BBFCA] font-bold'>
+            <h1 className="text-[20px] text-[#1BBFCA] font-bold">
               Add New Student
             </h1>
             <hr></hr>
-            <CardTitle className='text-[20px] font-semibold'>
+            <CardTitle className="text-[20px] font-semibold">
               Upload Profile Picture
             </CardTitle>
-            <p className='text-[14px] text-gray-500'>
+            <p className="text-[14px] text-gray-500">
               Allowed PNG or JPEG. Max size of 2MB.
             </p>
           </CardHeader>
           <CardContent>
             <div
-              className='border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative'
+              className="border-2 border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-[#1BBFCA] transition-colors relative"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
               }}
               onDragLeave={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[#1BBFCA]',
-                  'bg-[#1BBFCA]/10'
+                  "border-[#1BBFCA]",
+                  "bg-[#1BBFCA]/10"
                 );
                 if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                   handleFileUpload(e.dataTransfer.files[0]);
                 }
               }}
-              onClick={() => document.getElementById('file-upload')?.click()}
+              onClick={() => document.getElementById("file-upload")?.click()}
             >
               <input
-                id='file-upload'
-                type='file'
-                accept='image/png, image/jpeg'
-                className='hidden'
+                id="file-upload"
+                type="file"
+                accept="image/png, image/jpeg"
+                className="hidden"
                 ref={fileInputRef}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
@@ -356,24 +390,24 @@ const Students = () => {
                 }}
               />
               {newStudentForm.image ? (
-                <div className='flex flex-col items-center'>
+                <div className="flex flex-col items-center">
                   <img
                     src={
-                      typeof newStudentForm.image === 'string'
+                      typeof newStudentForm.image === "string"
                         ? newStudentForm.image
                         : URL.createObjectURL(newStudentForm.image)
                     }
-                    alt='Preview'
-                    className='h-32 w-32 rounded-full object-cover mb-4'
+                    alt="Preview"
+                    className="h-32 w-32 rounded-full object-cover mb-4"
                   />
-                  <p className='text-[14px] text-gray-700'>
-                    {typeof newStudentForm.image === 'string'
-                      ? 'Image uploaded'
+                  <p className="text-[14px] text-gray-700">
+                    {typeof newStudentForm.image === "string"
+                      ? "Image uploaded"
                       : newStudentForm.image.name}
                   </p>
                   <Button
-                    variant='ghost'
-                    className='mt-2 text-red-500 hover:text-red-700'
+                    variant="ghost"
+                    className="mt-2 text-red-500 hover:text-red-700"
                     onClick={(e: any) => {
                       e.stopPropagation();
                       setNewStudentForm((prev) => ({ ...prev, image: null }));
@@ -384,12 +418,12 @@ const Students = () => {
                 </div>
               ) : (
                 <>
-                  <RiUploadCloudFill className='mx-auto text-[#1BBFCA] text-3xl mb-2' />
-                  <p className='text-[14px] text-gray-500'>
+                  <RiUploadCloudFill className="mx-auto text-[#1BBFCA] text-3xl mb-2" />
+                  <p className="text-[14px] text-gray-500">
                     Drop files here or click to upload
                   </p>
                   {isUploading && (
-                    <p className='text-[14px] text-gray-500 mt-2'>
+                    <p className="text-[14px] text-gray-500 mt-2">
                       Uploading...
                     </p>
                   )}
@@ -399,7 +433,6 @@ const Students = () => {
           </CardContent>
         </Card>
 
-        {/* Rest of your form remains exactly the same */}
         <Card className="mb-6 shadow-md">
           <CardHeader>
             <CardTitle className="text-[20px] font-semibold">
@@ -645,13 +678,9 @@ const Students = () => {
       .toLowerCase()
       .includes(searchInput.toLowerCase());
 
-    const matchesCourse = courseFilter
-      ? student.course === courseFilter
-      : true;
+    const matchesCourse = courseFilter ? student.course === courseFilter : true;
 
-    const matchesBatch = batchFilter
-      ? student.batch === batchFilter
-      : true;
+    const matchesBatch = batchFilter ? student.batch === batchFilter : true;
 
     const matchesStatus = statusFilter
       ? student.status?.toLowerCase() === statusFilter.toLowerCase()
@@ -661,80 +690,194 @@ const Students = () => {
   });
 
   return (
-    <div className="p-6">
+    <div className="p-6 w-full">
+      {/* Call Modal */}
+      {showCallModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Call Student</h3>
+              <button
+                onClick={() => setShowCallModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="text-center mb-6">
+              <p className="text-gray-600 mb-2">Calling:</p>
+              <p className="text-xl font-semibold">{selectedStudent.name}</p>
+              <p className="text-gray-500">
+                {selectedStudent.phone || "No phone number available"}
+              </p>
+            </div>
+            <div className="flex justify-center space-x-4">
+              <Button
+                onClick={() => {
+                  if (selectedStudent.phone) {
+                    handleMakeCall(selectedStudent.phone);
+                  } else {
+                    toast.error("No phone number available for this student");
+                  }
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white"
+              >
+                <Phone className="mr-2" size={16} />
+                Call Now
+              </Button>
+              <Button onClick={() => setShowCallModal(false)} variant="outline">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Modal */}
+      {showContactModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Contact Options</h3>
+              <button
+                onClick={() => setShowContactModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <Button
+                onClick={() => {
+                  if (selectedStudent.phone) {
+                    handleMakeCall(selectedStudent.phone);
+                    setShowContactModal(false);
+                  } else {
+                    toast.error("No phone number available");
+                  }
+                }}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <Phone className="mr-3" size={16} />
+                Call Primary: {selectedStudent.phone || "Not available"}
+              </Button>
+              {selectedStudent.altPhone && (
+                <Button
+                  onClick={() => {
+                    handleMakeCall(selectedStudent.altPhone);
+                    setShowContactModal(false);
+                  }}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Phone className="mr-3" size={16} />
+                  Call Alternate: {selectedStudent.altPhone}
+                </Button>
+              )}
+              <Button
+                onClick={() => {
+                  const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${selectedStudent.email}&su=Hello&body=Your message here`;
+                  window.open(gmailUrl, "_blank"); // opens Gmail compose in a new tab
+                  setShowContactModal(false);
+                }}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <Mail className="mr-3" size={16} />
+                Send Email: {selectedStudent.email}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Modal */}
+      {showVideoModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-3/4 max-w-4xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">
+                Student Video - {selectedStudent.name}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowVideoModal(false);
+                  if (videoRef.current) {
+                    videoRef.current.pause();
+                  }
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="bg-black rounded-lg overflow-hidden">
+              <video
+                ref={videoRef}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-96"
+                onEnded={() => console.log("Video ended")}
+                onError={() => toast.error("Error playing video")}
+              >
+                <source src={sampleVideoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-gray-600">
+                Playing student-related video for {selectedStudent.name}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-[24px] font-semibold">Student</h4>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
         <Button
           variant="outline"
-          className="px-4 py-2 pr-16px pl-16px w-[153px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
           onClick={toggleFilters}
+          className="
+      w-full sm:w-auto 
+      max-w-xs sm:max-w-[180px] 
+      px-4 sm:px-6 
+      py-2 sm:py-3 
+      text-sm sm:text-base md:text-lg 
+      bg-[#1BBFCA] text-white 
+      hover:bg-[#1BBFCA]/90 
+      flex items-center justify-center gap-2
+    "
         >
-          <FaSlidersH className="text-white text-[18px]" />
+          <FaSlidersH className="text-base sm:text-lg md:text-xl" />
           {showFilters ? "Hide Filter" : "Show Filter"}
         </Button>
 
         <Button
-          className="px-4 py-2 pr-16px pl-16px w-[205px] h-[48px] bg-[#1BBFCA] text-white text-[16px] hover:bg-[#1BBFCA]/90 flex items-center gap-2"
           onClick={toggleAddStudent}
+          className="
+      w-full sm:w-auto 
+      max-w-xs sm:max-w-[220px] 
+      px-4 sm:px-6 
+      py-2 sm:py-3 
+      text-sm sm:text-base md:text-lg 
+      bg-[#1BBFCA] text-white 
+      hover:bg-[#1BBFCA]/90 
+      flex items-center justify-center gap-2
+    "
         >
-          <BsPlusLg className="text-white text-[18px]" />
+          <BsPlusLg className="text-base sm:text-lg md:text-xl" />
           Add New Student
         </Button>
       </div>
 
       {showFilters && (
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 space-y-6 border border-gray-200">
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Course
-              </label>
-              <Select value={courseFilter} onValueChange={setCourseFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="web-dev">Web Development</SelectItem>
-                  <SelectItem value="data-science">Data Science</SelectItem>
-                  <SelectItem value="mobile-dev">Mobile Development</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Batches
-              </label>
-              <Select value={batchFilter} onValueChange={setBatchFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2022">2022</SelectItem>
-                  <SelectItem value="2021">2021</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* <div className="space-y-2">
-              <label className="text-[16px] font-medium text-gray-700">
-                Filter by Status
-              </label>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full h-10 border border-gray-300 hover:border-gray-400 focus:border-gray-400 focus:outline-none focus:ring-0 transition duration-150">
-                  <SelectValue className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300 shadow-md bg-white">
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
             <div className="space-y-2">
               <div className="text-sm font-medium text-transparent select-none">
                 <label className="text-[16px] font-medium text-gray-700">
@@ -753,7 +896,7 @@ const Students = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-4">
         {loading ? (
           [...Array(6)].map((_, index) => (
             <ContentLoader
@@ -811,11 +954,35 @@ const Students = () => {
                 </div>
               </CardContent>
 
-              <CardFooter className="flex justify-center gap-[30px] items-center px-4 pb-4">
-                <img className="w-8 h-8" src={call} alt="Call" />
-                <img className="w-8 h-8" src={msg} alt="Message" />
-                <img className="w-8 h-8" src={person} alt="Profile" />
-                <img className="w-8 h-8" src={send} alt="Send" />
+              <CardFooter className="grid grid-cols-4 sm:grid-cols-4 md:gap-[25px] lg:gap-[30px] xl:gap-[30px] sm:gap-[20px] items-center px-4 pb-4">
+                <button
+                  onClick={(e) => handleCallClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={call} alt="Call" />
+                </button>
+                <button
+                  onClick={() => {
+                    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${student.email}&su=Hello&body=Your message here`;
+                    window.open(gmailUrl, "_blank");
+                  }}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={msg} alt="Message" />
+                </button>
+
+                <button
+                  onClick={(e) => handleContactClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={person} alt="Profile" />
+                </button>
+                <button
+                  onClick={(e) => handleVideoClick(student, e)}
+                  className="flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <img className="w-6 h-6" src={send} alt="Send" />
+                </button>
               </CardFooter>
             </Card>
           ))
@@ -828,10 +995,12 @@ const Students = () => {
         )}
       </div>
 
-
-      <PagenationCard page={pages} perpage={studentData?.pagination?.perPage} totalpage={studentData?.pagination?.totalPages} setpage={setpages} />
-
-
+      <PagenationCard
+        page={pages}
+        perpage={studentData?.pagination?.perPage}
+        totalpage={studentData?.pagination?.totalPages}
+        setpage={setpages}
+      />
     </div>
   );
 };

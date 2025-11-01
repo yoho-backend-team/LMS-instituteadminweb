@@ -62,7 +62,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
   const [amount, setAmount] = useState("");
   const feeList = fees ?? [];
 
-
   const [errors, setErrors] = useState({
     branchId: false,
     selectedCourse: false,
@@ -90,7 +89,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
   useEffect(() => {
     if (selectedCourse) {
-      dispatch(GetBatchThunk({course: selectedCourse}));
+      dispatch(GetBatchThunk({ course: selectedCourse }));
     }
   }, [selectedCourse, dispatch, branchId, instituteId]);
 
@@ -105,8 +104,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     }
   }, [selectedBatch, branchId, instituteId, dispatch]);
 
-  
-
   useEffect(() => {
     if (editData) {
       setBranchId(editData.branch);
@@ -114,7 +111,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
       setSelectedBatch(editData.batchId || "");
       setSelectedStudent(editData.studentId);
       setSelectedFee(editData.feeId || "");
-      setAmount(editData.payment.replace(/,/g, "") || "");
+      setAmount(editData.paid || "");
     } else {
       setBranchId("");
       setSelectedCourse("");
@@ -133,7 +130,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     });
   }, [editData]);
 
-  console.log(editData,"editdata")
+  console.log(editData, "editdata");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,7 +184,7 @@ const RefundAdd: React.FC<RefundAddProps> = ({
 
     if (editData?.uuid) {
       const updatePayload = { uuid: editData.uuid, ...apiPayload };
-   
+
       await updateRefund(updatePayload);
     } else {
       dispatch(CreateRefundThunk(apiPayload));
@@ -201,11 +198,6 @@ const RefundAdd: React.FC<RefundAddProps> = ({
     `h-10 border px-2 rounded w-full ${
       error ? "border-red-500" : "border-gray-300"
     }`;
-
-
-
-
-    
 
   return (
     <div className="relative text-[#716F6F] p-4 h-full">
@@ -316,52 +308,54 @@ const RefundAdd: React.FC<RefundAddProps> = ({
             )}
           </div>
 
-         
-<div className="flex flex-col p-1">
-  <label>Student Fee</label>
-  <select
-    value={selectedFee}
-    onChange={(e) => {
-      const selectedFeeId = e.target.value;
-      setSelectedFee(selectedFeeId);
-      const fee = feeList.find((f: any) => f._id === selectedFeeId);
-      if (fee) {
-        setAmount(fee.paid_amount?.toString() || "0");
-      }
-    }}
-    className={getInputClass(errors.selectedFee)}
-    disabled={!selectedStudent}
-  >
-    <option value="">Select Fee</option>
-    {selectedStudent ? (
-      (() => {
-        const studentFees = feeList.filter(
-          (fee: any) =>
-            fee.student === selectedStudent || fee.student?.uuid === selectedStudent
-        );
+          <div className="flex flex-col p-1">
+            <label>Student Fee</label>
+            <select
+              value={selectedFee}
+              onChange={(e) => {
+                const selectedFeeId = e.target.value;
+                setSelectedFee(selectedFeeId);
+                const fee = feeList.find((f: any) => f._id === selectedFeeId);
+                if (fee) {
+                  setAmount(fee.paid_amount?.toString() || "0");
+                }
+              }}
+              className={getInputClass(errors.selectedFee)}
+              disabled={!selectedStudent}
+            >
+              <option value="">Select Fee</option>
+              {selectedStudent ? (
+                (() => {
+                  const studentFees = feeList.filter(
+                    (fee: any) =>
+                      fee.student === selectedStudent ||
+                      fee.student?.uuid === selectedStudent
+                  );
 
-        if (studentFees.length > 0) {
-          return studentFees.map((fee: any) => {
-            const paidAmount = fee?.paid_amount ?? 0;
-            return (
-              <option key={fee._id} value={fee._id}>
-                Paid: ₹{paidAmount.toLocaleString()}
-              </option>
-            );
-          });
-        }
+                  if (studentFees.length > 0) {
+                    return studentFees.map((fee: any) => {
+                      const paidAmount = fee?.paid_amount ?? 0;
+                      return (
+                        <option key={fee._id} value={fee._id}>
+                          Paid: ₹{paidAmount.toLocaleString()}
+                        </option>
+                      );
+                    });
+                  }
 
-        return <option disabled>No available fees for this student</option>;
-      })()
-    ) : (
-      <option disabled>Please select a student first</option>
-    )}
-  </select>
+                  return (
+                    <option disabled>No available fees for this student</option>
+                  );
+                })()
+              ) : (
+                <option disabled>Please select a student first</option>
+              )}
+            </select>
 
-  {errors.selectedFee && (
-    <p className="text-red-500 text-sm">Fee is required.</p>
-  )}
-</div>
+            {errors.selectedFee && (
+              <p className="text-red-500 text-sm">Fee is required.</p>
+            )}
+          </div>
 
           {/* Amount Input */}
           <div className="flex flex-col p-1">
@@ -381,17 +375,17 @@ const RefundAdd: React.FC<RefundAddProps> = ({
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end gap-4 mt-auto">
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 sm:mt-6 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
-            className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-1 rounded font-semibold"
+            className="text-[#1BBFCA] border border-[#1BBFCA] px-4 py-2 sm:py-2 rounded font-semibold text-sm sm:text-base order-2 sm:order-1"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-[#1BBFCA] text-white px-4 py-1 rounded font-semibold"
+            className="bg-[#1BBFCA] text-white px-4 py-2 sm:py-2 rounded font-semibold text-sm sm:text-base order-1 sm:order-2 mb-3 sm:mb-0"
           >
             {editData ? "Update" : "Submit"}
           </button>

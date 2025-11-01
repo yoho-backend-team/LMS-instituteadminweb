@@ -36,8 +36,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
   const dispatch = useDispatch<AppDispatch>()
 
-
-
   const handleStatusChange = async (newStatus: "Active" | "Inactive") => {
     try {
       setStatus(newStatus);
@@ -57,7 +55,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl ml-4 shadow-md p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full md:w-auto min-w-[220px] max-w-[374px]">
+    <div className="bg-white rounded-2xl shadow-md p-4 sm:p-5 mb-4 border border-gray-200 flex flex-col gap-y-4 w-full max-w-[374px] mx-auto">
       <div className="flex justify-between items-center">
         <span className="bg-[#1BBFCA33] text-[#1BBFCA] text-sm font-medium px-3 py-1 rounded-md">
           {category_name}
@@ -71,12 +69,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <img
           src={`${import.meta.env.VITE_PUBLIC_API_URL}/${image}`}
           alt="Course"
-          className="rounded-md w-full h-30 object-cover"
+          className="rounded-md w-full h-full object-cover"
         />
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <h2 className="text-lg font-semibold text-[#1BBFCA]">{course_name}</h2>
+        <h2 className="text-lg font-semibold text-[#1BBFCA] line-clamp-2">{course_name}</h2>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <img src={dots} alt="dot" className="w-4 h-4" />
@@ -130,7 +128,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
         <button
           onClick={onView}
-          className="bg-green-500 hover:bg-green-600 text-white text-sm px-5 py-1.5 rounded-md"
+          className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-1.5 rounded-md"
         >
           View
         </button>

@@ -232,6 +232,7 @@ const generateEndpoints = () => {
 			institute_subscription: `/api/institutes/payments/subscription/`,
 			status_check: `/api/subscription/institute-subscription/status/`,
 			upgrade_request: `/api/subscription/institute/upgrade-subscription/`,
+			cancel_request: `/api/subscription/institute/upgrade-subscription/:instituteId/cancelsubscription`
 		},
 		activity: {
 			get: '/api/institutes/user/activities/',

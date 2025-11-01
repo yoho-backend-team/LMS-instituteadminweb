@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import circle from "../../assets/navbar/circle.png";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,13 +32,50 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
   const batches = useSelector(selectcommunity);
   const dispatch = useDispatch<any>();
   const loading = useSelector(selectLoading);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCommunity({}));
   }, [dispatch]);
 
+  // Check if screen is mobile size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 425);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  const handleBatchClick = (batch: any) => {
+    onSelectBatch(batch);
+    
+    // Hide left side on mobile after selection
+    if (isMobile) {
+      // You can either hide this component or let the parent handle the layout
+      // Option 1: Hide this component (requires parent state management)
+      // Option 2: Add a CSS class to hide it
+      const leftSide = document.querySelector('.left-side-container');
+      if (leftSide) {
+        leftSide.classList.add('hidden');
+      }
+    }
+  };
+
+  // If on mobile and a batch is selected, don't render the left side
+  if (isMobile && selectedBatch) {
+    return null;
+  }
+
   return (
-    <div className="w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-5 px-4 h-[83vh] rounded-lg overflow-y-auto">
+    <div className="left-side-container w-[300px] bg-[#1BBFCA] text-white flex flex-col items-center pt-5 px-4 h-[83vh] rounded-lg overflow-y-auto">
       <div className="text-xl text-[#BBFCA] font-bold mr-auto mb-4 -mt-2">
         Batches
       </div>
@@ -57,9 +94,10 @@ const LeftSide: React.FC<Props> = ({ selectedBatch, onSelectBatch }) => {
           batches.map((batch: any, index: number) => (
             <div
               key={index}
-              onClick={() => onSelectBatch(batch)}
-              className={`w-[270px] h-[80px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
-                }`}
+              onClick={() => handleBatchClick(batch)}
+              className={`h-[80px] w-[270px] sm:w-[220px] lg:[270px] bg-white rounded-xl shadow-md p-3 flex items-center cursor-pointer transition ${
+                selectedBatch?._id === batch._id ? "ring-2 ring-cyan-600" : ""
+              }`}
             >
               <img
                 src={GetImageUrl(batch?.groupimage) ?? circle}

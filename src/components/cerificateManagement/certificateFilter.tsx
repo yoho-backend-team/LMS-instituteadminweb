@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 import { TbXboxXFilled } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
@@ -93,42 +92,43 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
 
   return (
     <>
-      <div className="bg-[#1BBFCA] px-6 py-3 rounded-xl flex justify-between items-center">
-        <h2 className="text-white text-lg font-semibold flex">
+      <div className="bg-[#1BBFCA] px-4 lg:px-6 py-3 rounded-xl flex justify-between items-center">
+        <h2 className="text-white text-base lg:text-lg font-semibold flex items-center">
           <FaFilter
-            className="mt-1 mr-2"
+            className="mt-0.5 lg:mt-1 mr-2 flex-shrink-0"
             style={{ ...FONTS.heading_06_bold }}
           />{" "}
           FILTER
         </h2>
         <button
           onClick={() => setShowFilter(!showFilter)}
-          className="bg-white w-10 h-10 p-1 rounded"
+          className="bg-white w-8 h-8 lg:w-10 lg:h-10 p-1 rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
         >
           {showFilter ? (
-            <TbXboxXFilled className=" w-6 h-6 ml-1" />
+            <TbXboxXFilled className="w-5 h-5 lg:w-6 lg:h-6 text-gray-600" />
           ) : (
-            <span className="text-green-700 font-semibold">Go</span>
+            <span className="text-green-700 font-semibold text-sm lg:text-base">Go</span>
           )}
         </button>
       </div>
 
       {showFilter && (
-        <div className=" bg-white mt-5 rounded-xl p-4 shadow-md">
-          <div className="font-normal text-xl text-[#716F6F] mb-5">
+        <div className="bg-white mt-4 lg:mt-5 rounded-xl p-4 lg:p-6 shadow-md">
+          <div className="font-normal text-lg lg:text-xl text-[#716F6F] mb-4 lg:mb-5">
             <h2>Student Certificates</h2>
           </div>
-          <div className=" grid md:grid-cols-2 gap-3">
-
-            <div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-4">
+            {/* Branch Filter */}
+            <div className="sm:col-span-1">
               <label
-                className="block text-lg font-medium text-[#716F6F] mb-1"
+                className="block text-base lg:text-lg font-medium text-[#716F6F] mb-1 lg:mb-2"
                 style={{ ...FONTS.heading_08 }}
               >
                 Branch
               </label>
               <select
-                className="w-full border h-13 px-3 py-2 rounded"
+                className="w-full border h-10 lg:h-13 px-3 py-2 rounded text-sm lg:text-base"
                 value={selectedBranch}
                 onChange={(e) => {
                   const selected = branches.find(
@@ -148,15 +148,16 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               </select>
             </div>
 
-            <div>
+            {/* Course Filter */}
+            <div className="sm:col-span-1">
               <label
-                className="block text-lg font-medium text-[#716F6F] mb-1"
+                className="block text-base lg:text-lg font-medium text-[#716F6F] mb-1 lg:mb-2"
                 style={{ ...FONTS.heading_08 }}
               >
                 Course
               </label>
               <select
-                className="w-full border h-13 px-3 py-2 rounded"
+                className="w-full border h-10 lg:h-13 px-3 py-2 rounded text-sm lg:text-base"
                 value={selectedCourse}
                 onChange={(e) => {
                   const selected = courses.find(
@@ -176,51 +177,42 @@ export const CertificateFilter: React.FC<CertificateFilterProps> = ({
               </select>
             </div>
 
-            {/* <div>
+            {/* Search Input */}
+            <div className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
               <label
-                className="block text-lg font-medium text-[#716F6F] mb-1"
-                style={{ ...FONTS.heading_08 }}
+                className="block text-base lg:text-lg font-medium text-[#716F6F] mb-1 lg:mb-2 invisible"
               >
-                Batch
+                Search
               </label>
-              <select
-                className="w-full border h-13 px-3 py-2 rounded"
-                value={selectedBatch}
-                onChange={(e) => setSelectedBatch(e.target.value)}
-                style={{ ...FONTS.heading_08 }}
-              >
-                <option value="">All</option>
-                {allBatches?.map((batch) => (
-                  <option key={batch._id} value={batch._id}>
-                    {batch.batch_name}
-                  </option>
-                ))}
-              </select>
-            </div> */}
-            <div>
               <input
                 type="text"
-                className="w-full text-lg border mt-8 h-13 px-3 py-2 rounded"
-                placeholder="Search Certificates"
+                className="w-full text-sm lg:text-base border h-10 lg:h-13 px-3 py-2 rounded"
+                placeholder="Search Certificates..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex my-4 pt-6 ml-28">
+
+            {/* Add Button */}
+            <div className="sm:col-span-2 lg:col-span-1 xl:col-span-1 flex items-end">
               <button
                 onClick={onAdd}
-                className="bg-[#1BBFCA] text-white px-4 py-2 w-3.5/5 flex rounded-lg"
+                className="bg-[#1BBFCA] text-white px-3 lg:px-4 py-2 w-full flex items-center justify-center rounded-lg hover:bg-[#17a8b3] transition-colors text-sm lg:text-base"
               >
                 <IoMdAdd
-                  className="pr-2 h-6 w-7"
+                  className="mr-1 lg:mr-2 h-5 w-5 lg:h-6 lg:w-6 flex-shrink-0"
                   style={{ ...FONTS.heading_06_bold }}
                 />{" "}
-                Add Student Certificate
+                <span className="truncate">Add Certificate</span>
               </button>
             </div>
           </div>
+
+         
         </div>
       )}
+
+      
     </>
   );
 };

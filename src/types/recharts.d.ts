@@ -21,4 +21,5 @@ declare module 'recharts' {
   export const XAxis: ComponentType<any>;
   export const YAxis: ComponentType<any>;
   export const LabelList: ComponentType<LabelListProps>;
+  export const ResponsiveContainer: ComponentType<any>;
 }

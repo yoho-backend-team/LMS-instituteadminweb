@@ -115,7 +115,7 @@ const StudentDetails = () => {
         </h1>
       </div>
 
-      <div className="flex gap-[15px] w-full justify-between">
+      {/* <div className="flex gap-[15px] w-full justify-between">
         <div className="rounded-[12px] grid gap-[10px] bg-[#1996E333] pr-3.5 pb-3.5 w-full">
           <div className={`flex items-center`} style={{ ...FONTS.heading_05 }}>
             <img className="w-[92px] h-[92px]" src={card1} alt="Course" />
@@ -169,88 +169,226 @@ const StudentDetails = () => {
             )}
           </h1>
         </div>
-      </div>
+      </div> */}
 
-      <div className="w-full">
-        <h1
-          className={`text-[${COLORS.gray_dark_02}] !font-semibold mb-4`}
-          style={{ ...FONTS.heading_05 }}
-        >
-          Attendance Report
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {attendance?.students?.map((card, index) => (
-            <div
-              key={index}
-              className="shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px] p-[16px] grid gap-[20px] bg-white"
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+        {/* Course Card */}
+        <div className="rounded-[12px] p-3.5 bg-[#1996E333] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <img
+              className="
+          w-10 h-10
+          sm:w-12 sm:h-12
+          md:w-14 md:h-14
+          lg:w-16 lg:h-16
+          xl:w-20 xl:h-20
+          2xl:w-24 2xl:h-24
+          flex-shrink-0
+        "
+              src={card1}
+              alt="Course"
+            />
+            <h3
+              className={`
+          text-[${COLORS.gray_dark_02}]
+          text-sm sm:text-base md:text-base lg:text-lg xl:text-xl 2xl:text-2xl
+          break-words
+        `}
             >
-              <div className="flex gap-3.5 items-center">
-                <img
-                  src={GetImageUrl(card?.student?.image) ?? undefined}
-                  className="w-[62px] h-[62px] rounded-full object-cover"
-                  alt="Student"
-                />
-                <div className="mr-4">
-                  <p className={`text-[${COLORS.gray_dark_02}] font-bold`}>
-                    {card?.student?.full_name}
-                  </p>
-                  <p
-                    className={`text-[${COLORS.gray_light}]`}
-                    style={{ ...FONTS.heading_10 }}
-                  >
-                    Email: {card?.student?.email}
-                  </p>
-                </div>
-              </div>
-              <div className="flex justify-center">
-                <h1 className={`text-[${COLORS.gray_dark_02}] font-bold`}>
-                  <span className="font-bold">ID : </span>
-                  {card?.student?.userDetail?.studentId || "STD-001"}
-                </h1>
-              </div>
+              Course
+            </h3>
+          </div>
+          <h1
+            className={`text-[${COLORS.gray_light}] !font-semibold break-words`}
+            style={{ ...FONTS.heading_02 }}
+          >
+            {attendance?.student_class?.course?.course_name}
+          </h1>
+        </div>
 
-              <div className="flex justify-end">
-                <Select
-                  onValueChange={(value) =>
-                    handleStatusValue(value, card?.student?._id)
-                  }
-                >
-                  <SelectTrigger
-                    className={`w-[110px] h-[48px] border text-white rounded-[8px] pr-[16px] pl-[16px] bg-[${COLORS.primary}]`}
-                  >
-                    <SelectValue
-                      placeholder={
-                        card?.attedence === null
-                          ? "Status"
-                          : card?.attedence.charAt(0).toUpperCase() +
-                          card.attedence.slice(1)
-                      }
-                      className={`p-2 bg-white`}
-                    />
-                    <ChevronDownIcon className="size-4 opacity-50 text-[#FFFFFF]" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white text-black border p-2 rounded-[8px]">
-                    <SelectItem
-                      value="absent"
-                      className={`hover:bg-[${COLORS.primary}] text-[${COLORS.primary}] bg-white focus:bg-[${COLORS.primary}] p-2 my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
-                      style={{ ...FONTS.heading_08 }}
-                    >
-                      Absent
-                    </SelectItem>
-                    <SelectItem
-                      value="present"
-                      className={`hover:bg-[${COLORS.primary}] text-[${COLORS.primary}] bg-white focus:bg-[${COLORS.primary}] p-2 focus:text-white rounded-[8px] cursor-pointer`}
-                      style={{ ...FONTS.heading_08 }}
-                    >
-                      Present
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          ))}
+        {/* Batch Card */}
+        <div className="rounded-[12px] p-3.5 bg-[#8519E333] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <img
+              className="
+          w-10 h-10
+          sm:w-12 sm:h-12
+          md:w-14 md:h-14
+          lg:w-16 lg:h-16
+          xl:w-20 xl:h-20
+          2xl:w-24 2xl:h-24
+          flex-shrink-0
+        "
+              src={card2}
+              alt="Batch"
+            />
+            <h3
+              className={`
+          text-[${COLORS.gray_dark_02}]
+          text-sm sm:text-base md:text-base lg:text-lg xl:text-xl 2xl:text-2xl
+          break-words
+        `}
+            >
+              Batch
+            </h3>
+          </div>
+          <h1
+            className={`text-[${COLORS.gray_light}] !font-semibold break-words`}
+            style={{ ...FONTS.heading_02 }}
+          >
+            {attendance?.student_class?.batch?.id}
+          </h1>
+        </div>
+
+        {/* Duration Card */}
+        <div className="rounded-[12px] p-3.5 bg-[#E3711933] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <img
+              className="
+          w-10 h-10
+          sm:w-12 sm:h-12
+          md:w-14 md:h-14
+          lg:w-16 lg:h-16
+          xl:w-20 xl:h-20
+          2xl:w-24 2xl:h-24
+          flex-shrink-0
+        "
+              src={card3}
+              alt="Duration"
+            />
+            <h3
+              className={`
+          text-[${COLORS.gray_dark_02}]
+          text-sm sm:text-base md:text-base lg:text-lg xl:text-xl 2xl:text-2xl
+          break-words
+        `}
+            >
+              Duration
+            </h3>
+          </div>
+          <h1
+            className={`text-[${COLORS.gray_light}] !font-semibold break-words`}
+            style={{ ...FONTS.heading_02 }}
+          >
+            {attendance?.student_class?.course?.duration}
+          </h1>
+        </div>
+
+        {/* Start Date Card */}
+        <div className="rounded-[12px] p-3.5 bg-[#19E35C33] flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <img
+              className="
+          w-10 h-10
+          sm:w-12 sm:h-12
+          md:w-14 md:h-14
+          lg:w-16 lg:h-16
+          xl:w-20 xl:h-20
+          2xl:w-24 2xl:h-24
+          flex-shrink-0
+        "
+              src={card4}
+              alt="Start Date"
+            />
+            <h3
+              className={`
+          text-[${COLORS.gray_dark_02}]
+          text-sm sm:text-base md:text-base lg:text-lg xl:text-xl 2xl:text-2xl
+          break-words
+        `}
+            >
+              Start Date
+            </h3>
+          </div>
+          <h1
+            className={`text-[${COLORS.gray_light}] !font-semibold break-words`}
+            style={{ ...FONTS.heading_02 }}
+          >
+            {dayjs(attendance?.student_class?.course?.start_date).format("DD-MM-YYYY")}
+          </h1>
         </div>
       </div>
+
+
+
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 w-full">
+        {attendance?.students?.map((card, index) => (
+          <div
+            key={index}
+            className="shadow-[0px_4px_20px_rgba(0,0,0,0.25)] rounded-[12px] p-4 flex flex-col gap-4 bg-white"
+          >
+            <div className="flex gap-3 items-center">
+              <img
+                src={GetImageUrl(card?.student?.image) ?? undefined}
+                alt="Student"
+                className="
+            w-10 h-10
+            sm:w-12 sm:h-12
+            md:w-14 md:h-14
+            lg:w-16 lg:h-16
+            xl:w-20 xl:h-20
+            2xl:w-24 2xl:h-24
+            rounded-full object-cover flex-shrink-0
+          "
+              />
+              <div className="flex-1 min-w-0">
+                <p className={`text-[${COLORS.gray_dark_02}] font-bold truncate`}>
+                  {card?.student?.full_name}
+                </p>
+                <p
+                  className={`text-[${COLORS.gray_light}] truncate`}
+                  style={{ ...FONTS.heading_10 }}
+                >
+                  Email: {card?.student?.email}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <h1 className={`text-[${COLORS.gray_dark_02}] font-bold truncate`}>
+                <span className="font-bold">ID : </span>
+                {card?.student?.userDetail?.studentId || "STD-001"}
+              </h1>
+            </div>
+
+            <div className="flex justify-end">
+              <Select
+                onValueChange={(value) => handleStatusValue(value, card?.student?._id)}
+              >
+                <SelectTrigger
+                  className={`w-[110px] h-[40px] sm:h-[44px] md:h-[48px] border text-white rounded-[8px] px-4 bg-[${COLORS.primary}]`}
+                >
+                  <SelectValue
+                    placeholder={
+                      card?.attedence === null
+                        ? "Status"
+                        : card?.attedence.charAt(0).toUpperCase() + card.attedence.slice(1)
+                    }
+                    className="truncate p-1"
+                  />
+                  <ChevronDownIcon className="size-4 opacity-50 text-white" />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black border p-2 rounded-[8px]">
+                  <SelectItem
+                    value="absent"
+                    className={`hover:bg-[${COLORS.primary}] text-[${COLORS.primary}] bg-white p-2 my-1.5 focus:text-white rounded-[8px] cursor-pointer`}
+                  >
+                    Absent
+                  </SelectItem>
+                  <SelectItem
+                    value="present"
+                    className={`hover:bg-[${COLORS.primary}] text-[${COLORS.primary}] bg-white p-2 focus:text-white rounded-[8px] cursor-pointer`}
+                  >
+                    Present
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ))}
+      </div>
+
 
       {alertModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40">
