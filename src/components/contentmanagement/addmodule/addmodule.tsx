@@ -11,6 +11,7 @@ import {
 	Branch,
 	BranchCourse,
 } from '../../../features/Content_Management/reducers/selectors';
+import toast from 'react-hot-toast';
 
 interface Props {
 	onClose: () => void;
@@ -61,6 +62,7 @@ const Addmodule = ({ onClose, onSubmit }: Props) => {
 			onClose();
 		} catch (error) {
 			console.error('Failed to add module', error);
+			toast.error('Failed to add the module');
 		}
 	};
 

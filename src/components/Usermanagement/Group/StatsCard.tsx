@@ -16,11 +16,14 @@ import {
 } from '../../../features/Users_Management/Group/reducers/thunks';
 import { StatusDropdown } from './StatusDropdown';
 import ContentLoader from 'react-content-loader';
+import { ConfirmationPopup } from '../../BranchManagement/ConfirmationPopup';
 
 function StatsCard() {
 	const [openMenu, setOpenMenu] = useState<number | null>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
-	
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [groupDeleteId, setGroupDeleteId] = useState('');
+
 	const toggleMenu = (index: number) => {
 		setOpenMenu(openMenu === index ? null : index);
 	};
@@ -54,12 +57,14 @@ function StatsCard() {
 		};
 	}, []);
 
-	const handledelete = async (id: any) => {
+	const handledelete = async () => {
 		try {
-			await dispatch(deleteGroupThunk({ id }));
+			await dispatch(deleteGroupThunk({ id: groupDeleteId }));
 			setOpenMenu(null);
 		} catch (error) {
 			console.error('failed to delete', error);
+		} finally {
+			setShowDeleteConfirm(false);
 		}
 	};
 
@@ -100,14 +105,14 @@ function StatsCard() {
 					>
 						{/* Three Dots Menu */}
 						<div className='absolute top-3 sm:top-4 right-3 sm:right-4 z-20'>
-							<button 
+							<button
 								onClick={() => toggleMenu(idx)}
 								className='p-1 hover:bg-gray-100 rounded transition-colors'
 							>
 								<FiMoreVertical className='h-5 w-5 sm:h-6 sm:w-6 text-[#1BBFCA]' />
 							</button>
 							{openMenu === idx && (
-								<div 
+								<div
 									ref={menuRef}
 									className='absolute right-0 mt-2 w-[140px] sm:w-[150px] md:w-[160px] bg-white shadow-lg border rounded-lg text-sm p-2 space-y-2 z-30'
 								>
@@ -137,7 +142,10 @@ function StatsCard() {
 									</button>
 									<button
 										className='flex items-center gap-2 sm:gap-2.5 w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-md hover:bg-[#1BBFCA] hover:text-white transition text-sm sm:text-base'
-										onClick={() => handledelete(card.uuid)} 
+										onClick={() => {
+											setShowDeleteConfirm(true);
+											setGroupDeleteId(card.uuid);
+										}}
 									>
 										<AiOutlineDelete className='w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0' />
 										<span>Delete</span>
@@ -165,6 +173,15 @@ function StatsCard() {
 						</div>
 					</div>
 				))}
+				{showDeleteConfirm && (
+					<ConfirmationPopup
+						type='confirm'
+						message='Are you sure you want to delete this branch?'
+						onConfirm={() => handledelete()}
+						onCancel={() => setShowDeleteConfirm(false)}
+						onClose={() => setShowDeleteConfirm(false)}
+					/>
+				)}
 			</div>
 		</div>
 	);

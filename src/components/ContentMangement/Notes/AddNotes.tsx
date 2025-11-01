@@ -13,6 +13,7 @@ import {
 } from '../../../features/Content_Management/reducers/selectors';
 import { createNoteThunk } from '../../../features/ContentMangement/Notes/Reducer/noteThunk';
 import { uploadFile } from '../../../features/ContentMangement/Notes/Services';
+import toast from 'react-hot-toast';
 
 type AddNotesProps = {
 	onClose: () => void;
@@ -94,9 +95,11 @@ const AddNotes: React.FC<AddNotesProps> = ({ onClose, onSubmit }) => {
 				if (fileUploadResponse?.data?.file) {
 					uploadedFileUrl = fileUploadResponse.data.file;
 				} else {
-					throw new Error('File upload failed');
+					toast.error('File upload failed, file exceeds 5MB limit');
 				}
 			}
+
+			if (!uploadedFileUrl) return;
 
 			const payload = {
 				title,
@@ -126,7 +129,7 @@ const AddNotes: React.FC<AddNotesProps> = ({ onClose, onSubmit }) => {
 			});
 		} catch (error) {
 			console.error('Failed to add note', error);
-			alert('Something went wrong. Please try again.');
+			toast.error('Failed to add note');
 		} finally {
 			setLoading(false);
 		}

@@ -25,7 +25,7 @@ const generateEndpoints = () => {
 			reset_password: `/api/institutes/auth/admin/update-password`,
 			login: '/api/institutes/auth/admin/login/',
 			logout: '/api/institutes/admin/institute-user/logout',
-			update: '/api/institutes/auth/admin/user/update/:userId'
+			update: '/api/institutes/auth/admin/user/update/:userId',
 		},
 		permission: {
 			getAll: `/api/admin/institutes/permissions/all`,
@@ -77,7 +77,7 @@ const generateEndpoints = () => {
 			getall: `/api/institutes/:instituteid/branches/:branchid/courses`,
 			get: `/api/institutes/:instituteid/branches/:branchid/course/`,
 			update: `/api/institutes/:instituteid/categories/`,
-			withBranch: `/api/institutes/:instituteid/branches/`,
+			withBranch: `/api/institutes/:instituteid/branches/:branchid`,
 			add: `/api/institutes/:instituteid/categories/`,
 			template: `/api/institutes/:instituteid/branches/:branchid/course-template`,
 		},
@@ -232,7 +232,7 @@ const generateEndpoints = () => {
 			institute_subscription: `/api/institutes/payments/subscription/`,
 			status_check: `/api/subscription/institute-subscription/status/`,
 			upgrade_request: `/api/subscription/institute/upgrade-subscription/`,
-			cancel_request: `/api/subscription/institute/upgrade-subscription/:instituteId/cancelsubscription`
+			cancel_request: `/api/subscription/institute/upgrade-subscription/:instituteId/cancelsubscription`,
 		},
 		activity: {
 			get: '/api/institutes/user/activities/',

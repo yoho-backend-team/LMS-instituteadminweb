@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { FaStar } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa';
 
 interface ModuleCardProps {
 	title: string;
@@ -11,6 +13,62 @@ interface ModuleCardProps {
 	video?: string;
 	onStatusChange?: () => void;
 }
+
+export const VideoPlayer = ({ video }: { video?: string }) => {
+	const [isPlaying, setIsPlaying] = useState(false);
+
+	if (!video) {
+		return (
+			<div className='text-center text-gray-500 p-4 bg-gray-200 rounded-md flex flex-col items-center justify-center h-60'>
+				<div className='text-3xl mb-2'>📹</div>
+				<p className='text-sm'>No video available</p>
+			</div>
+		);
+	}
+
+	const isYoutube = video.includes('youtube.com') || video.includes('youtu.be');
+
+	// convert all YouTube links to embed format
+	const embedUrl = isYoutube
+		? video.includes('watch?v=')
+			? video.replace('watch?v=', 'embed/')
+			: video.includes('youtu.be/')
+			? video.replace('youtu.be/', 'www.youtube.com/embed/')
+			: video
+		: video;
+
+	return (
+		<div
+			className='relative w-full h-48 xs:h-52 sm:h-56 md:h-60 bg-gray-200 rounded-md overflow-hidden mb-3'
+			onClick={() => setIsPlaying(true)}
+		>
+			{!isPlaying ? (
+				// 🎥 Click-to-play preview overlay
+				<div className='absolute inset-0 flex flex-col items-center justify-center bg-black/30 cursor-pointer text-white'>
+					<FaPlay size={24} className='mb-3 text-red-600' />
+					<p className='text-sm font-medium'>Click to Play</p>
+				</div>
+			) : isYoutube ? (
+				// 🎬 YouTube player with full controls
+				<iframe
+					src={`${embedUrl}?autoplay=1&modestbranding=1&rel=0&showinfo=0&controls=1`}
+					className='w-full h-full rounded-md'
+					allow='autoplay; encrypted-media'
+					allowFullScreen
+					title='YouTube video'
+				/>
+			) : (
+				// 🎞️ Native video player
+				<video
+					src={embedUrl}
+					controls
+					autoPlay
+					className='w-full h-full object-cover rounded-md'
+				/>
+			)}
+		</div>
+	);
+};
 
 const ViewModule = ({
 	title,
@@ -40,31 +98,7 @@ const ViewModule = ({
 	return (
 		<div className='relative w-full bg-white rounded-lg xs:rounded-xl p-3 xs:p-4 sm:p-5 md:p-6'>
 			{/* Video Preview Section - Full Width */}
-			<div className='w-full h-48 xs:h-52 sm:h-56 md:h-60 bg-gray-200 rounded-md xs:rounded-lg mb-3 xs:mb-4 flex items-center justify-center overflow-hidden'>
-				{video ? (
-					isYoutube ? (
-						<iframe
-							src={video}
-							className='w-full h-full rounded-md xs:rounded-lg'
-							allow='autoplay; encrypted-media'
-							allowFullScreen
-							title='YouTube video'
-						/>
-					) : (
-						<video
-							src={video}
-							controls
-							className='w-full h-full rounded-md xs:rounded-lg object-cover'
-							title='Module video'
-						/>
-					)
-				) : (
-					<div className='text-center text-gray-500 p-4'>
-						<div className='text-3xl xs:text-4xl mb-2'>📹</div>
-						<p className='text-sm xs:text-base'>No video available</p>
-					</div>
-				)}
-			</div>
+			<VideoPlayer video={video} />
 
 			{/* Header Section with Title and Status - Full Width */}
 			<div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 xs:gap-3 mb-3 xs:mb-4'>

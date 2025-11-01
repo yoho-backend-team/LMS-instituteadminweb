@@ -46,7 +46,8 @@ export default function Component() {
 	});
 	const branchList = BranchOptions;
 	const [branchMenuOpen, setBranchMenuOpen] = useState(false);
-	const { showLoader, hideLoader } = useLoader()
+	const { showLoader, hideLoader } = useLoader();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSelect = (option: any) => {
 		setSelectedOption(option);
@@ -59,7 +60,7 @@ export default function Component() {
 				RemoveLocalStorage('selectedBranchId');
 				setSelectedBranch(branchID?.branch_identity);
 				StoreLocalStorage('selectedBranchId', branchID.uuid);
-				setSelectedBranchID(branchID.uuid)
+				setSelectedBranchID(branchID.uuid);
 			}
 		});
 
@@ -70,20 +71,18 @@ export default function Component() {
 	useEffect(() => {
 		const paramsData = { branch: GetLocalStorage('selectedBranchId') };
 		(async () => {
-			showLoader()
+			showLoader();
 			const response = await dispatch(getDashboardthunks(paramsData));
 			const responsse2 = await dispatch(getActivitythunks({ page: 1 }));
 			if (response && responsse2) {
-				hideLoader()
+				hideLoader();
 			}
 			if (localBranch) {
-				console.log("local found", localBranch)
 				BranchData?.forEach((item: any) => {
 					if (item?.uuid == localBranch) {
-						console.log(item?.branch_identity, "branch")
 						return setSelectedBranch(item?.branch_identity);
 					}
-				})
+				});
 			} else {
 				const foundBranch = BranchData?.find(
 					(item: any) => item.uuid === localBranch
@@ -92,7 +91,7 @@ export default function Component() {
 			}
 		})();
 	}, [BranchData, dispatch, hideLoader, localBranch, showLoader]);
-	
+
 	const monthMap: { [key: string]: number } = {
 		January: 1,
 		February: 2,
@@ -107,25 +106,47 @@ export default function Component() {
 		November: 11,
 		December: 12,
 	};
-	
+
 	const handleApply = async () => {
 		try {
 			const monthNumber = monthMap[selectedMonth];
-
+			setIsLoading(true);
 			const params = {
 				branch: selectedBranchID,
 				month: monthNumber,
 				year: selectedYear,
 			};
 
-			const data = await getDashboard(params);
-			console.log("API Response:", data);
+			await getDashboard(params);
 
 			setPeriodOpen(false);
 		} catch (error) {
-			console.error("Error fetching dashboard:", error);
+			console.error('Error fetching dashboard:', error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
+
+	// Compute sorted popular courses based on selected option
+	const sortedCourses = [...(DashboardData?.popularCourses || [])]?.sort(
+		(a, b) => {
+			if (selectedOption === 'Trending') {
+				// Sort by createdAt (newest first)
+				return (
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				);
+			}
+			if (selectedOption === 'Price - Low to High') {
+				// Sort by price ascending
+				return a.current_price - b.current_price;
+			}
+			if (selectedOption === 'Price - High to Low') {
+				// Sort by price descending
+				return b.current_price - a.current_price;
+			}
+			return 0;
+		}
+	);
 
 	return (
 		<div className='h-[86vh] p-2 sm:p-4 overflow-y-scroll overflow-x-hidden scrollbar-hide'>
@@ -142,22 +163,28 @@ export default function Component() {
 								}
 							}}
 							className={`flex items-center justify-between w-full sm:w-96 px-3 sm:px-4 py-2 rounded-full ${
-								BranchData?.length === 0 ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+								BranchData?.length === 0
+									? 'cursor-not-allowed opacity-60'
+									: 'cursor-pointer'
 							}`}
 							style={{
 								background: 'white',
-								border: `2px solid ${BranchData?.length === 0 ? '#CCCCCC' : COLORS.primary}`,
+								border: `2px solid ${
+									BranchData?.length === 0 ? '#CCCCCC' : COLORS.primary
+								}`,
 								...FONTS.heading_07,
 								color: BranchData?.length === 0 ? '#999999' : '#716F6F',
 							}}
 						>
 							<span className='truncate mr-2'>
-								{BranchData?.length === 0 ? "No branches available" : selectedBranch}
+								{BranchData?.length === 0
+									? 'No branches available'
+									: selectedBranch}
 							</span>
-							<ChevronDown 
+							<ChevronDown
 								className={`h-4 w-4 flex-shrink-0 ${
 									BranchData?.length === 0 ? 'text-gray-400' : 'text-[#716F6F]'
-								}`} 
+								}`}
 							/>
 						</button>
 
@@ -248,7 +275,10 @@ export default function Component() {
 												onChange={(e) => setSelectedYear(e.target.value)}
 												style={{ ...FONTS.heading_08 }}
 											>
-												{['2023', '2024', '2025', '2026'].map((year) => (
+												{Array.from(
+													{ length: new Date().getFullYear() - 1990 + 1 },
+													(_, i) => 1990 + i
+												).map((year) => (
 													<option key={year} value={year}>
 														{year}
 													</option>
@@ -261,9 +291,15 @@ export default function Component() {
 									<button
 										className='w-full py-2 px-4 text-white rounded-md border-0 text-sm sm:text-base'
 										onClick={handleApply}
-										style={{ background: COLORS.primary, ...FONTS.heading_08 }}
+										style={{
+											background: isLoading
+												? COLORS.gray_light
+												: COLORS.primary,
+											...FONTS.heading_08,
+										}}
+										disabled={isLoading}
 									>
-										Apply
+										{isLoading ? 'Applying...' : 'Apply'}
 									</button>
 								</div>
 							</div>
@@ -286,7 +322,10 @@ export default function Component() {
 								/>
 							</div>
 							<div className='flex flex-col gap-1 sm:gap-2'>
-								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+								<span
+									className='text-[#716F6F] text-xs sm:text-sm'
+									style={{ ...FONTS.heading_08 }}
+								>
 									Total Earnings
 								</span>
 								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
@@ -302,10 +341,17 @@ export default function Component() {
 					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
 						<div className='flex items-center gap-3 sm:gap-4'>
 							<div className='rounded-lg text-white'>
-								<img src={Projects} alt='Projects' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
+								<img
+									src={Projects}
+									alt='Projects'
+									className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]'
+								/>
 							</div>
 							<div className='flex flex-col gap-1 sm:gap-2'>
-								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+								<span
+									className='text-[#716F6F] text-xs sm:text-sm'
+									style={{ ...FONTS.heading_08 }}
+								>
 									Payouts
 								</span>
 								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
@@ -321,10 +367,17 @@ export default function Component() {
 					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
 						<div className='flex items-center gap-3 sm:gap-4'>
 							<div className='rounded-lg text-white'>
-								<img src={Instructor} alt='Instructor' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
+								<img
+									src={Instructor}
+									alt='Instructor'
+									className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]'
+								/>
 							</div>
 							<div className='flex flex-col gap-1 sm:gap-2'>
-								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+								<span
+									className='text-[#716F6F] text-xs sm:text-sm'
+									style={{ ...FONTS.heading_08 }}
+								>
 									Instructor
 								</span>
 								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
@@ -340,10 +393,17 @@ export default function Component() {
 					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
 						<div className='flex items-center gap-3 sm:gap-4'>
 							<div className='rounded-lg text-white'>
-								<img src={Students} alt='Students' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
+								<img
+									src={Students}
+									alt='Students'
+									className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]'
+								/>
 							</div>
 							<div className='flex flex-col gap-1 sm:gap-2'>
-								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+								<span
+									className='text-[#716F6F] text-xs sm:text-sm'
+									style={{ ...FONTS.heading_08 }}
+								>
 									Students
 								</span>
 								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
@@ -359,10 +419,17 @@ export default function Component() {
 					<div className='bg-white shadow-[4px_4px_24px_0px_#0000001A] rounded-xl p-3 sm:p-4 grid gap-3 sm:gap-4'>
 						<div className='flex items-center gap-3 sm:gap-4'>
 							<div className='rounded-lg text-white'>
-								<img src={Course} alt='Course' className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]' />
+								<img
+									src={Course}
+									alt='Course'
+									className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px]'
+								/>
 							</div>
 							<div className='flex flex-col gap-1 sm:gap-2'>
-								<span className='text-[#716F6F] text-xs sm:text-sm' style={{ ...FONTS.heading_08 }}>
+								<span
+									className='text-[#716F6F] text-xs sm:text-sm'
+									style={{ ...FONTS.heading_08 }}
+								>
 									Course
 								</span>
 								<span className='text-lg sm:text-xl font-semibold text-[#7D7D7D]'>
@@ -382,11 +449,13 @@ export default function Component() {
 					<div className='w-full bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
 						{/* Scrollable container for mobile */}
 						<div className='sm:hidden overflow-x-auto'>
-							<div className='min-w-[600px]'> {/* Minimum width to ensure content doesn't get too squeezed */}
+							<div className='min-w-[600px]'>
+								{' '}
+								{/* Minimum width to ensure content doesn't get too squeezed */}
 								<Barchart />
 							</div>
 						</div>
-						
+
 						{/* Default view for larger screens */}
 						<div className='hidden sm:block'>
 							<Barchart />
@@ -397,7 +466,10 @@ export default function Component() {
 					<div className='bg-white rounded-xl mt-4 sm:mt-6 shadow-[4px_4px_24px_0px_#0000001A] p-3 sm:p-4'>
 						{/* Header  */}
 						<div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 w-full'>
-							<h1 className='text-lg sm:text-xl' style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
+							<h1
+								className='text-lg sm:text-xl'
+								style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}
+							>
 								Popular Course
 							</h1>
 
@@ -440,50 +512,52 @@ export default function Component() {
 
 						{/* Courses  */}
 						<div className='mt-3 sm:mt-4 w-full py-3 sm:py-4'>
-							{DashboardData?.popularCourses?.length > 0 ? (
+							{sortedCourses?.length > 0 ? (
 								<div className='flex gap-3 sm:gap-4 overflow-x-scroll scrollbar-hide pb-2'>
-									{DashboardData.popularCourses.map(
-										(item: any, index: number) => (
-											<section
-												key={index}
-												className={`min-w-[280px] sm:w-[330px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 sm:space-x-3 ${index === 0
+									{sortedCourses?.map((item: any, index: number) => (
+										<section
+											key={index}
+											className={`min-w-[280px] sm:w-[330px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-2 sm:space-x-3 ${
+												index === 0
 													? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
 													: 'bg-white'
-													}`}
-											>
-												<img
-													src={GetImageUrl(item?.image) ?? undefined}
-													className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px] bg-white rounded-full object-cover flex-shrink-0'
-													alt='course img'
-												/>
-												<div className='flex-grow min-w-0'>
-													<h2
-														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
-															} mb-1 text-sm sm:text-base line-clamp-2`}
-														style={{ ...FONTS.bold_heading }}
-													>
-														{item?.course_name}
-													</h2>
-													<p
-														className={`${index === 0 ? 'text-white' : 'text-[#716F6F]'
-															} text-xs sm:text-sm mb-3 sm:mb-4 leading-tight line-clamp-2`}
-														style={{ ...FONTS.description }}
-													>
-														{item?.description}
-													</p>
-													<p
-														className={`w-fit rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm ${index === 0
+											}`}
+										>
+											<img
+												src={GetImageUrl(item?.image) ?? undefined}
+												className='w-12 h-12 sm:w-16 sm:h-16 lg:w-[70px] lg:h-[70px] bg-white rounded-full object-cover flex-shrink-0'
+												alt='course img'
+											/>
+											<div className='flex-grow min-w-0'>
+												<h2
+													className={`${
+														index === 0 ? 'text-white' : 'text-[#716F6F]'
+													} mb-1 text-sm sm:text-base line-clamp-2`}
+													style={{ ...FONTS.bold_heading }}
+												>
+													{item?.course_name}
+												</h2>
+												<p
+													className={`${
+														index === 0 ? 'text-white' : 'text-[#716F6F]'
+													} text-xs sm:text-sm mb-3 sm:mb-4 leading-tight line-clamp-2`}
+													style={{ ...FONTS.description }}
+												>
+													{item?.description}
+												</p>
+												<p
+													className={`w-fit rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm ${
+														index === 0
 															? 'bg-white text-[#6C6C6C]'
 															: 'bg-white border-2 border-[#1A846C] text-[#1A846C]'
-															}`}
-														style={{ ...FONTS.heading_08 }}
-													>
-														{item?.coursemodules.length} Modules
-													</p>
-												</div>
-											</section>
-										)
-									)}
+													}`}
+													style={{ ...FONTS.heading_08 }}
+												>
+													{item?.coursemodules.length} Modules
+												</p>
+											</div>
+										</section>
+									))}
 								</div>
 							) : (
 								<div
@@ -500,7 +574,10 @@ export default function Component() {
 
 			{/* Recent Activities  */}
 			<div className='my-6 sm:my-8 p-3 sm:p-4 bg-white rounded-xl shadow-[4px_4px_24px_0px_#0000001A]'>
-				<h1 className='text-lg sm:text-xl mb-3 sm:mb-4' style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}>
+				<h1
+					className='text-lg sm:text-xl mb-3 sm:mb-4'
+					style={{ ...FONTS.bold_heading, color: COLORS.gray_dark_01 }}
+				>
 					Recent Activities
 				</h1>
 				{ActivityData?.length != 0 ? (
@@ -508,26 +585,30 @@ export default function Component() {
 						{ActivityData?.map((item: any, index: any) => (
 							<section
 								key={index}
-								className={`min-w-[260px] sm:min-w-[300px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-3 sm:space-x-4 ${index === 0
-									? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
-									: 'bg-white'
-									}`}
+								className={`min-w-[260px] sm:min-w-[300px] rounded-xl p-3 sm:p-4 shadow-[4px_4px_24px_0px_#0000001A] flex items-start space-x-3 sm:space-x-4 ${
+									index === 0
+										? 'bg-[linear-gradient(101.51deg,_#1BBFCA_0%,_#0AA2AC_100%)]'
+										: 'bg-white'
+								}`}
 							>
 								<img
-									src={item?.image ?? undefined}
+									src={GetImageUrl(item?.user?.image) ?? undefined}
 									className='w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex-shrink-0'
 									alt='Notes Image'
 								/>
 								<div className='flex-grow min-w-0'>
 									<h2
-										className={`mb-1 text-sm sm:text-base ${index === 0 ? 'text-white' : ''}`}
+										className={`mb-1 text-sm sm:text-base ${
+											index === 0 ? 'text-white' : ''
+										}`}
 										style={{ ...FONTS.notes_head }}
 									>
 										{item?.title}
 									</h2>
 									<p
-										className={`${index === 0 ? 'text-white' : ''
-											} text-xs sm:text-sm leading-tight line-clamp-2`}
+										className={`${
+											index === 0 ? 'text-white' : ''
+										} text-xs sm:text-sm leading-tight line-clamp-2`}
 										style={{ ...FONTS.description }}
 									>
 										{item?.details}

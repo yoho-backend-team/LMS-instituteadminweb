@@ -262,7 +262,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 	fileIcon,
 	titleIcon,
 }) => {
-	const [status, setStatus] = useState<boolean>(note.is_active);
+	const [status, setStatus] = useState<boolean>(note?.is_active || true);
 	const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
 	const handleToggle = () => {
@@ -288,32 +288,32 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 					<DropdownMenu
 						onView={handleView}
 						onEdit={() => onEdit(note)}
-						onDelete={() => onDelete(note.id)}
+						onDelete={() => onDelete(note?.id)}
 					/>
 				</div>
 
 				{/* File preview section */}
-				{note.file && (
+				{note?.file && (
 					<div className='flex gap-2 mt-2 bg-[#F7F7F7] h-12 text-xl items-center cursor-pointer rounded px-2'>
 						<img
 							src={fileIcon || '/placeholder.svg'}
 							alt='file'
 							className='w-5 h-5'
 						/>
-						<span className='text-sm'>{note.id}</span>
+						<span className='text-sm'>{note?.id}</span>
 					</div>
 				)}
 
 				{/* Title */}
 				<h2 className='text-xl font-semibold mt-3 flex items-center'>
 					<img src={titleIcon} alt='icon' className='mr-2 w-5 h-5' />
-					{note.title}
+					{note?.title}
 				</h2>
 
 				{/* Description or other content */}
 				<div className='mt-2 flex-1'>
-					{note.description && (
-						<p className='whitespace-pre-wrap text-sm'>{note.description}</p>
+					{note?.description && (
+						<p className='whitespace-pre-wrap text-sm'>{note?.description}</p>
 					)}
 				</div>
 

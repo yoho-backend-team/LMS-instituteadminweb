@@ -31,6 +31,7 @@ import ContentLoader from 'react-content-loader';
 import { GetLocalStorage } from '../../utils/localStorage';
 import type { AppDispatch } from '../../store/store';
 import { UploadFile } from '../../features/Content_Management/services';
+import toast from 'react-hot-toast';
 
 interface Note {
 	id: number;
@@ -108,7 +109,7 @@ const NotesManagement = () => {
 		{
 			label: 'Status',
 			value: 'status',
-			options: ['all', 'Active', 'Inactive'],
+			options: ['All', 'Active', 'Inactive'],
 		},
 		{
 			label: 'Course',
@@ -142,13 +143,15 @@ const NotesManagement = () => {
 		{ label: 'Description', key: 'description', type: 'input' as const },
 	];
 
-	const uploadFile = async (file: File): Promise<string> => {
+	const uploadFile = async (file: File) => {
 		const formData = new FormData();
 		formData.append('file', file);
-		const response = await UploadFile(formData);
-		console.log(response, 'res');
-
-		return response?.file || '';
+		try {
+			const response = await UploadFile(formData);
+			return response?.file || '';
+		} catch (error) {
+			toast.error('Failed to upload, upload file lesser than 1mb');
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -158,6 +161,8 @@ const NotesManagement = () => {
 			if (uploadedFile instanceof File) {
 				filePath = await uploadFile(uploadedFile);
 			}
+
+			if (!filePath) return;
 
 			const payload = {
 				title: formData.title,
@@ -176,8 +181,10 @@ const NotesManagement = () => {
 				};
 
 				await dispatch(updateStudyMaterialThunk(updatedData));
+				toast.success('Study material updated successfully');
 			} else {
 				await dispatch(createStudyMaterialThunk(payload));
+				toast.success('Study material added successfully');
 			}
 
 			const paramsData = {
@@ -223,7 +230,7 @@ const NotesManagement = () => {
 	const handleDelete = async (id: string) => {
 		try {
 			await dispatch(deleteStudyMaterialThunk(id));
-
+			toast.success('Study material deleted successfully');
 			const paramsData = {
 				branch: GetLocalStorage('selectedBranchId'),
 				page: 1,
@@ -257,7 +264,7 @@ const NotesManagement = () => {
 			const toggledStatus = currentStatus === false ? false : true;
 			const payload = {
 				id: uuid,
-				is_active: toggledStatus,
+				is_active: toggledStatus || false,
 			};
 
 			await updateStudyMaterialStatus(payload);
@@ -299,8 +306,8 @@ const NotesManagement = () => {
 
 				let courseMatch = true;
 				if (filterValues.course) {
-					if (note.course_name) {
-						courseMatch = note.course_name === filterValues.course;
+					if (note.course.course_name) {
+						courseMatch = note.course.course_name === filterValues.course;
 					} else if (note.course) {
 						const filterCourseId = courseNameToIdMap[filterValues.course];
 						courseMatch =
@@ -378,11 +385,11 @@ const NotesManagement = () => {
 								</ContentLoader>
 							))}
 						</div>
-					) : filteredNotes.length > 0 ? (
-						filteredNotes?.map((note: any) => {
+					) : filteredNotes?.length > 0 ? (
+						filteredNotes?.map((note: any, index) => {
 							return (
 								<NoteCard
-									key={note?.id || note?.uuid}
+									key={index}
 									note={note}
 									onEdit={handleEdit}
 									onView={(note: any) => setSelectedNote(note)}

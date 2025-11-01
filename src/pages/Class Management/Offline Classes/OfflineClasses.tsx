@@ -30,7 +30,7 @@ const OfflineClasses = () => {
 	});
 	const loading = useSelector(selectLoading);
 
-	const fetchAllofflineClasses = async () => {
+	const fetchAllofflineClasses = useCallback(async () => {
 		try {
 			const params_data = {
 				branch: GetLocalStorage('selectedBranchId'),
@@ -41,7 +41,7 @@ const OfflineClasses = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, []);
 
 	const fetchAllBatches = useCallback(async () => {
 		try {

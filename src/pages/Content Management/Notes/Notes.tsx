@@ -46,12 +46,20 @@ const Notes = () => {
 		[key: string]: boolean;
 	}>({});
 
+	const fetchAllNotes = async () => {
+		try {
+			const params = {
+				branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
+				page: 1,
+			};
+			dispatch(fetchNotesThunk(params));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
-		const params = {
-			branch: '90c93163-01cf-4f80-b88b-4bc5a5dd8ee4',
-			page: 1,
-		};
-		dispatch(fetchNotesThunk(params));
+		fetchAllNotes();
 	}, [dispatch]);
 
 	const handleToggleStatus = (id: string, currentStatus: boolean) => {
@@ -80,6 +88,7 @@ const Notes = () => {
 				.then(() => toast.success('Note added'))
 				.catch(() => toast.error('Add failed'));
 		}
+		fetchAllNotes();
 		setEditNote(null);
 		setShowPanel(false);
 	};
@@ -102,14 +111,10 @@ const Notes = () => {
 		if (!deleteModal.noteId) return;
 
 		try {
-			const response = await dispatch(
-				deleteNoteThunk(deleteModal.noteId)
-			).unwrap();
-			if (response) {
-				toast.success('Notes deleted successfully');
-				setShowFilter(false);
-				setOpenIndex(null);
-			}
+			await dispatch(deleteNoteThunk(deleteModal.noteId));
+			setShowFilter(false);
+			setOpenIndex(null);
+			toast.success('Notes deleted successfully');
 		} catch (error) {
 			toast.error('Failed to delete note');
 		} finally {

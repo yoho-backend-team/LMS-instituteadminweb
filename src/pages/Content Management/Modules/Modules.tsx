@@ -19,6 +19,7 @@ import {
 } from '../../../features/Content_Management/reducers/thunks';
 import ContentLoader from 'react-content-loader';
 import { GetLocalStorage } from '../../../utils/localStorage';
+import toast from 'react-hot-toast';
 
 interface ModuleCardProps {
 	id: string;
@@ -72,13 +73,22 @@ const Modules = () => {
 	const dispatch = useDispatch<any>();
 	const Module = useSelector(GetModule);
 	const loading = useSelector(selectLoading);
+
+	const fetchAllModules = async () => {
+		try {
+			const paramsData = {
+				branch_id: GetLocalStorage('selectedBranchId'),
+				institute_id: GetLocalStorage('instituteId'),
+				page: 1,
+			};
+			dispatch(GetallModuleThunks(paramsData));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
-		const paramsData = {
-			branch_id: GetLocalStorage('selectedBranchId'),
-			institute_id: GetLocalStorage('instituteId'),
-			page: 1,
-		};
-		dispatch(GetallModuleThunks(paramsData));
+		fetchAllModules();
 	}, [dispatch]);
 
 	const handleViewClick = (card: any) => {
@@ -92,6 +102,8 @@ const Modules = () => {
 			setSelectedModule(null);
 		}
 		dispatch(DeletemoduleThunks({ id, uuid }));
+		toast.success('Module deleted successfully');
+		fetchAllModules();
 		setOpenCardId(null);
 	};
 
@@ -130,10 +142,13 @@ const Modules = () => {
 						onClick={(e) => e.stopPropagation()}
 					>
 						<AddModule
-							onClose={() => setShowPanel(false)}
-							onSubmit={(newModule) => {
+							onClose={() => {
 								setShowPanel(false);
-								console.log(newModule, 'new module added successfully');
+							}}
+							onSubmit={() => {
+								setShowPanel(false);
+								toast.success('new module added successfully');
+								fetchAllModules();
 							}}
 						/>
 					</div>
