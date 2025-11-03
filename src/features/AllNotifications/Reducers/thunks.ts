@@ -6,7 +6,7 @@ export const getAllNotifications = (params: any) => async (dispatch: any) => {
 		dispatch(setLoading(true));
 		const response = await getAllNotificationsService(params);
 		if (response) {
-			dispatch(allNotification(response?.data));
+			dispatch(allNotification(response));
 		}
 		dispatch(setLoading(false));
 	} catch (error) {

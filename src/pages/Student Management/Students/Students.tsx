@@ -1267,7 +1267,7 @@ const Students = () => {
 								controls
 								autoPlay
 								className='w-full h-auto max-h-96'
-								onEnded={() => console.log('Video ended')}
+								onEnded={() => {}}
 								onError={() => toast.error('Error playing video')}
 							>
 								<source src={sampleVideoUrl} type='video/mp4' />

@@ -38,6 +38,7 @@ interface BatchCardProps {
 	isActive?: boolean;
 	data?: any;
 	fetchBatchData?: () => void;
+	instructor: any;
 }
 
 export const BatchCard: React.FC<BatchCardProps> = ({
@@ -49,6 +50,7 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 	isActive,
 	duration,
 	data,
+	instructor,
 	fetchBatchData,
 }) => {
 	const [status, setStatus] = useState<any>(isActive ? 'active' : 'inactive');
@@ -186,6 +188,14 @@ export const BatchCard: React.FC<BatchCardProps> = ({
 							style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}
 						>
 							{students} Students
+						</span>
+					</div>
+					<div className='flex items-center gap-1'>
+						<img src={humaning} className='w-3.5 h-3.5' alt='Students' />
+						<span
+							style={{ ...FONTS.heading_08_bold, color: COLORS.gray_light }}
+						>
+							{instructor} Instructors
 						</span>
 					</div>
 					<div className='flex items-center gap-1'>

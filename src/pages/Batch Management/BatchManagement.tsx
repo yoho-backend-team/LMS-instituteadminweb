@@ -44,7 +44,9 @@ export default function BatchManagement() {
 
 	const fetchAllCourses = async () => {
 		try {
-			const response = await getCourseService({});
+			const response = await getCourseService({
+				branch: GetLocalStorage('selectedBranchId'),
+			});
 			if (response) {
 				setCourses(response?.data);
 			} else {
@@ -260,6 +262,7 @@ export default function BatchManagement() {
 							title={batch?.batch_name}
 							subtitle={batch?.course?.course_name}
 							students={batch?.student?.length}
+							instructor={batch?.instructor?.length}
 							duration={batch?.course?.duration}
 							startDate={batch?.start_date}
 							endDate={batch?.end_date}
@@ -269,7 +272,7 @@ export default function BatchManagement() {
 						/>
 					))
 				) : (
-					<div className='flex flex-1 justify-center mt-20'>
+					<div className='flex flex-1 items-center justify-end mt-20'>
 						<p>No batches available</p>
 					</div>
 				)}
