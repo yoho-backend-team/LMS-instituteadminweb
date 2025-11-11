@@ -248,12 +248,11 @@ class Client {
 				data
 			);
 		},
-		getWithBranch: () =>
+		getWithBranch: (data?: any) =>
 			HttpClient.get(
 				HTTP_END_POINTS.course.withBranch
 					.replace(':instituteid', getInstituteDetails())
-					.replace(':branchid', getSelectedBranchId()) +
-					// data?.branch_id +
+					.replace(':branchid', data?.branch_id || getSelectedBranchId()) +
 					'/courses'
 			),
 		update: (data: any) =>

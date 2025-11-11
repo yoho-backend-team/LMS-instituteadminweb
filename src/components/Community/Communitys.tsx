@@ -33,7 +33,7 @@ const Communitys: React.FC = () => {
 	const [showProfile, setShowProfile] = useState<boolean>(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [userId, setUserId] = useState<string | null>(null);
-	const [userName, setUserName] = useState<string | null>(null);
+	const [, setUserName] = useState<string | null>(null);
 	const [showChatView, setShowChatView] = useState(false); // New state to control chat view visibility on mobile
 	const dispatch = useDispatch<any>();
 	const communityMessages = useSelector(selectMessages);
