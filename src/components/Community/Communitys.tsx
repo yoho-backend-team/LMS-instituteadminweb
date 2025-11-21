@@ -197,7 +197,7 @@ const Communitys: React.FC = () => {
 					} w-full md:w-auto relative`}
 				>
 					{/* Back arrow for mobile */}
-					<div className='md:hidden top-4 left-4 z-10'>
+					<div className='md:hidden top-4 left-4  z-10'>
 						<button
 							onClick={handleBackToLeftSide}
 							className='flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors'
