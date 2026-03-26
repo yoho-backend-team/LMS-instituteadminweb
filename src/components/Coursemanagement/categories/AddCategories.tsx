@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BackendURL } from "../../../utils/helper";
 
 function CategoryUploader() {
   const [categoryName, setCategoryName] = useState("");
@@ -28,7 +29,7 @@ function CategoryUploader() {
       formData.append("file", imageFile);
 
       const uploadRes = await fetch(
-        "https://lms-node-backend-v1.onrender.com/api/upload",
+        BackendURL,
         {
           method: "POST",
           body: formData,
@@ -45,7 +46,7 @@ function CategoryUploader() {
 
       // 2. Create category
       const categoryRes = await fetch(
-        "https://lms-node-backend-v1.onrender.com/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/categories",
+        `${BackendURL}/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/categories`,
         {
           method: "POST",
           headers: {

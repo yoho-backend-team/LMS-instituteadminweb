@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getAllCategoriesThunk } from '../../../features/Course mangement/categories/reducers/thunks';
 import { selectCategories } from '../../../features/Course mangement/categories/reducers/slice';
-import { GetImageUrl } from '../../../utils/helper';
+import { BackendURL, GetImageUrl } from '../../../utils/helper';
 import {
 	CreateCategories,
 	deleteCategories,
@@ -249,7 +249,7 @@ export const DashboardCards: React.FC = () => {
 
 		try {
 			const uploadRes = await fetch(
-				'https://lms-node-backend-v1.onrender.com/api/upload',
+				`${BackendURL}/api/upload`,
 				{
 					method: 'POST',
 					body: formData,

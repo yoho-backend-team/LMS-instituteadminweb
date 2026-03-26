@@ -33,6 +33,7 @@ export const GetProfileDetail = async () => {
     try {
         const response: any = await Client.admin.me()
         const institute = response?.data?.institute_id?.uuid
+        console.log(institute,"checking inst uuid")
         StoreLocalStorage('instituteId', institute)
         return response.data
     } catch (error) {

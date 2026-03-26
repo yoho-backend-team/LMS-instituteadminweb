@@ -383,9 +383,9 @@ const Students = () => {
 				formData.append('file', newStudentForm.image);
 				const response = await uploadFile(formData);
 				imageUrl = response?.data?.file;
-				if (!imageUrl) {
-					throw new Error('Image upload failed');
-				}
+				// if (!imageUrl) {
+				// 	throw new Error('Image upload failed');
+				// }
 			}
 
 			const payload = {
@@ -431,9 +431,9 @@ const Students = () => {
 				image: null,
 			});
 			setValidationErrors({});
-			setShowAddStudent(false);
 			toast.success('Student added successfully');
-
+			
+			setShowAddStudent(false);
 			dispatch(
 				getStudentmanagement({
 					branch_id: GetLocalStorage('selectedBranchId'),
@@ -443,6 +443,7 @@ const Students = () => {
 		} catch (error) {
 			console.error('Error adding student:', error);
 			toast.error('Failed to add student');
+			setShowAddStudent(false);
 		} finally {
 			setIsUploading(false);
 		}

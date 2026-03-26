@@ -249,9 +249,9 @@ const TeachingStaffs: React.FC = () => {
 
 			case 'bank_IFSC':
 				if (!value.trim()) return 'Bank IFSC code is required';
-				const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-				if (!ifscRegex.test(value.toUpperCase()))
-					return 'Please enter a valid IFSC code';
+				// const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+				// if (!ifscRegex.test(value.toUpperCase()))
+				// 	return 'Please enter a valid IFSC code';
 				return '';
 
 			case 'monthly_Basic':

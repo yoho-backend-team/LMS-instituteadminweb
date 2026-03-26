@@ -136,7 +136,7 @@ const generateEndpoints = () => {
 			studentclass: '/api/institutes/class/student/:studentid',
 			activity: `/api/institutes/:instituteid/students/student/activity/`,
 			liveClasses: `/api/institutes/class/online/all/`,
-			// classess: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8e e4/students/`,
+			// classess: `/api/institutes/:instituteid/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8e e4/students/`,
 			classess: `/api/institutes/:instituteid/branches/:branchid/students`,
 		},
 		payment: {
@@ -163,11 +163,11 @@ const generateEndpoints = () => {
 		},
 		staff: {
 			get: `/api/institutes/:instituteid/Non-teaching-staff/`,
-			getWithName: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff`,
+			getWithName: `/api/institutes/:instituteid/branches/:branchid/teaching-staff`,
 			getWithId: `/api/institutes/:instituteid/staff/`,
 			getWithcourse: `/api/institutes/:instituteid/branches/:branchid/courses/`,
 			getWithBranch: `/api/institutes/:instituteid/branches/:branchid/teaching-staff`,
-			getWithid: `/api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/staff/:staffId`,
+			getWithid: `/api/institutes/:instituteid/branches/:branchid/staff/:staffId`,
 			getActivtiy:
 				'/api/institutes/user/activity/staff/67f3bebeb8d2634300cc8aec',
 			getClasses: '/api/institutes/class/staff/:id',
@@ -175,7 +175,7 @@ const generateEndpoints = () => {
 			updateStatus: `api/institutes/:instituteid/branches/:branchid/teaching-staff/update/:staff`,
 			create: 'api/institutes/auth/teaching-staff/register',
 			delete:
-				'api/institutes/973195c0-66ed-47c2-b098-d8989d3e4529/branches/90c93163-01cf-4f80-b88b-4bc5a5dd8ee4/teaching-staff/',
+				'api/institutes/:instituteid/branches/:branchid/teaching-staff/',
 		},
 		nonstaff: {
 			getWithId: `/api/institutes/${instituteId}/branches/${branchId}/nonstaff/`,

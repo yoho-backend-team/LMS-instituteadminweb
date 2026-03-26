@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { BiSolidCloudUpload } from 'react-icons/bi';
+import { BackendURL } from '../../../utils/helper';
 
 interface NoteData {
 	title: string;
@@ -27,7 +28,7 @@ const EditNotes = ({ noteData, onClose, onSubmit }: Props) => {
 
 	useEffect(() => {
 		if (noteData.fileName) {
-			const fullUrl = `https://lms-node-backend-v1.onrender.com/${noteData.fileName}`;
+			const fullUrl = `${BackendURL}/${noteData.fileName}`;
 			setFilePreview(fullUrl);
 			const ext = noteData.fileName.split('.').pop() || '';
 			if (ext === 'pdf') setFileType('application/pdf');
